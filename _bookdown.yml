@@ -1,0 +1,6 @@
+book_filename: "Thesis-bookdown"
+new_session: no
+delete_merged_file: yes
+language:
+  ui:
+    chapter_name: "Chapter "

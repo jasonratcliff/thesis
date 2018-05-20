@@ -1,0 +1,33 @@
+--- 
+title: "Systematics of *Physaria* sensu stricto"
+author: "Jason Ratcliff"
+date: "`r Sys.Date()`"
+maintfont: Palatino
+output: 
+  bookdown::pdf_book:
+    includes:
+      in_header: TeX/Thesis_0-header.tex
+    latex_engine: xelatex
+    toc: false
+    citation_package: natbib
+    keep_tex: yes
+subparagraph: true
+site: bookdown::bookdown_site
+documentclass: report
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "R Bookdown build to compile an MS Thesis."
+---
+
+\include{TeX/Thesis_1-copyright}
+
+\include{TeX/Thesis_2-abstract-title}
+
+<!-- \include{TeX/Thesis_3-abstract} -->
+
+\include{TeX/Thesis_4-thesis-title}
+
+\include{TeX/Thesis_5-approval}
+
+\include{TeX/Thesis_6-tables}

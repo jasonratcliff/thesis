@@ -1,0 +1,725 @@
+\phantomsection
+\addcontentsline{toc}{chapter}{APPENDIX C: SEQUENCE ANALYSIS}
+\chapter*{APPENDIX C: SEQUENCE ANALYSIS}
+
+\phantomsection
+\section{Sequence Analysis Pipeline}
+
+\paragraph{} An overview of the steps taken to process sequence data prior to phylogenetic inference follows:
+
+% Define a new environment with adjusted spacing for enumerated and itemized lists.
+\newenvironment{seqlist}
+{\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt} }
+{\end{enumerate} } 
+
+\begin{seqlist}
+\item{\textbf{Directory Environment}}
+\begin{itemize}
+\item{Establish sequence analysis project directory}
+\item{Deposit \textit{Fasta\_Utilities/} scripts as a project subdirectory}
+\end{itemize}
+
+\item{\textbf{FASTA File Import}}
+\begin{itemize}
+\item{Deposit unaligned multi-FASTA files in \textit{0.raw\_fastas/} subdirectories}
+\begin{itemize}
+\item{Each loci has a subdirectory with the prefix ``loci\_"}
+\end{itemize}
+\end{itemize}
+
+\item{\textbf{Cleaning Data}}
+\begin{itemize}
+\item{Run \textit{./Fasta\_Utilities/header\_comp.sh}}
+\begin{itemize}
+\item{This script generates output files containing respective loci sequence headers}
+\end{itemize}
+\item{Manually remove excess sequences based on sequence header differences}
+\begin{itemize}
+\item{All loci should include the same DNA specimens}
+\end{itemize}
+\item{Save trimmed multi-FASTA files in \textit{1.trimmed\_fastas} subdirectory}
+\end{itemize}
+
+\item{\textbf{Multiple Sequence Alignment}}
+\begin{itemize}
+\item{Utilize remote MAFFT server for individual loci alignments}
+\item{Save aligned (wrapped) multi-FASTA files in \textit{2.aligned\_fastas}}
+\end{itemize}
+
+\item{\textbf{FASTA File Unwrap}}
+\begin{itemize}
+\item{AWK / Sed processing of aligned multi\_FASTA files}
+\end{itemize}
+
+\item{\textbf{\textit{unwrap\_fasta.sh} Loop Contsruct}}
+\begin{itemize}
+\item{Output unwrapped multi-FASTA files into \textit{3.unwrapped\_fastas}}
+\end{itemize}
+
+\item{\textbf{Sequence Concatenation}}
+\begin{itemize}
+\item{Manually concatenate multi-locus FASTA from individual loci}
+\end{itemize}
+
+\clearpage
+
+\item{\textbf{\textit{multi-fasta\_split.sh} Loop Construct}}
+\begin{itemize}
+\item{Output split sequences into \textit{4.loci} subdirectories}
+\end{itemize}
+
+\item{\textbf{FASTA File Split}}
+\begin{itemize}
+\item{AWK processing of multi-FASTA files to split into single sequence text files}
+\end{itemize}
+
+\item{\textbf{Source Sequences into R}}
+\begin{itemize}
+\item{Read individual sequences into workspace with \textit{load\_fastas.R}}
+\item{Return pairwise sequence differences using \textit{seq\_comp.R}}
+\end{itemize}
+
+\end{seqlist}
+
+\subsection*{System Information}
+
+\paragraph{} Local analyses were run with Mac OS X version 10.11.6, Unix OS Darwin version 15.6.0, and Terminal version 2.6.1 on an x86\_64 processor.  Remote servers on the CIPRES Science Gateway (Miller et al. 2010) were utilized for alignment and phylogenetic inference.  
+
+\subsection*{1. Directory Environment}
+
+\paragraph{} A project subdirectory was established for holding sequence data, program scripts, and intermediate files related to DNA sequence analysis.  The subdirectory \textit{Fasta\_Utilities/} contains executable shell scripts used for downstream FASTA file processing.  In the following code snippets, the character \textbf{\$} indicates the command prompt while text following a \textbf{\#} indicates commented (i.e. non-evaluated) text.  The Latex package Listings (Hoffmann et al. 2015) was used to modify code syntax coloring, where functions are keywords represented by the color blue and the command prompt is colored green.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Project directory setup}]
+# Establish project directory and set working directory
+|<$>| mkdir Seq-Analysis
+|<$>| cd Seq-Analysis
+|<$>| mv ../Fasta_Utilities/ .  # Move scripts to project directory
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} The \textit{Fasta\_Utilities/} directory contains shell (.sh) executable scripts and a subdirectory with scripts containing two R functions.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Recursive list of \textit{Fasta\_Utilities/} subdirectory contents}]
+|<$>| ls -lR Fasta_Utilities/ | awk `{print $1, $9}'
+total 
+drwxr-xr-x R_functions
+-rwxr-xr-x header_comp.sh
+-rwxr-xr-x multi-fasta_split.sh
+-rwxr-xr-x unwrap_fasta.sh
+ 
+Fasta_Utilities//R_functions:     # R function directory
+total 
+-rw-r--r-- load_fastas.R
+-rw-r--r-- seq_comp.R
+
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\subsection*{2. FASTA File Import}
+
+\paragraph{} Directories containing the unaligned multi-FASTA files were deposited into the project directory.  Each loci multi-FASTA file is located in a separate directory, where the directory is named by the prefix string ``loci\_" with the name on the genomic region (i.e. ``rps", ``rITS", ``ycf1") appended.  Multi-FASTA files were manually deposited in the directory \textit{0.raw\_fastas/} once established.
+
+\clearpage
+
+\begin{lstlisting}[caption={Unaligned sequence data deposited in \textit{0.raw\_fastas/} subdirectory}]
+# Establish directory for unaligned FASTA files 
+|<$>| mkdir 0.raw_fastas
+
+# Recursively list unaligned sequence FASTA files
+|<$>| ls -R 0.raw_fastas/loci_* | more
+0.raw_fastas/loci_rITS:
+rITS_complete_raw.fasta
+
+0.raw_fastas/loci_rps:
+rps_complete_raw.fasta
+
+0.raw_fastas/loci_ycf1:
+ycf1_complete_raw.fasta
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\subsection*{3. Cleaning Data}
+
+\paragraph{} Sequences from specimens with data missing from any loci were removed manually after identifying multi-FASTA file differences.  Headers from the multi-FASTA files were analyzed using the \textit{header\_comp.sh} script to compare which loci have missing data by using an AWK (version 20070501, Aho et al. 1988) statement to print the FASTA sequence headers demarcated by ``>".  The AWK programming language evaluates each line - referred to as a record - of an input file for a specified pattern, and executes a defined action on records matching the pattern.  If no action is defined, the default action is to print the record where the entire record is represented by the variable ``\$0".  The general syntax of an AWK statement is as follows:  
+
+\clearpage
+
+\begin{lstlisting}[caption={Example AWK statement}]
+# General AWK syntax:
+|<$>| awk ` pattern  { action } '  filename
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} The \textit{header\_comp.sh} script contains an AWK statement to identify records (i.e. FASTA file lines) that begin with the character ``>", which denotes a FASTA sequence header.  Within an AWK statement, the pattern is a regular expression indicated between forward slashes ``/ /".  The regular expression caret metacharater ``\string^" is used to match the beginning of a record, such that records beginning with the character ``>" (i.e. sequence headers) are matched by the regular expression \textbf{\string^>} demarcated by foward slashes.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={\textit{header\_comp.sh} AWK statement to retrieve FASTA headers}]
+awk `/^>/ {print $1}' $fasta/*raw.fasta > $(echo ${loci}_seqs.txt)
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} The \textit{header\_comp.sh} script AWK statement prints the first field (indicated by \textbf{\$1}) of records matching the \textbf{\string^>} pattern.  Within a record, the fields are separated by default with a space.  In the AWK statement above, the input file is indicated by the \textbf{\$fasta/\*raw.fasta} shell variable construct.  Output from this AWK statement is then redirected using the UNIX assignment operator \textbf{>} as standard input written to a new text file.  Here, the file is named by the respective loci (indicated by \textbf{\${loci}}) of the FASTA file being evaluated, and the substring ``\_seqs" and extension ``.txt" is appended as the new filename.  
+
+\paragraph{} This script creates new subdirectories to store text files containing the unsorted and sorted sequence headers for each of the respective loci.  Each multi-FASTA within the respective \textit{0.raw\_fastas/} loci subdirectory is iteratively evaluated and the FASTA sequence headers written to a new text file.  For each multi-FASTA input file, two output files containing unsorted and sorted sequence headers are created and moved to the respective subdirectories within a new \textit{0.raw\_fastas/seq\_headers/} directory.  
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Contents of the \textit{header\_comp.sh} script}]
+# Create a directory containing a subdirectory for sorted output
+mkdir 0.raw_fastas/seq_headers/
+mkdir 0.raw_fastas/seq_headers/sorted
+
+# Iterate through directories matching the regular expression `loci*'
+for fasta in 0.raw_fastas/loci*; do
+
+ # Slice the substring following `loci_' (i.e. `rITS', `rps', `ycf1') by
+ # variable substitution syntax ${paramater##word} - (Ramey & Fox 2014)
+ # and store the string as variable $loci.
+ loci=${fasta##0.raw_fastas/loci_};
+
+ # Return the name of the genomic loci to the command prompt
+ echo
+ echo 'Processing loci' $loci;
+\end{lstlisting}
+
+\clearpage
+
+\setcounter{lstlisting}{5}
+\begin{lstlisting}[caption={Continued}]
+ ### Extract headers from the FASTA file ###
+
+ # Print the first field (`$1') of each record (i.e. line)
+ # matching the awk regular expression `/^>/'
+ # from the fasta files contained within the `loci_*' directories.
+ # Redirect the sequence header output into a new file named by
+ # the genomic loci and an extension `_seqs.txt'.
+ # Return the number of records (`NR') with an awk END statement.
+ awk `/^>/ {print $1};
+ END {print NR}' $fasta/*raw.fasta > $(echo ${fasta}/${loci}_seqs.txt);
+
+ # Print number of FASTA headers.
+ awk `END {printf ``\tFASTA headers: %s\n'', NR}' \
+   ${fasta}/${loci}_seqs.txt;
+ 
+ # Alphabetically sort the sequence headers and redirect the output
+ # to create a new file containing the sorted headers.
+ sort ${fasta}/${loci}_seqs.txt > ${fasta}/${loci}_seqs-sorted.txt;
+
+ # Move output to sorted subdirectory
+ mv ${fasta}/${loci}_seqs-sorted.txt 0.raw_fastas/seq_headers/sorted;
+
+# End loop
+done
+echo
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} The header comparison script was executed from within the project directory directory to produce output files containing the sorted sequence headers.  These were then analyzed manually to determine which loci had missing data (i.e. specimens with an incomplete multi-locus dataset).   
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Execute \textit{header\_comp.sh} script}]
+# Execute the program to analyze sequence headers
+|<$>| ./Fasta_Utilities/header_comp.sh      
+
+Processing loci rITS # Loci name
+	FASTA headers:65 # Number of FASTA records in the sorted file
+
+Processing loci rps
+	FASTA headers:64
+
+Processing loci ycf1
+	FASTA headers:53
+
+# List sorted files in "seq_headers/" subdirectory
+|<$>| ls 0.raw_fastas/seq_headers/sorted/ | more
+rITS_seqs-sorted.txt
+rps_seqs-sorted.txt
+ycf1_seqs-sorted.txt
+
+# Print first three lines from a sorted file
+|<$>| head -3 0.raw_fastas/seq_headers/sorted/rITS_seqs-sorted.txt
+192       # Total number of records (i.e. headers and sequences)
+>LARGY_7548
+>LFEND_4355
+
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} The Unix utility \textbf{diff} (version 2.8.1, Free Software Foundation 2016) was used to determine sequence header differences between loci.  Specimens with DNA sequence data for only a subset of the loci were excluded from multi-locus analysis.  Use of the command flag ``-b" ignores whitespace, preventing false positives from any trailing whitespace.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=Calculate sequence diffs]
+# Change to the seq_headers/ subdirectory
+|<$>| cd 0.raw_fastas/seq_headers/
+
+# Establish a directory to hold sequence differences
+|<$>| mkdir seq_diffs
+
+# Write files comparing sequence differences
+|<$>| diff -b sorted/rITS_seqs-sorted.txt \
+    sorted/rps_seqs-sorted.txt > seq_diffs/rITS_rps
+
+|<$>| diff -b sorted/rITS_seqs-sorted.txt \
+    sorted/ycf1_seqs-sorted.txt > seq_diffs/rITS_ycf1
+
+|<$>| diff -b sorted/rps_seqs-sorted.txt \
+    sorted/ycf1_seqs-sorted.txt > seq_diffs/rps_ycf1
+
+# Inspect the header differences
+|<$>| tail -5 seq_diffs/rITS_rps  # print last five lines of file
+>PDIDY_IN_3149
+46d46
+>PINTE_3149
+54d53
+>PSAXI_SA_3153
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} After determining which specimens had sequence data for all three loci, extra sequences were removed manually prior to alignment.  A new directory was created to store the trimmed, unaligned sequences prior to individually aligning the loci.  
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=Create directory for trimmed FASTA files]
+# Change back to the main project directory
+|<$>| cd ../../
+
+# Establish a subdirectory to store the trimmed FASTA files
+|<$>| mkdir 1.trimmed_fastas
+
+# Trimmed FASTA files were manually moved into the new directory
+|<$>| ls 1.trimmed_fastas/ | more
+rITS_trimmed.fasta
+rps_trimmed.fasta
+ycf1_trimmed.fasta
+
+# Note the number of lines in each loci's FASTA file
+|<$>| wc -l 1.trimmed_fastas/*
+     152 1.trimmed_fastas/rITS_trimmed.fasta
+     152 1.trimmed_fastas/rps_trimmed.fasta
+     152 1.trimmed_fastas/ycf1_trimmed.fasta
+     457 total
+\end{lstlisting}
+
+\clearpage
+
+\subsection*{4. Multiple Sequence Alignment}
+
+\paragraph{} Following alignment on the CIPRES Science Gateway, a FASTA file with sequence strings wrapped into a new line every 60 characters was exported.   A new directory was established and the exported aligned FASTA files for each loci were deposited in that directory.  A pair of shell (.sh) scripts were used to process the sequence data prior to concatenation.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=Save aligned sequences in \textit{2.aligned\_fastas/}]
+# Establish directory to store the aligned FASTA files
+|<$>| mkdir 2.aligned_fastas
+
+# MAFFT output FASTA files were stored in the new directory
+|<$>| ls 2.aligned_fastas/ | more
+rITS_aligned.fasta
+rps_aligned.fasta
+ycf1_aligned.fasta
+
+# Note the number of lines in the aligned FASTA files
+|<$>| wc -l 2.aligned_fastas/*
+     612 2.aligned_fastas/rITS_aligned.fasta
+     867 2.aligned_fastas/rps_aligned.fasta
+     561 2.aligned_fastas/ycf1_aligned.fasta
+    2040 total
+
+\end{lstlisting}
+
+\clearpage
+
+\setcounter{lstlisting}{9}
+\begin{lstlisting}[caption=Continued]
+# Aligned sequences are exported in a wrapped FASTA format
+|<$>| head -3 2.aligned_fastas/*
+==> 2.aligned_fastas/rITS_aligned.fasta <==
+>PACUT_8621 # ITS_1
+TCGATACCTTGACCAAACAGAACGACCYGCGAACCTATTATCACCACTCTCGGTGGGCTG
+GTTTCTTAACCGATCCCTTCCCGCCGGATCCGTGGTTTCGTGTATCTGTCCCGGCGCTGA
+
+==> 2.aligned_fastas/rps_aligned.fasta <==
+>PACUT_8621 # rps_1
+TGATCTGCTGTGGATTTTTTCATCCGCCACTTTTTATATAGGTGCTCTTGGCTCGACATT
+TTTTGTTCT---------------ATTTTATCTATTTTACTAGAGTCCTACACTTTTTTG
+
+==> 2.aligned_fastas/ycf1_aligned.fasta <==
+>PACUT_8621 # ycf1_1
+CATTATAAGTACATTTAATATGCATTTCACGTTTCCAATCCTTAAAATCCTCGGACCACT
+CGGGCAATTGAAATAATAATATACGGACGCTATTTTTAATTATTATCAATAAAGGTAATA
+
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\subsection*{5. FASTA File Unwrap}
+
+\paragraph{} To facilitate downstream analysis, a script was written to ``unwrap" the sequence data into single line strings.  The script \textit{unwrap\_fasta.sh} includes two AWK statements containing regular expressions, an exit status to prevent silent errors, and an END block statement.  Records matching the regular expression pattern cause the corresponding action to be executed.  After reading all lines of the input file, the END block is executed.
+
+\clearpage
+
+\begin{lstlisting}[caption={Contents of the \textit{unwrap\_fasta.sh} Shell Script}]
+# Remove text wrapping from a multi-FASTA file and
+# separate header lines and sequences into continuous strings.
+
+awk '
+
+# print sequence header if record begins with ``>''
+/^>/ {printf ``\n%s\n'', $1};
+
+# print record if sequence strings contain only letters and dashes
+/^[A-Za-z\-]+$/ {printf ``%s'', $0};
+
+# if record contains a complementary character (i.e. non-letter or dash)
+# AND does not begin with ``>''
+$0 !~ /^>/ && $0 !~ /^[A-Za-z\-]+$/ {exit}; # exit program error catch
+
+# pipe output into sed to remove empty strings
+END {print ``\n''}' $1 | sed /^$/d
+
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} This script makes use of a few regular expression metacharacters: the caret ``\string^", the dollar sign ``\$", the plus sign ``+", and brackets ``[]".  The caret metacharacter matches the beginning of a string while the dollar sign matches the end of a string.  The plus sign is used to match the preceding character or list of characters at least one or more times.  Finally, the brackets are used to denote a character class that matches a set of characters.
+
+\clearpage
+
+\begin{lstlisting}[caption={\textit{unwrap\_fasta.sh} AWK Print Statements}]
+# AWK statement 1
+/^>/ {printf ``\n%s\n'', $1}
+
+# AWK statement 2
+/^[A-Za-z\-]+$/ {printf ``%s'', $0}
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} The first AWK statement will match any record beginning with the greater than symbol ``>" used to denote sequence headers.  In the second AWK statement, the regular expression includes a character class containing the range of all upper case and lower case letters in addition to the dash symbol ``\-" which is preceded by an escape character to preserve its literal value.  The use of the preceding caret and the ``+\$" construct after the brackets ensures the whole line consists of only characters given in that class.  For a sequence alignment, the only characters expected are alphabetic values and dashes indicating gaps in alignment.  
+
+\paragraph{} AWK statement one and two utilize the command ``printf” which allows one to format the print output (Aho et al. 1988).  By default, ``printf” does not append newline characters to the end of a print statement.  Instead, the format of the print statement is specified within double quotes, and the value to print follows a comma.  For the first AWK statement, records beginning with ``>” will print a newline character, followed by the string (denoted by ``\%s”) contained in the first field of the record (i.e. the sequence header string, denoted by ``\textbackslash\$1"), and an additional newline character.  In the second AWK statement, records that begin with a letter or dash (i.e. wrapped sequence data lines) print the sequence string of the full record, denoted by ``\textbackslash\$0".  This effectively removes newline characters from the end of lines containing sequence data. 
+
+\paragraph{} The "EXIT" statement is used to leave the program if the record does not start with ">" (i.e. is a sequence header) and also contains a character that is not either alphabetical (upper- or lowercase) or a dash (i.e. sequence data).  This is an important step to prevent potential silent errors in program output.  
+
+\clearpage
+
+\begin{lstlisting}[caption={\textit{unwrap\_fasta.sh} AWK EXIT statement}]
+# EXIT statement
+$0 !~ /^>/ && $0 !~ /^[A-Za-z\-]+$/ {exit}
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} After evaluating the final record of the input file, the action within the END block is executed, printing one additional newline character.  The shell variable "\textbackslash\$1" is used to indicate a program parameter specifying which input file (e.g. ``rITS\_aligned.fasta”) the AWK statements should evaluate.  The output of the AWK statements is then redirected using the pipe character (``|”) as the standard input for a Sed expression.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={AWK END Block and Sed Redirection}]
+# END block and output redirection
+END {print ``\n''}' $1 | sed /^$/d
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} Sed, or Streamline Editor, operates by reading lines from the standard input, consecutively saving a copy of a line in pattern space - Sed’s working memory, and executing the command within the pattern space (Wünschiers 2013).  Edited text is sent from pattern space as standard output that can be redirected with the shell assignment operator ``>” to a new file.  The \textit{unwrap\_fasta.sh} program uses a Sed edit command to remove blank lines.  The regular expression ``/\string^\$/” will match any lines containing no text, referred to as empty or null strings.  This expression is combined with ``d”, invoking the Sed delete command.  Thus, any records containing no text and therefore only a hidden newline character are deleted from the standard input.  
+
+\clearpage
+
+\subsection*{6. \textit{unwrap\_fasta.sh} Loop Construct}
+
+\paragraph{} Executing \textit{unwrap\_fasta.sh} on a multi-FASTA file containing wrapped sequences returns a file containing sequence header strings each followed by a corresponding sequence string, with each string occupying a single line.  A subdirectory was established within the project directory to store the unwrapped sequences.  A loop was then utilized to execute the script for each multi-FASTA in the \textit{2.aligned\_fastas/} subdirectory.  Program output is redirected to new files contained in the \textit{3.unwrapped\_fastas/} subdirectory named by the loci prefix.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={\textit{unwrap\_fasta.sh} Loop Contstruct}]
+# Make a new directory to store unwrapped output.
+|<$>| mkdir 3.unwrapped_fastas
+
+# Execute the unwrap_fasta.sh script
+# on each file in  the 2.aligned_fastas/ subdirectory.
+
+for fasta in $(ls 2.aligned_fastas/); do
+ loci=${fasta%_aligned.fasta};   # Slice the loci prefix as variable
+ ./Fasta_Utilities/unwrap_fasta.sh 2.aligned_fastas/$fasta > \
+ 3.unwrapped_fastas/${loci}_unwrapped.fasta;
+done
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} Script execution can be verified by checking the number of lines in the unwrapped FASTA files.  Each FASTA, having the same number of sequence headers with respective aligned sequence strings, are expected to have an equal number of lines.
+
+\clearpage
+
+\begin{lstlisting}[caption={Verify line count of unwrapped FASTA files}]
+# Verify the number of lines with the wc utility.
+$ wc -l 3.unwrapped_fastas/*
+     102 3.unwrapped_fastas/multi-locus_unwrapped.fasta
+     102 3.unwrapped_fastas/rITS_unwrapped.fasta
+     102 3.unwrapped_fastas/rps_unwrapped.fasta
+     102 3.unwrapped_fastas/ycf1_unwrapped.fasta
+     408 total
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\subsection*{7. Sequence Concatenation}
+
+\paragraph{} After unwrapping individual loci files, a concatenated file was manually assembled for downstream partitioned analysis.  It should be noted that a script to automatically concatenate sequence strings based on a list of shared sequence headers could prevent errors in manual assembly.  However, that approach was not taken for this task.  Instead, the multi-locus file \textit{multi-locus\_unwrapped.fasta} was manually assembled and deposited in the \textit{3.unwrapped\_fastas} subdirectory.  
+
+\subsection*{8. \textit{multi-fasta\_split.sh} Loop Construct}
+
+\paragraph{} The shell script \textit{multi-fasta\_split.sh} was written to split multi-FASTA files into individual, single line text files containing an alignment-gapped sequence string.  A loop was employed to execute this script on the unwrapped FASTA files in the \textit{3.unwrapped\_fastas/} directory.  For each FASTA file in the unwrapped FASTA directory, the name of the loci is sliced into a shell variable and used to name a new directory.  The respective FASTA file is then copied into the new directory and \textit{multi-fasta\_split.sh} is executed on the unwrapped FASTA input file.  In the last step of the loop, the input file for execution is represented by the variable construct \textbf{4.\$\{loci\}\_seqs/\$\{loci\}\_unwrapped.fasta}.
+
+\clearpage
+
+\begin{lstlisting}[caption={textit{multi-fasta\_split.sh} Loop Contstruct}]
+for fasta in $(ls 3.unwrapped_fastas/); do
+  # Slice "_unwrapped.fasta" substring
+  loci=${fasta%_unwrapped.fasta};   
+  mkdir 4.${loci}_seqs;     # Subdirectories named by ${loci} expansion
+  
+  # Copy unwrapped FASTAs into new subdirectory for splitting sequences
+  cp 3.unwrapped_fastas/${loci}* 4.${loci}_seqs;
+  
+  # Execute the multi-fasta_split.sh script on the unwrapped FASTA
+  ./Fasta_Utilities/multi-fasta_split.sh \
+  4.${loci}_seqs/${loci}_unwrapped.fasta;
+done
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} This loop establishes four new directories, each containing sequence string files split from the respective unwrapped FASTA file.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Verify \textit{multi-fasta\_split.sh} script execution}]
+# List newly established directories
+|<$>| ls -d 4.* | more
+4.multi-locus_seqs
+4.rITS_seqs
+4.rps_seqs
+4.ycf1_seqs
+\end{lstlisting}
+
+\clearpage
+
+\setcounter{lstlisting}{17}
+\begin{lstlisting}[caption={Continued}]
+# List the first three sequence string files split from the
+# 3.unwrapped_fastas/multi-locus_unwrapped.fasta file.
+$ ls 4.multi-locus_seqs/ | head -3
+LARGY_7548.seq
+LFEND_4355.seq
+PACUT_14050.seq
+
+# Verify sequence files have a line count equal to one.
+$ wc -l 4.multi-locus_seqs/* | head -3
+       1 4.multi-locus_seqs/LARGY_7548.seq
+       1 4.multi-locus_seqs/LFEND_4355.seq
+       1 4.multi-locus_seqs/PACUT_14050.seq
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\subsection*{9. FASTA File Split}
+
+\paragraph{} In the FASTA-split loop construct above, the unwrapped aligned FASTA sequences for the concatenated multi-locus data set and each individual loci FASTA file in the \textit{3.unwrapped\_fastas/} directory are given as input files for the \textit{multi-fasta\_split.sh} shell script.  Within the script, the FASTA file is represented by the the input shell variable \textbf{\$1}.  This script initially stores the relative path from the working directory to the directory containing the input multi-FASTA file (i.e. \textbf{4.\$\{loci\}\_seqs/}).  
+
+\paragraph{} Here, the variable construct \textbf{\$(dirname \$1)} uses command expansion of the \textbf{dirname}utility to return the directory path of the shell variable \textbf{\$1} representing the input file as the variable "fasta\_path".  The input file is then split every two lines using the \textbf{split} utility with the command flag “-l 2”.  This action creates new files named "seq.” in the \textbf{4.\$\{loci\}\_seqs/} directory, where each file has a unique extension appended (i.e. .aa, .ab, .ac, etc.).  Each split file then consists of two lines, including a sequence header and a corresponding sequence string.  The previously copied unwrapped FASTA file is then removed, leaving only the split single sequence FASTA files, and the working directory is changed to the \textbf{4.\$\{loci\}\_seqs} subdirectory represented by the variable \textbf{\$fasta\_path}.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Contents of the \textit{multi-fasta\_split.sh} script}]
+### multi-fasta_split.sh ###
+
+# Save the path from the working directory to input file $1.
+# Variable $fasta_path represents relative path to input FASTA file.
+fasta_path=$(dirname $1)
+
+# Within the directory containing the input file,
+# split every two lines of the multi-FASTA file into separate files.
+split -l 2 $1 $fasta_path/seq.
+
+# Remove the unsplit multi-FASTA file and set working directory.
+rm $1
+cd $fasta_path
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} A loop is set up to iterate through the files created by \textbf{split} - each beginning with the substring "seq", in the working directory.  For each iteration of the loop, the variable "split\_seq" represents a split sequence file in the working directory.  The files iterated through in the for loop are indicated by the \textbf{\$(ls seq)} construct, which uses expansion of the \textbf{ls} utility to list all filenames beginning with “seq”.  For each split sequence file, an AWK statement is used to store the sequence header as the variable "fasta\_header".  Offset variable expansion is then used to remove the ">" character, storing the sliced sequence header string in a new variable "fasta\_renamed".  The  \textbf{mv} utility is then used to rename the file by the sliced sequence header string in the variable "fasta\_renamed".  Finally, an AWK statement is used to redirect the record containing the sequence string into a new file named by \textbf{\$fasta\_renamed.seq}.  This script effectively renames each file in the working directory from “seq.\*” to the FASTA file sequence header and removes the sequence header, leaving only the alignment gapped sequence string.
+
+\vspace*{30pt} 
+
+\begin{lstlisting}[caption=\textit{multi-fasta\_split.sh} removal of sequence header]
+# For each file, rename it with the first record (i.e. FASTA header)
+for split_seq in $(ls seq*); do
+  
+  # Use command expansion to return the output of an AWK statement
+  fasta_header=$(awk '/^>/ {print $0}' $split_seq);
+  
+  # Remove the ">" character from each file name using
+  # offset variable substitution of first character.
+  fasta_renamed=${fasta_header:1};  
+  
+  # Rename each file with the value of the files FASTA header record
+  # echo $fasta_header $fasta_renamed;
+  mv $split_seq $fasta_renamed
+  
+  # Remove FASTA sequence header by redirecting standard output 
+  # of records not matching ">" at beginning of the line
+  # into new file with ".fasta" file extension.
+  awk '!/^>/ {print $0}' $fasta_renamed > $fasta_renamed.seq;
+  
+  # Remove FASTA file with the sequence header remaining.
+  rm $fasta_renamed;
+  
+done
+\end{lstlisting}
+
+\clearpage
+
+\subsection*{8. Source Sequences into R}
+
+\paragraph{} An R function was written to load separated sequence strings into R as individual variables named by the original sequence header.  The R script \textit{load\_fastas.R} can be sourced into the global environment within R.  
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=R session info]
+|<$>| R
+
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+> getwd()  # Get current working directory
+[1] "/Physaria_spatial_analysis/Phys_DNA/Seq-Analysis"
+
+> list.files() # Files in the current directory
+ [1] "0.raw_fastas"       "1.trimmed_fastas"   "2.aligned_fastas"  
+ [4] "3.unwrapped_fastas" "4.multi-locus_seqs" "4.rITS_seqs"       
+ [7] "4.rps_seqs"         "4.ycf1_seqs"        "Fasta_Utilities"   
+[10] "merge-notes.rtf"    "README.md"        
+
+> source("Fasta_Utilities/R_functions/load_fastas.R")
+> ls()  # Function is sourced into the workspace
+[1] "load_fastas"
+> class(load_fastas)
+[1] "function"
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} The \textit{load\_fastas} function takes two arguments, the first of which should be a path (provided as a character string) to the directory in which the split sequences are located. The second should be a string to establish which loci to pre-append to the sequence string variables that will result from calling this function.  When the function is called, a list of the files names is established as the variable \textbf{seq\_names} and a list of full paths to these files is stored in the variable \textbf{seq\_paths}.  A loop is then used to iterate over each split sequence file using the file path, and read the sequence string from the file into the local variable \textbf{seqRead}.  That variable is then assigned to the global environment based on the filename (i.e. the sequence header) and a prefixed loci name.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Contents of the \textbf{load\_fastas} function}]
+load_fastas <- function(directory, loci) {
+    # Create a list of file names to be used for variable names
+    seq_names <- as.list(list.files(directory))
+    # Create a list of file paths to be used to read files
+    seq_paths <- as.list(list.files(directory, full.names = TRUE))
+    # Establish a loop index
+    num_files <- length(seq_paths)
+    # Loop through the directory and read sequences into
+    # Variables named as the filename
+    for(i in 1:num_files) {
+        # Store the sequence string in a local variable
+        seqRead <- readLines(seq_paths[[i]])
+        # Assign the sequence string to the global environment
+        # combining the loci name and the name from the sequence header
+        assign(paste(as.character(loci), seq_names[[i]], sep = "_"),
+               seqRead, envir = .GlobalEnv)
+    }
+}
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} Calling this function on the \textit{4.multi-locus\_seqs*} subdirectory will load each of the individual sequence files as a variable containing a single sequence string.
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=Source sequence data into R workspace]
+# Run the function to import multi-locus (concatenated) sequences
+> load_fastas("4.multi-locus_seqs/", "ml")
+
+# Return the first 6 sequence vectors matching ".seq"
+> head( ls( pattern = ".seq" ) )
+[1] "ml_LARGY_7548.seq"  "ml_LFEND_4355.seq"  "ml_PACUT_14050.seq"
+[4] "ml_PACUT_14222.seq" "ml_PACUT_26706.seq" "ml_PACUT_3721.seq" 
+
+# The sequence strings are stored as character variables
+> class(ml_LARGY_7548.seq)
+[1] "character"
+
+# Total string length is 2162 characters, with three loci partitions:
+# rITS[1:659], rps[660:1605], ycf1[1606:2162]
+> nchar(ml_LARGY_7548.fasta)
+[1] 2162
+\end{lstlisting}
+
+\vspace*{30pt}
+
+\paragraph{} Another R function, \textbf{seq\_comp} can then be used to identify indices for which pairwise alignments differ.  This function takes two arguments, “seq1” and “seq2”, each of which should be strings of identical length (i.e. aligned sequences).  An initial pairwise comparison is made between the two input sequences to check for sequence identity.  If the sequences are identical, the function returns a string to notify the user.  If the sequences are not identical, an index is created equal to the number of characters contained in each string.  An empty matrix with 2 rows and a column number equal to the sequence index is then created.  The function then loops through the length of the aligned sequences and fills the matrix with individual sequence characters from the input sequences.  This is accomplished using the function \textbf{substr} to return the character substring of the sequence corresponding to the index and store that character in the corresponding index of the matrix.  Finally, a comparison between the matrix rows (i.e. aligned sequences) returns which indices differ in the alignment.  
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption={Contents of the \textbf{seq\_comp} function}]
+seq_comp <- function(seq1, seq2) {
+    if(identical(seq1,seq2) == TRUE) {
+        print("Sequences are identical.")
+    } else {
+        # Index vector == length of the (forward) sequence
+        seq_index <- nchar(seq1)
+        # Empty matrix for storing the substring
+        # of sequence character vectors
+        DNA_seq <- matrix(data = NA, nrow = 2, ncol = seq_index)
+        # Loops through the length of f & r sequences
+        # taking a substring for i in sequence length
+        for(i in 1:seq_index) {
+            DNA_seq[1,i] <- substr(seq1, i, i)
+            DNA_seq[2,i] <- substr(seq2, i, i)
+        }
+        print(which(DNA_seq[1,] != DNA_seq[2,]))
+    }
+}
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} The sequence comparison function returns those indices where pairwise comparisons are inequivalent.  This function was used to verify sequence identity as measured by the MEGA7 distance estimation.   
+
+\vspace*{30pt}
+
+\begin{lstlisting}[caption=Example of the \textbf{seq\_comp} function,
+    basicstyle=\small]
+# Source the seq_comp function
+> source("Fasta_Utilities/R_functions/seq_comp.R")
+
+# Compare multi-locus alignments of P. integrifolia and P. didymocarpa
+> seq_comp(ml_PINTE_17493.seq, ml_PDIDY_DI_46.seq)
+[1]  137  224  468  897 1470 1471 1472 1473 1474 1475 1476 1477 1478 1479 1480
+[16] 1481 1482 1483 1484 1485 1486 1487 1488 1489 1490 1491 1492 1493 1605
+\end{lstlisting}

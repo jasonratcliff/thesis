@@ -1,0 +1,132 @@
+\usepackage[labelsep=period]{caption} % Caption separator set to a period
+\usepackage{texshade} % Beitz 2000
+\usepackage{rotating} % Fairbairns et al. 2016
+
+% Load American Mathematical Society fonts
+\usepackage{amsmath, amscd, amsthm, amssymb, mathrsfs,amsfonts}
+
+% Three part table call of kableExtraa requires LaTeX package "makecell"
+\usepackage{makecell}
+
+\usepackage{showframe}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{longtable}
+
+% Set knitr chunks as float placements
+\usepackage{float}
+\floatplacement{figure}{H}
+
+% Set margins to UNI formatting via LaTeX package GEOMETRY (Umeki 2018)
+\usepackage{geometry}
+\geometry{total={8.5in, 11in}, left=1.5in, top=1.25in, right=1in, bottom=1.25in}
+
+% LaTeX base package SETSPACE provides default option to control line spacing
+\usepackage{setspace}
+\doublespacing                  % Set double line spacing
+\raggedright                    % Right margin ragged justification
+
+% LaTeX package NOWIDOW to set penalty for hanging lines (Pinson 2011)
+\usepackage[defaultlines=2, all]{nowidow}
+
+%% TITLESEC (Bezos 2016) for formatting section titles.
+\usepackage{titlesec}
+\usepackage[normalem]{ulem}
+
+\titleformat{name=\chapter}[display] % Define chapter typesetting.
+  {\normalsize\filcenter}{CHAPTER \thechapter}{10pt}{}{}
+\titleformat{name=\chapter,numberless}[display]
+  {\normalsize\filcenter}{}{10pt}{}{}
+\titleformat{name=\section}[display]  
+  {\normalfont\filcenter}{}{10pt}{\uline}{}
+\titleformat{name=\subsection}[display]  
+  {\normalfont\filright}{}{10pt}{\uline}{}
+\titleformat{name=\subsection,numberless}[display]  
+  {\normalfont\filright}{}{10pt}{\uline}{}
+  
+% Adjust spacing for title sections
+\titlespacing*{name=\chapter}{0pt}{0pt}{10pt}
+\titlespacing*{name=\chapter,numberless}{0pt}{-33pt}{0pt}
+\titlespacing*{name=\section}{0pt}{-33pt}{0pt}
+\renewcommand\thesection{}
+\titlespacing*{name=\subsection}{0pt}{-33pt}{0pt}
+\renewcommand\thesubsection{}
+\titlespacing*{name=\subsection,numberless}{0pt}{-33pt}{5pt}
+\titlespacing*{name=\paragraph}{0pt}{0pt}{4em} % Set paragraph indent
+\renewcommand\theparagraph{}
+
+% TITLETOC (Bezos 2016) for formatting table of contents.
+\usepackage{titletoc}
+% CHAPTER formatting
+\titlecontents{chapter}[0em]{} % <section-type> <left> <above-code>
+  {CHAPTER \thecontentslabel. } % <numbered-entry-format>
+  {} % <numberless-entry-format>
+  {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
+% SECTION formatting
+\titlecontents{section}[2em]{} % <section-type> <left> <above-code>
+  {\thesection} % <numbered-entry-format>
+  {} % <numberless-entry-format>
+  {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
+% SUBSECTION formatting
+\titlecontents{subsection}[4em]{} % <section-type> <left> <above-code>
+  {\thesection} % <numbered-entry-format>
+  {} % <numberless-entry-format>
+  {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
+  
+% Modify the table and figure counters to not include chapter prefix.
+\let\counterwithout\relax
+\let\counterwithin\relax
+\usepackage{chngcntr}
+\counterwithout{table}{chapter}
+\counterwithout{figure}{chapter}
+
+% List of Tables
+\titlecontents{table} % <section-type>
+  [0em]{} % <left> <above-code>
+  {\thecontentslabel\hspace{1em}} % <numbered-entry-format>
+  {} % <numberless-entry-format>
+  {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
+
+% List of Figures
+\titlecontents{figure} % <section-type>
+  [0em]{} % <left> <above-code>
+  {\thecontentslabel\hspace{1em}} % <numbered-entry-format>
+  {} % <numberless-entry-format>
+  {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
+
+% TITLEPS (Bezos 2016) for formatting page style.
+\usepackage{titleps}
+\renewpagestyle{plain}{
+  \sethead{}{}{\thepage}
+}
+\newpagestyle{contents}{ % Define page style for LOC, LOT, & LOF
+  \sethead{}{}{\thepage}
+}
+\newpagestyle{main}{ % Define page style for main body text
+  \sethead{}{}{\thepage} 
+}
+
+% For code syntax highlighting, use package LISTINGS (Hoffman et al. 2015)
+\usepackage{listings}
+\lstdefinelanguage{mybash}{ % Define keywords and respective coloring schemes
+  language=bash,
+  keywordstyle=\color{blue}\bfseries,
+  % Add more keywords for Bash / AWK / sed commands
+  morekeywords=[2]{mkdir,mv,ls,print,more,sort,sed,head,tail,sort,diff,
+                    rm,cp,split,wc},
+  keywordstyle=[2]\color{cyan},
+  % Define invisible [i] double [s] delimiters |< GREEN TEXT >| 
+  moredelim=[is][\color{green}]{|<}{>|},  
+  sensitive=true, % keywords set to not case sensitive
+  belowcaptionskip=2ex, % vertical space below caption
+  numberbychapter=false % Listing caption numbering
+}
+% Set caption label for listings
+\renewcommand{\lstlistingname}{Appendix Figure}
+\lstset{language=mybash, % Set language as my defined bash dialect
+  frame=single, % box frame around code
+  framesep=10pt,  % margin separation
+  commentstyle=\textbf  % style for comment text
+}
+
+\usepackage{hyperref} % Necessary for \phantomsection{} call in ToC formatting
