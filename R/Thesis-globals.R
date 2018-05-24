@@ -1,17 +1,11 @@
 
-<!-- Set global options and source libraries for individual markdown files -->
-
-```{r, echo=FALSE, warning=FALSE, cache=FALSE}
-
-# Set Global knitr chunk options
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)#, dev='pdf')
+# Set global options and source libraries for individual markdown files
 
 # Load library dependencies
 library(tinytex)
 library(bookdown)
 library(rmarkdown)
 library(pander)
-library(knitr)
 # options(knitr.table.format = "latex")
 library(kableExtra)
 library(gridExtra)
@@ -131,5 +125,3 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Lesquerella fendleri" = 15,
                "Lesquerella argyrea" = 18, 
                "na.value" = 126)
-
-```
