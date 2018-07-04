@@ -42,6 +42,15 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
     trait3 <- gsub(x = trait2, pattern = "-", ", ")  # intergradation dash
     trait4 <- strsplit(x = trait3, split = ", ")  # split string by comma
     
+    # Replace single digit numbers with preceding '0' to sort legend.
+    if (grepl(pattern = "[0-9]", trait4)) { 
+      trait4 <- lapply(trait4, function(x) {
+        sapply(x, USE.NAMES = FALSE, function(g) {
+          gsub(pattern = "^[0-9]$", replacement = paste0("0", g), g)
+        })
+      })
+    }
+    
     trait_obs <- lapply(trait4, upper_fix)  # replace lowercase letters
     traits <- unique(trait_obs)  # filter for unique trait values
     traits_list <- unlist(traits)  # unlist nested list
