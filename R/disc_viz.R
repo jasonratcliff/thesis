@@ -1,3 +1,5 @@
+library(plyr)
+
 # Function to replace the first character of string elements in a 
 # character vector with an uppercase letter of the first index. 
 upper_fix <- function(trait_string) {
@@ -28,17 +30,19 @@ map_base <- function(map_borders = "black", map_fill = "ghostwhite") {
 # Function to parse discrete trait observation data.
 # Returns ggplot object of geom_point layers to build trait distribution models.
 disc_viz <- function(specimens, trait, map_base = "map_base",
+                     brewer_palette = "Spectral", brewer_type = "div") {
   
   # Subset specimen data by character vector for trait column as list.
   disc_trait_list <- as.list(specimens[, trait])
   
   # gsub brackets (less often observed traits), hyphens, and split by comma.
-  disc_trait <- lapply(disc_trait_list, function(x) {
-    y <- gsub(x = x, pattern = "\\(", replacement = "")
-    y <- gsub(x = y, pattern = "\\)", replacement = "")
-    y <- gsub(x = y, pattern = "-", ", ")  # remove intergradation dash
-    z <- strsplit(x = y, split = ", ")  # split string by comma
-    trait_obs <- lapply(z, upper_fix)  # replace lowercase letters
+  disc_trait <- lapply(disc_trait_list, function(traits) {
+    trait1 <- gsub(x = traits, pattern = "\\(", replacement = "")
+    trait2 <- gsub(x = trait1, pattern = "\\)", replacement = "")
+    trait3 <- gsub(x = trait2, pattern = "-", ", ")  # intergradation dash
+    trait4 <- strsplit(x = trait3, split = ", ")  # split string by comma
+    
+    trait_obs <- lapply(trait4, upper_fix)  # replace lowercase letters
     traits <- unique(trait_obs)  # filter for unique trait values
     traits_list <- unlist(traits)  # unlist nested list
     traits_list
@@ -100,9 +104,12 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
   }
   
   # Call function and add theme and guide parameters.
-  trait_plot <- plot_layers(trait_df = specimen_traits, trait_str = trait) + 
+  discrete_plot <- plot_layers(trait_df = specimen_traits, 
+                               trait_str = trait,
+                               map_plot = map_base_plot) + 
     theme(legend.box = "vertical", legend.position = "right",
-          legend.direction = "vertical", legend.title.align = 0.5) +
+          legend.direction = "vertical", legend.title.align = 0.5,
+          panel.background = element_blank()) +
     guides(colour = guide_legend(ncol = 2), shape = guide_legend(ncol = 1)) + 
     
     # Use colour brewer for discrete scale, named by parsed trait string. 
@@ -112,9 +119,7 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
       s3 <- unlist(strsplit(s2, " "))
       s4 <- upper_fix(s3)
       s5 <- paste(s4, collapse = " ")
-    }), type = "seq", palette = "Spectral")
+    }), type = brewer_type, palette = brewer_palette)
   
-  # element_blank()
-  
-  return(trait_plot)
+  return(discrete_plot)
 }
