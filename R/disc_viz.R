@@ -12,9 +12,22 @@ upper_fix <- function(trait_string) {
          })
 }
 
+map_base <- function(map_borders = "black", map_fill = "ghostwhite") {
+  states <- map_data("state")
+  counties <- map_data("county")
+  map_plot <- ggplot(data = counties,
+                     mapping = aes(x = long, y = lat, 
+                                   group = group)) + 
+    geom_polygon(color = map_borders, fill = map_fill, size = .125) +
+    geom_polygon(data = states, fill = NA, 
+                 color = map_borders, size = 1.5)  + 
+    theme(panel.grid = element_blank(), panel.background = element_blank())
+  return(map_plot)
+}
+
 # Function to parse discrete trait observation data.
 # Returns ggplot object of geom_point layers to build trait distribution models.
-disc_viz <- function(specimens, trait) {
+disc_viz <- function(specimens, trait, map_base = "map_base",
   
   # Subset specimen data by character vector for trait column as list.
   disc_trait_list <- as.list(specimens[, trait])
@@ -60,19 +73,29 @@ disc_viz <- function(specimens, trait) {
   # Bind split trait data to specimen data.
   specimen_traits <- cbind(specimen_traits, trait_frame)
   
+  # Select map base layer type for ggplot base layer.
+  if (map_base == "map_base") {
+    # Build basic state and county boundary map.
+    map_base_plot <- map_base(map_fill = NULL)  
+  }
+  
   # Build ggplot layers of geom points for each discrete trait observation.
-  plot_layers <- function(trait_df, trait_str) {
-    trait_plot <- ggplot(data = trait_df,  aes(x = Longitude, y = Latitude))
+  plot_layers <- function(trait_df, trait_str, map_plot) {
     trait_names <- grep(paste0(trait_str, "_"), names(trait_df), value = TRUE)
     geom_sizes <- seq(10, 0.75, length.out = length(trait_names))
     j <- 1
+    trait_plot <- map_plot
     for (name in trait_names) {
       trait_plot <- trait_plot +
-        geom_point(aes_string(colour = name, shape = "Taxon_a_posteriori"), 
+        geom_point(aes_string(colour = name, shape = "Taxon_a_posteriori",
+                              x = "Longitude", y = "Latitude"), inherit.aes = FALSE,
                    size = geom_sizes[j], na.rm = TRUE,
                    data = trait_df[which(!is.na(trait_df[, name])), ])
       j <- j + 1
     }
+    trait_plot <- trait_plot + 
+      coord_fixed(xlim = extendrange(specimens$Longitude, f = 0.075),
+                  ylim = extendrange(specimens$Latitude, f = 0.075))
     return(trait_plot)
   }
   
