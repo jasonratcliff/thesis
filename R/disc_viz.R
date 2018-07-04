@@ -106,9 +106,10 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
                    data = trait_df[which(!is.na(trait_df[, name])), ])
       j <- j + 1
     }
+    # Adjust axis length to crop map to input trait data frame.
     trait_plot <- trait_plot + 
-      coord_fixed(xlim = extendrange(specimens$Longitude, f = 0.075),
-                  ylim = extendrange(specimens$Latitude, f = 0.075))
+      coord_fixed(xlim = extendrange(trait_df$Longitude, f = 0.075),
+                  ylim = extendrange(trait_df$Latitude, f = 0.075))
     return(trait_plot)
   }
   
