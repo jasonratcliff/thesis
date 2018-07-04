@@ -29,7 +29,8 @@ map_base <- function(map_borders = "black", map_fill = "ghostwhite") {
 
 # Function to parse discrete trait observation data.
 # Returns ggplot object of geom_point layers to build trait distribution models.
-disc_viz <- function(specimens, trait, map_base = "map_base",
+disc_viz <- function(specimens, trait, taxa = NULL, 
+                     map_base = "map_base", county_fill = "ghostwhite",
                      brewer_palette = "Spectral", brewer_type = "div") {
   
   # Subset specimen data by character vector for trait column as list.
@@ -86,17 +87,23 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
   # Bind split trait data to specimen data.
   specimen_traits <- cbind(specimen_traits, trait_frame)
   
+  # Option to subset taxa by character vector.
+  if (!is.null(taxa) & class(taxa) == "character") {
+    specimen_traits <- 
+      specimen_traits[grep(paste(taxa, collapse = "|"),
+                           specimen_traits[, "Taxon_a_posteriori"]), ]
+  }
+  
   # Select map base layer type for ggplot base layer.
-  if (map_base == "map_base") {
-    # Build basic state and county boundary map.
-    map_base_plot <- map_base(map_fill = NULL)  
+  if (map_base == "map_base") { # Build basic state and county boundary map.
+    map_base_plot <- map_base(map_fill = county_fill)  
   }
   
   # Build ggplot layers of geom points for each discrete trait observation.
   plot_layers <- function(trait_df, trait_str, map_plot) {
     trait_names <- grep(paste0(trait_str, "_"), names(trait_df), value = TRUE)
     geom_sizes <- seq(10, 0.75, length.out = length(trait_names))
-    j <- 1
+    j <- 1  # counter for geom sizes
     trait_plot <- map_plot
     for (name in trait_names) {
       trait_plot <- trait_plot +
@@ -113,7 +120,7 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
     return(trait_plot)
   }
   
-  # Call function and add theme and guide parameters.
+  # Call function and add theme and guide parameters to ggplot build.
   discrete_plot <- plot_layers(trait_df = specimen_traits, 
                                trait_str = trait,
                                map_plot = map_base_plot) + 
@@ -129,7 +136,7 @@ disc_viz <- function(specimens, trait, map_base = "map_base",
       s3 <- unlist(strsplit(s2, " "))
       s4 <- upper_fix(s3)
       s5 <- paste(s4, collapse = " ")
-    }), type = brewer_type, palette = brewer_palette)
+    }), type = brewer_type, palette = brewer_palette)  # brewer options
   
   return(discrete_plot)
 }
