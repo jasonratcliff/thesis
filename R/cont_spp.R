@@ -45,7 +45,7 @@ con_trait <- function(trait_frame, trait_name) {
     # Substitute "s.n." for NA missing values from ELEV_OBS.
     elev_obs <- lapply(elev_obs,
                        function(elevation) {
-                         gsub("s.n.", NA, elevation)})
+                         gsub("s.?n.? ?", NA, elevation)})
     
     # Replace original elevation data with parsed elevation observations.
     # Use plyr::ldply to return a data frame with 1 col from a list.
@@ -60,7 +60,8 @@ con_trait <- function(trait_frame, trait_name) {
     if (!is.na(trait_dated[i, trait_name])) {
       
       trait_val <- trait_dated[i, trait_name]
-      
+      trait_val <- gsub(",", "", trait_val)
+
       # If TRUE that row i of TRAIT_NAME matches "*-*" (i.e. contains dash),
       # split the row by the dash into a list of 2 elements.
       if (grepl("-", trait_val)) {
@@ -69,13 +70,9 @@ con_trait <- function(trait_frame, trait_name) {
         # Stores min and max values as list RANGE_LIST.
         range_list <- strsplit(trait_val, "-")
         
-        # Store minimum trait range value.
+        # Store range and midpoint of trait value observations.
         trait_row$Trait_Min <- as.numeric(range_list[[1]][1])
-        
-        # Store maximum trait range value.
         trait_row$Trait_Max <- as.numeric(range_list[[1]][2])
-        
-        # Calculate mean value from min / max range.
         trait_row$Trait_Mean <- as.numeric( { (trait_row$Trait_Min +
                                                 trait_row$Trait_Max) / 2 } )
         
@@ -88,22 +85,12 @@ con_trait <- function(trait_frame, trait_name) {
         
       }
 
-      ### Subset specimen metadata.
-      
-      # Collection date
+      # Subset specimen metadata.
       trait_row$Collection_Date <- trait_dated$Date[i]
-      
-      # Posterior specimen ID
       trait_row$Taxon_a_posteriori <- trait_dated$Taxon_a_posteriori[i]
-      
-      # Prior specimen IDs
       trait_row[, grep("Physaria", names(trait_row))] <- 
         trait_dated[i, grep("Physaria", names(trait_dated))]
-      
-      # Specimen collection number
       trait_row$Collection_Number <- trait_dated$Collection_Number[i]
-      
-      # Specimen collector
       trait_row$Collector <- trait_dated$Collector[i]
       
       # Bind TRAIT_ROW by row to TRAIT_MATRIX.
