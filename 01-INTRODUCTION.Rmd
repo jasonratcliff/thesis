@@ -133,12 +133,6 @@ if (knitr_chunk == "html") {
 
 ```{r introTable1CarbonVituSpecs}
 
-# Subset specimens from within a longitude and latitude bounding box.
-carbon_wyo <- subset_spp(taxa_frame = total_physaria, 
-                         state = c("Wyoming", "Colorado"),
-                         latitude = c(39.6, 42.3), longitude = c(-108, -105),
-                         set_name = "carbon_wyo", save_set = FALSE)
-
 # Return data frame of Collector and Collection Number pairs 
 # including specimens with previous *P. vitulifera* annotations.
 carbon_vitu <- find_spp(taxa_frame = carbon_wyo, 

@@ -8,11 +8,14 @@ library(rmarkdown)
 library(pander)
 # options(knitr.table.format = "latex")
 library(kableExtra)
+library(grid)
 library(gridExtra)
 library(xtable)
 library(ggplot2)
 library(openxlsx)
 library(plyr)
+library(dplyr)
+library(magrittr)
 library(maps)
 library(elevatr)
 library(raster)
@@ -57,6 +60,7 @@ source("R/map_spp.R")  # Source map_spp()
 source("R/morph_spp.R")  # Source morph_spp()
 source("R/cont_spp.R")  # Source con_trait()
 source("R/elev_spp.R")  # Source elev_spp()
+source("R/disc_viz.R")  # Source disc_viz()
 
 # Setup for Phylogenetic Tree Annotation
 source("Phys_DNA/DNA_species.R")
@@ -75,7 +79,7 @@ phys_states <- c("Montana", "Wyoming", "Idaho", "Colorado", "Utah",
 # Named character vector for ggplot scale color manual call.
 spp_color <- c("Physaria acutifolia" = "yellow",
                "Physaria vitulifera" = "plum",
-               "Physaria nova" = "purple2", 
+               "Physaria medicinae" = "purple2", 
                "Physaria acutifolia - vitulifera-like" = "turquoise",
                "Physaria vitulifera - carbon" = "steelblue",
                "Physaria floribunda" = "gold",
@@ -88,11 +92,13 @@ spp_color <- c("Physaria acutifolia" = "yellow",
                "Physaria didymocarpa ssp. lanata" = "goldenrod",
                "Physaria didymocarpa ssp. lyrata"= "black",
                "Physaria saximontana ssp. dentata" = "maroon",
+               "Physaria didymocarpa ssp. saximontana" = "thistle4",
                "Physaria saximontana ssp. saximontana" = "indianred2",
                "Physaria eburniflora" = "cyan",
                "Physaria integrifolia" =  "seagreen",
                "Physaria dornii" = "darkorange",
                "Physaria condensata"= "mediumblue",
+               "Physaria chambersii" = "springgreen",
                "Physaria" = "seashell",
                "Physaria flowering" = "seashell",
                "Lesquerella fendleri" = "black",
@@ -102,7 +108,7 @@ spp_color <- c("Physaria acutifolia" = "yellow",
 # Named character vector for ggplot scale shape manual call.
 spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria vitulifera"= 8,
-               "Physaria nova" = 17, 
+               "Physaria medicinae" = 17, 
                "Physaria acutifolia - vitulifera-like" = 17,
                "Physaria vitulifera - carbon" = 17,
                "Physaria floribunda" = 15,
@@ -115,11 +121,13 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria didymocarpa ssp. lanata" = 25,
                "Physaria didymocarpa ssp. lyrata" = 17,
                "Physaria saximontana ssp. dentata" = 18,
+               "Physaria didymocarpa ssp. saximontana" = 18,
                "Physaria saximontana ssp. saximontana" = 17,
                "Physaria eburniflora" = 18,
                "Physaria integrifolia" =  18,
                "Physaria dornii" = 16,
                "Physaria condensata"= 16,
+               "Physaria chambersii" = 17,
                "Physaria" = 16,
                "Physaria flowering" = 16, 
                "Lesquerella fendleri" = 15,
@@ -129,3 +137,20 @@ spp_shape <- c("Physaria acutifolia" = 3,
 # Set colour brewer global variable containing palette options named by trait. 
 colour_brewer_palette <- c(Ovule_number = "PiYG", Replum_shape = "RdYlBu",
                            Basal_leaf_margins = "Spectral")
+
+# Replace taxa name for Physaria medicinae specimens.
+phys_medi <- gsub("Physaria acutifolia - vitulifera-like", 
+                  "Physaria medicinae", total_physaria$Taxon_a_posteriori)
+
+phys_medi <- gsub("Physaria vitulifera - carbon", 
+                  "Physaria medicinae", phys_medi)
+
+total_phys_medi <- total_physaria
+total_phys_medi$Taxon_a_posteriori <- phys_medi
+
+# Subset Carbon County, Wyoming specimens within bounding box.
+carbon_wyo <- subset_spp(taxa_frame = total_physaria, 
+                         state = c("Wyoming", "Colorado"),
+                         latitude = c(39.6, 42.3), longitude = c(-108, -105),
+                         set_name = "carbon_wyo", save_set = FALSE)
+
