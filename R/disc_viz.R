@@ -28,6 +28,15 @@ map_base <- function(map_borders = "black", map_fill = "ghostwhite") {
   return(map_plot)
 }
 
+# Function to parse ggplot legend titles from character trait names.
+trait_title <- function(trait_name) {
+  s1 <- gsub("[0-9]", "", trait_name)
+  s2 <- gsub("_", " ", s1)
+  s3 <- unlist(strsplit(s2, " "))
+  s4 <- upper_fix(s3)
+  s5 <- paste(s4, collapse = " ")
+  }
+
 # Function to parse discrete trait observation data.
 # Returns ggplot object of geom_point layers to build trait distribution models.
 disc_viz <- function(specimens, trait, bin_trait = NULL, taxa = NULL, 
@@ -156,13 +165,6 @@ disc_viz <- function(specimens, trait, bin_trait = NULL, taxa = NULL,
     guides(colour = guide_legend(ncol = 2), shape = guide_legend(ncol = 1)) + 
     
     # Use colour brewer for discrete scale, named by parsed trait string. 
-    scale_colour_brewer(sapply(trait, USE.NAMES = FALSE, function(x) {
-      s1 <- gsub("[0-9]", "", x)
-      s2 <- gsub("_", " ", s1)
-      s3 <- unlist(strsplit(s2, " "))
-      s4 <- upper_fix(s3)
-      s5 <- paste(s4, collapse = " ")
-    }), type = brewer_type, palette = brewer_palette)  # brewer options
-  
-  return(discrete_plot)
+    scale_colour_brewer(sapply(trait, USE.NAMES = FALSE, trait_title), 
+      type = brewer_type, palette = brewer_palette)  # brewer options
 }
