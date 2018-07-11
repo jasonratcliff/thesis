@@ -167,4 +167,15 @@ disc_viz <- function(specimens, trait, bin_trait = NULL, taxa = NULL,
     # Use colour brewer for discrete scale, named by parsed trait string. 
     scale_colour_brewer(sapply(trait, USE.NAMES = FALSE, trait_title), 
       type = brewer_type, palette = brewer_palette)  # brewer options
+  
+  # Build table & plot grobs then return the arranged grob.
+  disc_trait_df <- 
+    as.data.frame(disc_trait_table[1:length(disc_trait_opts)], 
+                  row.names = NULL)
+  names(disc_trait_df) <- c(trait_title(trait), "Frequency")
+  disc_trait_gtable <- tableGrob(disc_trait_df, rows = NULL)
+  disc_plot_grob <- ggplot_build(discrete_plot)
+  grid.arrange(grobs = list(disc_plot_grob$plot, 
+                            disc_trait_gtable), widths = c(2, 1, 1),
+               layout_matrix = rbind(c(1, 1), c(2, NA)))
 }
