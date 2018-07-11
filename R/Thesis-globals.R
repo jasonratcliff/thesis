@@ -125,3 +125,7 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Lesquerella fendleri" = 15,
                "Lesquerella argyrea" = 18, 
                "na.value" = 126)
+
+# Set colour brewer global variable containing palette options named by trait. 
+colour_brewer_palette <- c(Ovule_number = "PiYG", Replum_shape = "RdYlBu",
+                           Basal_leaf_margins = "Spectral")

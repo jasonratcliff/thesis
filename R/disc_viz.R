@@ -140,6 +140,12 @@ disc_viz <- function(specimens, trait, bin_trait = NULL, taxa = NULL,
     return(trait_plot)
   }
   
+  # Set brewer palette from global variable for divergent scales.
+  if (trait %in% names(colour_brewer_palette)) {
+    brewer_palette <- 
+      colour_brewer_palette[which(names(colour_brewer_palette) %in% trait)][[1]]
+  }
+  
   # Call function and add theme and guide parameters to ggplot build.
   discrete_plot <- plot_layers(trait_df = specimen_traits, 
                                trait_str = trait,
