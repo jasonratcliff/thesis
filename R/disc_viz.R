@@ -1,4 +1,6 @@
 library(plyr)
+library(gridExtra)
+library(gtable)
 
 # Function to replace the first character of string elements in a 
 # character vector with an uppercase letter of the first index. 
@@ -14,23 +16,23 @@ upper_fix <- function(trait_string) {
          })
 }
 
+# Function to build ggplot base layer of state and county boundaries.
 map_base <- function(map_borders = "black", map_fill = "ghostwhite") {
   states <- map_data("state")
   counties <- map_data("county")
   map_plot <- ggplot(data = counties,
-                     mapping = aes(x = long, y = lat, 
-                                   group = group)) + 
+                     mapping = aes(x = long, y = lat, group = group)) + 
     geom_polygon(color = map_borders, fill = map_fill, size = .125) +
-    geom_polygon(data = states, fill = NA, 
-                 color = map_borders, size = 1.5)  + 
+    geom_polygon(data = states, fill = NA, color = map_borders, size = 1.5)  + 
     theme(panel.grid = element_blank(), panel.background = element_blank())
   return(map_plot)
 }
 
 # Function to parse discrete trait observation data.
 # Returns ggplot object of geom_point layers to build trait distribution models.
-disc_viz <- function(specimens, trait, taxa = NULL, 
-                     map_base = "map_base", county_fill = "ghostwhite",
+disc_viz <- function(specimens, trait, bin_trait = NULL, taxa = NULL, 
+                     geom_seq_from = 10, geom_seq_to = 1, remove_trait = NULL,
+                     map_base_layer = "map_base", county_fill = "ghostwhite",
                      brewer_palette = "Spectral", brewer_type = "div") {
   
   # Subset specimen data by character vector for trait column as list.
@@ -51,7 +53,6 @@ disc_viz <- function(specimens, trait, taxa = NULL,
         })
       })
     }
-    
     trait_obs <- lapply(trait4, upper_fix)  # replace lowercase letters
     traits <- unique(trait_obs)  # filter for unique trait values
     traits_list <- unlist(traits)  # unlist nested list
@@ -60,7 +61,25 @@ disc_viz <- function(specimens, trait, taxa = NULL,
   
   # Table index of unique trait character observations.
   disc_trait_table <- sort(table(unlist(disc_trait)), decreasing = TRUE)
-  disc_trait_opts <- names(disc_trait_table)  # character vector of trait names
+  
+  # Option to remove bins with frequency set by argument bin_trait.
+  if (!is.null(bin_trait) & 
+      class(bin_trait) == "numeric" & length(bin_trait) == 1) {
+    table_bins <- names(disc_trait_table)
+    disc_trait_opts <- 
+      table_bins[which(table_bins %in% 
+                         table_bins[which(disc_trait_table <= bin_trait)] == FALSE)]
+  } else {  # keep full character vector of trait names
+    disc_trait_opts <- names(disc_trait_table)  
+  }
+  
+  # Option to remove character trait from mapping set by argument remove_trait.
+  if (!is.null(remove_trait) & class(remove_trait) == "character") {
+    disc_trait_opts <- 
+      names(disc_trait_table)[which(names(disc_trait_table) %in% 
+                                      remove_trait == FALSE)]
+  }
+  
   col_index <- length(disc_trait_opts)  # column index for empty vector
   
   # Return list of traits split by observation and sorted as column index
@@ -95,14 +114,15 @@ disc_viz <- function(specimens, trait, taxa = NULL,
   }
   
   # Select map base layer type for ggplot base layer.
-  if (map_base == "map_base") { # Build basic state and county boundary map.
+  if (map_base_layer == "map_base") { # Build basic state and county boundary map.
     map_base_plot <- map_base(map_fill = county_fill)  
   }
   
   # Build ggplot layers of geom points for each discrete trait observation.
   plot_layers <- function(trait_df, trait_str, map_plot) {
     trait_names <- grep(paste0(trait_str, "_"), names(trait_df), value = TRUE)
-    geom_sizes <- seq(10, 0.75, length.out = length(trait_names))
+    geom_sizes <- seq(from = geom_seq_from, to = geom_seq_to, 
+                      length.out = length(trait_names))
     j <- 1  # counter for geom sizes
     trait_plot <- map_plot
     for (name in trait_names) {
