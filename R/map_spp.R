@@ -166,9 +166,9 @@ map_spp <- function(map_frame, base_opt, taxa_id,
     }
 
     # Store single row data frame returned by unique specimen info.
-    spp_id <- find_spp(map_frame,
-                       as.numeric(collection_number),
-                       as.character(collector),
+    spp_id <- find_spp(taxa_frame = map_frame,
+                       collection_number = as.numeric(collection_number),
+                       collector = as.character(collector),
                        geom = TRUE, priors = TRUE)
       
     # Plot additional map layer to include the specimen returned by find_spp().
