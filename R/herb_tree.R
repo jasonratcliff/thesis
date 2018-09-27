@@ -158,20 +158,19 @@ tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn",
     scale_color_manual(legend_title, values = spp_color) +  
     scale_shape_manual(legend_title, values = spp_shape)
   
-  # Add tip label geoms scaled to type of species obvservations per node.
+  # Add tip geoms scaled for multiple species obvservations per node.
   node_species <- label_resolve[, c("node", spp_id, "x", "y")] %>%
     arrange(node, get(spp_id))
-  node_species <- node_species[!duplicated(node_species), ]  # remove dupes
-  
-  for (node in unique(node_species$node)) {
-    species_obs <- unique(node_species[which(node_species$node == node), 
+  node_species_undupe <- node_species[!duplicated(node_species), ]  # remove dupes
+  for (node in unique(node_species_undupe$node)) {
+    species_obs <- unique(node_species_undupe[which(node_species_undupe$node == node), 
                                        spp_id])
     geom_size <- seq(from = 7, to = 3, length.out = length(species_obs))
     i <- 1
     x_adj_count <- 0
     for (species in species_obs) {
-      node_data <- node_species[intersect(which(node_species$node == node),
-                                          which(node_species[, spp_id] == species)), ]
+      node_data <- node_species_undupe[intersect(which(node_species_undupe$node == node),
+                                          which(node_species_undupe[, spp_id] == species)), ]
       bayes_tree <- bayes_tree +
         geom_point(data = node_data,
                    aes_string(x = (node_data$x + x_adj_count), 
