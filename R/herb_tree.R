@@ -183,12 +183,31 @@ tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn",
   
   # Add tip labels for single taxa nodes.
   x_max_adjust <<- max(range(ggtree_df$x)) + (x_adjust * 2)
-  single_node_taxa <- ggtree_df[single_nodes, ]
+  single_taxa_node <- ggtree_df[single_nodes, ]
   bayes_tree <- bayes_tree +
-    geom_tiplab(data = single_node_taxa, mapping = aes(x = x_max_adjust),
+    geom_tiplab(data = single_taxa_node, mapping = aes(x = x_max_adjust),
                 size = 3, linesize = .25, align = TRUE)
 
+  # Add tip labels for multi taxa nodes.
+  # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
+  multi_taxa_node <- ggtree_df[!(ggtree_df$node %in% single_nodes), ]
+  mutli_node_order <- table(node_species$node)[order(table(node_species$node), 
+                                                     decreasing = TRUE)]
+  multi_node_names <- as.numeric(names(mutli_node_order))
+  multi_taxa_ordered <- multi_taxa_node[match(multi_taxa_node$node, 
+                                              multi_node_names), ]
+  allele_names <- sapply(seq(1, length(mutli_node_order)), USE.NAMES = FALSE,
+                         function(allele) {
+                           allele_name <- paste0("Genotype~", allele)
+                           })
+  multi_taxa_labels <- data.frame(label = multi_taxa_ordered$label,
+                                 alleles = allele_names)
+  bayes_tree <- bayes_tree %<+% multi_taxa_labels + 
+    invisible(geom_tiplab(aes(label=paste0("bold(", alleles, ')'), 
+                              x = x_max_adjust), 
+                size = 3, linesize = .25, align = TRUE, parse = TRUE))
   
+  # Return ggplot object.
   return(bayes_tree)
 }
 
@@ -210,7 +229,7 @@ tree_grid <- function(bayes_ggtree_plot) {
   # # From: https://gist.github.com/primaryobjects/700fe43b9631412fe0e1
   bayes_gtree <- ggplot_gtable(ggplot_build(bayes_ggtree_plot))
   bayes_gtree$layout$clip[bayes_gtree$layout$name == "panel"] <- "off"
-  invisible(grid.arrange(bayes_gtree))
+  grid.arrange(bayes_gtree)
 }
 
 # Wrapper function for plotting ggtree objects with specimen annotations.
@@ -218,5 +237,5 @@ tree_plot <- function(consensus_tree_file) {
   herbarium_bayes_df <- herb_tree(bayes_file = consensus_tree_file)
   bayes_tree <- tree_taxa(ggtree_df = herbarium_bayes_df)
   bayes_tree <- tree_scale(bayes_ggtree = bayes_tree)
-  tree_grid(bayes_tree)
+  return(bayes_tree)
 }
