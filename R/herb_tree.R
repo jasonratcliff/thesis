@@ -181,10 +181,13 @@ tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn",
     }
   }
   
-  # # Add specimen tip labels
-  # geom_tiplab(data = ggtree_df[single_nodes, ], inherit.aes = FALSE,
-  #             mapping = aes(x = (max(range(ggtree_df$x)) + (x_adjust * 2))),
-  #             size = 3, linesize = .25, align = TRUE)
+  # Add tip labels for single taxa nodes.
+  x_max_adjust <<- max(range(ggtree_df$x)) + (x_adjust * 2)
+  single_node_taxa <- ggtree_df[single_nodes, ]
+  bayes_tree <- bayes_tree +
+    geom_tiplab(data = single_node_taxa, mapping = aes(x = x_max_adjust),
+                size = 3, linesize = .25, align = TRUE)
+
   
   return(bayes_tree)
 }
