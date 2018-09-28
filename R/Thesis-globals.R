@@ -49,8 +49,9 @@ if ("ggmap" %in% rownames(installed.packages()) == FALSE) {
 }
 library(ggmap)
 
-# Read specimen data to Global Environment
+# Read specimen data and ggplot aesthetics to Global Environment
 source("R/load_species.R")
+source("R/ggplot_aes_vars.R")
 
 # Source R functions
 source("R/find_spp.R")  # Source find_spp()
@@ -63,7 +64,7 @@ source("R/elev_spp.R")  # Source elev_spp()
 source("R/disc_viz.R")  # Source disc_viz()
 
 # Setup for Phylogenetic Tree Annotation
-source("Phys_DNA/DNA_species.R")
+source("R/herb_tree.R") # Source phylogenetic annotation functions
 source("R/phylo_spp.R") # Source phylo_spp()
 source("R/phylo_text.R") # Source phylo_text()
 
@@ -76,63 +77,6 @@ knitr::write_bib(c(
 phys_states <- c("Montana", "Wyoming", "Idaho", "Colorado", "Utah", 
                  "New Mexico", "South Dakota", "North Dakota", "Nebraska")
 
-# Named character vector for ggplot scale color manual call.
-spp_color <- c("Physaria acutifolia" = "yellow",
-               "Physaria vitulifera" = "plum",
-               "Physaria medicinae" = "purple2", 
-               "Physaria acutifolia - vitulifera-like" = "turquoise",
-               "Physaria vitulifera - carbon" = "steelblue",
-               "Physaria floribunda" = "gold",
-               "Physaria floribunda ssp. floribunda" = "goldenrod",
-               "Physaria floribunda ssp. osterhoutii" = "limegreen",
-               "Physaria rollinsii" = "darkorchid1",
-               "Physaria alpina" = "firebrick",
-               "Physaria brassicoides" = "olivedrab2",
-               "Physaria didymocarpa ssp. didymocarpa" = "skyblue",
-               "Physaria didymocarpa ssp. lanata" = "goldenrod",
-               "Physaria didymocarpa ssp. lyrata"= "black",
-               "Physaria saximontana ssp. dentata" = "maroon",
-               "Physaria didymocarpa ssp. saximontana" = "thistle4",
-               "Physaria saximontana ssp. saximontana" = "indianred2",
-               "Physaria eburniflora" = "cyan",
-               "Physaria integrifolia" =  "seagreen",
-               "Physaria dornii" = "darkorange",
-               "Physaria condensata"= "mediumblue",
-               "Physaria chambersii" = "springgreen",
-               "Physaria" = "seashell",
-               "Physaria flowering" = "seashell",
-               "Lesquerella fendleri" = "black",
-               "Lesquerella argyrea" = "black", 
-               "na.value" = "black")
-
-# Named character vector for ggplot scale shape manual call.
-spp_shape <- c("Physaria acutifolia" = 3,
-               "Physaria vitulifera"= 8,
-               "Physaria medicinae" = 17, 
-               "Physaria acutifolia - vitulifera-like" = 17,
-               "Physaria vitulifera - carbon" = 17,
-               "Physaria floribunda" = 15,
-               "Physaria floribunda ssp. floribunda" = 18,
-               "Physaria floribunda ssp. osterhoutii" = 18,
-               "Physaria rollinsii" = 17,
-               "Physaria alpina" = 15,
-               "Physaria brassicoides" = 16,
-               "Physaria didymocarpa ssp. didymocarpa" = 15,
-               "Physaria didymocarpa ssp. lanata" = 25,
-               "Physaria didymocarpa ssp. lyrata" = 17,
-               "Physaria saximontana ssp. dentata" = 18,
-               "Physaria didymocarpa ssp. saximontana" = 18,
-               "Physaria saximontana ssp. saximontana" = 17,
-               "Physaria eburniflora" = 18,
-               "Physaria integrifolia" =  18,
-               "Physaria dornii" = 16,
-               "Physaria condensata"= 16,
-               "Physaria chambersii" = 17,
-               "Physaria" = 16,
-               "Physaria flowering" = 16, 
-               "Lesquerella fendleri" = 15,
-               "Lesquerella argyrea" = 18, 
-               "na.value" = 126)
 
 # Set colour brewer global variable containing palette options named by trait. 
 colour_brewer_palette <- c(Ovule_number = "PiYG", Replum_shape = "RdYlBu",
