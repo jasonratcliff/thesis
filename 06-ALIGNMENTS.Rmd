@@ -1,0 +1,160 @@
+
+```{r msaAppendix}
+
+# Generate appendix sequence alignment figures
+library(Biostrings)  # Pagès et al. 2017
+
+# R 'msa' package ports LaTeX package TEXSHADE (Beitz 2000)
+library(msa)  # Bodenhofer et al. 2015
+
+# Remove old .aux and .tex files from Alignment-Figures subdirectory.
+system("rm Phys_DNA/Alignment-Figs/*.fasta Phys_DNA/Alignment-Figs/*.tex Phys_DNA/Alignment-Figs/*.aux")
+
+```
+
+\clearpage
+
+```{r msaITS}
+
+cat("\\chapter*{APPENDIX C}
+\\addcontentsline{toc}{chapter}{APPENDIX C: ITS SEQUENCE ALIGNMENT}
+\\centering
+ITS SEQUENCE ALIGNMENT\n",
+file = "Phys_DNA/Alignment-Figs/msa_aligned_its.tex")
+
+file_its <- paste0("Phys_DNA/Seq-Analysis/",
+                   "3.unwrapped_fastas_single/rITS-unwrapped_single.fasta")
+
+aligned_its <- readDNAMultipleAlignment(filepath = file_its, format = "fasta")
+
+msaPrettyPrint(aligned_its, y = c(1, 135), output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_its.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_its.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_its.tex -m 7in -r ROTATE >> \\
+       Phys_DNA/Alignment-Figs/msa_aligned_its.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_its}
+
+\begin{landscape}
+
+```{r msaITSLandscape}
+
+msaPrettyPrint(aligned_its, y = c(136, max(aligned_its@unmasked@ranges@width)),
+               output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_its.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_its_end.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_its_end.tex -r LANDSCAPE > \\
+       Phys_DNA/Alignment-Figs/msa_aligned_its_end.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_its_end}
+
+\end{landscape}
+
+```{r msaRPS}
+
+cat("\\chapter*{APPENDIX D}
+\\addcontentsline{toc}{chapter}{APPENDIX D: \\textit{rps} SEQUENCE ALIGNMENT}
+\\centering
+\\textit{rps} SEQUENCE ALIGNMENT\n",
+file = "Phys_DNA/Alignment-Figs/msa_aligned_rps.tex")
+
+file_rps <- paste0("Phys_DNA/Seq-Analysis/",
+                   "3.unwrapped_fastas_single/rps-unwrapped_single.fasta")
+
+aligned_rps <- readDNAMultipleAlignment(filepath = file_rps, format = "fasta")
+
+msaPrettyPrint(aligned_rps, y = c(1, 135), output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_rps.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_rps.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_rps.tex -m 7in -r ROTATE >> \\
+       Phys_DNA/Alignment-Figs/msa_aligned_rps.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_rps}
+
+\begin{landscape}
+
+```{r msaRPSLandscape}
+
+msaPrettyPrint(aligned_rps, y = c(136, max(aligned_rps@unmasked@ranges@width)),
+               output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_rps.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_rps_end.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_rps_end.tex -r LANDSCAPE > \\
+       Phys_DNA/Alignment-Figs/msa_aligned_rps_end.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_rps_end}
+
+\end{landscape}
+
+```{r msaYCF1}
+
+cat("\\chapter*{APPENDIX E}
+\\addcontentsline{toc}{chapter}{APPENDIX E: \\textit{ycf1} SEQUENCE ALIGNMENT}
+\\centering
+\\textit{ycf1} SEQUENCE ALIGNMENT\n",
+file = "Phys_DNA/Alignment-Figs/msa_aligned_ycf1.tex")
+
+file_ycf1 <- paste0("Phys_DNA/Seq-Analysis/",
+                   "3.unwrapped_fastas_single/ycf1-unwrapped_single.fasta")
+
+aligned_ycf1 <- readDNAMultipleAlignment(filepath = file_ycf1, format = "fasta")
+
+msaPrettyPrint(aligned_ycf1, y = c(1, 135), output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_ycf1.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_ycf1.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_ycf1.tex -m 7in -r ROTATE >> \\
+       Phys_DNA/Alignment-Figs/msa_aligned_ycf1.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_ycf1}
+
+\begin{landscape}
+
+```{r msaYCF1Landscape}
+
+msaPrettyPrint(aligned_ycf1, y = c(136, max(aligned_ycf1@unmasked@ranges@width)),
+               output = "tex",
+               alFile = "Phys_DNA/Alignment-Figs/aligned_ycf1.fasta",
+               file = "Phys_DNA/Alignment-Figs/aligned_ycf1_end.tex",
+               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+               furtherCode = "\\showruler{1}{top}")
+
+system("./Phys_DNA/msa_format.sh \\
+       -F Phys_DNA/Alignment-Figs/aligned_ycf1_end.tex -r LANDSCAPE > \\
+       Phys_DNA/Alignment-Figs/msa_aligned_ycf1_end.tex")
+
+```
+
+\include{Phys_DNA/Alignment-Figs/msa_aligned_ycf1_end}
+
+\end{landscape}
+
