@@ -7,8 +7,18 @@ library(Biostrings)  # Pagès et al. 2017
 # R 'msa' package ports LaTeX package TEXSHADE (Beitz 2000)
 library(msa)  # Bodenhofer et al. 2015
 
+# Establish a directory to store alignment appendix msa figures:
+if (!dir.exists("Phys_DNA/Alignment-Figs")) {
+  dir.create("Phys_DNA/Alignment-Figs")
+}
+
 # Remove old .aux and .tex files from Alignment-Figures subdirectory.
-system("rm Phys_DNA/Alignment-Figs/*.fasta Phys_DNA/Alignment-Figs/*.tex Phys_DNA/Alignment-Figs/*.aux")
+if (dir.exists("Phys_DNA/Alignment-Figs")) {
+  alignment_tex_files <- list.files(path = "Phys_DNA/Alignment-Figs/", 
+                                    pattern = ".aux|.tex|.fasta", 
+                                    full.names = TRUE)
+  invisible(file.remove(alignment_tex_files))
+}
 
 ```
 
