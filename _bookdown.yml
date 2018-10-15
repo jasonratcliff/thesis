@@ -4,3 +4,7 @@ delete_merged_file: yes
 language:
   ui:
     chapter_name: "Chapter "
+  
+  ### Sequence Analysis LISTINGS appendix figure troubleshooting
+  # Uncomment the following line to write PDF containing 
+  # a single figure per page from ./lstlistings_fig.sh script output.
