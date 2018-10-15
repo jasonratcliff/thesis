@@ -1,6 +1,8 @@
 \usepackage[labelsep=period]{caption} % Caption separator set to a period
 \usepackage{texshade} % Beitz 2000
 \usepackage{rotating} % Fairbairns et al. 2016
+\usepackage[T1]{fontenc} % Font encoding
+\usepackage[utf8]{inputenc}
 
 % Load American Mathematical Society fonts
 \usepackage{amsmath, amscd, amsthm, amssymb, mathrsfs,amsfonts}
@@ -34,26 +36,30 @@
 \usepackage[normalem]{ulem}
 
 \titleformat{name=\chapter}[display] % Define chapter typesetting.
-  {\normalsize\filcenter}{CHAPTER \thechapter}{10pt}{}{}
+  {\normalsize\filcenter}{CHAPTER \thechapter}{0pt}{}{}
 \titleformat{name=\chapter,numberless}[display]
-  {\normalsize\filcenter}{}{10pt}{}{}
+  {\normalsize\filcenter}{}{0pt}{}{}
 \titleformat{name=\section}[display]  
-  {\normalfont\filcenter}{}{10pt}{\uline}{}
+  {\normalfont\filcenter}{}{0pt}{\uline}{}
 \titleformat{name=\subsection}[display]  
-  {\normalfont\filright}{}{10pt}{\uline}{}
+  {\normalfont\filright}{}{0pt}{\uline}{}
 \titleformat{name=\subsection,numberless}[display]  
-  {\normalfont\filright}{}{10pt}{\uline}{}
+  {\normalfont\filright}{}{0pt}{\uline}{}
   
 % Adjust spacing for title sections
-\titlespacing*{name=\chapter}{0pt}{0pt}{10pt}
-\titlespacing*{name=\chapter,numberless}{0pt}{-33pt}{0pt}
-\titlespacing*{name=\section}{0pt}{-33pt}{0pt}
+\titlespacing*{name=\chapter}{0pt}{-26pt}{0pt}
+\titlespacing*{name=\chapter,numberless}{0pt}{-52pt}{0pt}
+
 \renewcommand\thesection{}
-\titlespacing*{name=\subsection}{0pt}{-33pt}{0pt}
+\titlespacing*{name=\section}{0pt}{-26pt}{0pt}
+\titlespacing*{name=\section,numberless}{0pt}{0pt}{0pt}
+
 \renewcommand\thesubsection{}
-\titlespacing*{name=\subsection,numberless}{0pt}{-33pt}{5pt}
-\titlespacing*{name=\paragraph}{0pt}{0pt}{4em} % Set paragraph indent
+\titlespacing*{name=\subsection}{0pt}{-26pt}{0pt}
+\titlespacing*{name=\subsection,numberless}{0pt}{-26pt}{0pt}
+
 \renewcommand\theparagraph{}
+\titlespacing*{name=\paragraph}{0pt}{0pt}{4em}
 
 % TITLETOC (Bezos 2016) for formatting table of contents.
 \usepackage{titletoc}
@@ -65,12 +71,12 @@
 % SECTION formatting
 \titlecontents{section}[2em]{} % <section-type> <left> <above-code>
   {\thesection} % <numbered-entry-format>
-  {} % <numberless-entry-format>
+  {\thesection} % <numberless-entry-format>
   {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
 % SUBSECTION formatting
 \titlecontents{subsection}[4em]{} % <section-type> <left> <above-code>
   {\thesection} % <numbered-entry-format>
-  {} % <numberless-entry-format>
+  {\thesection} % <numberless-entry-format>
   {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
   
 % Modify the table and figure counters to not include chapter prefix.
@@ -82,14 +88,14 @@
 
 % List of Tables
 \titlecontents{table} % <section-type>
-  [0em]{} % <left> <above-code>
+  [1.5em]{} % <left> <above-code>
   {\thecontentslabel\hspace{1em}} % <numbered-entry-format>
   {} % <numberless-entry-format>
   {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
 
 % List of Figures
 \titlecontents{figure} % <section-type>
-  [0em]{} % <left> <above-code>
+  [1.5em]{} % <left> <above-code>
   {\thecontentslabel\hspace{1em}} % <numbered-entry-format>
   {} % <numberless-entry-format>
   {\titlerule*[0.2em]{.}\contentspage} % <filler-page-format>
