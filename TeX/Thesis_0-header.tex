@@ -129,10 +129,15 @@
 }
 % Set caption label for listings
 \renewcommand{\lstlistingname}{Appendix Figure}
-\lstset{language=mybash, % Set language as my defined bash dialect
+\lstset{language=mybash, % Set language as my defined bash 
+  upquote=true,
   frame=single, % box frame around code
-  framesep=10pt,  % margin separation
-  commentstyle=\textbf  % style for comment text
+  framesep=12pt,  % margin separation
+  xleftmargin=28pt,
+  framexleftmargin=-4pt,
+  xrightmargin=12pt,
+  commentstyle=\textbf,  % style for comment text
+  basicstyle=\footnotesize
 }
 
 \usepackage{hyperref} % Necessary for \phantomsection{} call in ToC formatting
