@@ -1,13 +1,14 @@
-\phantomsection
-\addcontentsline{toc}{chapter}{APPENDIX C: SEQUENCE ANALYSIS}
-\chapter*{APPENDIX C: SEQUENCE ANALYSIS}
+\chapter*{APPENDIX B}
+\addcontentsline{toc}{chapter}{APPENDIX B: SEQUENCE ANALYSIS}
+\begin{center}
+SEQUENCE ANALYSIS
+\end{center}
 
-\phantomsection
-\section{Sequence Analysis Pipeline}
+\section*{Sequence Analysis Pipeline}
 
 \paragraph{} An overview of the steps taken to process sequence data prior to phylogenetic inference follows:
 
-% Define a new environment with adjusted spacing for enumerated and itemized lists.
+% Define a new environment and adjust spacing for enumerated and itemized lists.
 \newenvironment{seqlist}
 {\begin{enumerate}
     \setlength{\itemsep}{0pt}
@@ -25,22 +26,22 @@
 \item{\textbf{FASTA File Import}}
 \begin{itemize}
 \item{Deposit unaligned multi-FASTA files in \textit{0.raw\_fastas/} subdirectories}
-\begin{itemize}
-\item{Each loci has a subdirectory with the prefix ``loci\_"}
-\end{itemize}
 \end{itemize}
 
 \item{\textbf{Cleaning Data}}
 \begin{itemize}
-\item{Run \textit{./Fasta\_Utilities/header\_comp.sh}}
+\item{Run \textit{./Fasta\_Utilities/fasta\_diffs.sh}}
 \begin{itemize}
-\item{This script generates output files containing respective loci sequence headers}
+\item{Script generates output files containing respective loci sequence headers}
 \end{itemize}
+\begin{itemize}
+\item{For concatenated, multi-locus analyses:}
+\begin{itemize}
 \item{Manually remove excess sequences based on sequence header differences}
-\begin{itemize}
-\item{All loci should include the same DNA specimens}
+\item{Concatenated FASTA includes the same DNA specimens for all loci}
 \end{itemize}
-\item{Save trimmed multi-FASTA files in \textit{1.trimmed\_fastas} subdirectory}
+\end{itemize}
+\item{Save trimmed multi-FASTA files in \textit{1.trimmed\_fastas\_ml} subdirectory}
 \end{itemize}
 
 \item{\textbf{Multiple Sequence Alignment}}
@@ -59,17 +60,13 @@
 \item{Output unwrapped multi-FASTA files into \textit{3.unwrapped\_fastas}}
 \end{itemize}
 
-\item{\textbf{Sequence Concatenation}}
+\item{\textbf{Sequence Concatenation and \textit{multi-fasta\_split.sh} Loop Construct}}
 \begin{itemize}
 \item{Manually concatenate multi-locus FASTA from individual loci}
+\item{Output split sequences into \textit{4.loci} subdirectories}
 \end{itemize}
 
 \clearpage
-
-\item{\textbf{\textit{multi-fasta\_split.sh} Loop Construct}}
-\begin{itemize}
-\item{Output split sequences into \textit{4.loci} subdirectories}
-\end{itemize}
 
 \item{\textbf{FASTA File Split}}
 \begin{itemize}
