@@ -87,63 +87,59 @@ SEQUENCE ANALYSIS
 
 \subsection*{1. Directory Environment}
 
-\paragraph{} A project subdirectory was established for holding sequence data, program scripts, and intermediate files related to DNA sequence analysis.  The subdirectory \textit{Fasta\_Utilities/} contains executable shell scripts used for downstream FASTA file processing.  In the following code snippets, the character \textbf{\$} indicates the command prompt while text following a \textbf{\#} indicates commented (i.e. non-evaluated) text.  The Latex package Listings (Hoffmann et al. 2015) was used to modify code syntax coloring, where functions are keywords represented by the color blue and the command prompt is colored green.
+\paragraph{} A project directory was established for holding sequence data, program scripts, and intermediate files related to DNA sequence analysis.  The program-containing subdirectory \textit{Fasta\_Utilities/} was then moved from the parent directory into the project directory (Figure B1).  In the following code snippets, the character "\textbf{\$}" indicates the command prompt of the command line interface while text following a "\textbf{\#}" indicates commented (i.e. non-evaluated) code.  The \LaTeX package Listings (Hoffmann et al. 2015) was used to modify code syntax coloring, where functions are keywords represented by the color blue and the command prompt is colored green.
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\begin{lstlisting}[caption={Project directory setup}]
-# Establish project directory and set working directory
+\begin{lstlisting}[caption={Project directory setup.}]
+# Establish project directory and setup working directory.
 |<$>| mkdir Seq-Analysis
 |<$>| cd Seq-Analysis
-|<$>| mv ../Fasta_Utilities/ .  # Move scripts to project directory
+|<$>| mv ../Fasta_Utilities/ .  
 \end{lstlisting}
 
 \clearpage
 
-\paragraph{} The \textit{Fasta\_Utilities/} directory contains shell (.sh) executable scripts and a subdirectory with scripts containing two R functions.
+\paragraph{} The \textit{Fasta\_Utilities/} directory contains executable shell (.sh) scripts and a subdirectory with scripts containing R functions (Figure B2).  Here, a bash shell was used for evaluation of sequence analysis program files. 
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\begin{lstlisting}[caption={Recursive list of \textit{Fasta\_Utilities/} subdirectory contents}]
-|<$>| ls -lR Fasta_Utilities/ | awk `{print $1, $9}'
-total 
+\begin{lstlisting}[caption={Contents of \textit{Fasta\_Utilities/} subdirectory.}]
+# Recursivley list shell script and R source code with file permissions.
+|<$>| ls -lR Fasta_Utilities/ | awk '{print $1, $9}'
+total
 drwxr-xr-x R_functions
--rwxr-xr-x header_comp.sh
+-rwxr-xr-x fasta_diffs.sh
 -rwxr-xr-x multi-fasta_split.sh
 -rwxr-xr-x unwrap_fasta.sh
  
 Fasta_Utilities//R_functions:     # R function directory
 total 
+-rw-r--r-- identity_check.R
 -rw-r--r-- load_fastas.R
 -rw-r--r-- seq_comp.R
-
 \end{lstlisting}
 
-\vspace*{30pt}
+\vspace*{36pt}
 
 \subsection*{2. FASTA File Import}
 
-\paragraph{} Directories containing the unaligned multi-FASTA files were deposited into the project directory.  Each loci multi-FASTA file is located in a separate directory, where the directory is named by the prefix string ``loci\_" with the name on the genomic region (i.e. ``rps", ``rITS", ``ycf1") appended.  Multi-FASTA files were manually deposited in the directory \textit{0.raw\_fastas/} once established.
+\paragraph{} A directory for the unaligned multi-FASTA files was established in the project directory (Figure B3).  The following naming convention was observed for FASTA files used as inputs for shell scripts: name of the genomic loci followed by a dash, additional filename descriptions separated by underscores, and the text extension, ".fasta" (e.g. loci-combined\_raw.fasta).  Multi-FASTA files were manually deposited in the directory \textit{0.raw\_fastas/} once established.
 
 \clearpage
 
-\begin{lstlisting}[caption={Unaligned sequence data deposited in \textit{0.raw\_fastas/} subdirectory}]
-# Establish directory for unaligned FASTA files 
+\begin{lstlisting}[caption={Unaligned sequence data deposited in \textit{0.raw\_fastas/} subdirectory.}]
+# Establish directory for unaligned FASTA files.
 |<$>| mkdir 0.raw_fastas
 
-# Recursively list unaligned sequence FASTA files
-|<$>| ls -R 0.raw_fastas/loci_* | more
-0.raw_fastas/loci_rITS:
-rITS_complete_raw.fasta
-
-0.raw_fastas/loci_rps:
-rps_complete_raw.fasta
-
-0.raw_fastas/loci_ycf1:
-ycf1_complete_raw.fasta
+# List unaligned sequence FASTA files in initial analysis directory.
+|<$>| ls 0.raw_fastas/ | more
+rITS-combined_raw.fasta
+rps-combined_raw.fasta
+ycf1-combined_raw.fasta
 \end{lstlisting}
 
-\vspace*{30pt}
+\vspace*{36pt}
 
 \subsection*{3. Cleaning Data}
 
