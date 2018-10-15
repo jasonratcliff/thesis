@@ -143,272 +143,260 @@ ycf1-combined_raw.fasta
 
 \subsection*{3. Cleaning Data}
 
-\paragraph{} Sequences from specimens with data missing from any loci were removed manually after identifying multi-FASTA file differences.  Headers from the multi-FASTA files were analyzed using the \textit{header\_comp.sh} script to compare which loci have missing data by using an AWK (version 20070501, Aho et al. 1988) statement to print the FASTA sequence headers demarcated by ``>".  The AWK programming language evaluates each line - referred to as a record - of an input file for a specified pattern, and executes a defined action on records matching the pattern.  If no action is defined, the default action is to print the record where the entire record is represented by the variable ``\$0".  The general syntax of an AWK statement is as follows:  
+\paragraph{} Prior to alignment and concatenation, loci with specimens missing sequence data were identified using the \textit{fasta\_diffs.sh} shell script to facilitate the comparison of FASTA file sequence headers.  Following the execution of this script, the sequence header difference files were analyzed and loci with extra specimen sequences were manually removed prior to sequence concatenation.  This script allows for three arguments denoted by the command flags [-D], [-N], and [-f] (Figure B4).  These options are parsed using the builtin utility \textbf{getopts} which evaluates a string of options - referred to as \textbf{optstring} (here, "D:N:f:"), where colons denote an expected argument for each respective option (Kerrisk 2018).  As each option is evaluated, the string option is set to the variable \textbf{\$opt} and any optional argument is set to the variable \textbf{\$OPTARG}.  This is combined with the \textbf{case...in...esac} shell flow control structure (Wünschiers 2013), where the string in variable \textbf{\$opt} is checked against patterns denoted by a closed parentheses - here, "D)", "N)", "f)", and "?)" (Lines 4, 7, 10, \& 13; Figure B4).  When a pattern is matched by the value of \textbf{\$opt}, the action(s) following the parentheses are executed.  If a command option is not contained in the string of options \textbf{optstring}, the value of that option is set to "?" (Kerrisk 2018).
 
 \clearpage
 
-\begin{lstlisting}[caption={Example AWK statement}]
-# General AWK syntax:
-|<$>| awk ` pattern  { action } '  filename
-\end{lstlisting}
-
-\vspace*{30pt}
-
-\paragraph{} The \textit{header\_comp.sh} script contains an AWK statement to identify records (i.e. FASTA file lines) that begin with the character ``>", which denotes a FASTA sequence header.  Within an AWK statement, the pattern is a regular expression indicated between forward slashes ``/ /".  The regular expression caret metacharater ``\string^" is used to match the beginning of a record, such that records beginning with the character ``>" (i.e. sequence headers) are matched by the regular expression \textbf{\string^>} demarcated by foward slashes.
-
-\vspace*{30pt}
-
-\begin{lstlisting}[caption={\textit{header\_comp.sh} AWK statement to retrieve FASTA headers}]
-awk `/^>/ {print $1}' $fasta/*raw.fasta > $(echo ${loci}_seqs.txt)
-\end{lstlisting}
-
-\vspace*{30pt}
-
-\paragraph{} The \textit{header\_comp.sh} script AWK statement prints the first field (indicated by \textbf{\$1}) of records matching the \textbf{\string^>} pattern.  Within a record, the fields are separated by default with a space.  In the AWK statement above, the input file is indicated by the \textbf{\$fasta/\*raw.fasta} shell variable construct.  Output from this AWK statement is then redirected using the UNIX assignment operator \textbf{>} as standard input written to a new text file.  Here, the file is named by the respective loci (indicated by \textbf{\${loci}}) of the FASTA file being evaluated, and the substring ``\_seqs" and extension ``.txt" is appended as the new filename.  
-
-\paragraph{} This script creates new subdirectories to store text files containing the unsorted and sorted sequence headers for each of the respective loci.  Each multi-FASTA within the respective \textit{0.raw\_fastas/} loci subdirectory is iteratively evaluated and the FASTA sequence headers written to a new text file.  For each multi-FASTA input file, two output files containing unsorted and sorted sequence headers are created and moved to the respective subdirectories within a new \textit{0.raw\_fastas/seq\_headers/} directory.  
-
-\vspace*{30pt}
-
-\begin{lstlisting}[caption={Contents of the \textit{header\_comp.sh} script}]
-# Create a directory containing a subdirectory for sorted output
-mkdir 0.raw_fastas/seq_headers/
-mkdir 0.raw_fastas/seq_headers/sorted
-
-# Iterate through directories matching the regular expression `loci*'
-for fasta in 0.raw_fastas/loci*; do
-
- # Slice the substring following `loci_' (i.e. `rITS', `rps', `ycf1') by
- # variable substitution syntax ${paramater##word} - (Ramey & Fox 2014)
- # and store the string as variable $loci.
- loci=${fasta##0.raw_fastas/loci_};
-
- # Return the name of the genomic loci to the command prompt
- echo
- echo 'Processing loci' $loci;
-\end{lstlisting}
-
-\clearpage
-
-\setcounter{lstlisting}{5}
-\begin{lstlisting}[caption={Continued}]
- ### Extract headers from the FASTA file ###
-
- # Print the first field (`$1') of each record (i.e. line)
- # matching the awk regular expression `/^>/'
- # from the fasta files contained within the `loci_*' directories.
- # Redirect the sequence header output into a new file named by
- # the genomic loci and an extension `_seqs.txt'.
- # Return the number of records (`NR') with an awk END statement.
- awk `/^>/ {print $1};
- END {print NR}' $fasta/*raw.fasta > $(echo ${fasta}/${loci}_seqs.txt);
-
- # Print number of FASTA headers.
- awk `END {printf ``\tFASTA headers: %s\n'', NR}' \
-   ${fasta}/${loci}_seqs.txt;
- 
- # Alphabetically sort the sequence headers and redirect the output
- # to create a new file containing the sorted headers.
- sort ${fasta}/${loci}_seqs.txt > ${fasta}/${loci}_seqs-sorted.txt;
-
- # Move output to sorted subdirectory
- mv ${fasta}/${loci}_seqs-sorted.txt 0.raw_fastas/seq_headers/sorted;
-
-# End loop
+\begin{lstlisting}[numbers=left, showstringspaces=false, caption={Use of GETOPTS to parse script options.}]
+# Use builtin function GETOPTS to parse shell variables.
+while getopts "D:N:f:" opt ; do
+  case $opt in
+    D)  # Directory containing FASTA files
+      directory="$OPTARG"
+      ;;
+    N)  # New directory to copy FASTA files for manual edits
+      new_directory="$OPTARG"
+      ;;
+    f)  # String to append to FASTA filename
+      filename="$OPTARG"
+      ;;
+    ?) # Warning for non-matching option flags pass as arguments
+      echo "Invalid option: -$OPTARG"
+      echo "Usage: fasta_diff.sh [-D] [-N] [-f]"
+      ;;
+  esac
 done
-echo
+\end{lstlisting}
+
+\vspace*{36pt}
+
+\paragraph{} The \textit{fasta\_diffs.sh} script takes an argument denoted by option [-D] representing a project subdirectory containing multiple individual loci multi-FASTA files (Figure B5).  The command should be executed from the main level of the project directory as follows:
+
+\vspace*{36pt}
+
+\begin{lstlisting}[caption={Basic usage of \textit{fasta\_diffs.sh} script.}]
+|<$>| ./Fasta_Utilities/fasta_diffs.sh -D 0.raw_fastas/
 \end{lstlisting}
 
 \clearpage
 
-\paragraph{} The header comparison script was executed from within the project directory directory to produce output files containing the sorted sequence headers.  These were then analyzed manually to determine which loci had missing data (i.e. specimens with an incomplete multi-locus dataset).   
+\paragraph{} When the [-D] option is included, the string of the directory path is stored as the shell variable \textbf{\$directory} (Line 5, Figure B4).  Parameter substitution is used to slice the last character of the directory string as the variable \textbf{\$dir\_end} (Line 2, Figure B6), which should match the forward slash character "/" denoting a file directory.  If the directory represented by the variable \textbf{\$directory} is an existing directory and the variable \textbf{\$dir\_end} matches a forward slash, the existence of a subdirectory \textit{seq\_headers/} is checked (Lines 3 \& 5, Figure B6).  If no such directory exists, the subdirectories \textit{seq\_headers/} and \textit{seq\_diffs/} are established using the \textbf{mkdir} utility (Line 6, Figure B6).
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\begin{lstlisting}[caption={Execute \textit{header\_comp.sh} script}]
-# Execute the program to analyze sequence headers
-|<$>| ./Fasta_Utilities/header_comp.sh      
-
-Processing loci rITS # Loci name
-	FASTA headers:65 # Number of FASTA records in the sorted file
-
-Processing loci rps
-	FASTA headers:64
-
-Processing loci ycf1
-	FASTA headers:53
-
-# List sorted files in "seq_headers/" subdirectory
-|<$>| ls 0.raw_fastas/seq_headers/sorted/ | more
-rITS_seqs-sorted.txt
-rps_seqs-sorted.txt
-ycf1_seqs-sorted.txt
-
-# Print first three lines from a sorted file
-|<$>| head -3 0.raw_fastas/seq_headers/sorted/rITS_seqs-sorted.txt
-192       # Total number of records (i.e. headers and sequences)
->LARGY_7548
->LFEND_4355
-
+\begin{lstlisting}[numbers=left, showstringspaces=false, escapechar=\%, caption={Verify directory existence and create subdirectories.}]
+# Check if input argument [-D] is a directory AND ends in character "/".
+dir_end=${directory:${%\#%directory}-1}
+if [ -d "$directory" ] && [ $dir_end  = "/" ] ; then
+  # Create subdirectories for sequence headers and header diffs.
+  if [ ! -d ${directory}seq_headers/ ] ; then  
+    mkdir ${directory}seq_headers/ && mkdir ${directory}seq_diffs/
+  else 
+    echo  # notification that directory already exists ...
+    echo "Directory" ${directory}seq_headers/ "already exists !"
+  fi
+# Exit program if argument [-D] is not a directory ending in "/".
+else  
+  echo "Exiting..." $directory "is not a directory..."; exit
+fi
 \end{lstlisting}
 
-\clearpage
+\vspace*{36pt}
 
-\paragraph{} The Unix utility \textbf{diff} (version 2.8.1, Free Software Foundation 2016) was used to determine sequence header differences between loci.  Specimens with DNA sequence data for only a subset of the loci were excluded from multi-locus analysis.  Use of the command flag ``-b" ignores whitespace, preventing false positives from any trailing whitespace.
+\paragraph{}  To compare multi-FASTA file sequence headers, a \textbf{for loop} control flow structure is set up to iterate through all files in the directory given by option [-D] (represented by shell variable \textbf{\$directory}) matching the extension ".fasta" (Line 2, Figure B7), where the character "*" matches any string pattern (GNU Bash Manual 3.5.8.1).  In each loop iteration, the FASTA filename is stored as shell variable \textbf{\$fasta}.  The genomic loci for the respective fasta file is then sliced from \textbf{\$fasta} to remove the directory name and any text following <loci->, as previously described in the file naming convention, and stored as shell variable \textbf{\$loci} (Lines 6 \& 7, Figure B7) (GNU Bash Manual 3.5.3).
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\begin{lstlisting}[caption=Calculate sequence diffs]
-# Change to the seq_headers/ subdirectory
-|<$>| cd 0.raw_fastas/seq_headers/
+\begin{lstlisting}[numbers=left, showstringspaces=false, escapeinside={(*@}{@*)}, caption={FASTA file sequence header extraction \textbf{for loop} in the \textit{fasta\_diffs.sh script.}}]
+# Iterate through FASTA files in directory [-D] main level.
+for fasta in ${directory}*.fasta; do
+  echo $fasta  # full file path to fasta from main level
+  
+  # Slice the loci substring following variable substitution syntaxes.
+  loci=${fasta(*@{\#\#}@*)${directory}}
+  loci=${loci%-*}
+  echo '  Processing loci' $loci "..."
+  
+  # Extract headers from the FASTA file using AWK.
+  headers=${directory}seq_headers/${loci}
+  awk '/^>/ {print $1}; END {print NR}' $fasta > ${headers}-seqs.txt
+ 
+  # Print number of FASTA headers.
+  awk 'END {printf("\tFASTA headers:%s\n", NR)}' ${headers}-seqs.txt
 
-# Establish a directory to hold sequence differences
-|<$>| mkdir seq_diffs
-
-# Write files comparing sequence differences
-|<$>| diff -b sorted/rITS_seqs-sorted.txt \
-    sorted/rps_seqs-sorted.txt > seq_diffs/rITS_rps
-
-|<$>| diff -b sorted/rITS_seqs-sorted.txt \
-    sorted/ycf1_seqs-sorted.txt > seq_diffs/rITS_ycf1
-
-|<$>| diff -b sorted/rps_seqs-sorted.txt \
-    sorted/ycf1_seqs-sorted.txt > seq_diffs/rps_ycf1
-
-# Inspect the header differences
-|<$>| tail -5 seq_diffs/rITS_rps  # print last five lines of file
->PDIDY_IN_3149
-46d46
->PINTE_3149
-54d53
->PSAXI_SA_3153
-\end{lstlisting}
-
-\clearpage
-
-\paragraph{} After determining which specimens had sequence data for all three loci, extra sequences were removed manually prior to alignment.  A new directory was created to store the trimmed, unaligned sequences prior to individually aligning the loci.  
-
-\vspace*{30pt}
-
-\begin{lstlisting}[caption=Create directory for trimmed FASTA files]
-# Change back to the main project directory
-|<$>| cd ../../
-
-# Establish a subdirectory to store the trimmed FASTA files
-|<$>| mkdir 1.trimmed_fastas
-
-# Trimmed FASTA files were manually moved into the new directory
-|<$>| ls 1.trimmed_fastas/ | more
-rITS_trimmed.fasta
-rps_trimmed.fasta
-ycf1_trimmed.fasta
-
-# Note the number of lines in each loci's FASTA file
-|<$>| wc -l 1.trimmed_fastas/*
-     152 1.trimmed_fastas/rITS_trimmed.fasta
-     152 1.trimmed_fastas/rps_trimmed.fasta
-     152 1.trimmed_fastas/ycf1_trimmed.fasta
-     457 total
-\end{lstlisting}
-
-\clearpage
-
-\subsection*{4. Multiple Sequence Alignment}
-
-\paragraph{} Following alignment on the CIPRES Science Gateway, a FASTA file with sequence strings wrapped into a new line every 60 characters was exported.   A new directory was established and the exported aligned FASTA files for each loci were deposited in that directory.  A pair of shell (.sh) scripts were used to process the sequence data prior to concatenation.
-
-\vspace*{30pt}
-
-\begin{lstlisting}[caption=Save aligned sequences in \textit{2.aligned\_fastas/}]
-# Establish directory to store the aligned FASTA files
-|<$>| mkdir 2.aligned_fastas
-
-# MAFFT output FASTA files were stored in the new directory
-|<$>| ls 2.aligned_fastas/ | more
-rITS_aligned.fasta
-rps_aligned.fasta
-ycf1_aligned.fasta
-
-# Note the number of lines in the aligned FASTA files
-|<$>| wc -l 2.aligned_fastas/*
-     612 2.aligned_fastas/rITS_aligned.fasta
-     867 2.aligned_fastas/rps_aligned.fasta
-     561 2.aligned_fastas/ycf1_aligned.fasta
-    2040 total
+  # Sort the sequence headers and redirect the output to a new file.
+  sort ${headers}-seqs.txt > ${headers}-sorted_seqs.txt
+  
+done
 
 \end{lstlisting}
 
 \clearpage
 
-\setcounter{lstlisting}{9}
-\begin{lstlisting}[caption=Continued]
-# Aligned sequences are exported in a wrapped FASTA format
-|<$>| head -3 2.aligned_fastas/*
-==> 2.aligned_fastas/rITS_aligned.fasta <==
->PACUT_8621 # ITS_1
-TCGATACCTTGACCAAACAGAACGACCYGCGAACCTATTATCACCACTCTCGGTGGGCTG
-GTTTCTTAACCGATCCCTTCCCGCCGGATCCGTGGTTTCGTGTATCTGTCCCGGCGCTGA
+\paragraph{} After declaring shell variables \textbf{\$fasta} and \textbf{\$loci}, headers from the multi-FASTA files are analyzed using an AWK (version 20070501) statement to print the FASTA sequence header lines demarcated by ">".  The AWK programming language evaluates each line - also referred to as a record - of an input file for a specified pattern, and executes a defined action on records matching the pattern (Aho et al. 1988).  If no action is defined, the default action is to print the record where the entire record is represented by the variable "\$0".  The general syntax of an AWK statement is as follows (Figure B8):
 
-==> 2.aligned_fastas/rps_aligned.fasta <==
->PACUT_8621 # rps_1
-TGATCTGCTGTGGATTTTTTCATCCGCCACTTTTTATATAGGTGCTCTTGGCTCGACATT
-TTTTGTTCT---------------ATTTTATCTATTTTACTAGAGTCCTACACTTTTTTG
+\vspace*{36pt}
 
-==> 2.aligned_fastas/ycf1_aligned.fasta <==
->PACUT_8621 # ycf1_1
-CATTATAAGTACATTTAATATGCATTTCACGTTTCCAATCCTTAAAATCCTCGGACCACT
-CGGGCAATTGAAATAATAATATACGGACGCTATTTTTAATTATTATCAATAAAGGTAATA
-
+\begin{lstlisting}[caption={An example AWK statement.}]
+# General AWK syntax:
+|<$>| awk ' pattern  { action } '  filename
 \end{lstlisting}
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\subsection*{5. FASTA File Unwrap}
+\paragraph{} Within an AWK statement, a pattern can consist of a regular expression indicated between forward slashes "/ /" (Wünschiers 2013, p. 201-202).  The \textit{fasta\_diffs.sh} script contains an AWK statement used to identify records (i.e. multi-FASTA file lines) that begin with the character ">", which denotes a FASTA sequence header.  To match these records, the regular expression position anchor caret character "\string^" is used to indicate the start of a line (Wünschiers 2013, p.166).  In the first \textit{fasta\_diffs.sh} AWK statement, combining "\string^" with the character ">"  establishes a regular expression matching records beginning with ">" (Line 12, Figure B7).  When this pattern is matched, the respective action for that record (i.e. sequence header line) is executed.  Here, the first field (indicated by \textbf{\$1}) of the record is printed, where fields are separated by default with a space (Wünschiers 2013, p. 198).  Following evaluation of the final input file line, an AWK END statement is invoked (Wünschiers 2013, p. 207) to print the value of a predefined AWK variable \textbf{NR} returning the number of records in the input file (Wünschiers 2013, p. 212).  The input filename for the first AWK statement is indicated by the shell variable \textbf{\$fasta} (Line 12, Figure B7).  Output from this AWK statement is then redirected as standard input using the UNIX assignment operator ">" to write a new text file.  A variable \textbf{\$headers} is declared using variable expansion of \textbf{\$directory} and \textbf{\$loci} (Line 11, Figure B7) to form a filepath used to write new files in the \textit{seq\_headers/} directory with the string "-seqs.txt" appended to the filename.
 
-\paragraph{} To facilitate downstream analysis, a script was written to ``unwrap" the sequence data into single line strings.  The script \textit{unwrap\_fasta.sh} includes two AWK statements containing regular expressions, an exit status to prevent silent errors, and an END block statement.  Records matching the regular expression pattern cause the corresponding action to be executed.  After reading all lines of the input file, the END block is executed.
+\paragraph{} A second AWK statement evaluates the sequence header file written by the first (Line 15, Figure B7).  Here, an AWK END statement is invoked to print the number of records in the sequence header file to the command line interface.  This statement utilizes the command \textbf{printf} which allows for formatting the print output (Aho et al. 1988).  By default, \textbf{printf} does not append newline characters to the end of a print statement.  Instead, a string is used to dictate the output format of subsequent items (e.g. variables, strings, or numerics) where a format specifier indicates the type of item to be printed (Wünschiers 2013, p. 227).  To print the string in variable \textbf{NR}, the format specifier for strings "\%s" is combined with the special characters "\textbackslash t" and "\textbackslash n" for tab and newline characters, respectively, in addition to the string "FASTA headers:" (Line 15, Figure B7).  The newly written FASTA sequence header file is called as the AWK statement input file (Line 15, Figure B7).  This effectively prints the number of sequence headers in the FASTA file to the command line interface (Figure Appendix 9).
+
+\vspace*{36pt}
+
+\begin{lstlisting}[caption={Output of \textit{fasta\_diffs.sh} script.}]
+|<$>| ./Fasta_Utilities/fasta_diffs.sh -D 0.raw_fastas/
+0.raw_fastas/rITS-combined_raw.fasta
+  Processing loci rITS ...
+	FASTA headers:71
+0.raw_fastas/rps-combined_raw.fasta
+  Processing loci rps ...
+	FASTA headers:67
+0.raw_fastas/ycf1-combined_raw.fasta
+  Processing loci ycf1 ...
+	FASTA headers:50
+\end{lstlisting}
 
 \clearpage
 
-\begin{lstlisting}[caption={Contents of the \textit{unwrap\_fasta.sh} Shell Script}]
-# Remove text wrapping from a multi-FASTA file and
-# separate header lines and sequences into continuous strings.
+\paragraph{} To faciliate FASTA sequence header comparisons, an indexed array \textbf{\$sorted\_fastas} is declared to contain the filenames of all sorted sequence header files in the respective \textit{seq\_headers/} directory (Line 2, Figure B10).  Array elements can be referred to using the contstruct \textit{\$\{name[subscript]\}} where the character "@" can be substituted for \textit{subscript} to reference all elements of the array (GNU Bash Manual 6.7).  Using the "\#" character preceding \textit{name} expands to the length of the array elements included where \textit{\$\{\#name[@]\}} returns the total number of elements in an array.  Notably, indexed arrays are zero-based such that the subscript referring to the first array element is 0.
 
-awk '
+\paragraph{} A nested loop construct (GNU Bash Manual 3.2.4.1) is established using C style shell arithmetic (GNU Bash Manual 6.5) with the first of two loops consisting of the following three expressions (Line 5, Figure B10): "i=0", \mbox{"i < (( \$\{\#sorted\_fastas[@]\} - 1 ))"}, and "i++".  The first expression is evaluated such that variable \textbf{i} is set to 0.  The second expression is then evaluated repeatedly until the expression is false.  For each iteration where the expression is true, the commands in the loop (here the second, inner loop construct; lines 8-21, Figure B10) are executed and the third expression is evaluated to increase the value of \textbf{i} by an increment of 1.  Here, the second expression is true for each iteration where \textbf{i} is less than the total number of \textbf{\$sorted\_fastas} array elements (i.e. sorted sequence header files) minus one.  Therefore, if there are three sorted sequence header files, the outer loop will be executed only twice.
 
-# print sequence header if record begins with ``>''
-/^>/ {printf ``\n%s\n'', $1};
-
-# print record if sequence strings contain only letters and dashes
-/^[A-Za-z\-]+$/ {printf ``%s'', $0};
-
-# if record contains a complementary character (i.e. non-letter or dash)
-# AND does not begin with ``>''
-$0 !~ /^>/ && $0 !~ /^[A-Za-z\-]+$/ {exit}; # exit program error catch
-
-# pipe output into sed to remove empty strings
-END {print ``\n''}' $1 | sed /^$/d
-
-\end{lstlisting}
-
-\vspace*{30pt}
-
-\paragraph{} This script makes use of a few regular expression metacharacters: the caret ``\string^", the dollar sign ``\$", the plus sign ``+", and brackets ``[]".  The caret metacharacter matches the beginning of a string while the dollar sign matches the end of a string.  The plus sign is used to match the preceding character or list of characters at least one or more times.  Finally, the brackets are used to denote a character class that matches a set of characters.
+\paragraph{} In the inner loop, expansion of the \textbf{seq} utility returns a sequence of integers from the value of \textbf{i} set in the outer loop to the value of two less than the total number of array elements in \textbf{\$sorted\_fastas} (Line 8, Figure B10).  A variable for the name of the first loci FASTA header file is established by slicing the preceding directory path and substring following the loci name (Lines 11 \& 12, Figure B10).  The value of \textbf{j} is then used to set the name of the comparison loci as \textbf{\$loci2} based on the array element in \textbf{\$sorted\_fastas} (Lines 13 \& 14, Figure B10).  Finally, the \textbf{diff} utility is used to compare the sequence headers in the array element FASTA header file set by subscript \textbf{i} to that set by \textbf{j}, the output of which is directed into a file named by the two loci being compared (Lines 18 \& 19, Figure B10).  Therefore in a directory with three FASTA files, the nested loop construct compares the first FASTA header file with the second and third in the first pass, then compares the second FASTA header file with the third on the second pass. 
 
 \clearpage
 
-\begin{lstlisting}[caption={\textit{unwrap\_fasta.sh} AWK Print Statements}]
-# AWK statement 1
-/^>/ {printf ``\n%s\n'', $1}
+\begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)}, caption={Sequence header file difference comparisions.}]
+# Create indexed array of sorted FASTA sequence header files.
+sorted_fastas=(${directory}seq_headers/*sorted*)
 
-# AWK statement 2
-/^[A-Za-z\-]+$/ {printf ``%s'', $0}
+# Iterate through array elements prior to the final element.
+for ((i=0; i < (( ${(*@{\#}@*)sorted_fastas[@]} - 1 )); i++)); do 
+
+  # Nested loop for pairwise sequence header comparisions.
+  for j in $(seq $i $(( ${(*@{\#}@*)sorted_fastas[@]} - 2 ))); do
+  
+    # Slice variables from loci names for sequence header diff files.
+    loci1=${sorted_fastas[i](*@{\#\#}@*)*/seq_headers/}
+    loci1=${loci1%-sorted*}
+    loci2=${sorted_fastas[$(( $j + 1 ))](*@{\#\#}@*)*/seq_headers/}
+    loci2=${loci2%-sorted*}
+
+    # Create file with pairwise diff calculations of sequence headers.
+    # diff command flag "-b" ignores white space.
+    diff -b ${sorted_fastas[i]} ${sorted_fastas[$(( $j + 1 ))]} > \
+    ${directory}seq_diffs/diffs-${loci1}_${loci2}.txt
+  
+  done
+  
+done
 \end{lstlisting}
 
-\vspace*{30pt}
+\vspace*{36pt}
 
-\paragraph{} The first AWK statement will match any record beginning with the greater than symbol ``>" used to denote sequence headers.  In the second AWK statement, the regular expression includes a character class containing the range of all upper case and lower case letters in addition to the dash symbol ``\-" which is preceded by an escape character to preserve its literal value.  The use of the preceding caret and the ``+\$" construct after the brackets ensures the whole line consists of only characters given in that class.  For a sequence alignment, the only characters expected are alphabetic values and dashes indicating gaps in alignment.  
+\paragraph{} When the optional argument [-N] is included, a variable \textbf{\$new\_directory} is declared (Line 8, Figure B4) to establish a new directory with FASTA files copied from the directory set by the [-D] argument.  If the string in \textbf{\$new\_directory} is not empty (Line 1, Figure B11), the final character is sliced as the variable \textbf{\$new\_dir\_end} (Line 3, Figure B11) and a new directory is established if \textbf{\$new\_directory} is not an existing directory and \textbf{\$new\_dir\_end} matches the character "/" (Lines 13-14, Figure B11).  FASTA files in the directory set by [-D] are then copied to the new directory (Line 18, Figure B11).  
 
-\paragraph{} AWK statement one and two utilize the command ``printf” which allows one to format the print output (Aho et al. 1988).  By default, ``printf” does not append newline characters to the end of a print statement.  Instead, the format of the print statement is specified within double quotes, and the value to print follows a comma.  For the first AWK statement, records beginning with ``>” will print a newline character, followed by the string (denoted by ``\%s”) contained in the first field of the record (i.e. the sequence header string, denoted by ``\textbackslash\$1"), and an additional newline character.  In the second AWK statement, records that begin with a letter or dash (i.e. wrapped sequence data lines) print the sequence string of the full record, denoted by ``\textbackslash\$0".  This effectively removes newline characters from the end of lines containing sequence data. 
+\vspace*{36pt}
+
+\begin{lstlisting}[numbers=left, showstringspaces=false, escapechar=\%, caption={Establish a new directory and copy FASTA files for manual edits.}]
+if [ -n "$new_directory" ]; then
+
+  new_dir_end=${new_directory:${#new_directory}-1}
+  
+  if [ -d "$new_directory" ]; then  # check directory existence
+      echo "Directory" $new_directory "already exists !" 
+  fi
+  if [ "$new_dir_end"  != "/" ]; then  # check final directory character
+      echo "Exiting..." $new_directory "is not a valid directory name."; 
+      exit
+  fi
+  # Check if input argument [-N] exists AND ends in character "/".
+  if [ ! -d "$new_directory" ] && [ "$new_dir_end"  = "/" ]; then 
+    mkdir ${new_directory}
+  fi
+  
+  # Copy multi-FASTA files into a second directory for manual trimming.
+  cp ${directory}*fasta $new_directory
+\end{lstlisting}
+
+\vspace*{36pt}
+
+\paragraph{} After copying files to the new directory, the option [-f] can be used to append a sequence filename string to the FASTA loci.  When variable \textbf{\$filename} is set (Line 11, Figure B4), if it is a non-empty string (Line 2, Figure B12) the last six characters of the character string in \textbf{\$filename} are sliced as variable \textbf{\$fasta\_ext} (Line 4, Figure B12).  If the value of \textbf{\$fasta\_ext} matches the string ".fasta", the file extension is removed from \textbf{\$filename} (Lines 5 \& 6, Figure B12).  Lastly, a for loop is established to rename the copied files in the new directory with the value of \textbf{\$filename} by isolating the name of the loci (Lines 10 \& 11, Figure B12) as variable \textbf{\$loci} and then using the \textbf{mv} utility for each file \textbf{\$fasta} by the variable construct \textbf{\mbox{"\$\{new\_directory\}\$\{loci\}-\$\{filename\}.fasta"}} (Line 12, Figure B12).  
+
+\vspace*{36pt}
+
+\begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)}, caption={Optional renaming of copied FASTA files.}]
+  # Optional string to append to filenames after copying to new directory.
+  if [ -n "$filename" ]; then
+    # Slice last six characters from filename string to verify extension.
+    fasta_ext=${filename:${(*@{\#}@*)filename}-6}  
+    if [ "$fasta_ext" = ".fasta" ]; then
+      filename=${filename%.fasta}  # remove ".fasta" extension if present
+    fi
+    # Rename the copied raw files prior to manual removing extra sequences.
+    for fasta in ${new_directory}*fasta; do
+      loci_file=${fasta(*@{\#\#}@*)${new_directory}}
+      loci=${loci_file%-*}
+      mv $fasta ${new_directory}${loci}-${filename}.fasta
+    done
+  fi
+fi
+\end{lstlisting}
+
+\clearpage
+
+\paragraph{} Executing the \textit{fasta\_diffs.sh} script on the \textit{0.raw\_fastas/} directory creates sorted sequence header and header difference files for FASTA files contained therein.  FASTA files in \textit{0.raw\_fastas/} were copied to a new directory \textit{1.trimmed\_fastas\_ml} (indicated by [-N]) with the filename "trimmed\_ml" (indicated by [-f]) appended to the sequence loci.  Usage of the script is as follows:
+
+\vspace*{36pt}
+
+\begin{lstlisting}[caption={Execute the program from the main level of the project directory.}]
+|<$>| ./Fasta_Utilities/fasta_diffs.sh -D 0.raw_fastas/ \
+> -N 1.trimmed_fastas_ml -f trimmed_ml
+0.raw_fastas/rITS-combined_raw.fasta
+  Processing loci rITS ...
+	FASTA headers:71                 # number of sequence headers
+0.raw_fastas/rps-combined_raw.fasta
+  Processing loci rps ...
+	FASTA headers:67
+0.raw_fastas/ycf1-combined_raw.fasta
+  Processing loci ycf1 ...
+	FASTA headers:50
+\end{lstlisting}
+
+\vspace*{36pt}
+
+\paragraph{} After determining which specimens had sequence data for all three loci, extra sequences were removed manually from FASTA files in \textit{1.trimmed\_fastas\_ml} prior to alignment.  Running the \textit{fasta\_diffs.sh} script with \textit{1.trimmed\_fastas\_ml/} for option [-D] will create sequence header difference files for the trimmed FASTA files in the new directory.  Trimmed FASTA files should have an equivalent number of specimens, an attribute that can be verified using the word count utility \textbf{wc} with the option [-l] to count the number of lines in the sorted sequence header files (Line 13, Figure B14).
+
+\clearpage
+
+\begin{lstlisting}[numbers=left, caption={Verify equal specimen sampling between loci.}]
+|<$>| ./Fasta_Utilities/fasta_diffs.sh -D 1.trimmed_fastas_ml/
+1.trimmed_fastas_ml/rITS-trimmed_ml.fasta
+  Processing loci rITS ...
+	FASTA headers:46
+1.trimmed_fastas_ml/rps-trimmed_ml.fasta
+  Processing loci rps ...
+	FASTA headers:46
+1.trimmed_fastas_ml/ycf1-trimmed_ml.fasta
+  Processing loci ycf1 ...
+	FASTA headers:46
+	
+|<$>| wc -l 1.trimmed_fastas_ml/seq_headers/*sorted*
+      46 1.trimmed_fastas_ml/seq_headers/rITS-sorted_seqs.txt
+      46 1.trimmed_fastas_ml/seq_headers/rps-sorted_seqs.txt
+      46 1.trimmed_fastas_ml/seq_headers/ycf1-sorted_seqs.txt
+     138 total
+\end{lstlisting}
+
+\vspace*{36pt}
+
 
 \paragraph{} The "EXIT" statement is used to leave the program if the record does not start with ">" (i.e. is a sequence header) and also contains a character that is not either alphabetical (upper- or lowercase) or a dash (i.e. sequence data).  This is an important step to prevent potential silent errors in program output.  
 
