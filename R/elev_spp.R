@@ -12,9 +12,10 @@ require(ggmap)
 #   raster_factor: Optional call of raster::aggregate to factor resolution
 #   map_borders: Color aesthetic for border polygon geoms.
 #
-elev_spp <- function(specimens, raster_zoom = 7, raster_factor = 2, 
-                     map_borders = "black", jitter_geoms = TRUE, 
-                     geom_size = 3, jitter_pos = c(0.02, 0.02)) {
+elev_spp <- function(specimens, raster_zoom, raster_factor = 2, 
+                     map_borders = "black", geom_size = 3,
+                     spp_id = "Taxon_a_posteriori", 
+                     lengend_title = "Reviewed Annotations") {
   
   # Set API from Nextzen (https://www.nextzen.org/)
   elevatr_aws_api <- "wVm9mkIHRLOPQ3zlWwT3DA"
@@ -63,7 +64,12 @@ elev_spp <- function(specimens, raster_zoom = 7, raster_factor = 2,
   # Return data frames for state and county borders.
   mapped_states <- map_data("state")
   mapped_counties <- map_data("county")
- 
+  
+  # Subset plotting data to remove extra data and missing values.
+  spp_plot <- specimens[, c(spp_id, "Longitude", "Latitude")]
+  spp_plot <- spp_plot[which(!is.na(spp_plot[, spp_id])), ]
+  geom_size_corr <- geom_size + 0.25
+
   # ggplot elevation projection with county & state borders.
   spp_elev_ggplot <- ggplot(spp_elev_df, aes(x=x, y=y)) +
     geom_tile(aes(fill = layer)) + 
@@ -73,43 +79,20 @@ elev_spp <- function(specimens, raster_zoom = 7, raster_factor = 2,
     geom_polygon(data = mapped_states, 
                  mapping = aes(x = long, y = lat, group = group),
                  color = map_borders, fill = NA, size = 1.5)  +
-    # coord_equal(xlim = map_xlim, ylim = map_ylim, expand = FALSE) + 
-    coord_equal(xlim = map_xlim, ylim = map_ylim, expand = FALSE) +
-    scale_fill_gradientn("Elevation", colours = terrain.colors(7))
-  
-  # Add geom layer of specimen occurrences and format scales.
-  spp_elev_ggplot <- spp_elev_ggplot + 
-    # geom_point(data = specimens, 
-    #            aes(Longitude, Latitude), size = 3.25, shape = 18) +
-    geom_jitter(data = specimens, na.rm = TRUE,
-                aes(x = Longitude, y = Latitude,
-                    colour = Taxon_a_posteriori, shape = Taxon_a_posteriori),
-                size = geom_size, width = jitter_pos[1], height = jitter_pos[2]) +
+    geom_point(data = spp_plot, size = geom_size_corr, show.legend = FALSE,
+               aes(x = Longitude, y = Latitude), colour = "black", alpha = 0.2) +
+    geom_point(data = spp_plot, size = geom_size, na.rm = TRUE,
+               aes(x = Longitude, y = Latitude, 
+                   colour = get(spp_id), shape = get(spp_id))) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude") +
-    scale_color_manual("Reviewed Annotations", values = spp_color) + 
-    scale_shape_manual("Reviewed Annotations", values = spp_shape) + 
-    
-    # Global legend theme, guides and limits for ggmaps.
+    scale_color_manual(lengend_title, values = spp_color) +
+    scale_shape_manual(lengend_title, values = spp_shape) +
+    coord_equal(xlim = map_xlim, ylim = map_ylim, expand = FALSE) +
+    scale_fill_gradientn("Elevation (m)", colours = terrain.colors(7)) +
     theme(panel.grid = element_blank(), panel.background = element_blank(),
-          legend.direction = "vertical", legend.position = "bottom") + 
+          legend.direction = "vertical", legend.position = "bottom")
     
-    guides(colour = guide_legend(ncol = 1))
-  
-      # legend.box = "vertical", , 
-      #     , legend.title.align = 0.5,
-         # ) + 
-    
-    # theme(legend.position = c(0, .75), 
-    #       legend.justification = c(0, 1), 
-    #       legend.direction = "vertical") + 
-  
-  # ggmap_themes <- theme(legend.box = "vertical", legend.position = "bottom", 
-  #                       legend.direction = "vertical", legend.title.align = 0.5)
-  # ggmap_guides <- guides(colour = guide_legend(ncol = 2, byrow = TRUE))
-
-  
-  
   # Return ggplot built from elevation tile raster, border, and specimen geoms.
   return(spp_elev_ggplot)
 }
