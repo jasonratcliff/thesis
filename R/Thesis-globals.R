@@ -62,6 +62,7 @@ source("R/morph_spp.R")  # Source morph_spp()
 source("R/cont_spp.R")  # Source con_trait()
 source("R/elev_spp.R")  # Source elev_spp()
 source("R/disc_viz.R")  # Source disc_viz()
+source("R/knitr_helper.R") # knitr figure caption and chunk label functions
 
 # Setup for Phylogenetic Tree Annotation
 source("R/herb_tree.R") # Source phylogenetic annotation functions
