@@ -85,12 +85,22 @@ kable_format <- function(label_resolve_csv, table_split = NULL,
     write.csv(id_seqs_table, file = id_seq_filename, row.names = F)
   }
 }
+
+# Returns knitr::kable object with additional kableExtra:: options.
+latex_kable <- function(id_seq_csv, kable_caption) {
   chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
+  id_seqs_table <- read.csv(file = id_seq_csv,
+                            header = TRUE, row.names = NULL, as.is = TRUE,
+                            check.names = FALSE, stringsAsFactors = FALSE, 
+                            colClasses = "character")
+  id_seq_kable <- kable(id_seqs_table, caption = kable_caption,
+                        format = chunk_type, escape = F, row.names = FALSE) %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 10) %>%
     column_spec(1, border_left = TRUE) %>%
     column_spec(3, width = "3.6cm") %>%
     column_spec(5, border_right = TRUE, width = "2cm") %>%
+    collapse_rows(columns = 1:3)
   return(id_seq_kable)
 }
