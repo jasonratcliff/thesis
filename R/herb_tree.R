@@ -73,6 +73,13 @@ herb_tree <- function(bayes_file, label_issue = FALSE,
   label_resolve <- bayes_ext  # duplicate data frame to resolve label issues
   resolve_count <- 1
   
+  # Establish log file to write which taxa labels don't match DNA_META indices.
+  log_filename <- gsub("infile.nex.con.tre", "label_resolve.log", bayes_file)
+  if (file.exists(log_filename)) {
+    file.remove(log_filename)
+  } 
+  label_resolve_log <- file(description = log_filename, open = "w")
+  
   # Combine each row of bayes data frame with specimen metadata in DNA_META.
   for (i in which(!is.na(bayes_df$label) == TRUE)) {
     
@@ -81,7 +88,8 @@ herb_tree <- function(bayes_file, label_issue = FALSE,
     
     # Resolve label issue if the BAYES_DF label does not match DNA_META.
     if (length(dna_meta_id) == 0) {
-      print(paste(bayes_df$label[i], "Does not match DNA_META, i == ", i))
+      cat(file = label_resolve_log, sep = "\n", append = TRUE,
+          paste(bayes_df$label[i], "Does not match DNA_META, i == ", i))
       id_seq_label <- bayes_df$label[i]
       id_dupes <- unlist(strsplit(id_seq_label, "_P"))
       id_dupes_fix <- c(id_dupes[1],
