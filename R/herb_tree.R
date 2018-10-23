@@ -127,8 +127,9 @@ herb_tree <- function(bayes_file, label_issue = FALSE,
 
 # Annotate ggtree objects taking into account nodes representing
 # multiple specimens with identical DNA sequence data.
-tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn", 
-                      legend_title = "Reviewed Annotations") {
+tree_taxa <- function(ggtree_df, bayes_file, x_adjust_factor = 2,
+                      spp_id = "Physaria_syn", 
+                      legend_title = "Reviewed Annotations", ...) {
 
   # Subset Bayesian probabilities at nodes (i.e. non-tip branches).
   bayes_probs <<- ggtree_df[which(ggtree_df$isTip == FALSE &
@@ -182,7 +183,7 @@ tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn",
   }
   
   # Add tip labels for single taxa nodes.
-  x_max_adjust <<- max(range(ggtree_df$x)) + (x_adjust * 2)
+  x_max_adjust <<- max(range(ggtree_df$x)) + (x_adjust * x_adjust_factor)
   single_taxa_node <- ggtree_df[single_nodes, ]
   bayes_tree <- bayes_tree +
     geom_tiplab(data = single_taxa_node, mapping = aes(x = x_max_adjust),
@@ -212,9 +213,11 @@ tree_taxa <- function(ggtree_df, spp_id = "Physaria_syn",
 }
 
 # Adjust scales and legends of Physaria tree.
-tree_scale <- function(bayes_ggtree, x_expand = 0.0225) {
+tree_scale <- function(bayes_ggtree, x_expand = 0.0225, 
+                       legend_y_pos = c(0, 0.8), ...) {
   bayes_ggtree <- bayes_ggtree + 
-    theme(legend.position = c(0, .8), legend.justification = c(0, 1),
+    theme(legend.position = legend_y_pos, 
+          legend.justification = c(0, 1),
           legend.direction = "vertical",
           legend.text = element_text(size = 7),
           legend.box.background = element_blank()) +
@@ -233,9 +236,24 @@ tree_grid <- function(bayes_ggtree_plot) {
 }
 
 # Wrapper function for plotting ggtree objects with specimen annotations.
-tree_plot <- function(consensus_tree_file) {
-  herbarium_bayes_df <- herb_tree(bayes_file = consensus_tree_file)
-  bayes_tree <- tree_taxa(ggtree_df = herbarium_bayes_df)
-  bayes_tree <- tree_scale(bayes_ggtree = bayes_tree)
+tree_plot <- function(consensus_tree_file, ...) {
+  arguments <- list(...)
+  herbarium_bayes_df <- invisible(herb_tree(bayes_file = consensus_tree_file))
+  
+  # Parse args and call function tree_taxa().
+  tree_taxa_args <- arguments[which(names(arguments) %in%
+                                      names(formals(tree_taxa)))]
+  tree_taxa_arg_list <- c(list(ggtree_df = herbarium_bayes_df,
+                               bayes_file = consensus_tree_file),
+                          tree_taxa_args)
+  bayes_tree <- do.call(what = tree_taxa, args = tree_taxa_arg_list)
+  
+  # Parse args and call function tree_scale().
+  tree_scale_args <- arguments[which(names(arguments) %in%
+                                       names(formals(tree_scale)))]
+  tree_scale_arg_list <- c(list(bayes_ggtree = bayes_tree),
+                           tree_scale_args)
+  bayes_tree <- do.call(what = tree_scale, args = tree_scale_arg_list)
+  
   return(bayes_tree)
 }
