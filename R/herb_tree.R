@@ -121,7 +121,6 @@ herb_tree <- function(bayes_file, label_issue = FALSE,
   }
   # Global variable assignment for nodes with multiple identical specimens.
   assign(x = "label_resolve", label_resolve, envir = .GlobalEnv)
-  # assign(x = "bayes_ext", bayes_ext, envir = .GlobalEnv)
   return(bayes_ext)
 }
 
@@ -192,12 +191,12 @@ tree_taxa <- function(ggtree_df, bayes_file, x_adjust_factor = 2,
   # Add tip labels for multi taxa nodes.
   # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
   multi_taxa_node <- ggtree_df[!(ggtree_df$node %in% single_nodes), ]
-  mutli_node_order <- table(node_species$node)[order(table(node_species$node), 
+  multi_node_order <- table(node_species$node)[order(table(node_species$node), 
                                                      decreasing = TRUE)]
-  multi_node_names <- as.numeric(names(mutli_node_order))
+  multi_node_names <- as.numeric(names(multi_node_order))
   multi_taxa_ordered <- multi_taxa_node[match(multi_taxa_node$node, 
                                               multi_node_names), ]
-  allele_names <- sapply(seq(1, length(mutli_node_order)), USE.NAMES = FALSE,
+  allele_names <- sapply(seq(1, length(multi_node_order)), USE.NAMES = FALSE,
                          function(allele) {
                            allele_name <- paste0("Genotype~", allele)
                            })
@@ -207,6 +206,18 @@ tree_taxa <- function(ggtree_df, bayes_file, x_adjust_factor = 2,
     invisible(geom_tiplab(aes(label=paste0("bold(", alleles, ')'), 
                               x = x_max_adjust), 
                 size = 3, linesize = .25, align = TRUE, parse = TRUE))
+  
+  # Write LABEL_RESOLVE data frame to .csv order by genotype to match tree.
+  identical_seqs <- label_resolve[, c("label", "taxa_label", "node",
+                                      "Collection_Number", "Collector", 
+                                      "County", "State", "Herbarium", 
+                                      "Physaria_syn", "Taxon_a_posteriori")]
+  genotype_order <- sapply(multi_node_names, USE.NAMES = FALSE, function(node) {
+    which(identical_seqs$node %in% node)
+  })
+  write.csv(x = identical_seqs[unlist(genotype_order), ],
+            file = gsub("infile.nex.con.tre", "label-resolve.csv", 
+                        bayes_file))
   
   # Return ggplot object.
   return(bayes_tree)
