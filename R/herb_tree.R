@@ -2,13 +2,7 @@
 #
 # Input a Nexus file containing the consensus tree from MrBayes analysis
 # to combine with DNA specimen data for plotting onto the phylogenetic tree.
-library(ggtree)
-library(plyr)
-library(magrittr)
-
-# Source ggplot aesthetic variables for Physaria species.
-source("R/ggplot_aes_vars.R")
-
+#
 # Establish data frame from list of DNA extracted herbarium specimens.
 source("Phys_DNA/DNA_specimens.R")
 dna_meta <- ldply(dna_specimens)  # voucher associated metadata
