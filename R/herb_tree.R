@@ -157,7 +157,7 @@ tree_taxa <- function(ggtree_df, bayes_file, x_adjust_factor = 2,
     geom_text(data = bayes_probs, 
               aes(label = sprintf("%0.3f", round(as.numeric(bayes_probs$prob),
                                                  digits = 3))), 
-              vjust = -0.45, hjust = 1.1, size = 2) + 
+              vjust = -0.45, hjust = 1.1, size = 3) + 
     
     # Add points for single specimen annotations by color and shape.
     geom_point(data =  ggtree_df[single_nodes, ], 
@@ -218,14 +218,15 @@ tree_taxa <- function(ggtree_df, bayes_file, x_adjust_factor = 2,
   # Write LABEL_RESOLVE data frame to .csv order by genotype to match tree.
   identical_seqs <- label_resolve[, c("label", "taxa_label", "node",
                                       "Collection_Number", "Collector", 
-                                      "County", "State", "Herbarium", 
+                                      "County", "State", "Herbarium",
+                                      "Longitude", "Latitude",
                                       "Physaria_syn", "Taxon_a_posteriori")]
   genotype_order <- sapply(multi_node_names, USE.NAMES = FALSE, function(node) {
     which(identical_seqs$node %in% node)
   })
   write.csv(x = identical_seqs[unlist(genotype_order), ],
             file = gsub("infile.nex.con.tre", "label-resolve.csv", 
-                        bayes_file))
+                        bayes_file), row.names = FALSE)
   
   # Return ggplot object.
   return(bayes_tree)
