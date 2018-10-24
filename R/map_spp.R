@@ -5,7 +5,7 @@ require(ggmap)
 map_spp <- function(map_frame, base_opt, taxa_id, 
                     mapped_spp = c("skip", "confirmed", 
                                    "questioned", "remain"),
-                    map_x = "Longitude", map_y = "Latitude",
+                    map_x = "Longitude", map_y = "Latitude", f_adj = 0.075,
                     jitter_geoms = TRUE, geom_size = 3, jitter_pos = c(0, 0),
                     map_borders = "black", map_fill = NA, shape_opt = NULL,
                     id_spp = FALSE, save_plot = FALSE, map_name = NULL, 
@@ -75,7 +75,8 @@ map_spp <- function(map_frame, base_opt, taxa_id,
   #  $group - structures how points are plotted
   
   # Build map base layer from state and county border "maps" data frames.
-  { mapped_env <- new.env() # Environment MAPPED_ENV for intermediate objects.  
+  { 
+    mapped_env <- new.env() # Environment MAPPED_ENV for intermediate objects.  
   mapped_env$states <- c("montana", "wyoming", "idaho", "colorado", "utah", 
                          "washington","oregon", "nevada", "arizona", 
                          "new mexico", "nebraska", "north dakota", 
@@ -106,9 +107,8 @@ map_spp <- function(map_frame, base_opt, taxa_id,
                  width = jitter_pos[1], height = jitter_pos[2]) +
       
       # Adjust the axes using grDevices::extendrange() function
-      coord_fixed(xlim = extendrange(phys_mapped$Longitude, f = 0.075),
-                  ylim = extendrange(phys_mapped$Latitude, f = 0.075))
-    
+      coord_fixed(xlim = extendrange(phys_mapped$Longitude, f = f_adj),
+                  ylim = extendrange(phys_mapped$Latitude, f = f_adj))
   }
   
   # Build map on ggmap base layer output by topo_spp() function.
@@ -185,63 +185,17 @@ map_spp <- function(map_frame, base_opt, taxa_id,
                                              collection_number, sep = "\n")))
     }
   
-  # When MAP_NAME is given as input and SAVE_PLOT == TRUE,
-  # write output files to "Phys_logs/map_logs/" subdirectory.
+  # Option to write ggplot to PDF saved by MAP_NAME.
   if (save_plot == TRUE) {
-    
-    # Check for character vector MAP_NAME argument.  
-    if(is.null(map_name)) {  # stop if NA
+    if(is.null(map_name)) { 
       stop("Input character vector of length 1 for file output.")
     }
-    
-    # Check existence of directory "Phys_maps/" for writing map plots and logs.
     if(!dir.exists("Phys_maps/")) {
-      dir.create("Phys_maps/")  # create if non-existent
+      dir.create("Phys_maps/")
     }
-    
-    # Check existence of "Phys_maps/" subdirectory "map_logs/".
-    else if(dir.exists("Phys_maps/") & 
-            !dir.exists("Phys_maps/map_logs")) {
-      dir.create("Phys_maps/map_logs")  # create if non-existent
-    }
-    
-    # Open log file to write output of map specific counties and taxa IDs.
-    map_log <- file(paste("Phys_maps/map_logs/", 
-                          map_name, ".txt", sep = ""), 
-                    open = "w")  # Open file to write.
-    
-    # cat(print(sys.call(which = 1)), file = map_log, sep = "\n")
-    
-    # Write unique PHYS_MAPPED set from character vector $County to MAP_LOG.
-    cat(c("Counties:", "\n"), 
-        unique(phys_mapped$County), 
-        file = map_log, sep = "\n")
-    
-    cat("\n\n\n", file = map_log)
-    
-    # Write MAPPED_QUESTIONED $Taxon_a_posteriori matching "?" TO MAP_LOG.
-    cat(c("Questioned taxa:", "\n"),
-        unique(mapped_questioned$Taxon_a_posteriori), 
-        file = map_log, sep = "\n")
-    
-    cat("\n\n\n", file = map_log)
-    
-    # Write inverse set (i.e. confirmed IDs) not matching "?" to MAP_LOG.
-    cat(c("Confirmed taxa:", "\n"),
-        unique(mapped_confirmed$Taxon_a_posteriori), 
-        file = map_log, sep = "\n")
-    
-    close(map_log)  # close file connection
-    
-    # Check existence of "Phys_maps/" subdirectory "map_plots".
-    if(!dir.exists("Phys_maps/map_plots/")) {
-      dir.create("Phys_maps/map_plots/")  # create if non-existent
-    }
-    
     # Function ggplot2::ggsave() writes plot output as .pdf files.
-    # Files are written to "Phys_maps/" subdirectory named by MAP_NAME.
     ggsave(filename=paste(as.character(map_name), "pdf", sep="."),
-           device="pdf", path="Phys_maps/map_plots/")
+           device="pdf", path="Phys_maps")
     
   }
   # Return ggmap
