@@ -125,60 +125,26 @@ tree_grid(bayes_rps_tree)
 
 \clearpage
 
-\subsection{ycf1 Sequence Analysis}
+\subsection{\textit{ycf1} Sequence Analysis}
 
 ```{r chapterSubsectionYcf1Seq, results = "asis", eval=FALSE}
 
-knitr_chunk_html("### ycf1 Sequence Analysis")
+knitr_chunk_html("### *ycf1* Sequence Analysis")
 
 ```
 
-```{r resultsTable3IdenticalSeqYcf1, eval=FALSE}
+```{r resultsTable3IdenticalSeqYcf1}
 
-# Read in specimen data .csv file from Phys_DNA/ subdirectory.
-# In the .csv file, escape character "\n" is quoted.
-# Once read, grep sub to replace the surrounding quotes.
-seq_ycf1 <- read.csv("Phys_DNA/table-ycf1-seqs.csv", 
-                    header = TRUE, row.names = NULL, 
-                    check.names = FALSE, stringsAsFactors = FALSE,
-                    allowEscapes = TRUE)
+ycf1_id_seqs <- read.csv("Phys_DNA/Seq-Tables/ycf1_identical_seqs.csv",
+                         header = TRUE, row.names = NULL, as.is = TRUE,
+                         check.names = FALSE, stringsAsFactors = FALSE, 
+                         colClasses = "character")
+ycf1_id_seqs$Collector <- collector_format(ycf1_id_seqs$Collector)
+write.csv(ycf1_id_seqs, row.names = FALSE,
+          file = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table.csv")
 
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html')
-# Add Caption formatted by knitr chunk type.
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "latex") { 
-  
-  # Add Caption formatted by knitr chunk type
-  knitr_caption <- "\\textit{Physaria} specimens with identifcal
-                    \\textit{rps} intron sequence genotypes."
-  
-} else if (knitr_chunk == "html") {
-  
-  knitr_caption <- "*Physaria* specimens with identifcal
-                    *rps* intron sequence genotypes."
-  
-  # Format italics for hmtl knitr table replacing LaTeX function calls.
-  seq_ycf1$Species <- gsub("\\\textit\\{", "\\*", seq_ycf1$Species)
-  seq_ycf1$Species <- gsub("\\}$", "\\*", seq_ycf1$Species)
-  seq_ycf1$Species <- gsub("\\} ssp.", "\\*  ssp.", seq_ycf1$Species)
-  seq_ycf1$Collector <- gsub("\\\\&", "&", seq_ycf1$Collector)
-  
-}
-
-# knitr::kable with additional kableExtra:: options
-kable(seq_ycf1, format = knitr_chunk, escape = FALSE, row.names = FALSE, 
-      caption = knitr_caption) %>%
-  kable_styling(full_width = FALSE, font_size = 10,
-                  latex_options= "hold_position") %>%
-  row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-  column_spec(1, border_left = TRUE) %>%
-  column_spec(5, border_right = TRUE, width = "2.35cm") %>%
-  collapse_rows(columns = 1:3) %>%
-  kableExtra::footnote(general = "$Physaria$ DNA specimens with identical
-           genotypes for the $rps$ intron loci.", 
-           general_title = "", threeparttable = TRUE, escape = FALSE)
-
+latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table.csv",
+            kable_caption = "$Physaria$ DNA specimens with identical genotypes for the $ycf1$ loci.")
 
 ```
 
