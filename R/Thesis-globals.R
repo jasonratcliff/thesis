@@ -20,6 +20,7 @@ library(maps)
 library(elevatr)
 library(raster)
 library(rgdal)
+require(sp)
 library(caTools)
 library(mapproj)
 library(grDevices)
@@ -62,10 +63,11 @@ source("R/morph_spp.R")  # Source morph_spp()
 source("R/cont_spp.R")  # Source con_trait()
 source("R/elev_spp.R")  # Source elev_spp()
 source("R/disc_viz.R")  # Source disc_viz()
-source("R/knitr_helper.R") # knitr figure caption and chunk label functions
+source("R/knitr_helper.R") # knitr caption, chunk label, and kable functions
+source("R/latex_kable.R") # source labtelatex kable function
 
 # Setup for Phylogenetic Tree Annotation
-source("R/herb_tree.R") # Source phylogenetic annotation functions
+source("R/herb_tree.R") # Source phylogenetic tree annotation functions
 source("R/phylo_spp.R") # Source phylo_spp()
 source("R/phylo_text.R") # Source phylo_text()
 
@@ -86,16 +88,11 @@ colour_brewer_palette <- c(Ovule_number = "PiYG", Replum_shape = "RdYlBu",
 # Replace taxa name for Physaria medicinae specimens.
 phys_medi <- gsub("Physaria acutifolia - vitulifera-like", 
                   "Physaria medicinae", total_physaria$Taxon_a_posteriori)
-
 phys_medi <- gsub("Physaria vitulifera - carbon", 
                   "Physaria medicinae", phys_medi)
-
 total_phys_medi <- total_physaria
 total_phys_medi$Taxon_a_posteriori <- phys_medi
 
 # Subset Carbon County, Wyoming specimens within bounding box.
-carbon_wyo <- subset_spp(taxa_frame = total_physaria, 
-                         state = c("Wyoming", "Colorado"),
-                         latitude = c(39.6, 42.3), longitude = c(-108, -105),
-                         set_name = "carbon_wyo", save_set = FALSE)
-
+carbon_wyo <- subset_spp(taxa_frame = total_physaria, state = c("Wyoming", "Colorado"),
+                         latitude = c(39.1, 41.9), longitude = c(-107.9, -105.1))
