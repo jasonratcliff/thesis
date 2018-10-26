@@ -9,19 +9,13 @@ kable_format <- function(label_resolve_csv, table_split = NULL,
                          table_names = c("node", "State", "Physaria_syn", 
                                          "Collector", "Collection_Number")) {
   id_seqs <- read.csv(file = label_resolve_csv,
-                        header = TRUE, row.names = NULL, as.is = TRUE,
-                        check.names = FALSE, stringsAsFactors = FALSE, 
-                        colClasses = "character")
+                      header = TRUE, row.names = NULL, as.is = TRUE,
+                      check.names = FALSE, stringsAsFactors = FALSE, 
+                      colClasses = "character")
   id_seqs_table <- id_seqs[, table_names]
   names(id_seqs_table) <- c("node", "State", "Species", 
                             "Collector", "Collection Number")
-  
-  # Clean up "Collector" column
-  id_seqs_table$Collector <- gsub("&", "and", id_seqs_table$Collector)
-  id_seqs_table$Collector <- gsub("[A-Z]\\.[A-Z]\\.", "", id_seqs_table$Collector)
-  id_seqs_table$Collector <- gsub("[A-Z]\\. ", "", id_seqs_table$Collector)
-  id_seqs_table$Collector <- gsub("^,? ", "", id_seqs_table$Collector)
-  id_seqs_table$Collector <- gsub("with", "and", id_seqs_table$Collector)
+  id_seqs_table$Collector <- collector_format(id_seqs_table$Collector)
   
   # Add italicization to the "Species" column
   species <- sapply(id_seqs_table$Species,
@@ -103,4 +97,14 @@ latex_kable <- function(id_seq_csv, kable_caption) {
     column_spec(5, border_right = TRUE, width = "2cm") %>%
     collapse_rows(columns = 1:3)
   return(id_seq_kable)
+}
+
+# Function to clean up "Collector" column.
+collector_format <- function(collector_column) {
+  collector_column <- gsub("&", "and", collector_column)
+  collector_column <- gsub("[A-Z]\\.[A-Z]\\.", "", collector_column)
+  collector_column <- gsub("[A-Z]\\. ", "", collector_column)
+  collector_column <- gsub("^,? ", "", collector_column)
+  collector_column <- gsub("with", "and", collector_column)
+  return(collector_column)
 }
