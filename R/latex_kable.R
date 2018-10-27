@@ -22,13 +22,14 @@ kable_format <- function(label_resolve_csv, table_split = NULL,
                     USE.NAMES = FALSE, simplify = TRUE,
                     function(species) {
                       if (grepl("ssp\\. ", species) == TRUE) {
-                        # print(species)
-                        ssp <- strsplit(species, split = " ssp\\. ")
-                        subsp <- sapply(ssp, USE.NAMES = FALSE,
-                                        simplify = TRUE, function(subspecies) {
-                                          paste0("$", subspecies, "$")
+                        ssp <- unlist(strsplit(species, split = " ssp\\. "))
+                        ssp_ep <- unlist(strsplit(ssp[1], split = " "))
+                        ssp_combined <- c(ssp_ep, ssp[2])
+                        subsp <- sapply(ssp_combined, USE.NAMES = FALSE,
+                                        simplify = TRUE, function(spp_string) {
+                                          paste0("$", spp_string, "$")
                                         })
-                        ssp <- paste0(subsp[1], " ssp. ", subsp[2])
+                        ssp <- paste(subsp[1], subsp[2], "ssp.", subsp[2])
                       } else {
                         ssp <- strsplit(species, split = " ")
                         ssp <- sapply(ssp, USE.NAMES = FALSE,
@@ -58,7 +59,7 @@ kable_format <- function(label_resolve_csv, table_split = NULL,
       j <- 1
       for (genotype in table_split) {
         genotypes <- seq(i, genotype)
-        row_index <- lapply(genotypes, #simplify = TRUE, USE.NAMES = FALSE,
+        row_index <- lapply(genotypes,
                             function(gt) { 
                               which(id_seqs_table$Genotype %in% gt)
                             })
@@ -88,12 +89,13 @@ latex_kable <- function(id_seq_csv, kable_caption) {
                             check.names = FALSE, stringsAsFactors = FALSE, 
                             colClasses = "character")
   id_seq_kable <- kable(id_seqs_table, caption = kable_caption,
-                        format = chunk_type, escape = F, row.names = FALSE) %>%
+                        format = chunk_type, escape = F, 
+                        align=c("c", "c", "l", "l", "l"), row.names = FALSE) %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 10) %>%
     column_spec(1, border_left = TRUE) %>%
-    column_spec(3, width = "3.6cm") %>%
+    column_spec(3, width = "3.7cm") %>%
     column_spec(5, border_right = TRUE, width = "2cm") %>%
     collapse_rows(columns = 1:3)
   return(id_seq_kable)
