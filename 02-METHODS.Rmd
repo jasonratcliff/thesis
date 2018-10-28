@@ -1,6 +1,6 @@
 # METHODS {#METHODS}
 
-\vspace*{-40pt}
+\vspace*{-26pt}
 \section{Specimen Sampling and Tissue Sources}
 
 ```{r methodsSectionSpecimens, results = "asis"}
@@ -18,7 +18,7 @@ if (knitr_chunk == "html") {
 \paragraph{} There has been considerable debate in the literature regarding the extent to which density of taxon sampling and gene number effect the accuracy of phylogenetic inference.  Simulation studies by Maddison & Knowles (2006) found for recent divergences, sampling more individuals increased the accuracy of species tree inference.  In such cases, increased taxon sampling may improve the number of detectable gene coalescence events between sister taxa. In contrast, simulations by Rokas and Carroll (2005) found increasing the number of genetic loci analyzed improved the accuracy of analysis while taxon sampling had either no statistically significant effect or a slight negative correlation.  Therefore, samples were chosen from across each species’ range to broadly represent populations within their distribution and multiple loci were chosen for each individual (Table 2).  
 
 \clearpage
-\vspace*{30pt}
+\vspace*{36pt}
 
 ```{r methodsTable2DnaSpecimens}
 
@@ -36,7 +36,7 @@ if (knitr_chunk == "latex") {
 
   # Build kable for table of herbarium specimens (part 1).
   dna_kable_latex <- kable(dna_spec, format = knitr_chunk, escape = FALSE,
-                           caption = "DNA Extraction Herbarium Specimens") %>%
+                           caption = "DNA Extraction Herbarium Specimens.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
@@ -58,9 +58,9 @@ if (knitr_chunk == "latex") {
 ```
 
 \clearpage
-\vspace*{30pt}
+\vspace*{36pt}
 
-<!--- Clear caption formatting to prevent automatic labelling by number -->
+<!--- Clear caption formatting to prevent automatic labelling -->
 \captionsetup[table]{labelformat=empty}
 <!--- Prevent automatic indexing of table entry in List of Tables --> 
 \captionsetup[table]{list=no}
@@ -87,7 +87,7 @@ if (knitr_chunk == "latex") {
 
   # Build kable for table of herbarium specimens (part 2).
   dna_kable_latex <- kable(dna_spec_cont, format = knitr_chunk, escape = FALSE,
-                           caption = "Table 2. Continued") %>%
+                           caption = "Table 2. Continued.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
@@ -99,6 +99,11 @@ if (knitr_chunk == "latex") {
 }
 
 ```
+
+<!--- Reset caption options and table counter -->
+\captionsetup[table]{labelformat=default}
+\captionsetup[table]{list=yes}
+\setcounter{table}{2}
 
 ```{r methodsTable2DnaSpecimensHtml} 
 
@@ -156,7 +161,6 @@ if (knitr_chunk == "html") {
 
 \paragraph{} Genomic DNA was extracted from one of two sources: basal leaf tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried leaf tissue from specimens collected in June and August of 2014 from Wyoming, Idaho, and Montana with Dr. S. L. O’Kane Jr. and Mr. M. Horsch.  Dried leaf tissues were stored at -20 $^{\circ}$C prior to extraction.  DNA was extracted from only a single individual specimen to minimize noise in the sequence data.  Sequence data from a preliminary systematic analysis of Physaria sensu stricto by Kayla Rethwisch (2014) in addition to data previously obtained by Dr. O'Kane were also included in this study.
 
-\phantomsection
 \section{DNA Extraction}
 
 ```{r methodsSectionExtractions, results = "asis"}
@@ -177,7 +181,8 @@ if (knitr_chunk == "html") {
 
 \paragraph{} Modifications to the standard Qiagen DNA extraction protocol followed recommendations made by Drabkova et al. (2002).  Time for the initial incubation period was extended from 10 to 30 minutes to ensure complete cellular lysis.  Additionally, the volume of AE buffer used to elute DNA from the spin column was reduced to 75 $\mu$L from 100 $\mu$L.  The incubation time for column elution was also extended from five minutes to 10 minutes. 
 
-\phantomsection
+\clearpage
+\vspace*{-26pt}
 \section{rITS PCR}
 
 ```{r methodsSectionPcrIts, results = "asis"}
@@ -192,12 +197,7 @@ if (knitr_chunk == "html") {
 
 \paragraph{} All Polymerase Chain Reaction (PCR) was completed using a Biometra® TProfessional Basic Thermocycler Gradient with individual or 8-tube strip 0.25 mL PCR microcentrifuge tubes.  Individual reactions for the rITS region had a total volume of 25 $\mu$L consisting of 13.85 $\mu$L distilled H2O (ddH2O), 2.5 $\mu$L 10X Reaction Buffer (500 mM KCl; 100 mM Tris-HCl, pH 8.8; 17.5 mM MgCl2; 0.5% v/v Triton-X; 5% v/v DMSO), 2.5 $\mu$L rITS-F primer (2 $\mu$M, Table 4), 2.5 $\mu$L rITS-R primer (2 $\mu$M, Table 4), 2.5 $\mu$L 8 mM dNTP mix (10 $\mu$L 100 mM dATP; 10 $\mu$L 100 mM dGTP; 10 $\mu$L 100 mM dCTP; 10 $\mu$L 100 mM dTTP; 5 $\mu$L 1 M Tris-HCl, pH 7.9; 455 $\mu$L ddH2O), 0.15 $\mu$L Taq DNA Polymerase (5 U/$\mu$L) and 1.0 $\mu$L sample DNA.  Lid temperature for thermocycling was set to 99 $^{\circ}$C.  An initial DNA denaturation period of two minutes at 94 $^{\circ}$C was followed by 30 cycles of denaturation, primer annealing, and DNA extension.  Each cycle consisted of denaturation for 45s at 94 $^{\circ}$C, primer annealing for one minute at 60 $^{\circ}$C, and extension for one minute at 72 $^{\circ}$C.  After 30 cycles, a final extension of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold. 
 
-\vspace*{30pt}
-
-<!--- Reset caption options and table counter -->
-\captionsetup[table]{labelformat=default}
-\captionsetup[table]{list=yes}
-\setcounter{table}{2}
+\vspace*{36pt}
 
 ```{r methodsTable3DnaPrimers}
 
@@ -212,7 +212,7 @@ dna_prime <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-primers.csv",
                       colClasses = "character")
 
 kable(dna_prime, format = knitr_chunk, align = "l", escape = FALSE,
-      caption = "Primer Sequences for PCR Reactions") %>%
+      caption = "Primer Sequences for PCR Reactions.") %>%
   kable_styling(full_width = FALSE, font_size = 10,
                 latex_options= "hold_position") %>%
   row_spec(row = 0, bold = TRUE, font_size = 12) %>%
@@ -224,7 +224,8 @@ kable(dna_prime, format = knitr_chunk, align = "l", escape = FALSE,
 
 ```
 
-\phantomsection
+\vspace*{24pt}
+
 \section{\textit{rps} Intron PCR}
 
 ```{r methodsSectionPcrRps, results = "asis"}
