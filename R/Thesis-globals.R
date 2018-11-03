@@ -88,7 +88,7 @@ colour_brewer_palette <- c(Ovule_number = "PiYG", Replum_shape = "RdYlBu",
 # Replace taxa name for Physaria medicinae specimens.
 phys_medi <- gsub("Physaria acutifolia - vitulifera-like", 
                   "Physaria medicinae", total_physaria$Taxon_a_posteriori)
-phys_medi <- gsub("Physaria vitulifera - carbon", 
+phys_medi <- gsub("Physaria vitulifera - Carbon", 
                   "Physaria medicinae", phys_medi)
 total_phys_medi <- total_physaria
 total_phys_medi$Taxon_a_posteriori <- phys_medi

@@ -95,12 +95,12 @@ if (knitr_chunk == "html") {
 ```{r introTable1CarbonVituSpecs}
 
 # TABLE CAPTION
-knitr_cap <- knitr_caption(latex_caption = "Putative Carbon County, Wyoming \\textit{Physaria vitulifera} specimens.")
+knitr_cap <- knitr_caption(caption = "Putative Carbon County, Wyoming \\textit{Physaria vitulifera} specimens.")
 
 # Return data frame of Collector and Collection Number pairs 
 # including specimens with previous *P. vitulifera* annotations.
 carbon_vitu <- find_spp(taxa_frame = carbon_wyo, 
-                        row_id = grep("Physaria vitulifera - carbon", 
+                        row_id = grep("Physaria vitulifera - Carbon", 
                                       carbon_wyo$Taxon_a_posteriori),
                         priors = TRUE, locale = TRUE, geom = TRUE)
 
