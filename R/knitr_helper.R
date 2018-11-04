@@ -1,12 +1,12 @@
 # Function to replace LaTeX italics with HTML markdown syntax.
 # Use for figure captions replacing specific epithet italicization.
-knitr_caption <- function(latex_caption) {
+knitr_caption <- function(caption) {
   chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
-  if (chunk_type == "latex") {
-    html_cap <- gsub("\\\\textit\\{", "*", latex_caption)
-    html_cap <- gsub("\\}", "*", html_cap)
+  if (chunk_type == "html") {
+    caption <- gsub("\\\\textit\\{", "*", caption)
+    caption <- gsub("\\}", "*", caption)
   }
-  return(html_cap)
+  return(caption)
 }
 
 # Function to output chunk label for HTML rendering.
