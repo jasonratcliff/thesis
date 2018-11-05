@@ -1,0 +1,82 @@
+\clearpage
+\vspace*{-26pt}
+\section{Status of \textit{Physaria vitulifera} in Wyoming}
+
+```{r chapterSectionCarbonVitu, results = "asis"}
+
+knitr_chunk_html("## Status of *Physaria vitulifera* in Wyoming")
+
+```
+
+\paragraph{} The distribution of reviewed herbarium specimens identified as *Physaria* sensu stricto species from south central Wyoming and northwestern Colorado are shown in Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu).  A set of records from Carbon County, WY have previous annotations as *P. vitulifera* (see Table \@ref(tab:introTable1CarbonVituSpecs)). Some of these collections were recently annotated as *P. acutifolia* by Jennings (2004), who reported *Physaria vitulifera* as endemic to Colorado from the Front Range's eastern slopes.  This is consistent with the description of the species by Rollins (1993), who reported the species from Central Colorado.  
+
+\paragraph{} An additional set of specimens showing a similar phenotype of reduced mature fruits on sigmoidal pedicels with often dentate basal leaves are labelled as *Physaria acutifolia - vitulifera-like* (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).  To the South, two flowering specimens (*Kastning 1462* and *Kastning 1725*) collected from Jackson County, Colorado show a general reduction in size with ascending pedicels. A different record in fruit (*Nelson 49286*) shows similarly ascending sigmoidal pedicels with reduced fruits.  In contrast, records further South in Middle Park of Grand County, Colorado display notably pendent fruiting pedicels (*Nelson 49478*, *Patterson s.n.* (F-980, F-208917)), with two having distinctly pinnatifid basal leaves (*Patterson s.n.* (F-980, F-208917)). The *Patterson* specimens were both collected in 1875 with location data limited to a description as from Middle Park, in proximity to the Muddy River, and therefore are not plotted.  Notably, North Park is separated from Middle Park to the South by the Rabbit Ears Range which divides Grand and Jackson Counties (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).
+
+\paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure5ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure6ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure7FruitMorphCarbonVitu)).
+
+\clearpage
+
+```{r resultsFigure4MapCarbonWyoVitu, fig.width=6, fig.asp=1.6, fig.cap=knitr_cap, dpi=300}
+
+# FIGURE CAPTION
+knitr_cap <- knitr_caption(caption = "Distribution of reported Carbon County, WY \\textit{Physaria vitulifera}.")
+
+set.seed(2018)
+
+# Reset taxa_id for chapter 3 RESULTS and ggplot colors
+taxa_id <- "Taxon_a_posteriori"
+carbon_wyo <- subset(carbon_wyo, get(taxa_id) %in% names(spp_color))
+
+# Return ggmap object for satellite base scaled to CARBON_WYO.
+if (length(grep("ggmap_carbon_wyo$", ls())) == 0) {
+  ggmap_carbon_wyo <- topo_spp(topo_frame = carbon_wyo, 
+                               map_type = "satellite", size = 8)
+}
+
+# Data structure for text annotation of Bears Ears Range area.
+carbon_bears_ear <- as.data.frame(matrix(nrow = 4, ncol = 3))
+names(carbon_bears_ear) <- c("map_ber", "map_x", "map_y")
+carbon_bears_ear$map_ber <- c("Bears Ears Range", "North", "Park", "Middle Park")
+carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
+carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
+
+# Plot specimen map by reviewed IDs for color and shape aesthetics.
+carbon_wyo_ggmap <- map_spp(map_frame = carbon_wyo, 
+                            base_opt = "ggmap_carbon_wyo", 
+                            taxa_id = taxa_id, shape_opt = taxa_id,
+                            mapped_spp = "confirmed",
+                            map_borders = "white", map_fill = NA, 
+                            geom_size = 3, jitter_pos = c(.05, .05)) +
+  geom_text(data = carbon_bears_ear,
+            aes(map_x, map_y, label = map_ber, group = NULL),
+            color = "white", size = 3.5) + 
+  map_text(taxa_frame = carbon_wyo, 
+           collector = "Kastning", collection_number = 1462, 
+           longitude_correct = -0.18, latitude_correct = -0.075) +
+  map_text(taxa_frame = carbon_wyo, 
+           collector = "Kastning", collection_number = 1725, 
+           longitude_correct = -0.15, latitude_correct = -0.09) +
+  map_text(taxa_frame = carbon_wyo, 
+           collector = "Nelson", collection_number = 49286, 
+           longitude_correct = 0.25, latitude_correct = -0.09) +
+  map_text(taxa_frame = carbon_wyo, 
+           collector = "Nelson", collection_number = 49478, 
+           longitude_correct = -0.25, latitude_correct = -0.075) +
+  scale_x_continuous("Longitude") +
+  scale_y_continuous("Latitude") +
+  scale_color_manual("Reviewed Annotations", values = spp_color) + 
+  scale_shape_manual("Reviewed Annotations", values = spp_shape) + 
+  theme(legend.box = "vertical", legend.position = "bottom",
+        legend.direction = "vertical", legend.title.align = 0.5) + 
+  guides(colour = guide_legend(ncol = 2, byrow = TRUE)) + 
+  expand_limits(x = 6)
+
+# Build ggmap plot into a graphical object and display list element $plot.
+carbon_wyo_grob <- ggplot_build(carbon_wyo_ggmap)
+carbon_wyo_grob$plot
+
+# Clean up workspace
+rm(carbon_wyo_ggmap, carbon_wyo_grob)
+
+```
+
