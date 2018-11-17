@@ -15,8 +15,6 @@ library(openxlsx)
 args <- commandArgs(trailingOnly = TRUE)
 species_sheet <- as.character(args[1])
 
-# print(args)
-
 species_appendix <- function(species_tab) {
   
   # Verify sheet name matches in .xlsx file.
@@ -54,7 +52,9 @@ species_appendix <- function(species_tab) {
   write.table(x = spec_app_subset, file = appendix_filename, 
               sep = "\t", eol = "\n", quote = FALSE)
   
-  return(appendix_filename)
+  # Return appendix filename as standard output to command line.
+  cat(appendix_filename)
 }
 
 species_appendix(species_sheet)
+
