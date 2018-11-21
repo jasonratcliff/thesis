@@ -33,7 +33,7 @@ while IFS=\n read -r sheet; do
   echo 
   awk 'BEGIN  { FS="\t" } 
     { if ( NF > 10 ) {
-      printf("%s %s %s elevation %s %s %s %s \\textit\{%s %s\} \(%s\)\n",
+      printf("%s %s %s\047 elevation; %sm elevation; %s %s; %s; \\textit\{%s %s\} \(%s\)\n",
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) }
     }' $appendix_filename > $new_file
 done < Appendix/appendix_phys_sheetnames.txt
