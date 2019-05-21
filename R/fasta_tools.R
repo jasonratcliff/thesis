@@ -69,5 +69,64 @@ fasta_subset <- function(fasta_path) {
   }
 }
 
+#' Check FASTA sequence headers and sequence content.
+#' 
+#' Tool to verify FASTA headers are identical between two FASTA files 
+#' (e.g. pre- and post-alignment files).  Returns text to stdout by `cat` with
+#' information about number of sequences and range of sequence lengths.  
+#' FASTA files should have consistent naming conventions for sorting
+#' (e.g. [loci]-subset.fasta, [loci]-aligned.fasta).
+#' 
+#' @param fasta_path1 Path to subset FASTA files.
+#' @param fasta_path2 Path to aligned FASTA files.
+#' 
+#' @examples
+#' fasta_check(fasta_path1 = "data/subset",
+#'             fasta_path2 = "data/alignments-concatenated")
+#' # File 1: data/subset/rITS-subset.fasta 
+#' # File 2: data/alignments-concatenated/rITS-ml_aligned.fasta 
+#' # Sequence headers agree:  TRUE 
+#' # Number of sequences:  45 
+#' # Sequence range data/subset/rITS-subset.fasta :  
+#' #   581 583 
+#' # Sequence range data/alignments-concatenated/rITS-ml_aligned.fasta :  
+#' #   586 586 
+#' # .... [TRUNCATED] 
+fasta_check <- function(fasta_path1, fasta_path2) {
+  
+  # Assign DNAStringSets from original sequence analysis pipeline trimming.
+  fasta_files1 <- list.files(fasta_path1, pattern = ".fasta$", 
+                                  full.names = TRUE)
+  fasta_list1 <- lapply(fasta_files1, readDNAStringSet)
+  
+  # Assign DNAStringSets from R sequence analysis pipeline trimming.
+  fasta_files2 <- list.files(fasta_path2, pattern = ".fasta$", 
+                                   full.names = TRUE)
+  fasta_list2 <- lapply(fasta_files2, readDNAStringSet)
+  
+  # Compare sorted headers in each gene between old and new trimming pipeline.
+  for (i in seq_along(fasta_list1)) {
+    cat("File 1:", fasta_files1[i], "\n")
+    cat("File 2:", fasta_files2[i], "\n")
+    fasta_compare <- identical((names(fasta_list1[[i]]) %>% sort()), 
+                               (names(fasta_list2[[i]]) %>% sort()))
+    if (fasta_compare == FALSE) {
+      quit("Sequence header difference for: ", fasta_files2[[i]])
+    }
+    cat("Sequence headers agree: ", fasta_compare, "\n")
+    cat("Number of sequences: ",
+        length(fasta_list2[[i]]), "\n")
+    cat("Sequence range", fasta_files1[[i]], ": ", "\n\t",
+        range(sapply(fasta_list1[[i]], length)), "\n")
+    cat("Sequence range", fasta_files2[[i]], ": ", "\n\t",
+        range(sapply(fasta_list2[[i]], length)), "\n\n")
+  }
+}
+
+# Write FASTA file subset from common sequence headers.
 fasta_subset(fasta_path = "data/raw")
+
+# Compare sequence headers and length pre- and post-alignment.
+fasta_check(fasta_path1 = "data/subset",
+            fasta_path2 = "data/alignments-concatenated")            
 
