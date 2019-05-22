@@ -93,3 +93,54 @@ date_mismatch <- function(specimen_list) {
 }
 
 date_mismatch(specimen_list)
+
+# 3. Prior annotations and synonyms ----
+
+# Verify consistent column names and row bind data frames in list.
+if (length(unique(sapply(lapply(specimen_list, names), length))) == 1) {
+  specimen_df <- do.call(rbind, specimen_list)
+} else { 
+  stop("Check column names in excel file.") 
+}
+
+#' Parse prior annotation column
+#' 
+#' Previous specimen identifications by reviewing botanists were taken from
+#' vouchers and stored as comma separated entries for each record
+#' (e.g. ""Physaria, Physaria acutifolia, Physaria vitulifera").
+#' Here, records with multiple comma-separated annotations in the column
+#' `$Taxon` are split into separate entries and built into a new data frame.
+#'
+#' @param specimen_annotations Character vector of comma separated annotations.
+#' @return Data frame of split prior annotations with columns equal to the 
+#' number of previous annotations plus an additional column with the most 
+#' recent specimen annotation.
+parse_priors <- function(specimen_annotations) {
+
+  # Split list element strings by commas into character vectors of annotations.
+  prior_list <- lapply(specimen_annotations, function(taxon) {
+    if (grepl(",", taxon))  {
+      unlist(strsplit(taxon, ", "))
+    } else { 
+      taxon 
+    }
+  })
+  
+  # Use `plyr::ldply()` to bind data frame from unequal annotation vectors.
+  prior_df <- plyr::ldply(prior_list, rbind)
+  names(prior_df) <- paste0("Physaria_a_priori_", 1:ncol(prior_df))
+  
+  # Column bind vector of most recent (i.e. non-missing) annotations.
+  prior_recent <- apply(prior_df, MARGIN = 1, function(priors) {
+    if (!TRUE %in% is.na(priors)) {
+      prior_index <- length(priors)
+    } else {
+      prior_index <- (min(which(is.na(priors))) - 1)
+    }
+    priors[prior_index]
+  })
+  prior_df <- cbind(prior_df, "Physaria_recent" = prior_recent)
+  return(prior_df)
+}
+
+prior_df <- parse_priors(specimen_annotations = specimen_df$Taxon)
