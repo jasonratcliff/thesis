@@ -128,6 +128,7 @@ parse_priors <- function(specimen_annotations) {
   
   # Use `plyr::ldply()` to bind data frame from unequal annotation vectors.
   prior_df <- plyr::ldply(prior_list, rbind)
+  prior_df[] <- lapply(prior_df, as.character)  # Prevent factor coercion.
   names(prior_df) <- paste0("Physaria_a_priori_", 1:ncol(prior_df))
   
   # Column bind vector of most recent (i.e. non-missing) annotations.
@@ -139,7 +140,10 @@ parse_priors <- function(specimen_annotations) {
     }
     priors[prior_index]
   })
-  prior_df <- cbind(prior_df, "Physaria_recent" = prior_recent)
+  prior_df <- cbind(prior_df, 
+                    as.data.frame.character(prior_recent, 
+                                            stringsAsFactors = FALSE))
+  names(prior_df)[ncol(prior_df)] <- "Physaria_recent"
   return(prior_df)
 }
 
