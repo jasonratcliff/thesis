@@ -126,6 +126,19 @@ parse_priors <- function(specimen_annotations) {
     }
   })
   
+  # Replace "!" concurring ID annotation with previous specimen annotation.
+  prior_list <- lapply(prior_list, function(priors) {
+    if (TRUE %in% grepl("!", priors)) {
+      concur_index <- grep("!", priors)
+      for (index in concur_index) {
+        priors[index] <- priors[index - 1]
+      }
+      return(priors)
+    } else {
+      return(priors)
+    }
+  })
+  
   # Use `plyr::ldply()` to bind data frame from unequal annotation vectors.
   prior_df <- plyr::ldply(prior_list, rbind)
   prior_df[] <- lapply(prior_df, as.character)  # Prevent factor coercion.
