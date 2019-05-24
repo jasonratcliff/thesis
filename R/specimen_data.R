@@ -160,4 +160,90 @@ parse_priors <- function(specimen_annotations) {
   return(prior_df)
 }
 
+# Establish data frame of prior identifications and most recent annotations.
 prior_df <- parse_priors(specimen_annotations = specimen_df$Taxon)
+
+#' Convert specimen synonyms
+#'
+#' Given an input character vector of recent annotations, ouput a new vector
+#' with text substitutions of accepted synonyms (O'Kane 2010 Flora North Am.).
+#' 
+#' @param recent_annotations Character vector of most recent specimen annotation
+#' column from `prior_df` output by `parse_priors()` function. 
+parse_synonyms <- function(recent_annotations) {
+  
+  # Assign vectors for species synonyms.
+  syn_acut <- c("^Physaria acutifolia var. purpurea$",
+                "^Physaria acutifolia var. stylosa$",
+                "^Physaria australis$",
+                "^Physaria didymocarpa var australis$",
+                "^Physaria didymocarpa var. australis$",
+                "^Physaria australis (Payson) Rollins$")
+  
+  syn_didy <- c("^Physaria didymocarpa (Hook.) A. Gray$",
+                "^Physaria didymocarpa (Hook.) Gray$",
+                "^Physaria didymocarpa (Hook.) Gray var.$",
+                "^Physaria didymocarpa (Hook.) Gray var. didymocarpa$",
+                "^Physaria didymocarpa var normalis$",
+                "^Physaria didymocarpa var didymocarpa$",
+                "^Physaria didymocarpa var. didymocarpa$",
+                "^Physaria didymocarpa ssp didymocarpa$",
+                "^Physaria didymocarpa$")
+  
+  syn_inte <- c("^Physaria didymocarpa (Hook.) Gray var. integrifolia Rollins$",
+                "^Physaria didymocarpa var. integrifolia$",
+                "^Physaria integrifolia var integrifolia$",
+                "^Physaria integrifolia var. integrifolia$",
+                "^Physaria integrifolia var. monticola$")
+  
+  syn_saxi_saxi <- c("^Physaria saximontana$",
+                     "^Physaria saximontana ssp saximontana$")
+  
+  syn_saxi_dent <- "^Physaria saximontana ssp dentata$"
+  
+  syn_lyra <- c("^Physaria didymocarpa (Hook.) Gray var. lyrata$",
+                "^Physaria didymocarpa (Hook.) Gray var. lyrata Hitch.$",
+                "^Physaria didymocarpa ssp lyrata$")
+  
+  syn_lana <- c("^Physaria didymocarpa ssp lanata$",
+                "^Physaria didymocarpa var lanata$",
+                "^Physaria lanata$")
+  
+  phys_syns <- list("acut" = syn_acut, "didy" = syn_didy,
+                    "inte" = syn_inte, "saxi" = syn_saxi_saxi, 
+                    "dent" = syn_saxi_dent, "lyra" = syn_lyra, 
+                    "lana" = syn_lana)
+  
+  # Vector for synonym conversions.
+  phys_conv <- c("acut" = "Physaria acutifolia",
+                 "didy" = "Physaria didymocarpa ssp. didymocarpa",
+                 "inte" = "Physaria integrifolia", 
+                 "saxi" = "Physaria saximontana ssp. saximontana", 
+                 "dent" = "Physaria saximontana ssp. dentata",
+                 "lyra" = "Physaria didymocarpa ssp. lyrata", 
+                 "lana" = "Physaria didymocarpa ssp. lanata")
+  
+  # Compare recent annotations against synonyms and replace matching records.
+  synonyms <- sapply(recent_annotations, USE.NAMES = FALSE,
+                     function(id) {
+                       species <- paste0("^", id, "$")
+                       annotation <- character()
+                       for (synonym in names(phys_syns)) {
+                         if (TRUE %in% grepl(pattern = species,
+                                             phys_syns[synonym][[1]],
+                                             fixed = TRUE)) {
+                           annotation <- phys_conv[synonym]
+                           break
+                           }
+                         }
+                       if (length(annotation) == 0) {
+                         annotation <- id
+                       }
+                       return(annotation)
+                     })
+  return(synonyms)  # Return vector of converted annotation synonyms.
+}
+
+# Establish vector of most recent annotation with converted synonyms.
+prior_synonyms <- parse_synonyms(recent_annotations = prior_df$Physaria_recent)
+
