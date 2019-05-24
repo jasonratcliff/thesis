@@ -98,7 +98,21 @@ date_mismatch(specimen_list)
 
 # Verify consistent column names and row bind data frames in list.
 if (length(unique(sapply(lapply(specimen_list, names), length))) == 1) {
+  
+  # Row bind list of specimens data frames into a total specimen data frame.
   specimen_df <- do.call(rbind, specimen_list)
+  
+  # Establish list of data frame rows to index splitting .csv files.
+  specimen_rows <- lapply(specimen_list, nrow)
+  specimen_index <- list()
+  row_start <- 1
+  for (i in seq_along(specimen_rows)) {
+    row_end <- row_start + specimen_rows[[i]] - 1  # Non-inclusive indexing
+    specimen_index[[i]] <- seq(row_start, row_end)  # Integer sequence of rows
+    row_start <- row_start + specimen_rows[[i]]  # Reset row start index
+  }
+  names(specimen_index) <- names(specimen_list)
+  rm(specimen_list, i, row_start, row_end, specimen_rows)
 } else { 
   stop("Check column names in excel file.") 
 }
@@ -254,7 +268,7 @@ total_physaria <- dplyr::bind_cols(prior_df,
                                    as.data.frame(prior_synonyms,
                                                  stringsAsFactors = FALSE),
                                    specimen_df)
-names(total_physaria)[grep("prior_synonyms", names(total_specimens))] <-
+names(total_physaria)[grep("prior_synonyms", names(total_physaria))] <-
   "Physaria_syn"
 
 #' Write identification logs and output .csv files.
@@ -283,5 +297,25 @@ write_specimens <- function(total_specimens) {
         file = file_connection, sep = "\n", append = FALSE)
     close(file_connection)
   }))
+  
+  # Write .csv output files from combined data frame indexed by `specimen_list`.
+  dir.create("output", showWarnings = FALSE)
+  dir.create("output/specimens", showWarnings = FALSE)
+  invisible(  # See section 3. for definition of `specimen_index` list.
+    mapply(specimen_index, names(specimen_index), USE.NAMES = FALSE,
+           FUN = function(df_rows, df_name) {
+             specimen_subset <- total_specimens[df_rows, ]
+             specimen_name <- gsub(" +", "", df_name) %>% 
+               gsub("\\.", "_", x = .)
+             write.csv(specimen_subset,
+                       file = paste0("output/specimens/", 
+                                     specimen_name, ".csv"))
+  }))
 }
+
+# Write annotation logs and output species excel tab-specific .csv files.
+write_specimens(total_physaria)
+
+# Clean up workspace
+rm(prior_df, specimen_df, specimen_index, prior_synonyms)
 
