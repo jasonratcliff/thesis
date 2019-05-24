@@ -247,3 +247,41 @@ parse_synonyms <- function(recent_annotations) {
 # Establish vector of most recent annotation with converted synonyms.
 prior_synonyms <- parse_synonyms(recent_annotations = prior_df$Physaria_recent)
 
+# 4. Write specimen output files ----
+
+# Build data frame from `parse_priors()` and `parse_synonyms()` output.
+total_physaria <- dplyr::bind_cols(prior_df, 
+                                   as.data.frame(prior_synonyms,
+                                                 stringsAsFactors = FALSE),
+                                   specimen_df)
+names(total_physaria)[grep("prior_synonyms", names(total_specimens))] <-
+  "Physaria_syn"
+
+#' Write identification logs and output .csv files.
+#' 
+#' @param specimen_df Data frame of total specimen data combined with output 
+#' from `parse_priors` and `parse_synonyms` functions.
+write_specimens <- function(total_specimens) {
+
+  # Write summary tables of most recent specimen annotations to log file.
+  dir.create("log/synonyms", showWarnings = FALSE)
+  file_syn <- file("log/synonyms/priors_log.txt", open = "w")
+  file_conv <- file("log/synonyms/post_log.txt", open = "w")
+  invisible(lapply(list(file_syn, file_conv), function(file_connection) {
+    file_description <- summary(file_connection)$description
+    if (grepl("priors", file_description))  { 
+      file_title <- "Prior annotations"
+      file_col <- "Physaria_recent" 
+    }
+    if (grepl("post", file_description)) { 
+      file_title <- "Converted annotations"
+      file_col <- "Physaria_syn" 
+    }
+    cat(file_title, "\n",
+        capture.output(as.matrix(table(as.factor(
+          total_specimens[, file_col])))),
+        file = file_connection, sep = "\n", append = FALSE)
+    close(file_connection)
+  }))
+}
+
