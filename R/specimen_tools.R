@@ -120,5 +120,35 @@ subset_spp <- function(taxa_frame, taxa_col, exclude = c(FALSE, TRUE),
                index_rows <- grep(borders, taxa_frame[, border_cols[[type]]])
                }) %>% Reduce(intersect, x = .)
   }
+  
+  # Subset specimen records by geographic coordinates.
+  if (!is.null(longitude) || !is.null(latitude)) {
+    
+    # Check coordinates for vector length and geographic position.
+    coord_cols <- list(longitude = "Longitude", latitude = "Latitude")
+    coord_args <- user_args[grep("longitude|latitude", names(user_args))]
+    invisible(lapply(names(coord_args), function(coord_name) {
+      coord_value <- get(coord_name)
+      if (!is.numeric(coord_value) || length(coord_value) != 2) {
+        stop(print(c(coord_name, get(coord_name))),
+             "Enter a numeric vector of length two for geographic coordinates.")
+        }
+      if (coord_name == "longitude" && TRUE %in% (coord_value > 0) ||
+          coord_name == "latitude" && TRUE %in% (coord_value < 0)) {
+        stop(print(c(coord_name, coord_value)),
+             "Enter coordinates for the western hemisphere.")
+        }
+    }))
+
+    # Sort coordinate vectors and index by geographic coordinates.
+    index_coords <- 
+      lapply(names(coord_args), function(coord_name) {
+      coord_value <- sort(get(coord_name))
+      coord_col <- coord_cols[[coord_name]]
+      intersect(which(taxa_frame[, coord_col] > min(coord_value)),
+                which(taxa_frame[, coord_col] < max(coord_value)))
+    }) %>% Reduce(intersect, x = .)
+  }
+  
 }
 

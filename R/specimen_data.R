@@ -271,6 +271,10 @@ total_physaria <- dplyr::bind_cols(prior_df,
 names(total_physaria)[grep("prior_synonyms", names(total_physaria))] <-
   "Physaria_syn"
 
+# Convert geographic coordinate column classes from character to numeric.
+total_physaria$Longitude <- as.numeric(total_physaria$Longitude)
+total_physaria$Latitude <- as.numeric(total_physaria$Latitude)
+
 #' Write identification logs and output .csv files.
 #' 
 #' @param specimen_df Data frame of total specimen data combined with output 
