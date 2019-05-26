@@ -93,3 +93,32 @@ find_spp <- function(taxa_frame,
   }
   return(return_df)
 }
+
+#' Subset herbarium data frame.
+#' 
+#' @inheritParams find_spp
+#' 
+subset_spp <- function(taxa_frame, taxa_col, exclude = c(FALSE, TRUE),
+                       state = NULL, county = NULL, spp_str = NULL,
+                       longitude = NULL, latitude = NULL, set_name = NULL) {
+  
+  user_args <- as.list(sys.call())  # list of user arguments
+  
+  # Subset specimen records by state and county user arguments.
+  if (!is.null(state) || !is.null(county)) {
+    
+    # Parse border inputs to combine vectors into regular expression.
+    border_cols <- list(state = "State", county = "County")
+    border_args <- user_args[grep("state|county", names(user_args))] %>%
+      lapply(function(border) paste(border, collapse="|") %>%
+               gsub("^c\\|", "", x = .))
+
+    # Determine row index from intersection of records matching state or county.
+    index_borders <- 
+      mapply(border_args, names(border_args), USE.NAMES = FALSE, 
+             SIMPLIFY = FALSE, FUN = function(borders, type) {
+               index_rows <- grep(borders, taxa_frame[, border_cols[[type]]])
+               }) %>% Reduce(intersect, x = .)
+  }
+}
+
