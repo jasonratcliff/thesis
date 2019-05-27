@@ -96,11 +96,35 @@ find_spp <- function(taxa_frame,
 
 #' Subset herbarium data frame.
 #' 
+#' Function to subset herbarium specimen data frame by state, county, geographic
+#' coordinates, and species identification regular expression.  Subset is 
+#' determined by the intersection of rows matching input arguments.
+#' 
+#' @param state Character vector of state(s) to subset $State column.
+#' @param county Character vector of county(ies) to subset $County column.
+#' @param longitude Numeric vector of length two to subset $Longitude column.
+#' @param latitude Numeric vector of length two to subset $Latitude column.
+#' @param spp_str Character vector of length one with species regular expression
+#' by which to subset specimen IDs in `grep` function call.
+#' @param taxa_col Character vector of length one with `grep` column name.
+#' @param exclude Logical vector of length one to invert `grep` call.
+#' @param set_name Character vector of length one to name output .csv file.' 
 #' @inheritParams find_spp
 #' 
-subset_spp <- function(taxa_frame, taxa_col, exclude = c(FALSE, TRUE),
-                       state = NULL, county = NULL, spp_str = NULL,
-                       longitude = NULL, latitude = NULL, set_name = NULL) {
+#' @examples
+#' didy_subset <- subset_spp(taxa_frame = total_physaria,
+#'                           state = "Wyoming", county = "Hot Springs",
+#'                           longitude = c(-109, -108), latitude = c(43, 44),
+#'                           spp_str = "didymocarpa", taxa_col = "Physaria_syn",
+#'                           set_name = "hot-springs-didymocarpa")
+#'                           
+#' unique(didy_subset$Physaria_syn)
+#' #  [1] "Physaria didymocarpa ssp. didymocarpa"
+#' 
+subset_spp <- function(taxa_frame, state = NULL, county = NULL,
+                       longitude = NULL, latitude = NULL, 
+                       spp_str = NULL, taxa_col = NULL, exclude = FALSE, 
+                       set_name = NULL) {
   
   user_args <- as.list(sys.call())  # list of user arguments
   
@@ -149,6 +173,31 @@ subset_spp <- function(taxa_frame, taxa_col, exclude = c(FALSE, TRUE),
                 which(taxa_frame[, coord_col] < max(coord_value)))
     }) %>% Reduce(intersect, x = .)
   }
+
+  # Subset specimen records by species string.
+  if (!is.null(spp_str)) {
+    if (is.null(taxa_col)) {
+      stop("Set `taxa_col` argument for column subset.")
+    } else {
+      index_spp <- grep(spp_str, taxa_frame[, taxa_col], invert = exclude)
+    }
+  }
   
+  # Reduce index vectors to intersecting set for return subset.
+  vector_names <- ls(pattern = "^index")
+  if (length(vector_names > 0)) {
+    vector_index <- mget(vector_names, inherits = TRUE) %>% 
+      Reduce(intersect, x = .)
+  }
+  taxa_subset <- taxa_frame[vector_index, ]
+  
+  # Option to write .csv file from taxa subset.
+  if (!is.null(set_name)) {
+    dir.create("output/subsets", showWarnings = FALSE)
+    write.csv(taxa_subset, 
+              file = paste0("output/subsets/", 
+                            gsub("\\.$", "", set_name), ".csv"))
+  }
+  return(taxa_subset)
 }
 
