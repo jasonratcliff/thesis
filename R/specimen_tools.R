@@ -1,25 +1,27 @@
 # Specimen Access Tools ----
 
 #' Find specimen(s) from herbarium data frame.
-#' 
-#' Function to return a subset of specimen records from the `total_physaria` 
+#'
+#' Function to return a subset of specimen records from the `total_physaria`
 #' data frame given input parameters for record identification.  Search by
 #' row index, collector and collection number with the option to include
 #' additional specimen data for prior identifications, collection locality,
 #' and geographic coordinates.
-#' 
+#'
 #' @param taxa_frame Data frame from which to subset specimen(s) of interest.
-#' @param collector Character vector of length one matching specimen collector 
+#' @param collector Character vector of length one matching specimen collector
 #' in column `Collector` of `total_physaria` data frame.
 #' @param collection_number Numeric vector of length one with specimen
 #' number in column `Collection_Number` of `total_physaria` data frame.
 #' @param row_id Numeric vector of length one matching row index to subset.
-#' @param priors Logical vector of length one. Option to include prior 
+#' @param priors Logical vector of length one. Option to include prior
 #'   identification columns when TRUE. Default = FALSE.
 #' @param locale Logical vector of length one. Option to include herbarium,
 #'   state, and county of collection(s) when TRUE. Default = FALSE.
-#' @param geoms Logical vector of length one. Option to include geographic 
+#' @param geoms Logical vector of length one. Option to include geographic
 #'   coordinate data when true. Default = FALSE.
+#'
+#' @return Data frame `return_df` matching specimen records.
 #'
 #' @examples
 #' # Subset of samples collected by O'Kane
@@ -29,25 +31,25 @@
 #' find_spp(total_physaria, collector = "Rollins", collection_number = 7940)
 #' #      Taxon_a_posteriori     Collector Collection_Number
 #' # 462 Physaria acutifolia R. C. Rollins              7940
-#' 
-find_spp <- function(taxa_frame, 
-                     collector = NULL, collection_number = NULL, row_id = NULL, 
+#'
+find_spp <- function(taxa_frame,
+                     collector = NULL, collection_number = NULL, row_id = NULL,
                      priors = FALSE, locale = FALSE, geom = FALSE) {
-  
+
   # Establish column index to subset specimen information from taxa data frame.
   col_core <- c("Taxon_a_posteriori", "Collector", "Collection_Number")
-  
+
   # Parse the function system call for subsetting user-specified columns.
   user_args <- as.list(sys.call())
   col_user <- user_args[grep("priors|locale|geom", names(user_args))]
   invisible(mapply(col_user, names(col_user),
                    FUN = function(arg, arg_name) {
                      if (!(arg == TRUE || arg == FALSE)) {
-                       stop(paste0("Argument '", arg_name, " = ", arg, 
+                       stop(paste0("Argument '", arg_name, " = ", arg,
                                    "' must be logical TRUE or FALSE."))
                      }
   }))
-  
+
   # Check user-specified columns against default columns and combine lists.
   col_formals <- formals()[grep("priors|locale|geom", names(formals()))]
   col_match <- match(names(col_user), names(col_formals))
@@ -63,9 +65,9 @@ find_spp <- function(taxa_frame,
   col_include <- col_extra[which(col_extra == TRUE)]
   col_names <- unlist(col_list[names(col_include)], use.names = FALSE)
   col_total <- c(col_core, col_names)
-  
+
   # Return data frame by row ID index.
-  if (!is.null(row_id) && 
+  if (!is.null(row_id) &&
       (!is.null(collector) || !is.null(collection_number))) {
     stop("If entering row ID number, exclude collector and collection number.")
   } else {
@@ -76,18 +78,18 @@ find_spp <- function(taxa_frame,
   if (!is.null(collector) || !is.null(collection_number) &&
       is.null(row_id)) {  # Intersection of collector and collection number.
     if (!is.null(collector) && !is.null(collection_number)) {
-      spp_collection <- 
+      spp_collection <-
         intersect(grep(collector, taxa_frame$Collector),
                   grep(collection_number, taxa_frame$Collection_Number))
       return_df <- taxa_frame[spp_collection, col_total]
     } else {  # Return matched collector or collection number records.
-      collection_args <- user_args[grep("collector|collection_number", 
+      collection_args <- user_args[grep("collector|collection_number",
                                         names(user_args))]
       collection_cols <- list(collector = "Collector",
                               collection_number = "Collection_Number")
       collection_col <- collection_cols[[names(collection_args)]]
-      return_df <- 
-        taxa_frame[grep(collection_args[[1]], 
+      return_df <-
+        taxa_frame[grep(collection_args[[1]],
                         taxa_frame[, collection_col]), col_total]
     }
   }
@@ -95,11 +97,11 @@ find_spp <- function(taxa_frame,
 }
 
 #' Subset herbarium data frame.
-#' 
+#'
 #' Function to subset herbarium specimen data frame by state, county, geographic
-#' coordinates, and species identification regular expression.  Subset is 
+#' coordinates, and species identification regular expression.  Subset is
 #' determined by the intersection of rows matching input arguments.
-#' 
+#'
 #' @param state Character vector of state(s) to subset $State column.
 #' @param county Character vector of county(ies) to subset $County column.
 #' @param longitude Numeric vector of length two to subset $Longitude column.
@@ -108,29 +110,31 @@ find_spp <- function(taxa_frame,
 #' by which to subset specimen IDs in `grep` function call.
 #' @param taxa_col Character vector of length one with `grep` column name.
 #' @param exclude Logical vector of length one to invert `grep` call.
-#' @param set_name Character vector of length one to name output .csv file.' 
+#' @param set_name Character vector of length one to name output .csv file.'
 #' @inheritParams find_spp
-#' 
+#'
+#' @return Data frame `taxa_subset` containing records subset by input criteria.
+#'
 #' @examples
 #' didy_subset <- subset_spp(taxa_frame = total_physaria,
 #'                           state = "Wyoming", county = "Hot Springs",
 #'                           longitude = c(-109, -108), latitude = c(43, 44),
 #'                           spp_str = "didymocarpa", taxa_col = "Physaria_syn",
 #'                           set_name = "hot-springs-didymocarpa")
-#'                           
+#'
 #' unique(didy_subset$Physaria_syn)
 #' #  [1] "Physaria didymocarpa ssp. didymocarpa"
-#' 
+#'
 subset_spp <- function(taxa_frame, state = NULL, county = NULL,
-                       longitude = NULL, latitude = NULL, 
-                       spp_str = NULL, taxa_col = NULL, exclude = FALSE, 
-                       set_name = NULL) {
-  
+                       longitude = NULL, latitude = NULL,
+                       spp_str = NULL, taxa_col = NULL,
+                       exclude = c(FALSE, TRUE), set_name = NULL) {
+
   user_args <- as.list(sys.call())  # list of user arguments
-  
+
   # Subset specimen records by state and county user arguments.
   if (!is.null(state) || !is.null(county)) {
-    
+
     # Parse border inputs to combine vectors into regular expression.
     border_cols <- list(state = "State", county = "County")
     border_args <- user_args[grep("state|county", names(user_args))] %>%
@@ -138,16 +142,16 @@ subset_spp <- function(taxa_frame, state = NULL, county = NULL,
                gsub("^c\\|", "", x = .))
 
     # Determine row index from intersection of records matching state or county.
-    index_borders <- 
-      mapply(border_args, names(border_args), USE.NAMES = FALSE, 
+    index_borders <-
+      mapply(border_args, names(border_args), USE.NAMES = FALSE,
              SIMPLIFY = FALSE, FUN = function(borders, type) {
                index_rows <- grep(borders, taxa_frame[, border_cols[[type]]])
                }) %>% Reduce(intersect, x = .)
   }
-  
+
   # Subset specimen records by geographic coordinates.
   if (!is.null(longitude) || !is.null(latitude)) {
-    
+
     # Check coordinates for vector length and geographic position.
     coord_cols <- list(longitude = "Longitude", latitude = "Latitude")
     coord_args <- user_args[grep("longitude|latitude", names(user_args))]
@@ -165,7 +169,7 @@ subset_spp <- function(taxa_frame, state = NULL, county = NULL,
     }))
 
     # Sort coordinate vectors and index by geographic coordinates.
-    index_coords <- 
+    index_coords <-
       lapply(names(coord_args), function(coord_name) {
       coord_value <- sort(get(coord_name))
       coord_col <- coord_cols[[coord_name]]
@@ -182,20 +186,20 @@ subset_spp <- function(taxa_frame, state = NULL, county = NULL,
       index_spp <- grep(spp_str, taxa_frame[, taxa_col], invert = exclude)
     }
   }
-  
+
   # Reduce index vectors to intersecting set for return subset.
   vector_names <- ls(pattern = "^index")
   if (length(vector_names > 0)) {
-    vector_index <- mget(vector_names, inherits = TRUE) %>% 
+    vector_index <- mget(vector_names, inherits = TRUE) %>%
       Reduce(intersect, x = .)
   }
   taxa_subset <- taxa_frame[vector_index, ]
-  
+
   # Option to write .csv file from taxa subset.
   if (!is.null(set_name)) {
     dir.create("output/subsets", showWarnings = FALSE)
-    write.csv(taxa_subset, 
-              file = paste0("output/subsets/", 
+    write.csv(taxa_subset,
+              file = paste0("output/subsets/",
                             gsub("\\.$", "", set_name), ".csv"))
   }
   return(taxa_subset)
