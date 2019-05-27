@@ -320,6 +320,7 @@ write_specimens <- function(total_specimens) {
 # Write annotation logs and output species excel tab-specific .csv files.
 write_specimens(total_physaria)
 
-# Clean up workspace
-rm(prior_df, specimen_df, specimen_index, prior_synonyms)
+# Clean up workspace to remove unnecessary objects and functions.
+rm(prior_df, specimen_df, specimen_index, prior_synonyms, 
+   date_mismatch, parse_priors, parse_synonyms, read_specimens, write_specimens)
 
