@@ -7,7 +7,7 @@
 #' coordinates formatted as decimal degrees.
 #' @param map_obs_col Character vector of length one matching column name to
 #' subset specimen observations by `map_obs` pattern.
-#' @param map_obs Character vector of length one with the observation type by 
+#' @param map_obs Character vector of length one with the observation type by
 #' which to subset specimen records from the `map_obs_col` column.
 #' @return Data frame subset of specimen observations.
 #'
@@ -20,15 +20,15 @@
 #' wyo_ebur_remaining <- map_filter(map_df = wyo_eburniflora,
 #'                                  map_obs_col = "Physaria_syn",
 #'                                  map_obs = "questioned")
-#'                                  
+#'
 #' wyo_ebur_remaining[, c("Physaria_syn", "Collector", "Collection_Number")]
 #' #               Physaria_syn Collector Collection_Number
 #' # 120 Physaria eburniflora ? J. Haines              4792
-#' 
+#'
 #' wyo_ebur_remaining[, c("Longitude", "Latitude")]
 #' #     Longitude Latitude
 #' # 120 -107.4294  43.2923
-#' 
+#'
 map_filter <- function(map_df, map_geom = TRUE, map_obs_col = NULL,
                        map_obs = c("confirmed", "questioned", "remaining")) {
 
@@ -63,7 +63,7 @@ map_filter <- function(map_df, map_geom = TRUE, map_obs_col = NULL,
              length(map_obs) != 1 && !is.null(map_obs_col)) {
     stop("Enter a single argument for `map_obs` with respective taxa column.")
   }
-  
+
   # Return specimen subset for mapping.
   return(map_subset)
 }
@@ -103,8 +103,65 @@ map_borders <- function(border_color, border_fill = NA,
                  color = border_color, size = border_size_state) +
     theme(panel.grid = element_blank(), panel.background = element_blank(),
           panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
-  
+
   # Return ggplot object with county and state boundary layers.
   return(gg_borders)
+}
+
+# Build Specimen Layer ----
+
+#' Build ggplot of specimen records over map borders.
+#'
+#' @param map_col Character vector of length one with geom color aesthetic.
+#' @param map_gg_base Border map `ggplot` output by `map_borders()` function.
+#' @param shape_opt Character vector of length one with column for shape
+#' aesthetic. Null as default.
+#' @param geom_size Numeric vector of length one for size of specimen plot
+#' jitter aesthetic.
+#' @param jitter_pos Numeric vector of length two with jitter geom
+#' position arguments for width (1) and height (2). Defaults to `c(0, 0)`.
+#' @param f_adj Numeric vector of length one for a fraction to extend
+#' the range of x and y limits.  Passed as limtit arguments of 
+#' `grDevices::extendrange()` function call.
+#' @inheritParams map_filter
+#' @return Object of `ggplot` class with specimen data plotted over base layers
+#' of state and county borders.
+#'
+#' @examples
+#' # Subset Colorado specimens
+#' co_subset <- subset_spp(taxa_frame = total_physaria,
+#'                         state = "Colorado",
+#'                         longitude = c(-109, -105), latitude = c(37, 41))
+#' 
+#' # Plot specimens over state and county border ggplot
+#' co_ggplot <- map_specimens(map_df = co_subset, map_col = "Physaria_syn")
+#' 
+map_specimens <- function(map_df, map_col, map_gg_base = NULL,
+                          shape_opt = NULL, geom_size = 3,
+                          jitter_pos = c(0, 0), f_adj = -0.05) {
+
+  # Subset data to ensure coordinates are formatted in degree decimal notation.
+  map_subset <- map_filter(map_df = map_df, map_geom = TRUE)
+
+  # Plot specimens over state and county borders.
+  if (is.null(map_gg_base)) {
+    map_gg_base <- map_borders(border_color = "black")
+  }
+  gg_basic_map <- map_gg_base +
+    geom_jitter(data = map_subset,
+                mapping = aes_string(x = "Longitude", y = "Latitude",
+                                     colour = map_col, shape = shape_opt),
+                size = geom_size, inherit.aes = FALSE,
+                width = jitter_pos[1], height = jitter_pos[2]) +
+    coord_fixed(xlim = grDevices::extendrange(map_subset$Longitude,
+                                              f = f_adj),
+                ylim = grDevices::extendrange(map_subset$Latitude,
+                                              f = f_adj)) +
+    theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+    xlab("Longitude") +
+    ylab("Latitude")
+
+  # Return ggplot object with specimens mapped over `map_borders()` base layer.
+  return(gg_basic_map)
 }
 
