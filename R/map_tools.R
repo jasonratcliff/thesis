@@ -165,3 +165,101 @@ map_specimens <- function(map_df, map_col, map_gg_base = NULL,
   return(gg_basic_map)
 }
 
+# Build `ggmap` Layer ----
+
+
+#' Build satellite and terrain maps for `ggplot` base layer.
+#'
+#' @param gg_borders `ggplot` object returned by `map_borders()` function.
+#' @param size Numeric vector of length one for `ggmap::get_map()` zoom level.
+#' @param gg_longitude Numeric vector of length one to optionally center call
+#' of `get_map()` longitude coordinates.
+#' @param gg_latitude Numeric vector of length one to optionally center call
+#' of `get_map()` latitude coordinates.
+#' @param gg_map_type Character vector of length one with type of map to return
+#' from `ggmap::get_map()` function call.
+#' @inheritParams map_filter
+#' @inheritParams map_borders
+#' @inheritParams map_specimens
+#' 
+#' @examples
+#' 
+#' # Build county border map layer.
+#' gg_borders <- map_borders("black")
+#' 
+#' # Subset Colorado front range specimens.
+#' co_front_range <- 
+#'   subset_spp(total_physaria,
+#'              longitude = c(-107.7551, -104.2394),
+#'              latitude = c(38.12828, 40.84102),
+#'              spp_str = "Physaria \\?",
+#'              taxa_col = "Taxon_a_posteriori", exclude = TRUE)
+#'              
+#' # Build ggmap object with borders and specimens plotted over satellite image.
+#' co_ggmap <- map_ggmap(map_df = co_front_range, 
+#'                       map_col = "Taxon_a_posteriori",
+#'                       gg_borders = gg_borders, size = 8,
+#'                       gg_longitude = -106, gg_latitude = 39.5,
+#'                       gg_map_type = "satellite")
+#'
+map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
+                      border_size_county = .125,
+                      border_size_state = 1.5,
+                      shape_opt = NULL, geom_size = 3,
+                      jitter_pos = c(0, 0),
+                      gg_longitude = NULL, gg_latitude = NULL,
+                      gg_map_type = c("terrain", "satellite",
+                                     "roadmap", "hybrid")) {
+  
+  # Check registration of Google API key.
+  if (has_google_key() == FALSE) {
+    stop(paste("Register an API key with Google.", 
+               "See: https://github.com/dkahle/ggmap"))
+  }
+
+  # Filter specimens by coordinates and get ggmap by median values.
+  map_subset <- map_filter(map_df)
+  if (!is.null(gg_longitude) && !is.null(gg_latitude)) {
+    map_gg_sat <- get_map(location = c(gg_longitude, gg_latitude), zoom = size,
+                          maptype = gg_map_type, messaging = FALSE)
+  } else if (!is.null(gg_longitude) || !is.null(gg_latitude)) {
+    stop("Enter numeric vector for both longitude and latitude coordinates.")
+  } else {
+    gg_median <- sapply(map_subset[, c("Longitude", "Latitude") ], median)
+    map_gg_sat <- get_map(location = gg_median, maptype = gg_map_type,
+                          zoom = size, source = "google", messaging = FALSE)
+  }
+
+  # Index the boundary of the ggmap plot to the x/y limits of ggmap base.
+  map_xlim = c(attr(map_gg_sat, "bb")$ll.lon,
+               attr(map_gg_sat, "bb")$ur.lon)
+  map_ylim = c(attr(map_gg_sat, "bb")$ll.lat,
+               attr(map_gg_sat, "bb")$ur.lat)
+  
+  # Plot Google base layer with county and state border geom layers.
+  gg_sat_map <- ggmap(ggmap = map_gg_sat,
+                      extent = "normal", maprange = FALSE) +
+    geom_polygon(data = gg_borders$plot_env$border_counties,
+                 aes(x = long, y = lat, group = group),
+                 color = "white", fill = NA, size = .5) +
+    geom_polygon(data = gg_borders$plot_env$border_states,
+                 aes(x = long, y = lat, group = group),
+                 color = "moccasin", fill = NA, size = 1.25) +
+  
+    # Add specimen plot layer subset.
+    geom_jitter(data = map_subset, 
+                mapping = aes_string(x = "Longitude", y = "Latitude",
+                                     colour = map_col, shape = shape_opt),
+                size = geom_size, inherit.aes = FALSE,
+                width = jitter_pos[1], height = jitter_pos[2]) +
+    
+    # Adjust axis limits to edge of ggmap
+    coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
+    theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+    xlab("Longitude") +
+    ylab("Latitude")
+
+  # Return ggplot of specimens mapped over ggmap and county border layers.
+  return(gg_sat_map)
+}
+
