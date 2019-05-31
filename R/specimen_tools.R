@@ -32,8 +32,8 @@
 #' #      Taxon_a_posteriori     Collector Collection_Number
 #' # 462 Physaria acutifolia R. C. Rollins              7940
 #'
-find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL, 
-                     row_id = NULL, priors = FALSE, locale = FALSE, 
+find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL,
+                     row_id = NULL, priors = FALSE, locale = FALSE,
                      geom = FALSE, label = FALSE) {
 
   # Establish column index to subset specimen information from taxa data frame.
@@ -93,11 +93,11 @@ find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL,
                         taxa_frame[, collection_col]), col_total]
     }
   }
-  
+
   # Add label aesthetic variable for ggplot mapping of individual specimen.
   if (label ==TRUE) {
-    return_df <- 
-      dplyr::mutate(return_df, 
+    return_df <-
+      dplyr::mutate(return_df,
                     taxon_label = paste(return_df$Collector,
                                         return_df$Collection_Number,
                                         sep = "\n") %>%

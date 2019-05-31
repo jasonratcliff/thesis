@@ -121,7 +121,7 @@ map_borders <- function(border_color, border_fill = NA,
 #' @param jitter_pos Numeric vector of length two with jitter geom
 #' position arguments for width (1) and height (2). Defaults to `c(0, 0)`.
 #' @param f_adj Numeric vector of length one for a fraction to extend
-#' the range of x and y limits.  Passed as limtit arguments of 
+#' the range of x and y limits.  Passed as limtit arguments of
 #' `grDevices::extendrange()` function call.
 #' @inheritParams map_filter
 #' @return Object of `ggplot` class with specimen data plotted over base layers
@@ -132,10 +132,10 @@ map_borders <- function(border_color, border_fill = NA,
 #' co_subset <- subset_spp(taxa_frame = total_physaria,
 #'                         state = "Colorado",
 #'                         longitude = c(-109, -105), latitude = c(37, 41))
-#' 
+#'
 #' # Plot specimens over state and county border ggplot
 #' co_ggplot <- map_specimens(map_df = co_subset, map_col = "Physaria_syn")
-#' 
+#'
 map_specimens <- function(map_df, map_col, map_gg_base = NULL,
                           shape_opt = NULL, geom_size = 3,
                           jitter_pos = c(0, 0), f_adj = -0.05) {
@@ -181,22 +181,22 @@ map_specimens <- function(map_df, map_col, map_gg_base = NULL,
 #' @inheritParams map_filter
 #' @inheritParams map_borders
 #' @inheritParams map_specimens
-#' 
+#'
 #' @examples
-#' 
+#'
 #' # Build county border map layer.
 #' gg_borders <- map_borders("black")
-#' 
+#'
 #' # Subset Colorado front range specimens.
-#' co_front_range <- 
+#' co_front_range <-
 #'   subset_spp(total_physaria,
 #'              longitude = c(-107.7551, -104.2394),
 #'              latitude = c(38.12828, 40.84102),
 #'              spp_str = "Physaria \\?",
 #'              taxa_col = "Taxon_a_posteriori", exclude = TRUE)
-#'              
+#'
 #' # Build ggmap object with borders and specimens plotted over satellite image.
-#' co_ggmap <- map_ggmap(map_df = co_front_range, 
+#' co_ggmap <- map_ggmap(map_df = co_front_range,
 #'                       map_col = "Taxon_a_posteriori",
 #'                       gg_borders = gg_borders, size = 8,
 #'                       gg_longitude = -106, gg_latitude = 39.5,
@@ -210,10 +210,10 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
                       gg_longitude = NULL, gg_latitude = NULL,
                       gg_map_type = c("terrain", "satellite",
                                      "roadmap", "hybrid")) {
-  
+
   # Check registration of Google API key.
   if (has_google_key() == FALSE) {
-    stop(paste("Register an API key with Google.", 
+    stop(paste("Register an API key with Google.",
                "See: https://github.com/dkahle/ggmap"))
   }
 
@@ -235,7 +235,7 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
                attr(map_gg_sat, "bb")$ur.lon)
   map_ylim = c(attr(map_gg_sat, "bb")$ll.lat,
                attr(map_gg_sat, "bb")$ur.lat)
-  
+
   # Plot Google base layer with county and state border geom layers.
   gg_sat_map <- ggmap(ggmap = map_gg_sat,
                       extent = "normal", maprange = FALSE) +
@@ -245,14 +245,14 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
     geom_polygon(data = gg_borders$plot_env$border_states,
                  aes(x = long, y = lat, group = group),
                  color = "moccasin", fill = NA, size = 1.25) +
-  
+
     # Add specimen plot layer subset.
-    geom_jitter(data = map_subset, 
+    geom_jitter(data = map_subset,
                 mapping = aes_string(x = "Longitude", y = "Latitude",
                                      colour = map_col, shape = shape_opt),
                 size = geom_size, inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
-    
+
     # Adjust axis limits to edge of ggmap
     coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
     theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
@@ -262,4 +262,5 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
   # Return ggplot of specimens mapped over ggmap and county border layers.
   return(gg_sat_map)
 }
+
 
