@@ -263,4 +263,41 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
   return(gg_sat_map)
 }
 
+# Specimen Annotation ----
+
+#' Map Individual Specimen
+#'
+#' @param gg_map_obj ggplot object returned by `map_specimens()` or
+#' `map_ggmap()` functions.`
+#' @param h_adjust Numeric vector of length one for horizontal label adjustment.
+#' @param v_adjust Numeric vector of length one for vertical label adjustment.
+#' @param label_size Numeric vector of length one for label size.
+#' @inheritParams find_spp
+#'
+#' @return ggplot object with added specimen annotation layer.
+#'
+map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
+                       h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
+
+  # Call `find_spp()` function to get specimen annotation data.
+  spp_id <- find_spp(taxa_frame = taxa_frame,
+                     collector = collector,
+                     collection_number = collection_number,
+                     geom = TRUE, label = TRUE)
+
+  # Plot additional map layer to include the specimen returned by find_spp().
+  gg_spp_id <- gg_map_obj +
+      geom_point(data = spp_id, inherit.aes = FALSE,
+                 mapping = aes(x = Longitude, y = Latitude),
+                 size = 5, shape = 23, colour = "black", fill = "white") +
+      geom_label(data = spp_id, inherit.aes = FALSE,
+                 nudge_x = h_adjust, nudge_y = v_adjust,
+                 label.padding = unit(0.1, "lines"), size = label_size,
+                 mapping = aes(x = Longitude, y = Latitude,
+                               label = taxon_label), alpha = 0.5)
+
+  # Return ggplot map with specimen annotation.
+  return(gg_spp_id)
+}
+
 
