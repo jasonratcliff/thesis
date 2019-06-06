@@ -263,6 +263,70 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
   return(gg_sat_map)
 }
 
+# Build Elevation Raster Layer ----
+
+#' Build elevation maps for `ggplot` base layer.
+#'
+#' @param raster_zoom Integer vector of length 1 for zoom level passed to
+#' `elevatr::get_elev_raster()` function call.  Must be between 1 and 14.
+#' @param raster_factor Integer vector of length 1 for optional aggregation
+#' of elevation raster to decrease resolution / object size.
+#' @inheritParams map_filter
+#' @inheritParams map_specimens
+#' @inheritParams map_ggmap
+#' 
+#' @examples
+#' co_elev <- elev_spp(specimens = co_front_range, raster_zoom = 7)
+#' 
+map_elev <- function(map_df, map_col, gg_borders,
+                     raster_zoom = 7, raster_factor = 2, geom_size = 3) {
+
+  # Define projection and get AWS Open Data terrain tiles.
+  # Cite: https://registry.opendata.aws/terrain-tiles/
+  prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  map_elev_raster <-
+    get_elev_raster(locations = map_df[, c("Longitude", "Latitude")],
+                    z = raster_zoom, prj = prj_dd, clip = "bbox", src = "aws")
+
+  # Use "raster" package function aggregate() to decrease data resolution and
+  # reduce the size / memory of elevation raster objects (Hijmans 2017).
+  # Cite: http://pakillo.github.io/R-GIS-tutorial/#resolution
+  if (raster_factor > 1) {
+    map_elev_raster <-
+      raster::aggregate(map_elev_raster, fact = raster_factor, fun = mean)
+  }
+
+  # Use "sp" package to define a spatial grid from the raster layer.
+  # Cite: https://groups.google.com/forum/#!msg/ggplot2/9fS4OfHEQq8/ZafTyvVKfJIJ
+  map_elev_df <-
+    as(map_elev_raster, "SpatialPixelsDataFrame") %>% as.data.frame()
+
+  # ggplot elevation projection with county & state borders.
+  map_elev_ggplot <- ggplot(map_elev_df, aes(x=x, y=y)) +
+    geom_tile(aes(fill = layer)) +
+    geom_polygon(data = gg_borders$plot_env$border_counties,
+                 aes(x = long, y = lat, group = group),
+                 color = "black", fill = NA, size = .5) +
+    geom_polygon(data = gg_borders$plot_env$border_states,
+                 aes(x = long, y = lat, group = group),
+                 color = "moccasin", fill = NA, size = 1.25) +
+
+    # Add specimen data layers and modify theme elements.
+    geom_point(data = map_df, aes(x = Longitude, y = Latitude),
+               size = (geom_size + 2), colour = "black", alpha = 0.2) +
+    geom_point(data = map_df, size = geom_size, na.rm = TRUE,
+               aes(x = Longitude, y = Latitude, colour = get(map_col))) +
+    scale_x_continuous("Longitude") +
+    scale_y_continuous("Latitude") +
+    coord_equal(xlim = c(min(map_df$Longitude), max(map_df$Longitude)),
+                ylim = c(min(map_df$Latitude), max(map_df$Latitude)),
+                expand = FALSE) +
+    scale_fill_gradientn("Elevation (m)", colours = terrain.colors(7)) +
+    theme(panel.grid = element_blank(), panel.background = element_blank(),
+          legend.direction = "vertical", legend.position = "bottom",
+          panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
+}
+
 # Specimen Annotation ----
 
 #' Map Individual Specimen
