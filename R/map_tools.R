@@ -198,6 +198,7 @@ map_specimens <- function(map_df, map_col, map_gg_base = NULL,
 #' # Build ggmap object with borders and specimens plotted over satellite image.
 #' co_ggmap <- map_ggmap(map_df = co_front_range,
 #'                       map_col = "Taxon_a_posteriori",
+#'                       shape_opt = "Taxon_a_posteriori",
 #'                       gg_borders = gg_borders, size = 8,
 #'                       gg_longitude = -106, gg_latitude = 39.5,
 #'                       gg_map_type = "satellite")
@@ -237,8 +238,8 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
                attr(map_gg_sat, "bb")$ur.lat)
 
   # Plot Google base layer with county and state border geom layers.
-  gg_sat_map <- ggmap(ggmap = map_gg_sat,
-                      extent = "normal", maprange = FALSE) +
+  gg_sat_map <-
+    ggmap(ggmap = map_gg_sat, extent = "normal", maprange = FALSE) +
     geom_polygon(data = gg_borders$plot_env$border_counties,
                  aes(x = long, y = lat, group = group),
                  color = "white", fill = NA, size = .5) +
@@ -253,11 +254,11 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
                 size = geom_size, inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
 
-    # Adjust axis limits to edge of ggmap
+    # Adjust axis limits to edge of ggmap and modify theme.
     coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
     theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
-    xlab("Longitude") +
-    ylab("Latitude")
+    scale_x_continuous("Longitude") +
+    scale_y_continuous("Latitude")
 
   # Return ggplot of specimens mapped over ggmap and county border layers.
   return(gg_sat_map)
@@ -274,10 +275,10 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
 #' @inheritParams map_filter
 #' @inheritParams map_specimens
 #' @inheritParams map_ggmap
-#' 
+#'
 #' @examples
 #' co_elev <- elev_spp(specimens = co_front_range, raster_zoom = 7)
-#' 
+#'
 map_elev <- function(map_df, map_col, gg_borders,
                      raster_zoom = 7, raster_factor = 2, geom_size = 3) {
 
@@ -364,4 +365,89 @@ map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
   return(gg_spp_id)
 }
 
+# Aesthetic Vectors for `ggplot`----
+
+spp_color <- c("Physaria acutifolia" = "yellow",
+               "Physaria vitulifera" = "plum",
+               "Physaria medicinae" = "purple2",
+               "Physaria acutifolia - vitulifera-like" = "turquoise",
+               "Physaria vitulifera - Carbon" = "steelblue",
+               "Physaria floribunda" = "gold",
+               "Physaria floribunda ssp. floribunda" = "goldenrod",
+               "Physaria floribunda ssp. osterhoutii" = "limegreen",
+               "Physaria bellii" = "blue",
+               "Physaria rollinsii" = "darkorchid1",
+               "Physaria alpina" = "firebrick",
+               "Physaria brassicoides" = "olivedrab2",
+               "Physaria didymocarpa ssp. didymocarpa" = "skyblue",
+               "Physaria didymocarpa ssp. lanata" = "goldenrod",
+               "Physaria didymocarpa ssp. lyrata"= "black",
+               "Physaria saximontana ssp. dentata" = "maroon",
+               "Physaria didymocarpa ssp. saximontana" = "thistle4",
+               "Physaria saximontana ssp. saximontana" = "indianred2",
+               "Physaria eburniflora" = "cyan",
+               "Physaria integrifolia" =  "seagreen",
+               "Physaria dornii" = "darkorange",
+               "Physaria condensata"= "mediumblue",
+               "Physaria chambersii" = "springgreen",
+               "Physaria" = "seashell",
+               "Physaria flowering" = "seashell",
+               "Lesquerella fendleri" = "black",
+               "Lesquerella argyrea" = "black")
+
+spp_shape <- c("Physaria acutifolia" = 3,
+               "Physaria vitulifera"= 8,
+               "Physaria medicinae" = 17,
+               "Physaria acutifolia - vitulifera-like" = 17,
+               "Physaria vitulifera - Carbon" = 17,
+               "Physaria floribunda" = 15,
+               "Physaria floribunda ssp. floribunda" = 18,
+               "Physaria floribunda ssp. osterhoutii" = 18,
+               "Physaria bellii" = 4,
+               "Physaria rollinsii" = 17,
+               "Physaria alpina" = 15,
+               "Physaria brassicoides" = 16,
+               "Physaria didymocarpa ssp. didymocarpa" = 15,
+               "Physaria didymocarpa ssp. lanata" = 25,
+               "Physaria didymocarpa ssp. lyrata" = 17,
+               "Physaria saximontana ssp. dentata" = 18,
+               "Physaria didymocarpa ssp. saximontana" = 18,
+               "Physaria saximontana ssp. saximontana" = 17,
+               "Physaria eburniflora" = 18,
+               "Physaria integrifolia" =  18,
+               "Physaria dornii" = 16,
+               "Physaria condensata"= 16,
+               "Physaria chambersii" = 17,
+               "Physaria" = 16,
+               "Physaria flowering" = 16,
+               "Lesquerella fendleri" = 15,
+               "Lesquerella argyrea" = 18)
+
+#' Modify map ggplot themes.
+#' 
+#' This function overwrites the default discrete scales present in map ggplots
+#' with manual values set by `spp_color` and `spp_shape` vectors.
+#' 
+#' @param legend_title Character vector of length one to set the ggplot
+#' legend title.
+#' @inheritParams map_spp_id
+#' 
+#' @examples
+#' map_themes(gg_map_obj = co_ggmap)
+#'   
+map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
+  
+  # Reset discrete scales to manually set shape and colour scales.
+  scale_index <- 
+    grep(pattern = "ScaleDiscrete", 
+         x = lapply(gg_map_obj$scales$scales, class), invert = TRUE)
+  gg_map_obj$scales$scales <- gg_map_obj$scales$scales[scale_index]
+  
+  # Build ggplot map object with manual scales.
+  gg_map_obj + 
+    scale_color_manual(name = legend_title, 
+                       values = spp_color, na.value = "black") + 
+    scale_shape_manual(name = legend_title, 
+                       values = spp_shape, na.value = 17)
+}
 
