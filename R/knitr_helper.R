@@ -41,6 +41,16 @@ knitr_section <- function(knitr_title, knitr_type) {
   if (knitr_chunk_type == "html") {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
   } else if (knitr_chunk_type == "latex") {
+    # Check regular expression pattern in `knitr_title` string for italics.
+    if (grepl(" \\*[^\\*].+[^\\*]\\* ", knitr_title) && 
+        grepl("\\*{2}", knitr_title) == FALSE) {
+      split_title <- unlist(strsplit(knitr_title, ""))
+      split_index <- grep("\\*", split_title)
+      split_fix <- as.logical(seq_along(split_index) %% 2)
+      split_title[split_index][split_fix] <- "\\textit{"
+      split_title[split_index][which(split_fix == FALSE)] <- "}"
+      knitr_title <- paste(split_title, collapse = "")
+      }
     cat(paste("\\", knitr_type, "{", knitr_title, "}", sep = ""))
   }
 }
