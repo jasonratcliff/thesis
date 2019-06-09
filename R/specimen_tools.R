@@ -200,7 +200,8 @@ subset_spp <- function(taxa_frame, state = NULL, county = NULL,
     if (is.null(taxa_col)) {
       stop("Set `taxa_col` argument for column subset.")
     } else {
-      index_spp <- grep(spp_str, taxa_frame[, taxa_col], invert = exclude)
+      index_spp <- grep(paste(spp_str, collapse = "|"),
+                        taxa_frame[, taxa_col], invert = exclude)
     }
   }
 
