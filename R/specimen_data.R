@@ -10,7 +10,7 @@
 #'
 #' @param herbarium_file Path to .xlsx file with herbarium specimen records.
 #' @return Large list of data frames of species tabs.
-read_specimens <- function(herbarium_file) {
+specimens_read <- function(herbarium_file) {
 
   # Vector of .xlsx spreadsheet tabs to read.
   species_tabs <- c("P. Remaining", "P. acutifolia", "P. saximontana",
@@ -30,7 +30,7 @@ read_specimens <- function(herbarium_file) {
   return(specimen_list)
 }
 
-specimen_list <- read_specimens("data/Phys_species_totals.xlsx")
+specimen_list <- specimens_read("data/Phys_species_totals.xlsx")
 
 # 2. Check date format ----
 
@@ -42,9 +42,9 @@ specimen_list <- read_specimens("data/Phys_species_totals.xlsx")
 #' and saved to a new column using 'paste special...' by value.  The
 #' `date_mismatch()` function writes two log files to the subdirectory
 #' `log/date_logs/` by checking a regular expression against the string in the
-#' respective date columns of data frames returned by `read_specimens()`.
+#' respective date columns of data frames returned by `specimens_read()`.
 #'
-#' @param specimen_list List of data frames returned by `read_specimens()`
+#' @param specimen_list List of data frames returned by `specimens_read()`
 date_mismatch <- function(specimen_list) {
 
   # Create log directories and open file connections.
@@ -279,7 +279,7 @@ total_physaria$Latitude <- as.numeric(total_physaria$Latitude)
 #'
 #' @param specimen_df Data frame of total specimen data combined with output
 #' from `parse_priors` and `parse_synonyms` functions.
-write_specimens <- function(total_specimens) {
+specimens_write <- function(total_specimens) {
 
   # Write summary tables of most recent specimen annotations to log file.
   dir.create("log/synonyms", showWarnings = FALSE)
@@ -318,7 +318,7 @@ write_specimens <- function(total_specimens) {
 }
 
 # Write annotation logs and output species excel tab-specific .csv files.
-write_specimens(total_physaria)
+specimens_write(total_physaria)
 
 # Clean up workspace to remove unnecessary objects and functions.
 rm(prior_df, specimen_df, specimen_index, prior_synonyms)

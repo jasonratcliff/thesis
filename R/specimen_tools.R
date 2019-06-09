@@ -25,14 +25,14 @@
 #'
 #' @examples
 #' # Subset of samples collected by O'Kane
-#' okane_collections <- find_spp(taxa_frame = total_physaria,
+#' okane_collections <- spp_find(taxa_frame = total_physaria,
 #'                               collector = "O'Kane")
 #' # Find specimen collection by Rollins
-#' find_spp(total_physaria, collector = "Rollins", collection_number = 7940)
+#' spp_find(total_physaria, collector = "Rollins", collection_number = 7940)
 #' #      Taxon_a_posteriori     Collector Collection_Number
 #' # 462 Physaria acutifolia R. C. Rollins              7940
 #'
-find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL,
+spp_find <- function(taxa_frame, collector = NULL, collection_number = NULL,
                      row_id = NULL, priors = FALSE, locale = FALSE,
                      geom = FALSE, label = FALSE) {
 
@@ -128,12 +128,12 @@ find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL,
 #' @param taxa_col Character vector of length one with `grep` column name.
 #' @param exclude Logical vector of length one to invert `grep` call.
 #' @param set_name Character vector of length one to name output .csv file.'
-#' @inheritParams find_spp
+#' @inheritParams spp_find
 #'
 #' @return Data frame `taxa_subset` containing records subset by input criteria.
 #'
 #' @examples
-#' didy_subset <- subset_spp(taxa_frame = total_physaria,
+#' didy_subset <- spp_subset(taxa_frame = total_physaria,
 #'                           state = "Wyoming", county = "Hot Springs",
 #'                           longitude = c(-109, -108), latitude = c(43, 44),
 #'                           spp_str = "didymocarpa", taxa_col = "Physaria_syn",
@@ -142,7 +142,7 @@ find_spp <- function(taxa_frame, collector = NULL, collection_number = NULL,
 #' unique(didy_subset$Physaria_syn)
 #' #  [1] "Physaria didymocarpa ssp. didymocarpa"
 #'
-subset_spp <- function(taxa_frame, state = NULL, county = NULL,
+spp_subset <- function(taxa_frame, state = NULL, county = NULL,
                        longitude = NULL, latitude = NULL,
                        spp_str = NULL, taxa_col = NULL,
                        exclude = c(FALSE, TRUE), set_name = NULL) {

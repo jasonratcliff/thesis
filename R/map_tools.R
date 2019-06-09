@@ -12,7 +12,7 @@
 #' @return Data frame subset of specimen observations.
 #'
 #' @examples
-#' wyo_eburniflora <- subset_spp(taxa_frame = total_physaria,
+#' wyo_eburniflora <- spp_subset(taxa_frame = total_physaria,
 #'                               state = "Wyoming",
 #'                               spp_str = "eburniflora",
 #'                               taxa_col = "Taxon")
@@ -129,7 +129,7 @@ map_borders <- function(border_color, border_fill = NA,
 #'
 #' @examples
 #' # Subset Colorado specimens
-#' co_subset <- subset_spp(taxa_frame = total_physaria,
+#' co_subset <- spp_subset(taxa_frame = total_physaria,
 #'                         state = "Colorado",
 #'                         longitude = c(-109, -105), latitude = c(37, 41))
 #'
@@ -189,7 +189,7 @@ map_specimens <- function(map_df, map_col, map_gg_base = NULL,
 #'
 #' # Subset Colorado front range specimens.
 #' co_front_range <-
-#'   subset_spp(total_physaria,
+#'   spp_subset(total_physaria,
 #'              longitude = c(-107.7551, -104.2394),
 #'              latitude = c(38.12828, 40.84102),
 #'              spp_str = "Physaria \\?",
@@ -337,20 +337,20 @@ map_elev <- function(map_df, map_col, gg_borders,
 #' @param h_adjust Numeric vector of length one for horizontal label adjustment.
 #' @param v_adjust Numeric vector of length one for vertical label adjustment.
 #' @param label_size Numeric vector of length one for label size.
-#' @inheritParams find_spp
+#' @inheritParams spp_find
 #'
 #' @return ggplot object with added specimen annotation layer.
 #'
 map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
                        h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
 
-  # Call `find_spp()` function to get specimen annotation data.
-  spp_id <- find_spp(taxa_frame = taxa_frame,
+  # Call `spp_find()` function to get specimen annotation data.
+  spp_id <- spp_find(taxa_frame = taxa_frame,
                      collector = collector,
                      collection_number = collection_number,
                      geom = TRUE, label = TRUE)
 
-  # Plot additional map layer to include the specimen returned by find_spp().
+  # Plot additional map layer to include the specimen returned by spp_find().
   gg_spp_id <- gg_map_obj +
       geom_point(data = spp_id, inherit.aes = FALSE,
                  mapping = aes(x = Longitude, y = Latitude),
