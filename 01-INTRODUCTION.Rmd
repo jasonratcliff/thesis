@@ -154,49 +154,31 @@ if (knitr_chunk == "html") {
 \clearpage
 \vspace*{-24pt}
 
-```{r introFigure1TotalSpecimens, fig.width=5, fig.asp=1.5, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
+```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
 
-# Default variable to most recent identification synonyms
-taxa_id <- "Physaria_syn"
-
-# Subset specimens by species in SPP_STR from total ID vector $Taxon.
-prior_total <- subset_spp(taxa_frame = total_physaria, state = phys_states,
-                          spp_str = c("acutifolia", "brassicoides", 
+# Subset specimens for mapping prior annotations.
+total_priors <- subset_spp(taxa_frame = total_physaria,
+                           longitude = c(-115.2, -103),
+                           latitude = c(37, 49.1),
+                           spp_str = c("acutifolia", "brassicoides", 
                                       "didymocarpa",  "vitulifera",
                                       "saximontana", "eburniflora", 
                                       "integrifolia", "dornii", 
                                       "condensata", "floribunda", "chambersii",
-                                      "rollinsii", "Physaria$"), 
-                          taxa_id = "Taxon")
+                                      "rollinsii", "Physaria$"),
+                           taxa_col = "Taxon") %>%
+  subset_spp(spp_str = c("Lesquerella", "geyeri", "stylosa", "\\?"),
+             exclude = TRUE, taxa_col = "Physaria_syn")
 
-# Filter subset by species names defined by SPP_COLOR and SPP_SHAPE.
-prior_scale <- subset(prior_total, get(taxa_id) %in% names(spp_color))
+# Build ggplot map with prior annotations
+ggmap_priors <- map_specimens(map_df = total_priors, f_adj = 0.01,
+                              map_gg_base = gg_borders,
+                              map_col = "Physaria_syn",
+                              shape_opt = "Physaria_syn") %>% 
+  map_themes(legend_title = "Prior Annotations") %>%
+  ggplot_build()
 
-# Build ggmap object
-prior_total_ggmap <- map_spp(map_frame = prior_scale, base_opt = "map_base", 
-                             taxa_id = taxa_id, shape_opt = taxa_id,
-                             jitter_geoms = TRUE, map_fill = "snow",
-                             mapped_spp = "confirmed", map_borders = "black", 
-                             geom_size = 3, jitter_pos = c(.2, .2),
-                             id_spp = FALSE, save_plot = FALSE)
-
-# Adjust scales and legends
-prior_total_ggmap <- prior_total_ggmap + 
-  scale_x_continuous("Longitude") +
-  scale_y_continuous("Latitude") +
-  scale_color_manual("Most Recent Annotation", values = spp_color) + 
-  scale_shape_manual("Most Recent Annotation", values = spp_shape) + 
-  theme(legend.box = "vertical", legend.position = "bottom", 
-        legend.direction = "vertical", legend.title.align = 0.5) + 
-  guides(colour = guide_legend(ncol = 2, byrow = TRUE)) + 
-  expand_limits(x = 6)
-
-# Build ggmap plot into a graphical object and display list element $plot.
-prior_total_grob <- ggplot_build(prior_total_ggmap)
-prior_total_grob$plot
-
-# Clean up workspace
-rm(prior_total_ggmap, prior_total_grob, prior_scale, prior_total)
+ggmap_priors$plot  # Return grob plot
 
 ```
 
