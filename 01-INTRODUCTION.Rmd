@@ -24,17 +24,9 @@
 
 \paragraph{} After the combination of *Lesquerella* with *Physaria* sensu stricto and the ensuing treatment by O’Kane (2010), investigation of Wyoming *Physaria* identified the need for additional systematic investigation among the “traditional” *Physaria* of Wyoming by Heidel and O’Kane (2012).  In particular, the contested status of specimens previously annotated as *P. vitulifera* in Wyoming and the extent of its distribution from Colorado are of interest.  Furthermore, O’Kane (2010) noted the characters distinguishing *P. didymocarpa* and *P. saximontana* show some intergradation and that further work is warranted for these taxa and described subspecies.  A review of these species and putatively related state and regional endemics follows.  
 
-\section{Systematic and Taxonomic History}
-
-```{r introSectionTaxaHistory, results = "asis"}
-
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html')
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "html") {
-  cat("## Systematic and Taxonomic History")
-}
-
+```{r introSectionTaxaHistory}
+knitr_section(knitr_title = "Systematic and Taxonomic History",
+              knitr_type = "section")
 ```
 
 \paragraph{} The first mention of *Physaria* (Nutt.) A. Gray as a distinct taxon is credited to Thomas Nuttall in Torrey and Gray (1838) where he described it as a section of *Vesicaria* Adanson, an Old World genus.  At that time, only *V. didymocarpa* Hooker as recognized by William Hooker was included.  In his description, Hooker (1830) noted of *V. didymocarpa* fruit morphology, “ . . . a seed-vessel with its two valves separated by so deep a sinus, that, . . . it might almost form a generic character.”  However, due to the remarkable similarity of the overall habit to other *Vesicaria* species, Hooker (1830) chose to recognize *V. didymocarpa* at the specific rank.  
@@ -73,16 +65,9 @@ if (knitr_chunk == "html") {
 
 \paragraph{} Rollins (1984) documented two varieties of *P. saximontana*, variety *dentata* and variety *saximontana*.  *Physaria saximontana* var. *dentata* Rollins was described from specimens collected in Park and Glacier Counties of Montana.  The presence of broad teeth on the basal leaf margins and a style equal to or exceeding 3 times the length of the replum was used to separate variety *dentata* from variety *saximontana*.  He also stated the ovule count in variety *dentata* ranged from 2 to 4 per locule while only 2 ovules per locule were present in variety *saximontana*.
 
-\subsection{Reported \textit{Physaria vitulifera} of South Central Wyoming}
-
-```{r introSubsectionCarbonVitu, results = "asis"}
-
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "html") {
-  cat("### Reported *Physaria vitulifera* of South Central Wyoming")
-}
-
+```{r introSubsectionCarbonVitu}
+knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyoming",
+              knitr_type = "subsection")
 ```
 
 \paragraph{} In his magnum opus of Cruciferae (Brassicaceae), Rollin's (1993) treatment of *Physaria* described *P. vitulifera* as occurring in central Colorado.  A following Colorado Flora reported the species with a primary distribution East of the Front Range, on gravelly slopes of the outer canyons in the foothills (Weber and Wittman 1996).  Ackerfield (2015) also reported a distribution of the species bordering the Rocky Mountains to the East, from the South in Fremont County to the North in Larimer County.  O'Kane's (2010) treatment of *Physaria* follows these circumsriptions, reporting *P. vitulifera* from only Colorado.  However, Heidel and O'Kane (2012) identified a need for taxonomic work based on *Physaria* collections with annotations as *P. vitulifera* that have been reannoted by Jennings (2004) to *P. acutifolia*.
@@ -90,7 +75,6 @@ if (knitr_chunk == "html") {
 \paragraph{} Dorn's (2001) Wyoming Flora key to *Physaria* did report the species from southcentral Wyoming.  Dorn distinguished *P. vitulifera* by fruits with a somewhat rectangular outline and obtuse or truncate basal apices.  He also noted the replum often attached nearly the full length of the fruit such that both apices were highly reduced, and that basal leaf petioles tended to be toothed.  Furthermore, he described this entity as occurruing on rocky slopes in or nearby mountains (Dorn 2001).  Dorn's treatment preceded Jennings' (2004) review of putative *P. vitulifera* specimens in the state.  As previously described, the taxonomic status of *P. vitulifera* in Wyoming is unclear (Rollins 1993; Dorn 2001; Jennings 2004; O'Kane 2010; Heidel and O'Kane 2012).  A number of specimens from Carbon county in Wyoming have annotations as *P. vitulifera*, some of which have since been reannotated to *P. acutifolia* (Table 1).
 
 \clearpage
-\vspace*{-24pt}
 
 ```{r introTable1CarbonVituSpecs}
 
@@ -124,18 +108,9 @@ rm(carbon_vitu_specs)
   
 ```
 
-<!-- \vspace*{10pt} -->
-
-\section{Geographical Distribution and Ecology}
-
-```{r introSectionDistribution, results = "asis"}
-
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "html") {
-  cat("## Geographical Distribution and Ecology")
-}
-
+```{r introSectionDistribution}
+knitr_section(knitr_title = "Geographical Distribution and Ecology",
+              knitr_type = "section")
 ```
 
 \paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and montane habitats with often-arid climates and intense sunlight where they tend to occupy siliceous soils, granitic talus or limestone shale outcrops (Rollins 1939; Rollins 1993).  Of the *Physaria* species in this study, *P. acutifolia* (Figure 1) is widely distributed as a cline spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico (O’Kane 2010).  Infraspecific taxa not recognized by O’Kane (2010) include *P. acutifolia* var. *purpurea* Welsh and Reveal (1977) of Grand County, Utah and *P. acutifolia* var. *stylosa* Welsh (1986) of northeastern Utah, which was described as *P. stylosa* by Rollins (1993). 
@@ -152,7 +127,6 @@ if (knitr_chunk == "html") {
 
 
 \clearpage
-\vspace*{-24pt}
 
 ```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
 
@@ -182,20 +156,24 @@ ggmap_priors$plot  # Return grob plot
 
 ```
 
-\clearpage
-\vspace*{-26pt}
-\section{Morphology}
-
 ```{r introSectionMorphology, results = "asis"}
+knitr_section(knitr_title = "Morphology",
+              knitr_type = "section")
+```
 
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
 
-if (knitr_chunk == "html") {
-  cat("## Morphology")
-}
 
+```{r introSectionSpeciation, results = "asis"}
+knitr_section(knitr_title = "Mechanisms of Speciation",
+              knitr_type = "section")
 ```
 
 \paragraph{} Delineation of a species based on morphological characteristics alone may result in the description of a non-monophyletic group, as it is often not known whether the morphological characters considered are apomorphic or plesiomorphic (Rieseberg and Brouillet 1994).  To asses the status of *Physaria* species previously described on the basis of a taxonomic species concept, observations of continuous and discrete characters were recorded to test for concordance with molecular data obtained for sequence analysis.  In particular, previously described species lacking information about genetic history, cytology, or reproductive mechanisms were of interest (e.g. *Physaria saximontana* subspecies, *Physaria eburniflora*, *P. dornii*, *P. condensata*). 
+
+```{r introSubsectionTopography, results = "asis"}
+knitr_section(knitr_title = "Topography Driven Isolation and Speciation",
+              knitr_type = "subsection")
+```
+
 
 
