@@ -77,35 +77,29 @@ knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyo
 \clearpage
 
 ```{r introTable1CarbonVituSpecs}
+# Subset data frame of WY specimens with previous *P. vitulifera* annotations.
+spp_carbon_vitu <- spp_subset(taxa_frame = spp_carbon_wyo,
+                              spp_str = "vitulifera",
+                              taxa_col = "Taxon",
+                              longitude = c(-108, -105.8),
+                              latitude = c(40.5, 41.5)) %>%
+  dplyr::select(Physaria_syn, Taxon, Collector, Collection_Number,
+                State, County, Latitude, Longitude) %>% 
+  dplyr::distinct() %>%
+  dplyr::rename(`Collection Number` = Collection_Number)
 
-# TABLE CAPTION
-knitr_cap <- knitr_caption(caption = "Putative Carbon County, Wyoming \\textit{Physaria vitulifera} specimens.")
-
-# Return data frame of Collector and Collection Number pairs 
-# including specimens with previous *P. vitulifera* annotations.
-carbon_vitu <- find_spp(taxa_frame = carbon_wyo, 
-                        row_id = grep("Physaria vitulifera - Carbon", 
-                                      carbon_wyo$Taxon_a_posteriori),
-                        priors = TRUE, locale = TRUE, geom = TRUE)
-
-# Remove duplicated Collector and Collection Number pairs.
-carbon_vitu_specs <- carbon_vitu[, c("Collector", "Collection_Number")]
-carbon_vitu_specs <- carbon_vitu_specs[which(
-  duplicated(carbon_vitu_specs$Collection_Number) == FALSE), ]
-names(carbon_vitu_specs) <- c("Collector", "Collection Number")
-
-# knitr::kable with additional kableExtra:: options
-kable(carbon_vitu_specs, format = knitr_chunk, 
-      escape = TRUE, row.names = FALSE, caption = knitr_cap) %>%
-  kable_styling(full_width = FALSE, latex_options= "HOLD_position",
-                position = "center") %>%
-  row_spec(row = 0, bold = TRUE, font_size = 11) %>%
-  column_spec(1, border_left = TRUE, width = "6cm") %>%
-  column_spec(2, border_right = TRUE)
-
-# Clean up workspace
-rm(carbon_vitu_specs)
-  
+# Knitr kable of putative *P. vitulifera* specimens from SC Wyoming.
+knitr_cap <- 
+  knitr_caption(caption = paste0("Putative Carbon County, Wyoming ",
+                                 "\\textit{Physaria vitulifera} specimens."))
+knitr::kable(spp_carbon_vitu[, c("Collector", "Collection Number")], 
+             format = knitr_chunk, 
+             escape = TRUE, row.names = FALSE, caption = knitr_cap) %>%
+  kableExtra::kable_styling(full_width = FALSE, latex_options= "HOLD_position",
+                            position = "center") %>%
+  kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
+  kableExtra::column_spec(1, border_left = TRUE, width = "6cm") %>%
+  kableExtra::column_spec(2, border_right = TRUE)
 ```
 
 ```{r introSectionDistribution}
@@ -119,19 +113,14 @@ knitr_section(knitr_title = "Geographical Distribution and Ecology",
 
 \paragraph{} Three species of *Physaria* sensu-stricto with near-overlapping distributions have been described from southwestern and west-central Wyoming.  These include two state endemics, *P. condensata* and *P. dornii* (Figure 3), with ranges extending through the Overthrust Belt mountains of central Uinta county and southern Lincoln county (Fertig 1998; Fertig 2002).  Both species were formerly considered for the Endangered Species Act as C2 candidates.  Currently, they are recognized as state endemics of high conservation priority by the Wyoming National Diversity Database with *P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at the G2G3/S2S3 heritage ranking (Heidel 2012).  *Physaria integrifolia* (Figure 3) is a regional endemic of western Wyoming and eastern Idaho.
 
-\paragraph{} Currently listed as a species of potential concern in Wyoming at the G3T3/S3 rank (Heidel 2012), *P. saximontana* ssp. *saximontana* (Figure 4) is distributed in west central Wyoming to the southeast of the Wind River Range (Rollins 1984).  The putatively related *P. saximontana* ssp. *dentata* extends north through the Rocky Mountains of Montana.  These species occupy montane to alpine habitats ranging from 1500 – 2700 m (Lesica 2012; O’Kane 2010). 
-
-\paragraph{} *P. eburniflora* (Figure 5) is a species of potential concern in Wyoming given a G3/S3 heritage rank (Heidel 2012).  This species is a state endemic of Carbon, Fremont and Natrona Counties with a distribution to the east-southeast of *P. saximontana* ssp. *saximontana*.
-
-\paragraph{} Known from the western plains region, *P. brassicoides* distribution (Figure 7) extends from Montana and North Dakota south to Colorado and Nebraska.  This species tends to occupy lower elevations, ranging from 900-1400 m (O’Kane 2010).  They tend to grow on bare hillsides, bluffs, riverbanks, badlands and clay soils.   Its distribution is primarily non-overlapping with other Wyoming *Physaria*.
-
+\paragraph{} Three state and regional endemics have distributions through central to eastern Wyoming.  Currently listed as a species of potential concern in Wyoming at the G3T3/S3 rank (Heidel 2012), *P. saximontana* ssp. *saximontana* (Figure 4) is distributed in west central Wyoming to the southeast of the Wind River Range (Rollins 1984).  The putatively related *P. saximontana* ssp. *dentata* extends north through the Rocky Mountains of Montana.  These species occupy montane to alpine habitats ranging from 1500 – 2700 m (Lesica 2012; O’Kane 2010).  *P. eburniflora* (Figure 5) is a species of potential concern in Wyoming given a G3/S3 heritage rank (Heidel 2012).  This species is a state endemic of Carbon, Fremont and Natrona Counties with a distribution to the east-southeast of *P. saximontana* ssp. *saximontana*.  Known from the western plains region, *P. brassicoides* distribution (Figure 7) extends from Montana and North Dakota south to Colorado and Nebraska.  This species tends to occupy lower elevations, ranging from 900-1400 m (O’Kane 2010).  They tend to grow on bare hillsides, bluffs, riverbanks, badlands and clay soils.  Its distribution is primarily non-overlapping with other Wyoming *Physaria*.
 
 \clearpage
 
 ```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
 
 # Subset specimens for mapping prior annotations.
-total_priors <- subset_spp(taxa_frame = total_physaria,
+total_priors <- spp_subset(taxa_frame = total_physaria,
                            longitude = c(-115.2, -103),
                            latitude = c(37, 49.1),
                            spp_str = c("acutifolia", "brassicoides", 
@@ -141,7 +130,7 @@ total_priors <- subset_spp(taxa_frame = total_physaria,
                                       "condensata", "floribunda", "chambersii",
                                       "rollinsii", "Physaria$"),
                            taxa_col = "Taxon") %>%
-  subset_spp(spp_str = c("Lesquerella", "geyeri", "stylosa", "\\?"),
+  spp_subset(spp_str = c("Lesquerella", "geyeri", "stylosa", "\\?"),
              exclude = TRUE, taxa_col = "Physaria_syn")
 
 # Build ggplot map with prior annotations
