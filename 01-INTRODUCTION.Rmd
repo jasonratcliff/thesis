@@ -78,28 +78,27 @@ knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyo
 
 ```{r introTable1CarbonVituSpecs}
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
-spp_carbon_vitu <- spp_subset(taxa_frame = spp_carbon_wyo,
-                              spp_str = "vitulifera",
-                              taxa_col = "Taxon",
-                              longitude = c(-108, -105.8),
-                              latitude = c(40.5, 41.5)) %>%
-  dplyr::select(Physaria_syn, Taxon, Collector, Collection_Number,
-                State, County, Latitude, Longitude) %>% 
-  dplyr::distinct() %>%
-  dplyr::rename(`Collection Number` = Collection_Number)
-
-# Knitr kable of putative *P. vitulifera* specimens from SC Wyoming.
-knitr_cap <- 
-  knitr_caption(caption = paste0("Putative Carbon County, Wyoming ",
-                                 "\\textit{Physaria vitulifera} specimens."))
-knitr::kable(spp_carbon_vitu[, c("Collector", "Collection Number")], 
-             format = knitr_chunk, 
-             escape = TRUE, row.names = FALSE, caption = knitr_cap) %>%
-  kableExtra::kable_styling(full_width = FALSE, latex_options= "HOLD_position",
-                            position = "center") %>%
-  kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
-  kableExtra::column_spec(1, border_left = TRUE, width = "6cm") %>%
-  kableExtra::column_spec(2, border_right = TRUE)
+spp_subset(taxa_frame = spp_carbon_wyo,
+           spp_str = "vitulifera", taxa_col = "Taxon",
+           longitude = c(-108, -105.8), latitude = c(40.5, 41.5)) %>%
+  select(Physaria_syn, Taxon, Collector, Collection_Number,
+         State, County, Latitude, Longitude) %>%
+  dplyr::rename(`Collection Number` = Collection_Number) %>%
+  select(c(Collector, `Collection Number`)) %>% distinct() %>%
+  dplyr::mutate(Collector = sapply(Collector, function(collector) {
+    gsub("[A-Z]\\. ?", "", collector) %>%
+      gsub("&", "and", x = .)
+  })) %>%
+  kable(format = knitr_chunk, escape = TRUE, row.names = FALSE,
+        caption = knitr_caption(
+          caption = paste0("Putative Carbon County, Wyoming ",
+                           "\\textit{Physaria vitulifera} specimens."))) %>%
+  kable_styling(full_width = FALSE,
+                latex_options= "HOLD_position",
+                position = "center") %>%
+  row_spec(row = 0, bold = TRUE, font_size = 11) %>%
+  column_spec(1, border_left = TRUE, width = "6cm") %>%
+  column_spec(2, border_right = TRUE)
 ```
 
 \vspace*{6pt}
