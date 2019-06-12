@@ -9,14 +9,6 @@ knitr_caption <- function(caption) {
   return(caption)
 }
 
-# Function to output chunk label for HTML rendering.
-knitr_chunk_html <- function(html_chunk) {
-  chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
-  if (chunk_type == "html") {
-    cat(html_chunk)
-  }
-}
-
 #' Knitr section writer
 #'
 #' Function to return text to stdout based on the knit option of markdown to
@@ -42,7 +34,7 @@ knitr_section <- function(knitr_title, knitr_type) {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
   } else if (knitr_chunk_type == "latex") {
     # Check regular expression pattern in `knitr_title` string for italics.
-    if (grepl(" \\*[^\\*].+[^\\*]\\* ", knitr_title) && 
+    if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) && 
         grepl("\\*{2}", knitr_title) == FALSE) {
       split_title <- unlist(strsplit(knitr_title, ""))
       split_index <- grep("\\*", split_title)
