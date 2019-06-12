@@ -14,40 +14,35 @@ knitr_section(knitr_title = "Specimen Sampling and Tissue Sources",
 \clearpage
 
 ```{r methodsTable2DnaSpecimens}
-
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html')
-# Add Caption formatted by knitr chunk type.
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "latex") { 
-  
-  # Read in specimen data .csv file from Phys_DNA/ subdirectory.
-  dna_spec <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-specimens.csv", 
-                       header = TRUE, row.names = NULL, as.is = TRUE,
-                       check.names = FALSE, stringsAsFactors = FALSE, 
-                       colClasses = "character")
-
-  # Build kable for table of herbarium specimens (part 1).
-  dna_kable_latex <- kable(dna_spec, format = knitr_chunk, escape = FALSE,
-                           caption = "DNA Extraction Herbarium Specimens.") %>%
+# LaTeX specimen table
+if (knitr_chunk == "latex") {
+  read.csv("data/tables/methods-DNA-specimens.csv",
+           header = TRUE, row.names = NULL, as.is = TRUE,
+           check.names = FALSE, stringsAsFactors = FALSE,
+           colClasses = "character") %>%
+    dplyr::mutate(`Voucher Information` = sapply(
+      `Voucher Information`, function(voucher) {
+        gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
+        })) %>%
+    kable(format = knitr_chunk, escape = FALSE,
+          caption = "DNA Extraction Herbarium Specimens.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
     column_spec(1, border_left = TRUE, width = "3cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    kableExtra::footnote(general = "Requested herbarium specimens used for 
-              extraction of genomic DNA.  Voucher information includes record
-              collector and collection number while locality reports the county 
-              and state for the collection.  Specimens with a single * represent
-              vouchers with DNA sequence data obtained by K. Rethwisch (2014) 
-              while a double ** indicate specimens with sequence data obtained
-              by Dr. O'Kane.",
-              general_title = "", threeparttable = TRUE, escape = FALSE)
-  
-  dna_kable_latex
+    footnote(general =
+               paste0("Requested herbarium specimens used for extraction of ",
+                      "genomic DNA.  Voucher information includes record ",
+                      "collector and collection number while locality reports ",
+                      "the county and state for the collection.  Specimens ",
+                      "with a single * represent vouchers with DNA sequence ",
+                      "data obtained by K. Rethwisch (2014) while a double ** ",
+                      "indicate specimens with sequence data obtained by Dr. ",
+                      "O'Kane."), general_title = "",
+             threeparttable = TRUE, escape = FALSE)
 }
-
 ```
 
 \clearpage
@@ -65,31 +60,24 @@ if (knitr_chunk == "latex") {
 # For suppressing the list of tables entry, reference here:
 # https://texblog.org/2010/05/02/excluding-items-from-list-of-figures-list-of-tables/
 
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html') 
-# Add Caption formatted by knitr chunk type.
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-if (knitr_chunk == "latex") { 
-  
-  # Read in specimen data .csv file from Phys_DNA/ subdirectory.
-  dna_spec_cont <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-specimens-2.csv", 
-                            header = TRUE, row.names = NULL, as.is = TRUE,
-                            check.names = FALSE, stringsAsFactors = FALSE, 
-                            colClasses = "character")
-
-  # Build kable for table of herbarium specimens (part 2).
-  dna_kable_latex <- kable(dna_spec_cont, format = knitr_chunk, escape = FALSE,
-                           caption = "Table 2. Continued.") %>%
+if (knitr_chunk == "latex") {
+  read.csv("data/tables/methods-DNA-specimens-2.csv",
+           header = TRUE, row.names = NULL, as.is = TRUE,
+           check.names = FALSE, stringsAsFactors = FALSE,
+           colClasses = "character") %>%
+    dplyr::mutate(`Voucher Information` = sapply(
+      `Voucher Information`, function(voucher) {
+        gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
+        })) %>%
+    kable(format = knitr_chunk, escape = FALSE,
+          caption = "Table 2. Continued.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
     column_spec(1, border_left = TRUE, width = "3cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1)
-  
-  dna_kable_latex
 }
-
 ```
 
 <!--- Reset caption options and table counter -->
@@ -97,52 +85,44 @@ if (knitr_chunk == "latex") {
 \captionsetup[table]{list=yes}
 \setcounter{table}{2}
 
-```{r methodsTable2DnaSpecimensHtml} 
-
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html')
-# Add Caption formatted by knitr chunk type.
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
+```{r methodsTable2DnaSpecimensHtml}
+# HTML specimen table
 if (knitr_chunk == "html") {
-  
-  # Read in specimen data .csv file from Phys_DNA/ subdirectory.
-  dna_spec <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-specimens.csv", 
-                       header = TRUE, row.names = NULL, as.is = TRUE,
-                       check.names = FALSE, stringsAsFactors = FALSE, 
-                       colClasses = "character")
-  
-  # Read in specimen data .csv file from Phys_DNA/ subdirectory.
-  dna_spec_cont <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-specimens-2.csv", 
-                            header = TRUE, row.names = NULL, as.is = TRUE,
-                            check.names = FALSE, stringsAsFactors = FALSE, 
-                            colClasses = "character")
-  
-  dna_spec_html <- rbind(dna_spec, dna_spec_cont) # Combined data frame
-  
-  # Format italics for hmtl knitr table replacing LaTeX function calls.
-  dna_spec_html$Taxon <- gsub("\\\\textit\\{", "\\*", dna_spec_html$Taxon)
-  dna_spec_html$Taxon <- gsub("\\}$", "\\*", dna_spec_html$Taxon)
-  dna_spec_html$Taxon <- gsub("\\} ssp.", "\\*  ssp.", dna_spec_html$Taxon)
-  
-  knitr::kable(dna_spec_html, longtable = TRUE,
-               format = knitr_chunk, escape = FALSE,
-               caption = "DNA Extraction Herbarium Specimens") %>%
+  bind_rows(
+    read.csv("data/tables/methods-DNA-specimens.csv",
+           header = TRUE, row.names = NULL, as.is = TRUE, check.names = FALSE,
+           stringsAsFactors = FALSE, colClasses = "character"),
+    read.csv("data/tables/methods-DNA-specimens-2.csv",
+             header = TRUE, row.names = NULL, as.is = TRUE,
+             check.names = FALSE, stringsAsFactors = FALSE,
+             colClasses = "character")
+    ) %>%
+    dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
+      gsub("\\\\textit\\{", "\\*", taxon) %>%
+        gsub("\\}$", "\\*", x = .) %>%
+        gsub("\\} ssp.", "\\*  ssp.", x = .)
+  })) %>%
+    select(c(taxa, `Voucher Information`, Locality)) %>%
+    dplyr::rename(Taxon = taxa) %>%
+    kable(longtable = TRUE, format = knitr_chunk, escape = FALSE,
+          caption = "DNA Extraction Herbarium Specimens") %>%
     kable_styling(full_width = TRUE, font_size = 10) %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
     column_spec(1, border_left = TRUE, bold = TRUE) %>%
     column_spec(2, width = "8cm") %>%
     column_spec(3, width = "4cm", border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    kableExtra::footnote(general = "Requested herbarium specimens used for 
-              extraction of genomic DNA.  Voucher information includes record
-              collector and collection number while locality reports the county 
-              and state for the collection.  Specimens with a single * represent
-              vouchers with DNA sequence data obtained by K. Rethwisch (2014) 
-              while a double ** indicate specimens with sequence data obtained
-              by Dr. O'Kane.",
-              general_title = "", threeparttable = TRUE, escape = FALSE)
+    footnote(general =
+               paste0("Requested herbarium specimens used for extraction of ",
+                      "genomic DNA.  Voucher information includes record ",
+                      "collector and collection number while locality reports ",
+                      "the county and state for the collection.  Specimens ",
+                      "with a single * represent vouchers with DNA sequence ",
+                      "data obtained by K. Rethwisch (2014) while a double ** ",
+                      "indicate specimens with sequence data obtained by Dr. ",
+                      "O'Kane."), general_title = "",
+             threeparttable = TRUE, escape = FALSE)
 }
-
 ```
 
 \vspace*{12pt}
