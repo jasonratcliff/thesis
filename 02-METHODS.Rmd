@@ -154,28 +154,21 @@ knitr_section(knitr_title = "rITS PCR",
 \vspace*{24pt}
 
 ```{r methodsTable3DnaPrimers}
-
-# Store character vector for type of knitr chunk (i.e. 'latex' | 'html')
-# Add Caption formatted by knitr chunk type.
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
-# Read in specimen data .csv file from Phys_DNA/ subdirectory.
-dna_prime <- read.csv("Phys_DNA/Seq-Tables/methods-DNA-primers.csv", 
-                      header = TRUE, row.names = NULL, as.is = TRUE,
-                      check.names = FALSE, stringsAsFactors = FALSE, 
-                      colClasses = "character")
-
-kable(dna_prime, format = knitr_chunk, align = "l", escape = FALSE,
-      caption = "Primer Sequences for PCR Reactions.") %>%
+# Sequence primer table
+read.csv("data/tables/methods-DNA-primers.csv",
+         header = TRUE, row.names = NULL, as.is = TRUE,
+         check.names = FALSE, stringsAsFactors = FALSE,
+         colClasses = "character") %>%
+  kable(format = knitr_chunk, align = "l", escape = FALSE,
+        caption = "Primer Sequences for PCR Reactions.") %>%
   kable_styling(full_width = FALSE, font_size = 10,
                 latex_options= "hold_position") %>%
   row_spec(row = 0, bold = TRUE, font_size = 12) %>%
   column_spec(1, border_left = TRUE) %>%
   column_spec(3, border_right = TRUE) %>%
-  footnote(general = "DNA primers for PCR reactions.", 
-           footnote_as_chunk = TRUE, general_title = "", 
+  footnote(general = "DNA primers for PCR reactions.",
+           footnote_as_chunk = TRUE, general_title = "",
            escape = TRUE, threeparttable = TRUE)
-
 ```
 
 \vspace*{12pt}
