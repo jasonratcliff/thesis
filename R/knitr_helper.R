@@ -1,5 +1,7 @@
-# Function to replace LaTeX italics with HTML markdown syntax.
-# Use for figure captions replacing specific epithet italicization.
+#' Knitr caption writer
+#'
+#' Function to replace LaTeX italics with HTML markdown for firgure captions.
+#'
 knitr_caption <- function(caption) {
   chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
   if (chunk_type == "html") {
@@ -34,7 +36,7 @@ knitr_section <- function(knitr_title, knitr_type) {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
   } else if (knitr_chunk_type == "latex") {
     # Check regular expression pattern in `knitr_title` string for italics.
-    if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) && 
+    if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
         grepl("\\*{2}", knitr_title) == FALSE) {
       split_title <- unlist(strsplit(knitr_title, ""))
       split_index <- grep("\\*", split_title)
@@ -44,6 +46,17 @@ knitr_section <- function(knitr_title, knitr_type) {
       knitr_title <- paste(split_title, collapse = "")
       }
     cat(paste("\\", knitr_type, "{", knitr_title, "}", sep = ""))
+  }
+}
+
+#' Table 2 Bookdown
+#'
+#' Methods table reference for DNA specimens.
+knitr_table2 <- function() {
+  if (knitr_chunk == "latex") {
+    paste0("\\@ref(tab:methodsTable2DnaSpecimens)")
+  } else if (knitr_chunk == "html") {
+    paste0("\\@ref(tab:methodsTable2DnaSpecimensHtml)")
   }
 }
 
