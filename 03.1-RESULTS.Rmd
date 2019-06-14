@@ -1,29 +1,24 @@
 # RESULTS {#RESULTS}
 
 \vspace*{-26pt}
-\section{Phylogenetic Analysis}
 
-```{r resultsSectionBayesInf, results = "asis"}
-
-knitr_chunk_html("## Phylogenetic Analysis")
-
+```{r resultsSectionBayesInf}
+knitr_section(knitr_title = "Phylogenetic Analysis",
+              knitr_type = "section")
 ```
 
 \paragraph{} Phylogenetic analyses using Bayesian inference were completed for two individual loci, rITS and *rps* intron. A concatenated analysis  including these two loci in addition to *ycf1* was also carried out.  Individual gene tree analyses revealed a high degree of sequence homogeneity, with seven groupings of identical genotypes for the rITS loci and nine for *rps*.  Additionally, the *ycf1* loci showed the highest degree of overall sequence similarity with 34 of 49 specimens having identical genotypes.
 
-\subsection{ITS Sequence Analysis}
-
-```{r resultsSubsectionItsSeq, results = "asis"}
-
-knitr_chunk_html("### ITS Sequence Analysis")
-
+```{r resultsSubsectionItsSeq}
+knitr_section(knitr_title = "ITS Sequence Analysis",
+              knitr_type = "subsection")
 ```
 
 \paragraph{} Sequences for the rITS loci ranged from 581 to 583 base pairs with an alignment length of 586 base pairs.  There were seven instances of identical genotypes, often between interspecific specimens according to previous annotations (Table \@ref(tab:resultsTable1IdenticalSeqITS)).  These included one group of 19 specimens (genotype 1) with four specimens each of previously annotated *P. dornii* and *P. condensata* from southwestern Wyoming; two specimens of *P. integrifolia* from Teton County, Wyoming; six specimens of *P. acutifolia* from southern Wyoming and western Colorado; and three specimens from the Big Horn Mountains (Nelson 74315, O'Dea 32, Ratcliff and O'Kane 48).  Three specimens of *P. vitulifera* from central Colorado and one of *P. acutifolia* from central Wyoming also had identical rITS sequences (genotype 2).  Another grouping of four specimens included three of putative *P. didymocarpa* subsp. *lanata* from Johnson County, Wyoming and one of *P. brassicoides* from Powder River County, Montana (genotype 3).  Additional groupings include two specimens from central Wyoming, *Smith 551* and *Ratcliff and O'Kane 50* (genotype 4); two specimens from Idaho previously annotated as *P. didymocarpa* subsp. *lyrata* (genotype 5); and two sets of two *P. eburniflora* specimens (genotypes 6 and 7).  
 
 \clearpage
 
-```{r resultsTable1IdenticalSeqITS, warning=FALSE}
+```{r resultsTable4IdenticalSeqITS}
 
 # Generate ggtree object base for further species specific tree annotation.
 bayes_ITS <- "Phys_DNA/Seq-Analysis/7.Bayes/rITS-single-1.1_infile.nex.con.tre"
@@ -48,7 +43,7 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Analysis/7.Bayes/rITS-single-1.1_label-re
 
 \clearpage
 
-```{r resultsFigure1rITSPhyloTree, fig.width=8, fig.asp=1.3, fig.cap=knitr_cap, warning=FALSE}
+```{r resultsFigure2rITSPhyloTree, fig.width=8, fig.asp=1.3, fig.cap=knitr_cap}
 
 knitr_cap <- "Consensus tree from Baysian inference of the rITS gene tree."
 tree_grid(bayes_ITS_tree)
@@ -57,19 +52,17 @@ tree_grid(bayes_ITS_tree)
 
 \clearpage
 \vspace*{-26pt}
-\subsection{\textit{rps} Intron Sequence Analysis}
 
 ```{r chapterSubsectionRpsSeq}
-
-knitr_chunk_html("### *rps* Intron Sequence Analysis")
-
+knitr_section(knitr_title = "*rps* Intron Sequence Analysis",
+              knitr_type = "subsection")
 ```
 
 \paragraph{} Sequences for the *rps* intron ranged from 802 to 852 base pairs with an aligned length of 889.  A high degree of sequence homogeneity was observed in the *rps* intron alignment (Table \@ref(tab:resultsTable2IdenticalSeqRps)).  Fourteen identical sequences (genotype 1) included specimens previously identified as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lanata* (n=2), *P. saximontana* susp. *saximontana* (n=2), *P. s.* subsp. *dentata* (n=2), *P. brassicoides* (n=3), and *P. acutifolia* (n=3).  These samples were primarily from populations of the Big Horn and Absorokee ranges of Wyoming and Montana, with outliers in the Big Belt mountains of Montana, northeastern Wyoming, and south-central Wyoming.  Another grouping of identical sequences included specimens primarily from western Montana and east-central Idaho (Genotype 2).  These included specimens previously annotated as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lyrata* (n=2), *P. saximontana* subsp. *dentata* (n=2), and one specimen of *P. acutifolia* from Colorado.
 
 \vspace{36pt}
 
-```{r resultsTable2IdenticalSeqRps, warning=FALSE}
+```{r resultsTable5IdenticalSeqRps}
 
 # Generate ggtree object base for further species specific tree annotation.
 bayes_rps <- "Phys_DNA/Seq-Analysis/7.Bayes/rps-single-1.1_infile.nex.con.tre"
@@ -95,7 +88,7 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/rps-single-1.1_label-resolve-table
 <!--- Prevent automatic indexing of table entry in List of Tables --> 
 \captionsetup[table]{list=no}
 
-```{r resultsTable2IdenticalSeqRps2}
+```{r resultsTable5IdenticalSeqRpsCont}
 
 latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/rps-single-1.1_label-resolve-table2.csv",
             kable_caption = "Table 5. Continued.")
@@ -117,7 +110,7 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/rps-single-1.1_label-resolve-table
 
 \clearpage
 
-```{r resultsFigure2rpsPhyloTree, fig.cap=knitr_cap, fig.width=6.6, fig.asp=1.3, warning=FALSE}
+```{r resultsFigure3rpsPhyloTree, fig.cap=knitr_cap, fig.width=6.6, fig.asp=1.3}
 
 knitr_cap <- "Consensus tree from Baysian inference of *rps* intron gene tree."
 
@@ -127,19 +120,17 @@ tree_grid(bayes_rps_tree)
 
 \clearpage
 \vspace{-26pt}
-\subsection{\textit{ycf1} Sequence Analysis}
 
-```{r chapterSubsectionYcf1Seq, results = "asis", eval=FALSE}
-
-knitr_chunk_html("### *ycf1* Sequence Analysis")
-
+```{r chapterSubsectionYcf1Seq}
+knitr_section(knitr_title = "*ycf1* Sequence Analysis",
+              knitr_type = "subsection")
 ```
 
 \paragraph{} Sequencing of the *ycf1* loci revealed a low mutation rate in this group of taxa for that marker.  Specimens sampled from each of the putative species considered in this study had identical sequences, with 34 individuals having an identical genotype (Table \@ref(tab:resultsTable3IdenticalSeqYcf1)).  Those showing some degree of heterogeneity for this loci included specimes of *P. acutifolia* (n=2), *P. brassicoides* (n=2), *P. integrifolia* (n=2), *P. eburniflora* (n=2), *P. condensata* (n=1), *P. didymocarpa* subsp. *didymocarpa* (n=1), *P. d.* subsp. *lanata* (n=1), and one specimen from the Medicine Bow Range (*Fertig 16713*).  Due to the high degree of homogeneity observed for this marker, an individual gene tree analysis was not carried out.
 
 \vspace{36pt}
 
-```{r resultsTable3IdenticalSeqYcf1}
+```{r resultsTable6IdenticalSeqYcf1}
 
 # Format ycf1 identical sequence .csv files into split tables.
 ycf1_id_seqs <- read.csv("Phys_DNA/Seq-Tables/ycf1_identical_seqs.csv",
@@ -166,7 +157,7 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table1.csv",
 <!--- Prevent automatic indexing of table entry in List of Tables --> 
 \captionsetup[table]{list=no}
 
-```{r resultsTable3IdenticalSeqYcf12}
+```{r resultsTable6IdenticalSeqYcf1Cont}
 
 latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table2.csv",
             kable_caption = "Table 6. Continued.")
@@ -180,19 +171,16 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table2.csv",
 
 \vspace{36pt}
 
-\subsection{Concatenated Multi-locus Analysis}
-
-```{r chapterSubsectionMultiLocus, results = "asis", eval=FALSE}
-
-knitr_chunk_html("### *ycf1* Sequence Analysis")
-
+```{r chapterSubsectionMultiLocus}
+knitr_section(knitr_title = "Concatenated Multi-locus Analysis",
+              knitr_type = "subsection")
 ```
 
 \paragraph{} Concatenation of the three sequenced loci yielded an alignment with greater overall heterogeneity relative to any individual gene alignment.  Here, only two identical genotypes were observed, one from two specimens previously identified as *P. dornii* and *P. condensata*, and another comprised of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata* (Table \@ref(tab:resultsTable4IdenticalSeqML)).  Although higher posterior probabilities were observed for three clades in the concatenated analysis, 13 nodes were still unresolved as a polytomy (Figure \@ref(fig:resultsFigure3MultiLocusPhyloTree)).  One node with high support (P=0.972) recovered three specimens previously annotated as *P. condensata*, two previously as *P. dornii*, in addition to one specimen of *P. integrifolia* (*Ratcliff and O'Kane Jr., 43*) and another of *P. acutifolia* (*Moore 5199*).
 
 \vspace*{36pt}
 
-```{r resultsTable4IdenticalSeqML, warning=FALSE}
+```{r resultsTable7IdenticalSeqML}
 
 # Generate ggtree object base for further species specific tree annotation.
 bayes_ml <- "Phys_DNA/Seq-Analysis/7.Bayes/ml-1.1_infile.nex.con.tre"
@@ -210,7 +198,7 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Analysis/7.Bayes/ml-1.1_label-resolve-tab
 
 \clearpage
 
-```{r resultsFigure3MultiLocusPhyloTree, fig.cap=knitr_cap, fig.width=6.9, fig.asp=1.3, warning=FALSE}
+```{r resultsFigure4MultiLocusPhyloTree, fig.cap=knitr_cap, fig.width=6.9, fig.asp=1.3}
 
 knitr_cap <- "Consensus tree from Baysian inference of concatenated multi-locus data."
 
