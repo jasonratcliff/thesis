@@ -95,3 +95,47 @@ phylo_tbl <- function(bayes_file, specimen_records,
   return(bayes_tbl_merge)
 }
 
+#' Plot merged tibble ggtree with specimen annotations.
+#' 
+#' @param phylo_tbl_obj Tibble output by `phylo_tbl()` function built from
+#'   merged BEAST tree and herbarium records.
+#' 
+phylo_ggplot <- function(phylo_tbl_obj) {
+  
+  # Index vectors to subset tibble by nodes with single or multiple samples.
+  index_single_nodes <- 
+    match(which(dplyr::count(phylo_tbl_obj, 
+                             node)[, "n"] == 1), phylo_tbl_obj$node)
+  index_multi_nodes <- 
+    sapply(which(dplyr::count(phylo_tbl_obj, node)[, "n"] > 1), 
+           USE.NAMES = FALSE, function(node) {
+             which(phylo_tbl_obj$node %in% node == TRUE)
+             }) %>% unlist()
+  
+  # Plot ggtree object with annotations of specimen record and collection label.
+  ggtree(phylo_tbl_obj) +
+    
+    # Map text strings of probabilities to inner nodes.
+    geom_text(data = filter(phylo_tbl_obj, isTip == FALSE), 
+              aes(label = 
+                    sprintf("%0.3f", 
+                            as.numeric(filter(phylo_tbl_obj, 
+                                              isTip == FALSE)[, "prob"][[1]]),
+                            digits = 3)), 
+              vjust = -0.45, hjust = 1.1, size = 3) + 
+    
+    # Map tips with unique genotypes by species identity and collection label.
+    geom_point(data = phylo_tbl_obj[index_single_nodes, ],
+               aes_string(colour = spp_id, shape = spp_id), 
+               size = 3, na.rm = TRUE) + 
+    geom_tiplab(data = phylo_tbl_obj[index_single_nodes, ]) +
+  
+    # Map tips of genotypes from multiple samples with identical sequence.
+    geom_point(data = phylo_tbl_obj[index_multi_nodes, ],
+               aes(x = x, y = y)) + 
+  
+    # Theme adjustment for legend and scales.
+    scale_color_manual(values = spp_color) +  
+    scale_shape_manual(values = spp_shape)
+}
+
