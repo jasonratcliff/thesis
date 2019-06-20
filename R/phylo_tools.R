@@ -111,6 +111,12 @@ phylo_ggplot <- function(phylo_tbl_obj) {
            USE.NAMES = FALSE, function(node) {
              which(phylo_tbl_obj$node %in% node == TRUE)
              }) %>% unlist()
+
+  # Select tibble for nodes with multiple specimen labels.
+  index_multi_tbl <- 
+    phylo_tbl_obj[index_multi_nodes, ] %>% 
+    dplyr::select(everything()) %>%
+    dplyr::bind_cols(., row_name = seq_along(1:nrow(.)))  # added row index
   
   # Plot ggtree object with annotations of specimen record and collection label.
   ggtree(phylo_tbl_obj) +
