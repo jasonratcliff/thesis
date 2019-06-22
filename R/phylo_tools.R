@@ -105,6 +105,11 @@ phylo_tbl <- function(bayes_file, specimen_records,
 #' @examples
 #' 
 phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn") {
+phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
+                         legend_title = "Previous Annotations",
+                         plot_title = "A phylogenetic tree.",
+                         phylo_layout = "slanted", label_size = 2,
+                         legend_y_pos = c(0, 0.9)) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
   index_single_nodes <-
@@ -192,7 +197,19 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn") {
                 size = label_size) +
 
     # Theme adjustment for legend and scales.
-    scale_color_manual(values = spp_color) +  
-    scale_shape_manual(values = spp_shape)
+    theme(legend.position = legend_y_pos,
+          legend.justification = c(0, 1),
+          legend.direction = "vertical",
+          legend.text = element_text(size = 7),
+          legend.box.background = element_blank()) +
+    guides(colour = guide_legend(ncol = 2, byrow = TRUE)) +
+    scale_color_manual(legend_title, values = spp_color) +
+    scale_shape_manual(legend_title, values = spp_shape) +
+    ggtitle(plot_title)
+
+    # Reposition legend with R package `lemon`.
+    phylo_lemon <-
+      lemon::reposition_legend(phylo_ggtree, 'top left')
+    return(phylo_lemon)
 }
 
