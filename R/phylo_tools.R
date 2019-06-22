@@ -18,7 +18,7 @@ phylo_tbl <- function(bayes_file, specimen_records,
                       dna_spp_file = "data/phylogeny/dna_specimens.csv") {
 
   # Read in conensus tree file .nexus file as tibble object.
-  bayes_tbl <- treeio::read.mrbayes(bayes_file) %>% ggplot2::fortify()
+  bayes_tbl <- ggtree::read.beast(bayes_file) %>% ggplot2::fortify()
 
   # Read in specimen record data frame from .csv file as data frame.
   dna_spp <- readr::read_csv(file = dna_spp_file)
@@ -95,29 +95,73 @@ phylo_tbl <- function(bayes_file, specimen_records,
   return(bayes_tbl_merge)
 }
 
+# Herbarium tree plot ----
+
 #' Plot merged tibble ggtree with specimen annotations.
-#' 
+#'
 #' @param phylo_tbl_obj Tibble output by `phylo_tbl()` function built from
 #'   merged BEAST tree and herbarium records.
+#'
+#' @examples
 #' 
-phylo_ggplot <- function(phylo_tbl_obj) {
-  
+phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn") {
+
   # Index vectors to subset tibble by nodes with single or multiple samples.
-  index_single_nodes <- 
-    match(which(dplyr::count(phylo_tbl_obj, 
+  index_single_nodes <-
+    match(which(dplyr::count(phylo_tbl_obj,
                              node)[, "n"] == 1), phylo_tbl_obj$node)
-  index_multi_nodes <- 
-    sapply(which(dplyr::count(phylo_tbl_obj, node)[, "n"] > 1), 
+  index_multi_nodes <-
+    sapply(which(dplyr::count(phylo_tbl_obj, node)[, "n"] > 1),
            USE.NAMES = FALSE, function(node) {
              which(phylo_tbl_obj$node %in% node == TRUE)
              }) %>% unlist()
 
-  # Select tibble for nodes with multiple specimen labels.
-  index_multi_tbl <- 
-    phylo_tbl_obj[index_multi_nodes, ] %>% 
+  # Select tibble from nodes with multiple specimen labels.
+  tbl_multi_node <-
+    phylo_tbl_obj[index_multi_nodes, ] %>%
     dplyr::select(everything()) %>%
-    dplyr::bind_cols(., row_name = seq_along(1:nrow(.)))  # added row index
-  
+    dplyr::bind_cols(., row_name_immut = seq_along(1:nrow(.)))  # row index
+
+  # Extend tibble columns to include geom size calculations for plotting.
+  tbl_multi_node_ext <-
+    purrr::pmap_dfr(tbl_multi_node,
+      function(node, row_name_immut, ...) {
+
+        # Filter tibble of rows matching mapped node value.
+        node_check <- node
+        tbl_node_subset <-
+          dplyr::select(tbl_multi_node,
+                        one_of("node", spp_id, "row_name_immut")) %>%
+          dplyr::filter(., tbl_multi_node["node"] == node_check) # %>%
+
+        # Order table of specimen identifications into tibble.
+        node_table <- select(tbl_node_subset, spp_id) %>% table()
+        node_order <- node_table[order(node_table, decreasing = TRUE)]
+        tbl_spp_order <-
+          bind_cols(species = names(node_order), n = node_order)
+
+        # Arrange tibble by ordered factor of specimen counts.
+        tbl_order_nodes <- tbl_node_subset %>%
+          dplyr::arrange(., factor(
+            select(tbl_node_subset, spp_id)[[1]],
+            levels = tbl_spp_order$species, ordered = TRUE))
+
+        # Calculate geom size from column mutations.
+        tbl_node_plot <-
+          dplyr::mutate(tbl_order_nodes,
+                        geom_size = seq(from = 6, to = 2,
+                                        length.out = nrow(tbl_order_nodes)) %>%
+                          round(., digits = 2))
+
+        # Mutate join of geom sizes by row number constant.
+        tbl_node_merge <-
+          dplyr::full_join(tbl_multi_node[row_name_immut, ],
+                           tbl_node_plot[grep(paste0("^", row_name_immut, "$"),
+                                              tbl_node_plot$row_name_immut), ],
+                           by = "row_name_immut")
+        dplyr::bind_cols(data = tbl_node_merge)
+        })
+
   # Plot ggtree object with annotations of specimen record and collection label.
   ggtree(phylo_tbl_obj) +
     
