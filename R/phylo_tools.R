@@ -163,27 +163,34 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn") {
         })
 
   # Plot ggtree object with annotations of specimen record and collection label.
-  ggtree(phylo_tbl_obj) +
-    
+  phylo_ggtree <-
+    ggtree(phylo_tbl_obj, layout = phylo_layout) + # phylo_layout) +
+
+    # Map tips of genotypes from multiple samples with identical sequence.
+    geom_point(data = tbl_multi_node_ext,
+               aes_string(colour = paste0(spp_id, ".x"),
+                          shape = paste0(spp_id, ".x")),
+               size = tbl_multi_node_ext$geom_size,
+               na.rm = TRUE) +
+    geom_point(data = tbl_multi_node_ext, size = 1.5,
+               color = "black", shape = 18) +
+
     # Map text strings of probabilities to inner nodes.
-    geom_text(data = filter(phylo_tbl_obj, isTip == FALSE), 
-              aes(label = 
-                    sprintf("%0.3f", 
-                            as.numeric(filter(phylo_tbl_obj, 
+    geom_text(data = filter(phylo_tbl_obj, isTip == FALSE),
+              aes(label =
+                    sprintf("%0.3f",
+                            as.numeric(filter(phylo_tbl_obj,
                                               isTip == FALSE)[, "prob"][[1]]),
-                            digits = 3)), 
-              vjust = -0.45, hjust = 1.1, size = 3) + 
-    
+                            digits = 3)),
+              vjust = -0.45, hjust = 1.1, size = 3) +
+
     # Map tips with unique genotypes by species identity and collection label.
     geom_point(data = phylo_tbl_obj[index_single_nodes, ],
-               aes_string(colour = spp_id, shape = spp_id), 
-               size = 3, na.rm = TRUE) + 
-    geom_tiplab(data = phylo_tbl_obj[index_single_nodes, ]) +
-  
-    # Map tips of genotypes from multiple samples with identical sequence.
-    geom_point(data = phylo_tbl_obj[index_multi_nodes, ],
-               aes(x = x, y = y)) + 
-  
+               aes_string(colour = spp_id, shape = spp_id),
+               size = 3, na.rm = TRUE) +
+    geom_tiplab(data = phylo_tbl_obj[index_single_nodes, ],
+                size = label_size) +
+
     # Theme adjustment for legend and scales.
     scale_color_manual(values = spp_color) +  
     scale_shape_manual(values = spp_shape)
