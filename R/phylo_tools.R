@@ -104,11 +104,11 @@ phylo_tbl <- function(bayes_file, specimen_records,
 #'
 #' @examples
 #' 
-phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn") {
 phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          legend_title = "Previous Annotations",
                          plot_title = "A phylogenetic tree.",
                          phylo_layout = "slanted", label_size = 2,
+                         legend_col = 2, x_expand = 0.02, 
                          legend_y_pos = c(0, 0.9)) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
@@ -121,6 +121,9 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
              which(phylo_tbl_obj$node %in% node == TRUE)
              }) %>% unlist()
 
+  # Filter rows for inner (non-tip) nodes as tibble.
+  tbl_inner_node <- dplyr::filter(phylo_tbl_obj, isTip == FALSE)
+  
   # Select tibble from nodes with multiple specimen labels.
   tbl_multi_node <-
     phylo_tbl_obj[index_multi_nodes, ] %>%
@@ -154,8 +157,11 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
         # Calculate geom size from column mutations.
         tbl_node_plot <-
           dplyr::mutate(tbl_order_nodes,
-                        geom_size = seq(from = 6, to = 2,
+                        geom_size = seq(from = 7, to = 5,
                                         length.out = nrow(tbl_order_nodes)) %>%
+                          round(., digits = 2),
+                        alpha_val =  seq(from = 0.4, to = 0.6,
+                                         length.out = nrow(tbl_order_nodes)) %>%
                           round(., digits = 2))
 
         # Mutate join of geom sizes by row number constant.
@@ -169,47 +175,51 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
 
   # Plot ggtree object with annotations of specimen record and collection label.
   phylo_ggtree <-
-    ggtree(phylo_tbl_obj, layout = phylo_layout) + # phylo_layout) +
+    ggtree(phylo_tbl_obj, layout = phylo_layout) +
 
     # Map tips of genotypes from multiple samples with identical sequence.
     geom_point(data = tbl_multi_node_ext,
                aes_string(colour = paste0(spp_id, ".x"),
                           shape = paste0(spp_id, ".x")),
                size = tbl_multi_node_ext$geom_size,
+               alpha = tbl_multi_node_ext$alpha_val,
                na.rm = TRUE) +
     geom_point(data = tbl_multi_node_ext, size = 1.5,
                color = "black", shape = 18) +
 
-    # Map text strings of probabilities to inner nodes.
-    geom_text(data = filter(phylo_tbl_obj, isTip == FALSE),
-              aes(label =
-                    sprintf("%0.3f",
-                            as.numeric(filter(phylo_tbl_obj,
-                                              isTip == FALSE)[, "prob"][[1]]),
-                            digits = 3)),
-              vjust = -0.45, hjust = 1.1, size = 3) +
+    # Map text strings of probabilities to inner nodes as labels.
+    geom_label(data = tbl_inner_node,
+               aes(x = x, y = y, 
+                   label = sprintf("%0.3f", as.numeric(tbl_inner_node$prob),
+                                   digits = 3)),
+               nudge_x = (-range(tbl_inner_node$x)[2] * 0.05),
+               fontface = "bold", fill = "lightgoldenrod", 
+               size = 4.5, alpha = 0.5) + 
 
     # Map tips with unique genotypes by species identity and collection label.
     geom_point(data = phylo_tbl_obj[index_single_nodes, ],
                aes_string(colour = spp_id, shape = spp_id),
                size = 3, na.rm = TRUE) +
-    geom_tiplab(data = phylo_tbl_obj[index_single_nodes, ],
-                size = label_size) +
-
+    geom_text(data = phylo_tbl_obj[index_single_nodes, ],
+              aes(x = x, y = y, label = label), na.rm = TRUE,
+              nudge_x = (range(tbl_inner_node$x)[2] * 0.05),
+              size = 3.5, hjust = 0) + 
+    
     # Theme adjustment for legend and scales.
     theme(legend.position = legend_y_pos,
           legend.justification = c(0, 1),
           legend.direction = "vertical",
           legend.text = element_text(size = 7),
           legend.box.background = element_blank()) +
-    guides(colour = guide_legend(ncol = 2, byrow = TRUE)) +
+    guides(colour = guide_legend(ncol = legend_col, byrow = TRUE)) +
     scale_color_manual(legend_title, values = spp_color) +
     scale_shape_manual(legend_title, values = spp_shape) +
+    expand_limits(x = x_expand) +
+    geom_treescale() + 
     ggtitle(plot_title)
 
     # Reposition legend with R package `lemon`.
     phylo_lemon <-
       lemon::reposition_legend(phylo_ggtree, 'top left')
-    return(phylo_lemon)
 }
 
