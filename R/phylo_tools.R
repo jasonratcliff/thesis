@@ -172,7 +172,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                            by = "row_name_immut")
         dplyr::bind_cols(data = tbl_node_merge)
         })
-
+  
   # Plot ggtree object with annotations of specimen record and collection label.
   phylo_ggtree <-
     ggtree(phylo_tbl_obj, layout = phylo_layout) +
@@ -223,3 +223,42 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
       lemon::reposition_legend(phylo_ggtree, 'top left')
 }
 
+#' Kable function
+#' 
+#' 
+phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
+  
+  # Index vectors to subset tibble by nodes with multiple samples.
+  index_multi_nodes <-
+    sapply(which(dplyr::count(phylo_tbl_obj, node)[, "n"] > 1),
+           USE.NAMES = FALSE, function(node) {
+             which(phylo_tbl_obj$node %in% node == TRUE)
+           }) %>% unlist()
+  tbl_multi_node <-
+    phylo_tbl_obj[index_multi_nodes, ] %>%
+    dplyr::select(everything()) %>%
+    dplyr::bind_cols(., row_name_immut = seq_along(1:nrow(.)))  # row index
+  
+  # Build kable for rows with multiple specimens per node.
+  kable_multi_node <-
+    dplyr::select(tbl_multi_node, node, State, spp_id,
+                        Collector, Collection_Number) %>%
+    dplyr::arrange(., factor(tbl_multi_node$node,
+                             levels = names(sort(table(tbl_multi_node$node),
+                                                 decreasing = TRUE)))) %>%
+    dplyr::mutate(., Genotype = 
+                    map_dbl(.x = .[["node"]], function(node) {
+                      which(unique(.[["node"]]) %in% node)
+                      })) %>%
+    select(., Genotype, State, spp_id, Collector, Collection_Number) %>%
+    kable(., caption = kable_caption, format = knitr_chunk, escape = F,
+          align=c("c", "c", "l", "l", "l"), row.names = FALSE) %>%
+      kable_styling(full_width = FALSE, font_size = 10,
+                    latex_options= "hold_position") %>%
+      row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+      column_spec(1, border_left = TRUE) %>%
+      column_spec(3, width = "3.7cm") %>%
+      column_spec(5, border_right = TRUE, width = "2cm") %>%
+      collapse_rows(columns = 1:3)
+  return(kable_multi_node)
+}
