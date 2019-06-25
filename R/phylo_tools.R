@@ -252,15 +252,22 @@ phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
                     map_dbl(.x = .[["node"]], function(node) {
                       which(unique(.[["node"]]) %in% node)
                       })) %>%
-    select(., Genotype, State, spp_id, Collector, Collection_Number) %>%
+    dplyr::select(., Genotype, spp_id, State, Collector, Collection_Number) %>%
+    dplyr::mutate(., Collector =
+                    map_chr(.[["Collector"]], function(collector) {
+                      gsub("[A-Z]\\. ?", "", collector) %>%
+                        gsub("&|with", "and", x = .)  }) ) %>%
+    dplyr::rename(., Species = spp_id, 
+                  `Collection Number` = Collection_Number) %>%
     kable(., caption = kable_caption, format = knitr_chunk, escape = F,
           align=c("c", "c", "l", "l", "l"), row.names = FALSE) %>%
       kable_styling(full_width = FALSE, font_size = 10,
                     latex_options= "hold_position") %>%
       row_spec(row = 0, bold = TRUE, font_size = 10) %>%
       column_spec(1, border_left = TRUE) %>%
-      column_spec(3, width = "3.7cm") %>%
+      column_spec(2, width = "3.7cm") %>%
       column_spec(5, border_right = TRUE, width = "2cm") %>%
       collapse_rows(columns = 1:3)
   return(kable_multi_node)
 }
+
