@@ -69,7 +69,9 @@ phylo_tbl <- function(bayes_file, specimen_records,
             id_dupes <-  # Extract concatenated labels of identical sequences.
               # The regular expression matches an abbreviated genus prefixed to
               # and abbrevieated specific epithet with a sample collection ID.
-              stringr::str_extract_all(label, "[PL][A-Z]+_[0-9]+") %>% unlist()
+              stringr::str_extract_all(label, 
+                                       "[PL][A-Z]+_[A-Z]?[A-Z]?_?[0-9]+") %>% 
+                unlist()
 
             # Nested map of label IDs denoting identical sample sequences.
             map_dfr(.x = id_dupes, .y = rep(x = node, times = length(id_dupes)),
