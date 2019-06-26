@@ -69,8 +69,8 @@ phylo_tbl <- function(bayes_file, specimen_records,
             id_dupes <-  # Extract concatenated labels of identical sequences.
               # The regular expression matches an abbreviated genus prefixed to
               # and abbrevieated specific epithet with a sample collection ID.
-              stringr::str_extract_all(label, 
-                                       "[PL][A-Z]+_[A-Z]?[A-Z]?_?[0-9]+") %>% 
+              stringr::str_extract_all(label,
+                                       "[PL][A-Z]+_[A-Z]?[A-Z]?_?[0-9]+") %>%
                 unlist()
 
             # Nested map of label IDs denoting identical sample sequences.
@@ -110,7 +110,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          legend_title = "Previous Annotations",
                          plot_title = "A phylogenetic tree.",
                          phylo_layout = "slanted", label_size = 2,
-                         legend_col = 2, x_expand = 0.02, 
+                         legend_col = 2, x_expand = 0.02,
                          legend_y_pos = c(0, 0.9)) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
@@ -125,7 +125,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
 
   # Filter rows for inner (non-tip) nodes as tibble.
   tbl_inner_node <- dplyr::filter(phylo_tbl_obj, isTip == FALSE)
-  
+
   # Select tibble from nodes with multiple specimen labels.
   tbl_multi_node <-
     phylo_tbl_obj[index_multi_nodes, ] %>%
@@ -174,7 +174,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                            by = "row_name_immut")
         dplyr::bind_cols(data = tbl_node_merge)
         })
-  
+
   # Plot ggtree object with annotations of specimen record and collection label.
   phylo_ggtree <-
     ggtree(phylo_tbl_obj, layout = phylo_layout) +
@@ -191,12 +191,12 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
 
     # Map text strings of probabilities to inner nodes as labels.
     geom_label(data = tbl_inner_node,
-               aes(x = x, y = y, 
+               aes(x = x, y = y,
                    label = sprintf("%0.3f", as.numeric(tbl_inner_node$prob),
                                    digits = 3)),
                nudge_x = (-range(tbl_inner_node$x)[2] * 0.05),
-               fontface = "bold", fill = "lightgoldenrod", 
-               size = 4.5, alpha = 0.5) + 
+               fontface = "bold", fill = "lightgoldenrod",
+               size = 4.5, alpha = 0.5) +
 
     # Map tips with unique genotypes by species identity and collection label.
     geom_point(data = phylo_tbl_obj[index_single_nodes, ],
@@ -205,8 +205,8 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
     geom_text(data = phylo_tbl_obj[index_single_nodes, ],
               aes(x = x, y = y, label = label), na.rm = TRUE,
               nudge_x = (range(tbl_inner_node$x)[2] * 0.05),
-              size = 3.5, hjust = 0) + 
-    
+              size = 3.5, hjust = 0) +
+
     # Theme adjustment for legend and scales.
     theme(legend.position = legend_y_pos,
           legend.justification = c(0, 1),
@@ -217,7 +217,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
     scale_color_manual(legend_title, values = spp_color) +
     scale_shape_manual(legend_title, values = spp_shape) +
     expand_limits(x = x_expand) +
-    geom_treescale() + 
+    geom_treescale() +
     ggtitle(plot_title)
 
     # Reposition legend with R package `lemon`.
@@ -225,11 +225,11 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
       lemon::reposition_legend(phylo_ggtree, 'top left')
 }
 
-#' Kable function
-#' 
-#' 
-phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
-  
+#' Multi-specimen node tibble.
+#'
+phylo_multi_tbl <- function(phylo_tbl_obj,
+                            spp_id = "Physaria_syn") {
+
   # Index vectors to subset tibble by nodes with multiple samples.
   index_multi_nodes <-
     sapply(which(dplyr::count(phylo_tbl_obj, node)[, "n"] > 1),
@@ -240,7 +240,7 @@ phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
     phylo_tbl_obj[index_multi_nodes, ] %>%
     dplyr::select(everything()) %>%
     dplyr::bind_cols(., row_name_immut = seq_along(1:nrow(.)))  # row index
-  
+
   # Build kable for rows with multiple specimens per node.
   kable_multi_node <-
     dplyr::select(tbl_multi_node, node, State, spp_id,
@@ -248,7 +248,7 @@ phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
     dplyr::arrange(., factor(tbl_multi_node$node,
                              levels = names(sort(table(tbl_multi_node$node),
                                                  decreasing = TRUE)))) %>%
-    dplyr::mutate(., Genotype = 
+    dplyr::mutate(., Genotype =
                     map_dbl(.x = .[["node"]], function(node) {
                       which(unique(.[["node"]]) %in% node)
                       })) %>%
@@ -257,17 +257,24 @@ phylo_kable <- function(phylo_tbl_obj, kable_caption, spp_id = "Physaria_syn") {
                     map_chr(.[["Collector"]], function(collector) {
                       gsub("[A-Z]\\. ?", "", collector) %>%
                         gsub("&|with", "and", x = .)  }) ) %>%
-    dplyr::rename(., Species = spp_id, 
-                  `Collection Number` = Collection_Number) %>%
-    kable(., caption = kable_caption, format = knitr_chunk, escape = F,
-          align=c("c", "c", "l", "l", "l"), row.names = FALSE) %>%
-      kable_styling(full_width = FALSE, font_size = 10,
-                    latex_options= "hold_position") %>%
-      row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-      column_spec(1, border_left = TRUE) %>%
-      column_spec(2, width = "3.7cm") %>%
-      column_spec(5, border_right = TRUE, width = "2cm") %>%
-      collapse_rows(columns = 1:3)
+    dplyr::rename(., Species = spp_id,
+                  `Collection Number` = Collection_Number)
   return(kable_multi_node)
+}
+
+#' Kable build for multi-specimen nodes.
+#' 
+#' 
+phylo_kable <- function(tbl_multi_node, kable_caption) {
+  kable(tbl_multi_node, caption = kable_caption, format = knitr_chunk,
+        escape = F, row.names = FALSE,
+        align=c("c", "c", "l", "l", "l")) %>%
+    kable_styling(full_width = FALSE, font_size = 10,
+                  latex_options= "hold_position") %>%
+    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    column_spec(1, border_left = TRUE) %>%
+    column_spec(2, width = "3.7cm") %>%
+    column_spec(5, border_right = TRUE, width = "2cm") %>%
+    collapse_rows(columns = 1:3)
 }
 
