@@ -63,7 +63,7 @@ knitr_section(knitr_title = "*rps* Intron Sequence Analysis",
 
 \paragraph{} Sequences for the *rps* intron ranged from 802 to 852 base pairs with an aligned length of 889.  A high degree of sequence homogeneity was observed in the *rps* intron alignment (Table \@ref(tab:resultsTable5IdenticalSeqRps)).  Fourteen identical sequences (**genotype 1**) included specimens previously identified as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lanata* (n=2), *P. saximontana* susp. *saximontana* (n=2), *P. s.* subsp. *dentata* (n=2), *P. brassicoides* (n=3), and *P. acutifolia* (n=3).  These samples were primarily from populations of the Big Horn and Absorokee ranges of Wyoming and Montana, with outliers in the Big Belt mountains of Montana, northeastern Wyoming, and south-central Wyoming.  Another grouping of identical sequences included specimens primarily from western Montana and east-central Idaho (**genotype 2**).  These specimens were previously annotated as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lyrata* (n=2), *P. saximontana* subsp. *dentata* (n=2), and *P. acutifolia* (n=1).
 
-\vspace{36pt}
+\vspace*{24pt}
 
 ```{r resultsTable5IdenticalSeqRps, fig.width=8}
 
@@ -71,9 +71,7 @@ tbl_phylo_rps <-
   phylo_tbl(bayes_file = paste0("data/seq-consensus/",
                                 "rps-single-1.1_infile.nex.con.tre"),
             specimen_records = total_physaria)
-
-  tbl_multi_rps <- phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rps)
-
+tbl_multi_rps <- phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rps)
 
 if (knitr_chunk == "html") {
  phylo_kable(tbl_multi_node = tbl_multi_rps,
@@ -100,7 +98,7 @@ if (knitr_chunk == "html") {
 
 if (knitr_chunk == "latex") {
   phylo_kable(tbl_multi_node = tbl_multi_rps[22:47, ],
-            kable_caption = NULL)
+            kable_caption = "Table 5. Continued.")
 }
 
 if (knitr_chunk == "latex") {
@@ -113,7 +111,7 @@ if (knitr_chunk == "latex") {
 
 ```
 
-\vspace{36pt}
+\vspace*{12pt}
 
 \paragraph{} A third genotype consisted of three specimens (previously *P. saximontana*, *P. eburniflora*, and *P. acutifolia*) from Hot Springs county near the Wind River Range, and two specimens of *P. acutifolia* from western Sublette County, Wyoming and Rio Blanco, Colorado.  This group (**genotype 3**) also included *Dorn 10105*, a specimen from the Medicine Bow Range with a previous annotation as *P. vitulifera*.  A fourth group (**genotype 4**) included two other specimens (*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range.  Additionally, this group included collections of *P. integrifolia* from Lincoln County, Wyoming; *P. acutifola* from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.  Five specimens with identical sequences from Lincoln County, Wyoming (**genotype 5**) included two collections of *P. dornii*, two of *P. condensata*, and one collection of *P. integrifolia*.  Three specimens of *P. didymocarpa* subsp. *lanata* from the Big Horn Mountains and one of *P. acutifolia* from Uinta County, Wyoming comprised another group (**genotype 6**).  One specimen of *P. saximontana* subsp. *dentata* from Glacier County, Montana and one of *P. eburniflora* from Carbon County, Wyoming also had identical sequences (**genotype 7**).  Lastly, two *P. eburniflora* collections from Fremont County, Wyoming (**genotype 8**) and two *P. vitulifera* collections from Colorado (**genotype 9**) comprised two additional genotypes.
 
@@ -121,21 +119,20 @@ if (knitr_chunk == "latex") {
 
 \paragraph{} For the *rps* intron, a higher degree of sequence heterogeneity was observed for putative *P. condensata*, *P. dornii*, and *P. integrifolia* relative to the rITS gene tree.  Here, a clade of moderate support (P=0.848) was recovered containing three specimens of *P. dornii*, three of *P. condensata*, two of *P. integrifolia*, and one *P. acutifolia* specimen from Montezuma County, Colorado.  One specimen of *P. condensata* was recovered in a separate, highly supported clade (P=0.987) also containing *P. saximontana* subsp. *saxmimontana*, *P. s* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*, *P. brassicoides*, and one specimen of *P. acutifolia*.  Two other clades with moderate to high support were also recovered, one with two Colorado *P. vitulifera* specimens (P=0.736) and another with *P. acutifolia*, *P. brassicoides*, *P. integrifolia*, and one specimen from the Medicine Bow Range (P=0.996).  
 
-\clearpage
-
-```{r resultsFigure3rpsPhyloTree, fig.cap=knitr_cap, fig.width=8, fig.asp=1.3}
+```{r resultsFigure3rpsPhyloTree, fig.cap=knitr_cap, fig.height=10, fig.asp=1.3}
 
 knitr_cap <- "Consensus tree from Baysian inference of *rps* intron gene tree."
 
 gridExtra::grid.arrange(phylo_ggplot(
   phylo_tbl_obj = tbl_phylo_rps,
-  plot_title = "*rps* intron Phylogeny",
+  plot_title = expression(paste(italic("rps"), " intron Phylogeny")),
   legend_col = 1, x_expand = 0.015))
 
 ```
 
 \clearpage
-\vspace{-26pt}
+
+\vspace*{-26pt}
 
 ```{r chapterSubsectionYcf1Seq}
 knitr_section(knitr_title = "*ycf1* Sequence Analysis",
@@ -144,7 +141,7 @@ knitr_section(knitr_title = "*ycf1* Sequence Analysis",
 
 \paragraph{} Sequencing of the *ycf1* loci revealed a low mutation rate in this group of taxa for that marker.  Specimens sampled from each of the putative species considered in this study had identical sequences, with 34 individuals having an identical genotype (Table \@ref(tab:resultsTable6IdenticalSeqYcf1)).  Those showing some degree of heterogeneity for this loci included specimes of *P. acutifolia* (n=2), *P. brassicoides* (n=2), *P. integrifolia* (n=2), *P. eburniflora* (n=2), *P. condensata* (n=1), *P. didymocarpa* subsp. *didymocarpa* (n=1), *P. d.* subsp. *lanata* (n=1), and one specimen from the Medicine Bow Range (*Fertig 16713*).  Due to the high degree of homogeneity observed for this marker, an individual gene tree analysis was not carried out.
 
-\vspace{36pt}
+\vspace*{24pt}
 
 ```{r resultsTable6IdenticalSeqYcf1}
 
@@ -152,17 +149,23 @@ knitr_section(knitr_title = "*ycf1* Sequence Analysis",
 ycf1_id_seqs <- read.csv("Phys_DNA/Seq-Tables/ycf1_identical_seqs.csv",
                          header = TRUE, row.names = NULL, as.is = TRUE,
                          check.names = FALSE, stringsAsFactors = FALSE, 
-                         colClasses = "character")
-ycf1_id_seqs$Collector <- collector_format(ycf1_id_seqs$Collector)
-ycf1_id_seqs_tab1 <- ycf1_id_seqs[1:24, ]
-ycf1_id_seqs_tab2 <- ycf1_id_seqs[25:35, ]
-write.csv(ycf1_id_seqs_tab1, row.names = FALSE,
-          file = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table1.csv")
-write.csv(ycf1_id_seqs_tab2, row.names = FALSE,
-          file = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table2.csv")
+                         colClasses = "character") %>%
+  dplyr::mutate(., Collector =
+                    map_chr(.[["Collector"]], function(collector) {
+                      gsub("[A-Z]\\. ?", "", collector) %>%
+                        gsub("&|with", "and", x = .)})) %>%
+  dplyr::select(., Genotype, Species, State, Collector, `Collection Number`)
 
-latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table1.csv",
-            kable_caption = "$Physaria$ DNA specimens with identical genotypes for the $ycf1$ loci.")
+ycf1_table_cap <- paste0("$Physaria$ DNA specimens with identical genotypes",
+                       " for the $ycf1$ loci.")
+
+if (knitr_chunk == "html") {
+  phylo_kable(tbl_multi_node = ycf1_id_seqs,
+              kable_caption = ycf1_table_cap)
+} else if (knitr_chunk == "latex") {
+  phylo_kable(tbl_multi_node = ycf1_id_seqs[1:24, ],
+              kable_caption = ycf1_table_cap)
+}
 
 ```
 
@@ -175,17 +178,22 @@ latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table1.csv",
 
 ```{r resultsTable6IdenticalSeqYcf1Cont}
 
-latex_kable(id_seq_csv = "Phys_DNA/Seq-Tables/ycf1_identical_seqs-table2.csv",
-            kable_caption = "Table 6. Continued.")
+if (knitr_chunk == "latex") {
+  phylo_kable(tbl_multi_node = ycf1_id_seqs[24:35, ],
+              kable_caption = "Table 6. Continued.")
+}
+
+if (knitr_chunk == "latex") {
+  cat("\\captionsetup[table]{labelformat=default}")
+  
+  cat("\\captionsetup[table]{list=yes}")
+  
+  cat("\\setcounter{table}{6}")
+}
 
 ```
 
-<!--- Reset caption options and table counter -->
-\captionsetup[table]{labelformat=default}
-\captionsetup[table]{list=yes}
-\setcounter{table}{6}
-
-\vspace{36pt}
+\vspace*{6pt}
 
 ```{r chapterSubsectionMultiLocus}
 knitr_section(knitr_title = "Concatenated Multi-locus Analysis",
@@ -194,34 +202,38 @@ knitr_section(knitr_title = "Concatenated Multi-locus Analysis",
 
 \paragraph{} Concatenation of the three sequenced loci yielded an alignment with greater overall heterogeneity relative to any individual gene alignment.  Here, only two identical genotypes were observed, one from two specimens previously identified as *P. dornii* and *P. condensata*, and another comprised of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata* (Table \@ref(tab:resultsTable7IdenticalSeqML)).  Although higher posterior probabilities were observed for three clades in the concatenated analysis, 13 nodes were still unresolved as a polytomy (Figure \@ref(fig:resultsFigure4MultiLocusPhyloTree)).  One node with high support (P=0.972) recovered three specimens previously annotated as *P. condensata*, two previously as *P. dornii*, in addition to one specimen of *P. integrifolia* (*Ratcliff and O'Kane Jr., 43*) and another of *P. acutifolia* (*Moore 5199*).
 
-\vspace*{36pt}
+\vspace*{24pt}
 
-```{r resultsTable7IdenticalSeqML}
+```{r resultsTable7IdenticalSeqML, fig.width=8}
 
-# Generate ggtree object base for further species specific tree annotation.
-bayes_ml <- "Phys_DNA/Seq-Analysis/7.Bayes/ml-1.1_infile.nex.con.tre"
-bayes_ml_tree <- tree_plot(consensus_tree_file = bayes_ml, 
-                           x_expand = 0.03, 
-                           legend_title = "Most Recent Annotation")
+tbl_phylo_ml <- 
+  phylo_tbl(bayes_file = paste0("data/seq-consensus/", 
+                                "ml-1.1_infile.nex.con.tre"),
+            specimen_records = total_physaria)
 
-# Format latex kable for identical DNA sequences.
-kable_format(label_resolve_csv = "Phys_DNA/Seq-Analysis/7.Bayes/ml-1.1_label-resolve.csv")
-
-latex_kable(id_seq_csv = "Phys_DNA/Seq-Analysis/7.Bayes/ml-1.1_label-resolve-table.csv",
-            kable_caption = "$Physaria$ DNA specimens with identical sequences after concatenation.")
+phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_ml) %>%
+  phylo_kable(tbl_multi_node = ., 
+              kable_caption = 
+                    paste0("$Physaria$ DNA specimens with identical sequences", 
+                     " after concatenation."))
 
 ```
 
 \clearpage
 
-```{r resultsFigure4MultiLocusPhyloTree, fig.cap=knitr_cap, fig.width=6.9, fig.asp=1.3}
+```{r resultsFigure4MultiLocusPhyloTree, fig.cap=knitr_cap, fig.width=8, fig.asp=1.3}
 
-knitr_cap <- "Consensus tree from Baysian inference of concatenated multi-locus data."
+knitr_cap <- paste0("Consensus tree from Baysian inference of", 
+                    " concatenated multi-locus data.")
 
-tree_grid(bayes_ml_tree)
+gridExtra::grid.arrange(phylo_ggplot(tbl_phylo_ml, 
+                                     plot_title = "Multi-locus Phylogeny",
+                                     legend_col = 1,
+                                     x_expand = 0.02))
 
 ```
 
 \clearpage
 
 \paragraph{} Another clade recovered with high posterior probability (P=0.909) included specimens previously annotated as *P. saximontana* subsp. *saximontana* (n=3), *P. s.* subsp. *dentata* (n=2), *P. didymocarpa* subsp. *lanata* (n=2), *P. brassicoides* (n=3), *P. acutifolia* (n=2), and one specimen of *P. condensata* (Figure \@ref(fig:resultsFigure4MultiLocusPhyloTree)).  A third clade (P=0.997) included two specimens from Carbon County, Wyoming (*Fertig and Welp 19075*, *Fertig 16713*), one *P. acutifolia* specimen from Utah, and one specimen of *P. brassicoides* from northeastern Wyoming.  Two additional clades included one of two *P. vitulifera* specimens (P=0.778) and another of one *P. saximontana* subsp. *saximontana* and one *P. eburniflora* specimen (P=0.999).  In the multi-locus polytomy, unresolved specimens were previously identified as *P. acutifolia* (n=3), *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lyrata* (n=3), *P. d.* subsp. *lanata* (n=1), *P. eburniflora* (n=2), *P. brassicoides* (n=1), *P. saximontana* subsp. *dentata* (n=1), and another specimen from Carbon County, Wyoming (*Dorn 10105*).
+
