@@ -354,7 +354,7 @@ map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
   gg_spp_id <- gg_map_obj +
       geom_point(data = spp_id, inherit.aes = FALSE,
                  mapping = aes(x = Longitude, y = Latitude),
-                 size = 5, shape = 23, colour = "black", fill = "white") +
+                 show.legend = FALSE, size = 5, shape = 5, fill = NA) +
       geom_label(data = spp_id, inherit.aes = FALSE,
                  nudge_x = h_adjust, nudge_y = v_adjust,
                  label.padding = unit(0.1, "lines"), size = label_size,
