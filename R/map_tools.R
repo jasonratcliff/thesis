@@ -424,30 +424,30 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Lesquerella argyrea" = 18)
 
 #' Modify map ggplot themes.
-#' 
+#'
 #' This function overwrites the default discrete scales present in map ggplots
 #' with manual values set by `spp_color` and `spp_shape` vectors.
-#' 
+#'
 #' @param legend_title Character vector of length one to set the ggplot
 #' legend title.
 #' @inheritParams map_spp_id
-#' 
+#'
 #' @examples
 #' map_themes(gg_map_obj = co_ggmap)
-#'   
+#'
 map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
-  
+
   # Reset discrete scales to manually set shape and colour scales.
-  scale_index <- 
-    grep(pattern = "ScaleDiscrete", 
+  scale_index <-
+    grep(pattern = "ScaleDiscrete",
          x = lapply(gg_map_obj$scales$scales, class), invert = TRUE)
   gg_map_obj$scales$scales <- gg_map_obj$scales$scales[scale_index]
-  
+
   # Build ggplot map object with manual scales.
-  gg_map_obj + 
-    scale_color_manual(name = legend_title, 
-                       values = spp_color, na.value = "black") + 
-    scale_shape_manual(name = legend_title, 
+  gg_map_obj +
+    scale_color_manual(name = legend_title,
+                       values = spp_color, na.value = "black") +
+    scale_shape_manual(name = legend_title,
                        values = spp_shape, na.value = 17)
 }
 
