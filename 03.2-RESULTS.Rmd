@@ -13,8 +13,6 @@ knitr_section(knitr_title = "Status of *Physaria vitulifera* in Wyoming",
 
 \paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure5ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure6ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure7FruitLengthCarbonVitu)).
 
-\clearpage
-
 ```{r resultsFigure4MapCarbonWyoVitu, fig.width=8, fig.cap=knitr_cap}
 
 set.seed(2018)
@@ -29,7 +27,7 @@ carbon_bears_ear$map_ber <- c("Bears Ears Range", "North",
 carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
 carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
 
-# Plot specimen map by reviewed IDs for color and shape aesthetics.
+# Satellite map of Carbon, WY specimens.
 (map_ggmap(map_df = spp_carbon_wyo, map_col = "Taxon_a_posteriori",
             gg_borders = gg_borders, size = 8, gg_map_type = "satellite",
             jitter_pos = c(.05, .05), shape_opt = "Taxon_a_posteriori")  +
@@ -52,21 +50,45 @@ carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
 
 ```
 
+\clearpage
+\vspace*{-26pt}
+
+```{r chapterSubsectionPhysVituElev}
+
+knitr_section(knitr_title = paste0(
+  "High Elevation *Physaria* of South Central Wyoming"),
+  knitr_type = "subsection")
+
+```
+
+```{r resultsFigure5ElevationProfileMedicinae, fig.width=10, fig.asp=0.9, fig.cap=knitr_cap, cache=TRUE}
+
+set.seed(2018)
+knitr_cap <-
+  "Elevation profile of reported Carbon County, WY *Physaria vitulifera*."
+
+# Substitute new taxon name for putative species.
+spp_carbon_wyo$Taxon_a_posteriori <-
+  gsub("Physaria acutifolia - vitulifera-like", "Physaria medicinae",
+       spp_carbon_wyo$Taxon_a_posteriori) %>%
+  gsub("Physaria vitulifera - Carbon", "Physaria medicinae", x = .)
+
+# Elevation profile map of Carbon, WY specimens.
+(map_elev(map_df = spp_carbon_wyo, gg_borders = gg_borders, 
+          map_col = "Taxon_a_posteriori", 
+          raster_zoom = 7, raster_factor = 2)) %>%
+  map_themes(gg_map_obj = .)
+
+```
+
+\clearpage
   scale_x_continuous("Longitude") +
   scale_y_continuous("Latitude") +
-  scale_color_manual("Reviewed Annotations", values = spp_color) + 
-  scale_shape_manual("Reviewed Annotations", values = spp_shape) + 
   theme(legend.box = "vertical", legend.position = "bottom",
-        legend.direction = "vertical", legend.title.align = 0.5) + 
-  guides(colour = guide_legend(ncol = 2, byrow = TRUE)) + 
-  expand_limits(x = 6)
 
 # Build ggmap plot into a graphical object and display list element $plot.
-carbon_wyo_grob <- ggplot_build(carbon_wyo_ggmap)
-carbon_wyo_grob$plot
 
 # Clean up workspace
-rm(carbon_wyo_ggmap, carbon_wyo_grob)
 
 ```
 
