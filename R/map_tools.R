@@ -1,3 +1,4 @@
+
 # Specimen Mapping Tools ----
 
 #' Filter specimens by coordinate notation and specimen observations.
@@ -86,10 +87,14 @@ map_filter <- function(map_df, map_geom = TRUE, map_obs_col = NULL,
 #' borders.
 map_borders <- function(border_color, border_fill = NA,
                         border_size_county = .125,
-                        border_size_state = 1.5,
-                        border_regions = c("Montana", "Wyoming", "Colorado",
-                                           "Utah", "Idaho", "Nebraska",
-                                           "North Dakota", "South Dakota")) {
+                        border_size_state = 1.5) {
+
+  # Define vector of states / regions to get boundary geoms.
+  border_regions <- c("Montana", "Wyoming", "Colorado",
+                      "Utah", "Idaho", "Nebraska",
+                      "North Dakota", "South Dakota",
+                      "New Mexico", "Arizona", "Nevada",
+                      "Washington", "Oregon", "California")
 
   # Initialize ggplot base map layer of county lines with state borders.
   border_states <- map_data("state", region = border_regions)
@@ -316,7 +321,8 @@ map_elev <- function(map_df, map_col, gg_borders,
     geom_point(data = map_df, aes(x = Longitude, y = Latitude),
                size = (geom_size + 2), colour = "black", alpha = 0.2) +
     geom_point(data = map_df, size = geom_size, na.rm = TRUE,
-               aes(x = Longitude, y = Latitude, colour = get(map_col))) +
+               aes(x = Longitude, y = Latitude, 
+                   colour = get(map_col), shape = get(map_col))) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude") +
     coord_equal(xlim = c(min(map_df$Longitude), max(map_df$Longitude)),
