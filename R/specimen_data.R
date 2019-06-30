@@ -1,3 +1,4 @@
+
 # 1. Read in specimen data ----
 
 #' Read herbarium specimen data into R from an .xlsx file
@@ -21,10 +22,10 @@ specimens_read <- function(herbarium_file) {
 
   # Assign list of data frames read from excel tabs and filter by annotation.
   specimen_list <- lapply(species_tabs, function(xlsx_tab) {
-    read.xlsx(xlsxFile = herbarium_file, sheet = xlsx_tab,
+    openxlsx::read.xlsx(xlsxFile = herbarium_file, sheet = xlsx_tab,
               cols = c(1:4, 5:8, 10:14, 15:17, 19:21, 28:65),
               colNames = TRUE, rowNames = FALSE, detectDates = TRUE) %>%
-      filter(grepl("Physaria|Lesquerella|Brassicaceae", Taxon))
+      dplyr::filter(grepl("Physaria|Lesquerella|Brassicaceae", Taxon))
   })
   names(specimen_list) <- species_tabs
   return(specimen_list)
@@ -274,6 +275,15 @@ names(total_physaria)[grep("prior_synonyms", names(total_physaria))] <-
 # Convert geographic coordinate column classes from character to numeric.
 total_physaria$Longitude <- as.numeric(total_physaria$Longitude)
 total_physaria$Latitude <- as.numeric(total_physaria$Latitude)
+
+# Parse dates from character vector.
+total_physaria <-
+  dplyr::mutate(total_physaria,
+                Date_parsed = lubridate::mdy(total_physaria$Date)) %>%
+  # Strip out year from parsed date to plot by month and day.
+  dplyr::mutate(.,
+                Date_md = gsub("[0-9]{4}-", "", x = .[["Date_parsed"]]) %>%
+                  as.Date(., format = "%m-%d"))
 
 #' Write identification logs and output .csv files.
 #'

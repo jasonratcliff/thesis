@@ -8,18 +8,18 @@
 #' @param trait_name Character vector matching trait column to split.
 #' @return Tibble data frame with split trait data from specimen observations.
 #'
-continuous_trait <- function(trait_frame, trait_name) {
+continuous_tbl <- function(trait_frame, trait_name) {
   dplyr::select(trait_frame, dplyr::starts_with("Physaria"),
-                Taxon_a_posteriori, Collector, Collection_Number, Date,
-                Latitude, Longitude, dplyr::starts_with("Elev"),
-                trait_name) %>%
+                Taxon_a_posteriori, Collector, Collection_Number,
+                Date, Date_parsed, Date_md, Latitude, Longitude, 
+                dplyr::starts_with("Elev"), trait_name) %>%
     dplyr::bind_cols(.,
       trait_transform =
         map_dfr(.[[trait_name]], function(x) {
           if (!is.na(x)) {
             trait_split <- gsub(" +", "", x)
             if (grepl("-", x)) {
-              trait_split <- strsplit(x, split = "-") %>% 
+              trait_split <- strsplit(x, split = "-") %>%
                 unlist(.) %>% as.numeric(.)
               trait_split[3] <- (trait_split[1] + trait_split[2]) / 2
               } else {
