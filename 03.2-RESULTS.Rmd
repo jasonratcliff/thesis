@@ -11,9 +11,9 @@ knitr_section(knitr_title = "Status of *Physaria vitulifera* in Wyoming",
 
 \paragraph{} An additional set of specimens showing a similar phenotype of reduced mature fruits on sigmoidal pedicels with often dentate basal leaves are labelled as *Physaria acutifolia - vitulifera-like* (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).  To the South, two flowering specimens (*Kastning 1462* and *Kastning 1725*) collected from Jackson County, Colorado show a general reduction in size with ascending pedicels. A different record in fruit (*Nelson 49286*) shows similarly ascending sigmoidal pedicels with reduced fruits.  In contrast, records further South in Middle Park of Grand County, Colorado display notably pendent fruiting pedicels (*Nelson 49478*, *Patterson s.n.* (F-980, F-208917)), with two having distinctly pinnatifid basal leaves (*Patterson s.n.* (F-980, F-208917)). The *Patterson* specimens were both collected in 1875 with location data limited to a description as from Middle Park, in proximity to the Muddy River, and therefore are not plotted.  Notably, North Park is separated from Middle Park to the South by the Rabbit Ears Range which divides Grand and Jackson Counties (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).
 
-\paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure5ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure6ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure7FruitLengthCarbonVitu)).
+\paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure5ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure6ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure7FruitDimCarbonVitu)).
 
-```{r resultsFigure4MapCarbonWyoVitu, fig.width=8, fig.cap=knitr_cap}
+```{r resultsFigure4MapCarbonWyoVitu, fig.width=8, fig.asp=1, fig.cap=knitr_cap}
 
 set.seed(2018)
 knitr_cap <-
@@ -46,7 +46,8 @@ carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
   map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
              collector = "Nelson", collection_number = 49478,
              h_adjust = -0.225, v_adjust = -0.12) %>%
-  map_themes(gg_map_obj = .)
+  map_themes(gg_map_obj = .) +
+  theme(legend.direction = "vertical", legend.position = "bottom")
 
 ```
 
@@ -74,14 +75,100 @@ spp_carbon_wyo$Taxon_a_posteriori <-
   gsub("Physaria vitulifera - Carbon", "Physaria medicinae", x = .)
 
 # Elevation profile map of Carbon, WY specimens.
-(map_elev(map_df = spp_carbon_wyo, gg_borders = gg_borders, 
-          map_col = "Taxon_a_posteriori", 
-          raster_zoom = 7, raster_factor = 2)) %>%
+(map_elev(map_df = spp_carbon_wyo, gg_borders = gg_borders,
+          map_col = "Taxon_a_posteriori",
+          raster_zoom = 7, raster_factor = 1)) %>%
   map_themes(gg_map_obj = .)
 
 ```
 
 \clearpage
+
+```{r resultsFigure6ElevationCarbonVitu, fig.width=5, fig.asp=1, fig.cap=knitr_cap}
+
+knitr_cap <-
+  paste0("Elevation differences between questioned Carbon County, WY specimens",
+         " and nearby *Physaria* species.")
+
+# Filter specimens from Carbon, WY subset by species identification.
+spp_carbon_medi <-
+  dplyr::filter(spp_carbon_wyo,
+                grepl("Physaria$|vitulifera|acutifolia|medicinae",
+                      Taxon_a_posteriori)) %>%
+  dplyr::filter(., !grepl("\\?", Taxon_a_posteriori))
+
+  # Parse elevation data to remove commas and "s.n." as missing (i.e. NA).
+  dplyr::mutate(.data = spp_carbon_medi,
+                elev_ft = gsub(",", "", x = spp_carbon_medi$`Elev_(ft.)`) %>%
+                  gsub("s.n.", NA, x = .)) %>%
+  continuous_tbl(trait_frame = ., trait_name = "elev_ft") %>%
+
+  # Plot of elevation by reviewed species identification.
+  ggplot(data = .,
+         mapping = aes(x = Taxon_a_posteriori, y = trait_mid,
+                       colour = Taxon_a_posteriori,
+                       shape = Taxon_a_posteriori)) +
+  geom_violin(na.rm = TRUE) +
+  geom_jitter(width = 0.1, na.rm = TRUE) +
+  scale_y_continuous(name = "Elevation (ft.)") +
+  scale_x_discrete(name = NULL, labels = NULL) +
+  scale_color_manual("Reviewed Annotations", values = spp_color) +
+  scale_shape_manual("Reviewed Annotations", values = spp_shape) +
+  theme(legend.box = "vertical", legend.position = "bottom",
+        legend.direction = "vertical", legend.title.align = 0.5) +
+  guides(colour = guide_legend(ncol = 1, byrow = TRUE))
+
+```
+
+\clearpage
+
+```{r resultsFigure7FruitDimCarbonVitu, fig.width=8, fig.asp=1, fig.cap=knitr_cap}
+
+# Plot of fruit dimensions by reviewed species ID and collection date.
+knitr_cap <-
+  paste0("Mature fruit dimensions by collection date of putative Wyoming",
+         " *Physaria vitulifera* specimens.")
+
+# Build fruit length graph.
+trait_carbon_fr_len <-
+  continuous_tbl(trait_frame = spp_carbon_medi,
+                 trait_name = "Mature_fruit_length_mm") %>%
+  ggplot(.,
+         aes(Date_md, trait_mid,
+             colour = Taxon_a_posteriori,
+             shape = Taxon_a_posteriori)) +
+  geom_point(na.rm = TRUE, size = 3) +
+  geom_smooth(method = 'lm', formula = y~x, na.rm = TRUE) +
+  scale_y_continuous(name = "Mature Fruit Length (mm)", limits = c(0, 15)) +
+  scale_x_date(name = "Collection Date", date_labels = "%m-%d",
+               limits = as.Date(c("2019-05-01", "2019-09-01"),
+                                format = "%Y-%m-%d")) +
+  scale_color_manual("Reviewed Annotations", values = spp_color) +
+  scale_shape_manual("Reviewed Annotations", values = spp_shape)
+
+# Build fruit width graph.
+trait_carbon_fr_wid <-
+  continuous_tbl(trait_frame = spp_carbon_medi,
+                 trait_name = "Mature_fruit_width_mm") %>%
+  ggplot(.,
+         aes(Date_md, trait_mid,
+             colour = Taxon_a_posteriori,
+             shape = Taxon_a_posteriori)) +
+  geom_point(na.rm = TRUE, size = 3) +
+  geom_smooth(method = 'lm', formula = y~x, na.rm = TRUE) +
+  scale_y_continuous(name = "Mature Fruit Width (mm)", limits = c(0, 15)) +
+  scale_x_date(name = "Collection Date", date_labels = "%m-%d",
+               limits = as.Date(c("2019-05-01", "2019-09-01"),
+                                format = "%Y-%m-%d")) +
+  scale_color_manual("Reviewed Annotations", values = spp_color) +
+  scale_shape_manual("Reviewed Annotations", values = spp_shape)
+
+# Arrange graphical objects with shared legend.
+lemon::grid_arrange_shared_legend(trait_carbon_fr_len, trait_carbon_fr_wid,
+                                  ncol = 1, nrow = 2, position = "right")
+
+```
+
   scale_x_continuous("Longitude") +
   scale_y_continuous("Latitude") +
   theme(legend.box = "vertical", legend.position = "bottom",
