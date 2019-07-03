@@ -138,6 +138,44 @@ spp_subset(taxa_frame = spp_carbon_wyo,
 ```
 
 \clearpage
+
+```{r introFigure1MapCarbonWyoVitu, fig.height=6, fig.asp=1, fig.cap=knitr_cap}
+
+set.seed(2018)
+knitr_cap <-
+  "Distribution of reported Carbon County, WY *Physaria vitulifera*."
+
+# Data frame for text annotation of Bears Ears Range area.
+carbon_bears_ear <- as.data.frame(matrix(nrow = 4, ncol = 3))
+names(carbon_bears_ear) <- c("map_ber", "map_x", "map_y")
+carbon_bears_ear$map_ber <- c("Bears Ears Range", "North",
+                              "Park", "Middle Park")
+carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
+carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
+
+# Satellite map of Carbon, WY specimens.
+(map_ggmap(map_df = spp_carbon_wyo, map_col = "Taxon_a_posteriori",
+            gg_borders = gg_borders, size = 8, gg_map_type = "satellite",
+            jitter_pos = c(.05, .05), shape_opt = "Taxon_a_posteriori")  +
+  geom_text(data = carbon_bears_ear,
+            aes(map_x, map_y, label = map_ber, group = NULL),
+            color = "white", size = 3.5)) %>%
+  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
+             collector = "Kastning", collection_number = 1462,
+             h_adjust = -0.425, v_adjust = -0.15) %>%
+  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
+             collector = "Kastning", collection_number = 1725,
+             h_adjust = -0.4, v_adjust = -0.15) %>%
+  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
+             collector = "Nelson", collection_number = 49286,
+             h_adjust = 0.275, v_adjust = -0.1) %>%
+  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
+             collector = "Nelson", collection_number = 49478,
+             h_adjust = -0.225, v_adjust = -0.12) %>%
+  map_themes(gg_map_obj = .) +
+  theme(legend.direction = "vertical", legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2, byrow = TRUE))
+
 ```
 
 \vspace*{6pt}
@@ -147,17 +185,17 @@ knitr_section(knitr_title = "Geographical Distribution and Ecology",
               knitr_type = "section")
 ```
 
-\paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and montane habitats with often-arid climates and intense sunlight where they tend to occupy siliceous soils, granitic talus or limestone shale outcrops (Rollins 1939; Rollins 1993).  Of the *Physaria* species in this study, *P. acutifolia* (Figure \@ref(fig:introFigure1TotalSpecimens)) is widely distributed as a cline spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico (O’Kane 2010).  Infraspecific taxa not recognized by O’Kane (2010) include *P. acutifolia* var. *purpurea* Welsh and Reveal (1977) of Grand County, Utah and *P. acutifolia* var. *stylosa* Welsh (1986) of northeastern Utah, which was described as *P. stylosa* by Rollins (1993).
+\paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and montane habitats with often-arid climates and intense sunlight where they tend to occupy siliceous soils, granitic talus or limestone shale outcrops (Rollins 1939; Rollins 1993).  Of the *Physaria* species in this study, *P. acutifolia* (Figure \@ref(fig:introFigure2TotalSpecimens)) is widely distributed as a cline spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico (O’Kane 2010).  Infraspecific taxa not recognized by O’Kane (2010) include *P. acutifolia* var. *purpurea* Welsh and Reveal (1977) of Grand County, Utah and *P. acutifolia* var. *stylosa* Welsh (1986) of northeastern Utah, which was described as *P. stylosa* by Rollins (1993).
 
-\paragraph{} Another relatively widespread species is *P. didymocarpa* (Figure \@ref(fig:introFigure1TotalSpecimens)), which includes three subspecies as traditionally circumscribed.  The distribution of *P. didymocarpa* ssp. *didymocarpa* extends from Alberta and British Columbia in Canada through Washington, Idaho, Montana and Wyoming in the western U.S. (O’kane 2010).  The two other subspecies include a regional endemic in Wyoming and Montana, and a state endemic in Idaho.  Known primarily from the Bighorn National Forest of north-central Wyoming and south-central Montana, *P. didymocarpa* ssp. *lanata* has a non-overlapping distribution to the southeast of the range of *P. didymocarpa* ssp. *didymocarpa* (Handley and Heidel 2011).  In Idaho, *P. didymocarpa* ssp. *lyrata* has a narrow distribution in the Salmon River drainage of Lehmi County (Rollins 1993; O’Kane 2010).
+\paragraph{} Another relatively widespread species is *P. didymocarpa* (Figure \@ref(fig:introFigure2TotalSpecimens)), which includes three subspecies as traditionally circumscribed.  The distribution of *P. didymocarpa* ssp. *didymocarpa* extends from Alberta and British Columbia in Canada through Washington, Idaho, Montana and Wyoming in the western U.S. (O’kane 2010).  The two other subspecies include a regional endemic in Wyoming and Montana, and a state endemic in Idaho.  Known primarily from the Bighorn National Forest of north-central Wyoming and south-central Montana, *P. didymocarpa* ssp. *lanata* has a non-overlapping distribution to the southeast of the range of *P. didymocarpa* ssp. *didymocarpa* (Handley and Heidel 2011).  In Idaho, *P. didymocarpa* ssp. *lyrata* has a narrow distribution in the Salmon River drainage of Lehmi County (Rollins 1993; O’Kane 2010).
 
-\paragraph{} Three species of *Physaria* sensu-stricto with near-overlapping distributions have been described from southwestern and west-central Wyoming (Figure \@ref(fig:introFigure1TotalSpecimens)).  These include two state endemics, *P. condensata* and *P. dornii*, with ranges extending through the Overthrust Belt mountains of central Uinta county and southern Lincoln county (Fertig 1998; Fertig 2002).  Both species were formerly considered for the Endangered Species Act as C2 candidates.  Currently, they are recognized as state endemics of high conservation priority by the Wyoming National Diversity Database with *P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at the G2G3/S2S3 heritage ranking (Heidel 2012).  *Physaria integrifolia* is a regional endemic of western Wyoming and eastern Idaho.
+\paragraph{} Three species of *Physaria* sensu-stricto with near-overlapping distributions have been described from southwestern and west-central Wyoming (Figure \@ref(fig:introFigure2TotalSpecimens)).  These include two state endemics, *P. condensata* and *P. dornii*, with ranges extending through the Overthrust Belt mountains of central Uinta county and southern Lincoln county (Fertig 1998; Fertig 2002).  Both species were formerly considered for the Endangered Species Act as C2 candidates.  Currently, they are recognized as state endemics of high conservation priority by the Wyoming National Diversity Database with *P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at the G2G3/S2S3 heritage ranking (Heidel 2012).  *Physaria integrifolia* is a regional endemic of western Wyoming and eastern Idaho.
 
-\paragraph{} Three state and regional endemics have distributions through central to eastern Wyoming (Figure \@ref(fig:introFigure1TotalSpecimens)).  Currently listed as a species of potential concern in Wyoming at the G3T3/S3 rank (Heidel 2012), *P. saximontana* ssp. *saximontana* is distributed in west central Wyoming to the southeast of the Wind River Range (Rollins 1984).  The putatively related *P. saximontana* ssp. *dentata* extends north through the Rocky Mountains of Montana.  These species occupy montane to alpine habitats ranging from 1500 – 2700 m (Lesica 2012; O’Kane 2010).  *P. eburniflora* is a species of potential concern in Wyoming given a G3/S3 heritage rank (Heidel 2012).  This species is a state endemic of Carbon, Fremont and Natrona Counties with a distribution to the east-southeast of *P. saximontana* ssp. *saximontana*.  Known from the western plains region, *P. brassicoides* distribution extends from Montana and North Dakota south to Colorado and Nebraska.  This species tends to occupy lower elevations, ranging from 900-1400 m (O’Kane 2010).  They tend to grow on bare hillsides, bluffs, riverbanks, badlands and clay soils.  Its distribution is primarily non-overlapping with other Wyoming *Physaria*.
+\paragraph{} Three state and regional endemics have distributions through central to eastern Wyoming (Figure \@ref(fig:introFigure2TotalSpecimens)).  Currently listed as a species of potential concern in Wyoming at the G3T3/S3 rank (Heidel 2012), *P. saximontana* ssp. *saximontana* is distributed in west central Wyoming to the southeast of the Wind River Range (Rollins 1984).  The putatively related *P. saximontana* ssp. *dentata* extends north through the Rocky Mountains of Montana.  These species occupy montane to alpine habitats ranging from 1500 – 2700 m (Lesica 2012; O’Kane 2010).  *P. eburniflora* is a species of potential concern in Wyoming given a G3/S3 heritage rank (Heidel 2012).  This species is a state endemic of Carbon, Fremont and Natrona Counties with a distribution to the east-southeast of *P. saximontana* ssp. *saximontana*.  Known from the western plains region, *P. brassicoides* distribution extends from Montana and North Dakota south to Colorado and Nebraska.  This species tends to occupy lower elevations, ranging from 900-1400 m (O’Kane 2010).  They tend to grow on bare hillsides, bluffs, riverbanks, badlands and clay soils.  Its distribution is primarily non-overlapping with other Wyoming *Physaria*.
 
 \clearpage
 
-```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
+```{r introFigure2TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} herbarium specimens."}
 
 # Subset specimens for mapping prior annotations.
 total_priors <- spp_subset(taxa_frame = total_physaria,

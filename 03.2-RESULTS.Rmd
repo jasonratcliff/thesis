@@ -7,49 +7,11 @@ knitr_section(knitr_title = "Status of *Physaria vitulifera* in Wyoming",
               knitr_type = "section")
 ```
 
-\paragraph{} The distribution of reviewed herbarium specimens identified as *Physaria* sensu stricto species from south central Wyoming and northwestern Colorado are shown in Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu).  A set of records from Carbon County, WY have previous annotations as *P. vitulifera* (see Table \@ref(tab:introTable1CarbonVituSpecs)). Some of these collections were recently annotated as *P. acutifolia* by Jennings (2004), who reported *Physaria vitulifera* as endemic to Colorado from the Front Range's eastern slopes.  This is concordant with the description of the species by Rollins (1993), who reported the species from Central Colorado.
+\paragraph{} The distribution of reviewed herbarium specimens identified as *Physaria* sensu stricto species from south central Wyoming and northwestern Colorado is shown in Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu).  A set of records from Carbon County, WY have previous annotations as *P. vitulifera* (see Table \@ref(tab:introTable1CarbonVituSpecs)). Some of these collections were recently annotated as *P. acutifolia* by Jennings (2004), who reported *Physaria vitulifera* as endemic to Colorado from the Front Range's eastern slopes.  This is concordant with the description of the species by Rollins (1993), who reported the species from Central Colorado.
 
 \paragraph{} An additional set of specimens showing a similar phenotype of reduced mature fruits on sigmoidal pedicels with often dentate basal leaves are labelled as *Physaria acutifolia - vitulifera-like* (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).  To the South, two flowering specimens (*Kastning 1462* and *Kastning 1725*) collected from Jackson County, Colorado show a general reduction in size with ascending pedicels. A different record in fruit (*Nelson 49286*) shows similarly ascending sigmoidal pedicels with reduced fruits.  In contrast, records further South in Middle Park of Grand County, Colorado display notably pendent fruiting pedicels (*Nelson 49478*, *Patterson s.n.* (F-980, F-208917)), with two having distinctly pinnatifid basal leaves (*Patterson s.n.* (F-980, F-208917)). The *Patterson* specimens were both collected in 1875 with location data limited to a description as from Middle Park, in proximity to the Muddy River, and therefore are not plotted.  Notably, North Park is separated from Middle Park to the South by the Rabbit Ears Range which divides Grand and Jackson Counties (Figure \@ref(fig:resultsFigure4MapCarbonWyoVitu)).
 
-\paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure5ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure6ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure7FruitDimCarbonVitu)).
-
-```{r resultsFigure4MapCarbonWyoVitu, fig.width=8, fig.asp=1, fig.cap=knitr_cap}
-
-set.seed(2018)
-knitr_cap <-
-  "Distribution of reported Carbon County, WY *Physaria vitulifera*."
-
-# Data frame for text annotation of Bears Ears Range area.
-carbon_bears_ear <- as.data.frame(matrix(nrow = 4, ncol = 3))
-names(carbon_bears_ear) <- c("map_ber", "map_x", "map_y")
-carbon_bears_ear$map_ber <- c("Bears Ears Range", "North",
-                              "Park", "Middle Park")
-carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
-carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
-
-# Satellite map of Carbon, WY specimens.
-(map_ggmap(map_df = spp_carbon_wyo, map_col = "Taxon_a_posteriori",
-            gg_borders = gg_borders, size = 8, gg_map_type = "satellite",
-            jitter_pos = c(.05, .05), shape_opt = "Taxon_a_posteriori")  +
-  geom_text(data = carbon_bears_ear,
-            aes(map_x, map_y, label = map_ber, group = NULL),
-            color = "white", size = 3.5)) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Kastning", collection_number = 1462,
-             h_adjust = -0.425, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Kastning", collection_number = 1725,
-             h_adjust = -0.4, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Nelson", collection_number = 49286,
-             h_adjust = 0.275, v_adjust = -0.1) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Nelson", collection_number = 49478,
-             h_adjust = -0.225, v_adjust = -0.12) %>%
-  map_themes(gg_map_obj = .) +
-  theme(legend.direction = "vertical", legend.position = "bottom")
-
-```
+\paragraph{} Plotting these specimens over an elevation profile illustrates the geographic distance between the putative Carbon County specimens and those of *P. vitulifera* from East of the Front Range (Figure \@ref(fig:resultsFigure6ElevationProfileMedicinae)).  Populations of questioned specimens examined are distributed from the Sierra Madre West of Encampment and East through the Medicine Bow Range.  These specimens are found generally above 2,100m, at a higher elevation relative to nearby *P. acutifolia* and allopatric *P. vitulifera* of Colorado (Figure \@ref(fig:resultsFigure7ElevationCarbonVitu)).  After accounting for collection date, these specimens also show a marked reduction in average mature fruit length and width relative to other nearby species (Figure \@ref(fig:resultsFigure8FruitDimCarbonVitu)).
 
 \clearpage
 \vspace*{-26pt}
@@ -62,7 +24,7 @@ knitr_section(knitr_title = paste0(
 
 ```
 
-```{r resultsFigure5ElevationProfileMedicinae, fig.width=10, fig.asp=0.9, fig.cap=knitr_cap, cache=TRUE}
+```{r resultsFigure6ElevationProfileMedicinae, fig.width=10, fig.asp=0.9, fig.cap=knitr_cap}
 
 set.seed(2018)
 knitr_cap <-
@@ -84,7 +46,7 @@ spp_carbon_wyo$Taxon_a_posteriori <-
 
 \clearpage
 
-```{r resultsFigure6ElevationCarbonVitu, fig.width=5, fig.asp=1, fig.cap=knitr_cap}
+```{r resultsFigure7ElevationCarbonVitu, fig.width=5, fig.asp=1, fig.cap=knitr_cap}
 
 knitr_cap <-
   paste0("Elevation differences between questioned Carbon County, WY specimens",
@@ -122,7 +84,7 @@ spp_carbon_medi <-
 
 \clearpage
 
-```{r resultsFigure7FruitDimCarbonVitu, fig.width=8, fig.asp=1, fig.cap=knitr_cap}
+```{r resultsFigure8FruitDimCarbonVitu, fig.width=8, fig.asp=1, fig.cap=knitr_cap}
 
 # Plot of fruit dimensions by reviewed species ID and collection date.
 knitr_cap <-
