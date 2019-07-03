@@ -70,26 +70,60 @@ knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyo
               knitr_type = "subsection")
 ```
 
-\paragraph{} In his magnum opus of Cruciferae (Brassicaceae), Rollin's (1993) treatment of *Physaria* described *P. vitulifera* as occurring in central Colorado.  A following Colorado Flora reported the species with a primary distribution East of the Front Range, on gravelly slopes of the outer canyons in the foothills (Weber and Wittman 1996).  Ackerfield (2015) also reported a distribution of the species bordering the Rocky Mountains to the East, from the South in Fremont County to the North in Larimer County.  O'Kane's (2010) treatment of *Physaria* follows these circumsriptions, reporting *P. vitulifera* from only Colorado.  However, Heidel and O'Kane (2012) identified a need for taxonomic work based on *Physaria* collections with annotations as *P. vitulifera* that have been reannoted by Jennings (2004) to *P. acutifolia*.
+\paragraph{} Rollin's (1993) treatment of *Physaria* described *P. vitulifera* as occurring in central Colorado.  Weber and Wittman (1996) reported the species with a distribution East of the Front Range, on gravelly slopes of the outer canyons in the foothills.  Ackerfield (2015) also reported the species as East of the Rocky Mountains, from the South in Fremont County to the North in Larimer County.  O'Kane's (2010) treatment of *Physaria* follows these circumsriptions, reporting *P. vitulifera* from only Colorado.  However, Heidel and O'Kane (2012) identified a need for taxonomic work based on *Physaria* collections with annotations as *P. vitulifera*, many of which were reannotated by Jennings (2004) as *P. acutifolia* (indicated by “*”, Table \@ref(tab:introTable1CarbonVituSpecs)).
 
-\paragraph{} Dorn's (2001) Wyoming Flora key to *Physaria* did report the species from southcentral Wyoming.  Dorn distinguished *P. vitulifera* by fruits with a somewhat rectangular outline and obtuse or truncate basal apices.  He also noted the replum often attached nearly the full length of the fruit such that both apices were highly reduced, and that basal leaf petioles tended to be toothed.  Furthermore, he described this entity as occurruing on rocky slopes in or nearby mountains (Dorn 2001).  Dorn's treatment preceded Jennings' (2004) review of putative *P. vitulifera* specimens in the state.  As previously described, the taxonomic status of *P. vitulifera* in Wyoming is unclear (Rollins 1993; Dorn 2001; Jennings 2004; O'Kane 2010; Heidel and O'Kane 2012).  A number of specimens from Carbon county in Wyoming have annotations as *P. vitulifera*, some of which have since been reannotated to *P. acutifolia* (Table \@ref(tab:introTable1CarbonVituSpecs))).
-
-\clearpage
+\vspace*{24pt}
 
 ```{r introTable1CarbonVituSpecs}
+
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
 spp_subset(taxa_frame = spp_carbon_wyo,
            spp_str = "vitulifera", taxa_col = "Taxon",
            longitude = c(-108, -105.8), latitude = c(40.5, 41.5)) %>%
-  select(Physaria_syn, Taxon, Collector, Collection_Number,
-         State, County, Latitude, Longitude) %>%
-  dplyr::rename(`Collection Number` = Collection_Number) %>%
-  select(c(Collector, `Collection Number`)) %>% distinct() %>%
+  tibble::as_tibble(.) %>%
+  dplyr:: select(Physaria_syn, Taxon, Collector, Collection_Number,
+                 State, County, Herbarium) %>%
+  dplyr::arrange(desc(Physaria_syn)) %>%
   dplyr::mutate(Collector = sapply(Collector, function(collector) {
     gsub("[A-Z]\\. ?", "", collector) %>%
       gsub("&", "and", x = .)
   })) %>%
-  kable(format = knitr_chunk, escape = TRUE, row.names = FALSE,
+  # Add asterisk to specimens reviewed by Jennings (2004).
+  dplyr::bind_cols(.,
+    purrr::pmap_dfr(., function(Physaria_syn, Collection_Number, ...) {
+      if (Collection_Number %in% c("411", "3695", "63", "54", "19075", "19078",
+                                   "19073", "16713", "19510", "6", "16475")) {
+        mra <- paste0("*", Physaria_syn, "*\\*")
+        } else {
+          mra <- paste0("*", Physaria_syn, "*")
+          }
+      dplyr::bind_cols(annotation = mra)
+      })) %>%
+  # Remove brackets from herbarium column of separate records.
+  dplyr::mutate(Herbarium = 
+    purrr::map_chr(Herbarium, function(herbarium) {
+      gsub("\\[|\\]", "", herbarium) %>%
+        gsub(" +", " ", x = .)
+    })) %>%
+  # Parse asterisks for LaTeX italicization.
+  dplyr::mutate(annotation =
+    purrr::map_chr(annotation, function(x) {
+      if (knitr_chunk == "latex") {
+        if (stringr::str_detect(x, "\\*\\\\\\*$")) {
+          gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
+            gsub(pattern = "\\*\\\\\\*$", replacement = "}\\*", x = .)
+          } else { 
+            gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
+              gsub(pattern = "\\*$", replacement = "}", x = .)
+            }
+        } else { x }
+      })) %>%
+  dplyr::rename(`Collection Number` = Collection_Number,
+                `Most Recent Annotation` = annotation) %>%
+  dplyr::select(., `Most Recent Annotation`, Collector, 
+                `Collection Number`, Herbarium) %>%
+  dplyr::distinct(.) %>%  # remove duplicated rows
+  kable(format = knitr_chunk, escape = FALSE, row.names = FALSE,
         caption = knitr_caption(
           caption = paste0("Putative Carbon County, Wyoming ",
                            "\\textit{Physaria vitulifera} specimens."))) %>%
@@ -97,8 +131,13 @@ spp_subset(taxa_frame = spp_carbon_wyo,
                 latex_options= "HOLD_position",
                 position = "center") %>%
   row_spec(row = 0, bold = TRUE, font_size = 11) %>%
-  column_spec(1, border_left = TRUE, width = "6cm") %>%
-  column_spec(2, border_right = TRUE)
+  column_spec(1, border_left = TRUE) %>%
+  column_spec(3, width = "2.5cm") %>%
+  column_spec(4, border_right = TRUE)
+
+```
+
+\clearpage
 ```
 
 \vspace*{6pt}
