@@ -1,6 +1,6 @@
 # Workflow for phylogenetic tree annotation with ggtree R package
 
-### Herbarium tree tibble ----
+# Herbarium tree tibble ----
 
 #' Merge herbarium specimen records with consenus tree data.
 #'
@@ -13,6 +13,14 @@
 #'   record data sourced by the `R/specimen_data.R` script.
 #' @param dna_spp_file DNA specimen .csv file containing FASTA header labels and
 #'   specimen record collection data from `data/seq-consensus` subdirectory.
+#'
+#' @examples
+#' \dontrun{
+#' tbl_phylo_ml <-
+#'   phylo_tbl(bayes_file = paste0("data/seq-consensus/",
+#'                                 "ml-1.1_infile.nex.con.tre"),
+#'             specimen_records = total_physaria)
+#' }
 #'
 phylo_tbl <- function(bayes_file, specimen_records,
                       dna_spp_file = "data/phylogeny/dna_specimens.csv") {
@@ -101,15 +109,39 @@ phylo_tbl <- function(bayes_file, specimen_records,
 
 #' Plot merged tibble ggtree with specimen annotations.
 #'
+#' This function is a wrapper for plotting data from the `phylo_tbl()` function
+#' using the `ggtree` R package.  Options for plot configuration include
+#' color and shape aesthetics, legend and plot titles, plot scaling, and legend
+#' position using the `lemon` R package for 'freshing up' `ggplot2` plots.
+#'
 #' @param phylo_tbl_obj Tibble output by `phylo_tbl()` function built from
 #'   merged BEAST tree and herbarium records.
+#' @param spp_id Character vector matching column name for ggplot call
+#'   of color and shape aesthetics for ggtree build.
+#' @param legend_title Character vector passed to ggplot manual scales.
+#' @param plot_title Character vector passed to `ggplot2::ggtitle()`.
+#' @param phylo_layout Character vector passed as `layout` argument of
+#'   `ggtree::ggtree()`.
+#' @param legend_col Numeric vector passed as `ncol` argument of
+#'   `ggplot2::guide_legend()`.
+#' @param x_expand Numeric vector passed to `x` argument of
+#'   `ggplot2::expand_limits()`.
+#' @param legend_y_pos Numeric vector of length 2 passed to `legend.position`
+#'   argument of `ggplot2::theme()`.
+#'
+#' @inherit phylo_tbl examples
 #'
 #' @examples
-#' 
+#'
+#' \dontrun{
+#' phylo_ggplot(tbl_phylo_ml, plot_title = "Multi-locus Phylogeny",
+#'              legend_col = 1, x_expand = 0.02)
+#' }
+#'
 phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          legend_title = "Previous Annotations",
                          plot_title = "A phylogenetic tree.",
-                         phylo_layout = "slanted", label_size = 2,
+                         phylo_layout = "slanted",
                          legend_col = 2, x_expand = 0.02,
                          legend_y_pos = c(0, 0.9)) {
 
@@ -175,6 +207,24 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
         dplyr::bind_cols(data = tbl_node_merge)
         })
 
+  # Create tibble for multi-specimen node label annotation.
+  tbl_multi_node_labels <-
+    dplyr::arrange(tbl_multi_node_ext,
+                   factor(tbl_multi_node_ext$node.x,
+                          levels = names(sort(table(tbl_multi_node_ext$node.x),
+                                              decreasing = TRUE)))) %>%
+    dplyr::select(., node.x, x, y) %>%
+    dplyr::mutate(., Genotype =
+                    map_dbl(.x = .[["node.x"]], function(node) {
+                      which(unique(.[["node.x"]]) %in% node)
+                    })) %>% dplyr::distinct() %>%
+    dplyr::mutate(.,
+      genotype_label =
+        purrr::map_chr(Genotype,
+                       function(genotype) {
+                         paste("Genotype", as.character(genotype))
+                         }))
+
   # Plot ggtree object with annotations of specimen record and collection label.
   phylo_ggtree <-
     ggtree(phylo_tbl_obj, layout = phylo_layout) +
@@ -188,6 +238,10 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                na.rm = TRUE) +
     geom_point(data = tbl_multi_node_ext, size = 1.5,
                color = "black", shape = 18) +
+    geom_text(data = tbl_multi_node_labels,
+              aes(x = x, y = y, label = genotype_label),
+              nudge_x = (range(tbl_inner_node$x)[2] * 0.05),
+              size = 3.5, hjust = 0, fontface = "bold") +
 
     # Map text strings of probabilities to inner nodes as labels.
     geom_label(data = tbl_inner_node,
@@ -225,7 +279,25 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
       lemon::reposition_legend(phylo_ggtree, 'top left')
 }
 
+# Kable wrappers ----
+
 #' Multi-specimen node tibble.
+#'
+#' Subset and filter tibbles output by `phylo_tbl()` for `knitr::kable()` plot.
+#' Calculates a column `Genotype` based on the node frequency, where genotype
+#' `1` is the genotype containing the most identical specimens.  The column
+#' `Species` is based on the input of the `spp_id` argument.
+#'
+#' @inheritParams phylo_ggplot
+#'
+#' @examples
+#' \dontrun{
+#'   phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_ml) %>%
+#'     phylo_kable(tbl_multi_node = .,
+#'                 kable_caption =
+#'                   paste0("$Physaria$ DNA specimens with identical sequences",
+#'                          " after concatenation."))
+#' }
 #'
 phylo_multi_tbl <- function(phylo_tbl_obj,
                             spp_id = "Physaria_syn") {
@@ -256,15 +328,17 @@ phylo_multi_tbl <- function(phylo_tbl_obj,
     dplyr::mutate(., Collector =
                     map_chr(.[["Collector"]], function(collector) {
                       gsub("[A-Z]\\. ?", "", collector) %>%
-                        gsub("&|with", "and", x = .)  }) ) %>%
+                        gsub("&|with", "and", x = .)
+                      })) %>%
     dplyr::rename(., Species = spp_id,
                   `Collection Number` = Collection_Number)
   return(kable_multi_node)
 }
 
 #' Kable build for multi-specimen nodes.
-#' 
-#' 
+#'
+#' @inherit phylo_multi_tbl examples
+#'
 phylo_kable <- function(tbl_multi_node, kable_caption) {
   kable(tbl_multi_node, caption = kable_caption, format = knitr_chunk,
         escape = F, row.names = FALSE,
