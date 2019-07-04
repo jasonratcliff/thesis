@@ -420,7 +420,7 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria didymocarpa ssp. saximontana" = 18,
                "Physaria saximontana ssp. saximontana" = 17,
                "Physaria eburniflora" = 18,
-               "Physaria integrifolia" =  18,
+               "Physaria integrifolia" = 18,
                "Physaria dornii" = 16,
                "Physaria condensata"= 16,
                "Physaria chambersii" = 17,
@@ -428,6 +428,61 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria flowering" = 16,
                "Lesquerella fendleri" = 15,
                "Lesquerella argyrea" = 18)
+
+spp_labels <- c("Physaria acutifolia" =
+                  expression(italic("Physaria acutifolia")),
+                "Physaria vitulifera"=
+                  expression(italic("Physaria vitulifera")),
+                "Physaria medicinae" =
+                  expression(italic("Physaria medicinae")),
+                "Physaria acutifolia - vitulifera-like" =
+                  expression(italic("Physaria acutifolia")*" - "*italic("vitulifera")*"-like"),
+                "Physaria vitulifera - Carbon" =
+                  expression(italic("Physaria vitulifera")*" - Carbon"),
+                "Physaria floribunda" =
+                  expression(italic("Physaria floribunda")),
+                "Physaria floribunda ssp. floribunda" =
+                  expression(italic("Physaria floribunda")*" ssp. "*italic("floribunda")),
+                "Physaria floribunda ssp. osterhoutii" =
+                  expression(italic("Physaria floribunda")*" ssp. "*italic("osterhoutii")),
+                "Physaria bellii" = 
+                  expression(italic("Physaria bellii")),
+                "Physaria rollinsii" = 
+                  expression(italic("Physaria rollinsii")),
+                "Physaria alpina" =
+                  expression(italic("Physaria alpina")),
+                "Physaria brassicoides" =
+                  expression(italic("Physaria brassicoides")),
+                "Physaria didymocarpa ssp. didymocarpa" =
+                  expression(italic("Physaria didymocarpa")*" ssp. "*italic("didymocarpa")),
+                "Physaria didymocarpa ssp. lanata" =
+                  expression(italic("Physaria didymocarpa")*" ssp. "*italic("lanata")),
+                "Physaria didymocarpa ssp. lyrata" =
+                  expression(italic("Physaria didymocarpa")*" ssp. "*italic("lyrata")),
+                "Physaria saximontana ssp. dentata" =
+                  expression(italic("Physaria saximontana")*" ssp. "*italic("dentata")),
+                "Physaria didymocarpa ssp. saximontana" =
+                  expression(italic("Physaria didymocarpa")*" ssp. "*italic("saximontana")),
+                "Physaria saximontana ssp. saximontana" =
+                  expression(italic("Physaria saximontana")*" ssp. "*italic("saximontana")),
+                "Physaria eburniflora" =
+                  expression(italic("Physaria eburniflora")),
+                "Physaria integrifolia" =
+                  expression(italic("Physaria integrifolia")),
+                "Physaria dornii" = 
+                  expression(italic("Physaria dornii")),
+                "Physaria condensata" =
+                  expression(italic("Physaria condensata")),
+                "Physaria chambersii" =
+                  expression(italic("Physaria chambersii")),
+                "Physaria" =
+                  expression(italic("Physaria")),
+                "Physaria flowering" =
+                  expression(italic("Physaria flowering")),
+                "Lesquerella fendleri" =
+                  expression(italic("Lesquerella fendleri")),
+                "Lesquerella argyrea" =
+                  expression(italic("Lesquerella argyrea")))
 
 #' Modify map ggplot themes.
 #'
@@ -451,9 +506,11 @@ map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
 
   # Build ggplot map object with manual scales.
   gg_map_obj +
-    scale_color_manual(name = legend_title,
+    scale_color_manual(name = legend_title, labels = spp_labels,
                        values = spp_color, na.value = "black") +
-    scale_shape_manual(name = legend_title,
-                       values = spp_shape, na.value = 17)
+    scale_shape_manual(name = legend_title, labels = spp_labels,
+                       values = spp_shape, na.value = 17) +
+    theme(legend.text.align = 0, legend.title.align = 0.5)
+  
 }
 
