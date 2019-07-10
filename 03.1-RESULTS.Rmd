@@ -145,6 +145,10 @@ knitr_section(knitr_title = "*ycf1* Sequence Analysis",
 
 ```{r resultsTable6IdenticalSeqYcf1}
 
+knitr_cap <- 
+  paste0("$Physaria$ DNA specimens with identical genotypes",
+         " for the $ycf1$ loci.")
+
 # Format ycf1 identical sequence .csv files into split tables.
 ycf1_id_seqs <- read.csv("Phys_DNA/Seq-Tables/ycf1_identical_seqs.csv",
                          header = TRUE, row.names = NULL, as.is = TRUE,
@@ -156,15 +160,12 @@ ycf1_id_seqs <- read.csv("Phys_DNA/Seq-Tables/ycf1_identical_seqs.csv",
                         gsub("&|with", "and", x = .)})) %>%
   dplyr::select(., Genotype, Species, State, Collector, `Collection Number`)
 
-ycf1_table_cap <- paste0("$Physaria$ DNA specimens with identical genotypes",
-                       " for the $ycf1$ loci.")
-
 if (knitr_chunk == "html") {
   phylo_kable(tbl_multi_node = ycf1_id_seqs,
-              kable_caption = ycf1_table_cap)
+              kable_caption = knitr_cap)
 } else if (knitr_chunk == "latex") {
   phylo_kable(tbl_multi_node = ycf1_id_seqs[1:24, ],
-              kable_caption = ycf1_table_cap)
+              kable_caption = knitr_cap)
 }
 
 ```
@@ -214,8 +215,8 @@ tbl_phylo_ml <-
 phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_ml) %>%
   phylo_kable(tbl_multi_node = .,
               kable_caption =
-                    paste0("$Physaria$ DNA specimens with identical sequences",
-                     " after concatenation."))
+                paste0("$Physaria$ DNA specimens with identical sequences",
+                       " after concatenation."))
 
 ```
 
@@ -236,4 +237,9 @@ gridExtra::grid.arrange(phylo_ggplot(tbl_phylo_ml,
 \clearpage
 
 \paragraph{} Another clade recovered with high posterior probability (P=0.909) included specimens previously annotated as *P. saximontana* subsp. *saximontana* (n=3), *P. s.* subsp. *dentata* (n=2), *P. didymocarpa* subsp. *lanata* (n=2), *P. brassicoides* (n=3), *P. acutifolia* (n=2), and one specimen of *P. condensata* (Figure \@ref(fig:resultsFigure5MultiLocusPhyloTree)).  A third clade (P=0.997) included two specimens from Carbon County, Wyoming (*Fertig and Welp 19075*, *Fertig 16713*), one *P. acutifolia* specimen from Utah, and one specimen of *P. brassicoides* from northeastern Wyoming.  Two additional clades included one of two *P. vitulifera* specimens (P=0.778) and another of one *P. saximontana* subsp. *saximontana* and one *P. eburniflora* specimen (P=0.999).  In the multi-locus polytomy, unresolved specimens were previously identified as *P. acutifolia* (n=3), *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lyrata* (n=3), *P. d.* subsp. *lanata* (n=1), *P. eburniflora* (n=2), *P. brassicoides* (n=1), *P. saximontana* subsp. *dentata* (n=1), and another specimen from Carbon County, Wyoming (*Dorn 10105*).
+
+```{r chapter3_1ResultsCleanup}
+# Workspace cleanup
+rm(ycf1_id_seqs)
+```
 
