@@ -145,7 +145,7 @@ knitr_section(knitr_title = "*ycf1* Sequence Analysis",
 
 ```{r resultsTable6IdenticalSeqYcf1}
 
-knitr_cap <- 
+knitr_cap <-
   paste0("$Physaria$ DNA specimens with identical genotypes",
          " for the $ycf1$ loci.")
 
