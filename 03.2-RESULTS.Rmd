@@ -116,11 +116,70 @@ lemon::grid_arrange_shared_legend(trait_carbon_fr_len, trait_carbon_fr_wid,
 
 ```
 
-  theme(legend.box = "vertical", legend.position = "bottom",
 
-# Build ggmap plot into a graphical object and display list element $plot.
+```{r resultsFigure9MapVituFloriMedicinaeComplex, fig.width=8, fig.asp=1.25, fig.cap=knitr_cap}
 
-# Clean up workspace
+knitr_cap <-
+  paste0("Allopatric distribution of regional *Physaria* species.")
+
+### SEINet specimen data formatted as Darwin Core Biodiversity Standard ----
+# Physaria floribunda
+co_fbunda <- read.csv(file =
+                        "data/SEINet/Colorado_P.floribunda/occurrences.csv",
+                      header = TRUE, stringsAsFactors = FALSE) %>%
+  dplyr::select(scientificName, scientificNameAuthorship, genus,
+                specificEpithet, taxonRank, infraspecificEpithet, identifiedBy,
+                recordedBy, recordNumber, eventDate, year, stateProvince,
+                county, locality, decimalLatitude, decimalLongitude,
+                verbatimCoordinates, verbatimElevation) %>%
+  dplyr::rename(Latitude = decimalLatitude, Longitude = decimalLongitude) %>%
+  dplyr::filter(., !is.na(.[["Latitude"]]) & !is.na(.[["Longitude"]])) %>%
+  dplyr::mutate(.,
+                scientificName =
+                  purrr::map_chr(scientificName,
+                    function(taxon) {
+                      gsub("var\\.|subsp\\.", "ssp.", x = taxon)
+                      }))
+
+# Physaria bellii
+co_bellii <- read.csv(file =
+                        "data/SEINet/Colorado_P.bellii/occurrences.csv",
+                      header = TRUE, stringsAsFactors = FALSE)%>%
+  dplyr::select(scientificName, scientificNameAuthorship, genus,
+                specificEpithet, taxonRank, infraspecificEpithet, identifiedBy,
+                recordedBy, recordNumber, eventDate, year, stateProvince,
+                county, locality, decimalLatitude, decimalLongitude,
+                verbatimCoordinates, verbatimElevation) %>%
+  dplyr::rename(Latitude = decimalLatitude, Longitude = decimalLongitude) %>%
+  dplyr::filter(., !is.na(.[["Latitude"]]) & !is.na(.[["Longitude"]]))
+
+# Subset herbarium specimens by geographic coordinates
+co_flori_vitu <-
+  dplyr::filter(total_physaria,
+                Longitude > -110.3874 & Longitude < -103.3562 &
+                  Latitude > 36.85266 & Latitude < 42.26863)
+
+# Build combined SEINet / herbarium specimen ggmap ----
+(map_ggmap(map_df = co_flori_vitu, gg_borders = gg_borders,
+            gg_map_type = "satellite",
+            map_col = "Taxon_a_posteriori",
+            shape_opt = "Taxon_a_posteriori",
+            gg_latitude = 39.56065, gg_longitude = -106.8718) +
+
+  # Layer coordinate points from SEINet data set of CO P. floribunda.
+  geom_jitter(data = co_fbunda, show.legend = FALSE,
+              mapping = aes(x = Longitude, y = Latitude,
+                            colour = scientificName,
+                            shape = scientificName), size = 2.75) +
+  geom_jitter(data = co_bellii, show.legend = FALSE,
+              mapping = aes(x = Longitude, y = Latitude,
+                            colour = scientificName,
+                            shape = scientificName), size = 2.75)) %>%
+  map_themes(.) +
+  guides(colour = guide_legend(ncol = 2, byrow = TRUE)) +
+  theme(legend.direction = "vertical", legend.position = "bottom")
+
+
 
 ```
 
