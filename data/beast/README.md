@@ -46,7 +46,7 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
     DIHLDiskImageAttach() returned 112
     hdiutil: attach failed - no mountable file systems
 
-<details><summary>**Verbose `stdout`**</summary>
+<details><summary><b>Verbose </b><tt>stdout</tt></summary>
 <p>
 
     $ hdiutil attach -verbose ~/Downloads/JavaUninstallTool.dmg 

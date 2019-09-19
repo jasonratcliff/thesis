@@ -54,7 +54,7 @@ DIHLDiskImageAttach() returned 112
 hdiutil: attach failed - no mountable file systems
 ```
 
-<details><summary>**Verbose `stdout`**</summary>
+<details><summary><b>Verbose </b><tt>stdout</tt></summary>
 <p>
 
 ```
