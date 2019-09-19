@@ -3,13 +3,14 @@ title: "Systematics of *Physaria* sensu stricto"
 author: "Jason Ratcliff"
 date: "`r Sys.Date()`"
 maintfont: Palatino
+fontsize: 12
 output: 
   bookdown::pdf_book:
     includes:
       in_header: TeX/Thesis_0-header.tex
     latex_engine: xelatex
-    toc: false
     citation_package: natbib
+    toc: false
     keep_tex: yes
 subparagraph: true
 site: bookdown::bookdown_site
@@ -17,17 +18,89 @@ documentclass: report
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "R Bookdown build to compile an MS Thesis."
+description: "R Bookdown build to compile MS Thesis."
 ---
+
+```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
+# Set Global knitr chunk options
+library(knitr)
+knitr::opts_chunk$set(dev='pdf', echo=FALSE, results="asis",
+                      message=FALSE, cache=FALSE)
+opts_knit$set(eval.after = 'fig.cap')
+```
 
 \include{TeX/Thesis_1-copyright}
 
 \include{TeX/Thesis_2-abstract-title}
 
-<!-- \include{TeX/Thesis_3-abstract} -->
+\include{TeX/Thesis_3-abstract}
 
 \include{TeX/Thesis_4-thesis-title}
 
 \include{TeX/Thesis_5-approval}
 
 \include{TeX/Thesis_6-tables}
+
+```{r globalSet}
+# Load libraries
+require(dplyr)
+require(purrr)
+require(knitr)
+require(magrittr)
+require(lubridate)
+require(stringr)
+require(tibble)
+require(kableExtra)
+require(ggplot2)
+require(lemon)
+require(ggmap)
+require(ggtree)
+require(msa)
+require(elevatr)
+require(sp)
+
+# Due to issue with ggmap call, developer branch of ggmap
+# addressing issue from https://github.com/dkahle/ggmap/issues/85
+# with fix at https://github.com/dkahle/ggmap/pull/88
+# used for ggmap build.  See citation here:
+# https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+if ("ggmap" %in% rownames(installed.packages()) == FALSE) {
+  # Install from author github repo master branch
+  library(devtools)
+  devtools::install_github("dkahle/ggmap")
+}
+
+# # Load bioconductor packages 'ggtree' and 'msa'
+# if ("ggtree" %in% rownames(installed.packages()) == FALSE) {
+#   biocLite("ggtree")
+# }
+# 
+# if ("msa" %in% rownames(installed.packages()) == FALSE) {
+#   biocLite("msa")
+# }
+
+# Read specimen data to Global Environment and source R functions.
+source("R/specimen_data.R", keep.source = FALSE)
+source("R/specimen_tools.R", keep.source = FALSE)
+source("R/map_tools.R", keep.source = FALSE)
+source("R/phylo_tools.R", keep.source = FALSE)
+source("R/trait_tools.R", keep.source = FALSE)
+source("R/knitr_helper.R", keep.source = FALSE)
+
+# Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
+knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
+
+# Define map object for state and county boundaries.
+gg_borders <- map_borders(border_color = "black")
+
+```
+
+```{r chapter1Set}
+
+# Subset Carbon County, Wyoming specimens within bounding box.
+spp_carbon_wyo <- spp_subset(taxa_frame = total_physaria, 
+                             state = c("Wyoming", "Colorado"),
+                             longitude = c(-107.9, -105.1),
+                             latitude = c(39.1, 41.9))
+
+```
