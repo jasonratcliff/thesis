@@ -48,6 +48,7 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
 
 <details><summary>**Verbose `stdout`**</summary>
 <p>
+
     $ hdiutil attach -verbose ~/Downloads/JavaUninstallTool.dmg 
     Initializing…
     DIBackingStoreInstantiatorProbe: interface  0, score      100, CBSDBackingStore
