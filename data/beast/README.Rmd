@@ -1,9 +1,8 @@
 ---
 title: "BEAST Setup"
 output:
-  html_document:
-  # md_document:
-  #   variant: markdown_github
+  md_document:
+    variant: markdown_github
 ---
 
 Workflow to install Java 8 for use by `beauti.jar` and `beast.jar`
@@ -128,6 +127,8 @@ Finishing…
 DIHLDiskImageAttach() returned 112
 hdiutil: attach failed - no mountable file systems
 ```
+</p>
+</details>
 
 ### Disk Utility First Aid
 

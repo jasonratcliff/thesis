@@ -117,6 +117,9 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
     DIHLDiskImageAttach() returned 112
     hdiutil: attach failed - no mountable file systems
 
+</p>
+</details>
+
 ### Disk Utility First Aid
 
 -   No evident problems returned
