@@ -1,8 +1,12 @@
-Workflow to install Java 8 for use by `beauti.jar` and `beast.jar`
+Java 8 Setup for MacOS
+----------------------
 
-1) Uninstall Previous JDK
--------------------------
+-   Used by:
+    -   `beauti.jar`
+    -   `beast.jar`
 
+<details><summary><b>1) Uninstall Previous JDK</b></summary>
+<p>
 To install an older version of java, any newer JDK versions need to be removed.
 
 -   <https://www.java.com/en/download/help/mac_uninstall_java.xml>
@@ -18,18 +22,18 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
 
 -   Currently running El Captitan (Extent of MacBook hardware)
 
-<!-- -->
-
-    jason$ sw_vers
-    ProductName:    Mac OS X
-    ProductVersion: 10.11.6
-    BuildVersion:   15G22010
+``` shell
+jason$ sw_vers
+ProductName:    Mac OS X
+ProductVersion: 10.11.6
+BuildVersion:   15G22010
+```
 
 -   Download Location
 
-<!-- -->
-
-    $ ls ~/Downloads/JavaUninstallTool.dmg 
+``` shell
+$ ls ~/Downloads/JavaUninstallTool.dmg
+```
 
 ### Troubleshooting
 
@@ -37,14 +41,16 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
     -   Including the `-verbose` argument returns detailed disk mounting information
         -   Reference for [hdiutil command](https://superuser.com/questions/19426/im-unable-to-mount-a-dmg-getting-a-no-mountable-filesystems-error)
 
-<!-- -->
-
-    hdiutil attach -verbose ~/Downloads/JavaUninstallTool.dmg 
+``` shell
+hdiutil attach -verbose ~/Downloads/JavaUninstallTool.dmg
+```
 
 **Returns error 112**
 
-    DIHLDiskImageAttach() returned 112
-    hdiutil: attach failed - no mountable file systems
+``` shell
+DIHLDiskImageAttach() returned 112
+hdiutil: attach failed - no mountable file systems
+```
 
 <details><summary><b>Verbose </b><tt>stdout</tt></summary>
 <p>
@@ -101,7 +107,7 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
         "unmount-timeout" = 0;
     }
     2019-09-08 15:00:17.094 diskimages-helper[637:16272] DIHelperHDID serveImage: connecting to myDrive 0x4F0B
-    2019-09-08 15:00:17.096 diskimages-helper[637:16272] DIHelperHDID serveImage: register _readBuffer 0x10d97e000
+    2019-09-08 15:00:17.096 diskimages-helper[637:16272] DIHelperHDID serveImage: register \_readBuffer 0x10d97e000
     2019-09-08 15:00:17.096 diskimages-helper[637:16272] DIHelperHDID serveImage: activating drive port 19723
     2019-09-08 15:00:17.097 diskimages-helper[637:16272] DIHelperHDID serveImage: set cache enabled=TRUE returned SUCCESS.
     2019-09-08 15:00:17.097 diskimages-helper[637:16272] DIHelperHDID serveImage: set on IO thread=TRUE returned SUCCESS.
@@ -117,6 +123,7 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
     2019-09-08 15:00:18.218 diskimages-helper[637:16258] *** -[NSMachPort handlePortMessage:]: dropping incoming DO message because the connection is invalid
     DIHLDiskImageAttach() returned 112
     hdiutil: attach failed - no mountable file systems
+
 
 </p>
 </details>
@@ -135,55 +142,58 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
 
 -   Current JVM
 
-<!-- -->
+``` shell
+$ java -version
+java version "1.6.0_65"
+Java(TM) SE Runtime Environment (build 1.6.0_65-b14-468)
+Java HotSpot(TM) 64-Bit Server VM (build 20.65-b04-468, mixed mode)
 
-    $ java -version
-    java version "1.6.0_65"
-    Java(TM) SE Runtime Environment (build 1.6.0_65-b14-468)
-    Java HotSpot(TM) 64-Bit Server VM (build 20.65-b04-468, mixed mode)
-
-    $ ls /Library/Java/JavaVirtualMachines/
-    1.6.0.jdk   jdk-10.0.1.jdk
+$ ls /Library/Java/JavaVirtualMachines/
+1.6.0.jdk   jdk-10.0.1.jdk
+```
 
 -   Plug-in installation
 
-<!-- -->
-
-    $ ls /Library/Internet\ Plug-Ins/
-    Default Browser.plugin      JavaAppletPlugin.plugin
-    Disabled Plug-Ins       Quartz Composer.webplugin
+``` shell
+$ ls /Library/Internet\ Plug-Ins/
+Default Browser.plugin      JavaAppletPlugin.plugin
+Disabled Plug-Ins       Quartz Composer.webplugin
+```
 
 -   Preference Pane
 
-<!-- -->
-
-    $ ls /Library/PreferencePanes/    
-    JavaControlPanel.prefPane
+``` shell
+$ ls /Library/PreferencePanes/    
+JavaControlPanel.prefPane
+```
 
 -   Java Application files
 
-<!-- -->
-
-    $ ls -lh ~/Library/Application\ Support/Java/
-    total 0
-    drwxr-xr-x  6 jason  staff   204B Nov 29  2018 Java 10.0.99.0.10
+``` shell
+$ ls -lh ~/Library/Application\ Support/Java/
+total 0
+drwxr-xr-x  6 jason  staff   204B Nov 29  2018 Java 10.0.99.0.10
+```
 
 -   To *remove all files*, use the following commands:
 
-<!-- -->
-
-    # sudo rm -fr /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin 
-    # sudo rm -fr /Library/PreferencePanes/JavaControlPanel.prefPane
-    # sudo rm -fr ~/Library/Application\ Support/Java
+``` shell
+# sudo rm -fr /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin
+# sudo rm -fr /Library/PreferencePanes/JavaControlPanel.prefPane
+# sudo rm -fr ~/Library/Application\ Support/Java
+```
 
 -   To use an older java version, remove the newer JDK:
 
-<!-- -->
+``` shell
+# sudo rm -rf /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk
+```
 
-    # sudo rm -rf /Library/Java/JavaVirtualMachines/jdk-10.0.1.jdk
+</p>
+</details>
 
-2) Install JDK 8
-----------------
+<details><summary><b>2) Install JDK 8</b></summary>
+<p>
 
 ### Java Downloads
 
@@ -202,37 +212,39 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
 -   JRE Version 8 Update 221
     -   build 1.8.0\_221-b11
 
-<!-- -->
-
-    Jasons-MacBook:~ Admin$ java -version
-    java version "1.8.0_221"
-    Java(TM) SE Runtime Environment (build 1.8.0_221-b11)
-    Java HotSpot(TM) 64-Bit Server VM (build 25.221-b11, mixed mode)
+``` shell
+Jasons-MacBook:~ Admin$ java -version
+java version "1.8.0_221"
+Java(TM) SE Runtime Environment (build 1.8.0_221-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.221-b11, mixed mode)
+```
 
 -   Internet Plug-in
 
-<!-- -->
-
-    Jasons-MacBook:~ Admin$ /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java -version
-    java version "1.8.0_221"
-    Java(TM) SE Runtime Environment (build 1.8.0_221-b11)
-    Java HotSpot(TM) 64-Bit Server VM (build 25.221-b11, mixed mode)
+``` shell
+Jasons-MacBook:~ Admin$ /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java -version
+java version "1.8.0_221"
+Java(TM) SE Runtime Environment (build 1.8.0_221-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.221-b11, mixed mode)
+```
 
 -   Path to `java_home`
 
-<!-- -->
+``` shell
+Jasons-MacBook:~ Admin$ /usr/libexec/java_home -V
+Matching Java Virtual Machines (3):
+    1.8.0_221, x86_64:  "Java SE 8" /Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home
+    1.6.0_65-b14-468, x86_64:   "Java SE 6" /Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+    1.6.0_65-b14-468, i386: "Java SE 6" /Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
 
-    Jasons-MacBook:~ Admin$ /usr/libexec/java_home -V
-    Matching Java Virtual Machines (3):
-        1.8.0_221, x86_64:  "Java SE 8" /Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home
-        1.6.0_65-b14-468, x86_64:   "Java SE 6" /Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
-        1.6.0_65-b14-468, i386: "Java SE 6" /Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+/Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home
+```
 
-    /Library/Java/JavaVirtualMachines/jdk1.8.0_221.jdk/Contents/Home
+</p>
+</details>
 
-3) BEAST Setup
---------------
-
+<details><summary><b>3) BEAST Installation and Setup</b></summary>
+<p>
 -   Links
     -   Installation [Overview](https://beast.community/installing)
     -   Mac [Install](https://beast.community/install_on_mac)
@@ -240,32 +252,51 @@ NOTE: `JavaUninstallTool.dmg` returning error: no mountable file systems
 
 ### Path to BEAST directory
 
-    $ ls /Applications/BEASTv1.10.4/ | more
-    README.txt
-    VERSION HISTORY.txt
-    bin
-    doc
-    examples
-    images
-    lib
-    native
+``` shell
+$ ls /Applications/BEASTv1.10.4/ | more
+README.txt
+VERSION HISTORY.txt
+bin
+doc
+examples
+images
+lib
+native
+```
 
 -   Modify path to the program /bin directory
 
-<!-- -->
+``` shell
+# Edit contents of the `~/.bash_profile` file
+vi ~/.bash_profile
+```
 
-    # Edit contents of the `~/.bash_profile` file
-    vi ~/.bash_profile
-
-    export JAVA_HOME="/usr/libexec/java_home -v 1.8"
-    export LD_LIBRARY_PATH=$JAVA_HOME/jre/lib/server
-    export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/TeX/texbin:/Applications/BEASTv1.10.4/
+``` shell
+export JAVA_HOME="/usr/libexec/java_home -v 1.8"
+export LD_LIBRARY_PATH=$JAVA_HOME/jre/lib/server
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/TeX/texbin:/Applications/BEASTv1.10.4/
+```
 
 -   Restart computer or reload changes to the profile
 
-<!-- -->
+``` shell
+source ~/.bash_profile
+```
 
-    source ~/.bash_profile
+</p>
+</details>
+
+BEAST Workflow
+==============
+
+-   <https://beast.community/first_tutorial>
+
+``` shell
+# Open BEAUti to load nexus file(s)
+cd /Applications/BEASTv1.10.4/lib/
+java -jar beauti.jar
+```
+
 
 ### Running BEAST
 
