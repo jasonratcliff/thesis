@@ -1,10 +1,10 @@
---- 
+---
 title: "Systematics of *Physaria* sensu stricto"
 author: "Jason Ratcliff"
 date: "`r Sys.Date()`"
 maintfont: Palatino
 fontsize: 12
-output: 
+output:
   bookdown::pdf_book:
     includes:
       in_header: TeX/Thesis_0-header.tex
@@ -74,7 +74,7 @@ if ("ggmap" %in% rownames(installed.packages()) == FALSE) {
 # if ("ggtree" %in% rownames(installed.packages()) == FALSE) {
 #   biocLite("ggtree")
 # }
-# 
+#
 # if ("msa" %in% rownames(installed.packages()) == FALSE) {
 #   biocLite("msa")
 # }
@@ -92,6 +92,57 @@ knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
 
 # Define map object for state and county boundaries.
 gg_borders <- map_borders(border_color = "black")
+
+```
+
+```{r sequencedHerbariumRecords}
+
+# Read in sequenced DNA specimen information including accession labels.
+dna_specimens <- readr::read_csv(file = "data/phylogeny/dna_specimens.csv") %>%
+  dplyr::rename(label = taxa_label)
+
+# Combine herbarium specimen record information with sequence documentation.
+dna_herbarium_spp <-
+  purrr::pmap_dfr(dna_specimens,
+    function(label, Collector, Collection_Number, ...) {
+
+      # Subset total herbarium record data frame by collector and collection.
+      dna_herbarium <-
+        total_physaria[intersect(
+          stringr::str_which(string = total_physaria$Collector,
+                             pattern = Collector),
+          stringr::str_which(string = total_physaria$Collection_Number,
+                             pattern = as.character(Collection_Number))), ] %>%
+        dplyr::mutate(Collection_Number = as.numeric(Collection_Number))
+
+      # Join the herbarium records to matching sequencing specimen .csv rows.
+      specimen_label = label
+      dplyr::left_join(dplyr::filter(dna_specimens, label == specimen_label),
+                       dna_herbarium, by = "Collection_Number")
+}) %>% # Clean up a few columns and reorder for easy review.
+  dplyr::select(label, Collection_Number, Collector.x, Collector.y,
+                dplyr::contains("Physaria"), dplyr::contains("Taxon"),
+                dplyr::contains("ID_"), Herbarium.x, Herbarium.y,
+                State.x, State.y, County.x, County.y,
+                Date, Date_parsed, Date_md,
+                ID, App.A, `Elev_(m)`, `Elev_(ft.)`,
+                Latitude.x, Latitude.y, Longitude.x, Longitude.y,
+                Imaged, TRS2, Notes, Rosulate, Caudex, Pubescence,
+                Basal_leaf_trichomes, Fruit_trichomes, Stem_count,
+                Stem_shape, Stem_length_dm, Petiole, Basal_leaf_length_cm,
+                Basal_leaf_shape, Basal_leaf_margins, Cauline_leaf_length_mm,
+                Cauline_leaf_shape, Cauline_leaf_margins, Racemes,
+                Pedicel_shape, Pedicels_secund, Sepal_length_mm, Sepal_shape,
+                Petal_color, Petal_length_mm, Petal_shape, Style_length_mm,
+                Mature_fruit_length_mm, Mature_fruit_width_mm, Fruit,
+                Mature_fruit_apices, Replum_pubescence, Inner_valve_pubescence,
+                Ovule_number, Replum_shape, Seed_color, Seed_shape,
+                Mature_seed_length_mm) %>%
+  dplyr::rename(Latitude = Latitude.x, Longitude = Longitude.x)
+
+# Write merged specimen data to file.
+readr::write_excel_csv(dna_herbarium_spp,
+                       path = "data/beast/dna_herbarium_spp.csv")
 
 ```
 
