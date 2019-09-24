@@ -31,7 +31,7 @@ specimens_read <- function(herbarium_file) {
   return(specimen_list)
 }
 
-specimen_list <- specimens_read("data/Phys_species_totals.xlsx")
+specimen_list <- specimens_read("data/1.specimens/Phys_species_totals.xlsx")
 
 # 2. Check date format ----
 
@@ -157,7 +157,8 @@ parse_priors <- function(specimen_annotations) {
   # Use `plyr::ldply()` to bind data frame from unequal annotation vectors.
   prior_df <- plyr::ldply(prior_list, rbind)
   prior_df[] <- lapply(prior_df, as.character)  # Prevent factor coercion.
-  names(prior_df) <- paste0("Physaria_a_priori_", 1:ncol(prior_df))
+  names(prior_df) <-  # Name columns based on length of split 
+    paste0("Physaria_a_priori_", 1:ncol(prior_df))
 
   # Column bind vector of most recent (i.e. non-missing) annotations.
   prior_recent <- apply(prior_df, MARGIN = 1, function(priors) {
@@ -185,6 +186,7 @@ prior_df <- parse_priors(specimen_annotations = specimen_df$Taxon)
 #'
 #' @param recent_annotations Character vector of most recent specimen annotation
 #' column from `prior_df` output by `parse_priors()` function.
+#' @return Character vector of synonym-corrected annotations.
 parse_synonyms <- function(recent_annotations) {
 
   # Assign vectors for species synonyms.
@@ -269,14 +271,14 @@ total_physaria <- dplyr::bind_cols(prior_df,
                                    as.data.frame(prior_synonyms,
                                                  stringsAsFactors = FALSE),
                                    specimen_df)
-names(total_physaria)[grep("prior_synonyms", names(total_physaria))] <-
-  "Physaria_syn"
+names(total_physaria)[grep("prior_synonyms", 
+                           names(total_physaria))] <- "Physaria_syn"
 
 # Convert geographic coordinate column classes from character to numeric.
 total_physaria$Longitude <- as.numeric(total_physaria$Longitude)
 total_physaria$Latitude <- as.numeric(total_physaria$Latitude)
 
-# Parse dates from character vector.
+# Parse dates from character vector using lubridate.
 total_physaria <-
   dplyr::mutate(total_physaria,
                 Date_parsed = lubridate::mdy(total_physaria$Date)) %>%
@@ -332,4 +334,5 @@ specimens_write(total_physaria)
 
 # Clean up workspace to remove unnecessary objects and functions.
 rm(prior_df, specimen_df, specimen_index, prior_synonyms)
+rm(specimens_read, date_mismatch, parse_priors, parse_synonyms, specimens_write)
 

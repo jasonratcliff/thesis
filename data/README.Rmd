@@ -1,0 +1,83 @@
+---
+title: "Data README"
+author: "Ratcliff"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+library(magrittr)
+```
+
+# Specimen Data
+
+Records of voucher specimens on loan from lending herbaria (RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled into an excel *.xlsx* file.  Information recorded from the vouchers included the identification history, collector, collection number, date, institution, locality, geographic coordinates, elevation, ecological description, and measurements of continuous and discrete specimen traits.  The file named "Phys_species_totals.xlsx" is located in the `/data/1.specimens/` project subdirectory. In total, this project considered 1635 unique collections dated as early as 1844 (Fremont's 2nd Expedition).
+
+```{r specimens}
+# Get full path to project directory with the `here::` package (Müller 2017).
+# Path is identified by the .git file located at the project root.
+full_path <- here::here()
+
+# List files in the specimen data project subdirectory.
+list.files(path = paste0(full_path, "/data/1.specimens"), 
+           full.names = TRUE) %>%  # `magrittr::` pipe (Bache and Wickham 2014)
+  gsub(pattern = full_path, replacement = "", x = .)
+```
+
+To read the data into R for downstream phylogenetic, distribution, and morphological analyses, the script `/R/specimen_data.R` is sourced within `/index.Rmd` during the document build using `bookdown::` (Xie 2018).  Briefly, the script accomplishes the following:
+
+- Read in data from excel sheets with `specimens_read()`
+    - Utilizes `openxlsx::` (Walker 2018)
+
+\bigskip
+
+- Filter records using `dplyr::` (Wickham et al. 2019) to annotations with:
+    - *Physaria*
+    - *Lesquerella*
+    - Brassicaceae
+
+- Check collection date by regular expression with `date_mismatch()`
+    - Expected date format is MM/DD/YYYY
+    - Write mismatches to the `/log/date_logs/` project subdirectory
+
+- Combine data from the *.xlsx* file species sheets into a single data frame
+    - Index sheet-respective rows to write .csv files after data cleaning
+
+- Parse prior annotations with `parse_priors()`
+    - Split the column `$Taxon` containing comma-separated annotation history
+    - Account for identification agreement denoted by "!"
+    - Combine list into data frame with `plyr::` (Wickham 2011)
+    - Extract most recent annotations into a new column
+
+- Update recent annotations by synonym with `parse_synonyms()`
+    - Uses O'Kane (2010) as reference
+
+- Rebuild data frame with parsed annotations and finish cleaning
+    - Cast `$Longitude` and `$Latitude` columns as numeric vectors
+    - Use `lubridate::` (Grolemund and Wickham 2011) to clean dates
+        - Add a column mutation to remove year from date for seasonality
+
+- Write files with `specimens_write()`
+    - Sheetname indexed .csv files to `/output/specimens/`
+    - Tables of prior and reviewed identifications to `/log/synonyms/`
+
+# References
+
+Bache SM, Wickham H. 2014. magrittr: A forward-pipe operator for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
+
+Grolemund G, Wickham H. 2011. Dates and times made easy with lubridate. Journal of Statistical Software. 40(3):1-25.
+
+Müller K. 2017. here: A simpler way to find your files. R package version 0.1. https://CRAN.R-project.org/package=here
+
+O’Kane SL. 2010. *Physaria*. In: Flora of North America editorial committee. Flora of North America north of Mexico. Volume 7. Salicaceae to Brassicaceae. New York (NY): Oxford Univ. Press. p. 616-665. 
+Payson EB. 1918. Notes on certain Cruciferae. Annals of the Missouri Botanical Garden. 5(2):143-147.
+
+Walker A. 2018. openxlsx: Read, write and edit XLSX files. R package version 4.1.0. https://CRAN.R-project.org/package=openxlsx
+
+Wickham H. 2011. The split-apply-combine strategy for data analysis. Journal of Statistical Software. 40(1):1-29.
+
+Wickham H, Francois R, Henry L, Müller K. 2019. dplyr: a grammar of data manipulation. R package version 0.8.0.1. https://CRAN.R-project.org/package=dplyr
+
+Xie Y. 2018. bookdown: Authoring books and technical documents with R markdown. R package version 0.9. https://cran.r-project.org/package=bookdown
+
