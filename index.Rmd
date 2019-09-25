@@ -45,6 +45,7 @@ opts_knit$set(eval.after = 'fig.cap')
 # Load libraries
 require(dplyr)
 require(purrr)
+require(readr)
 require(knitr)
 require(magrittr)
 require(lubridate)
@@ -140,33 +141,13 @@ dna_herbarium_spp <-
                 Mature_seed_length_mm) %>%
   dplyr::rename(Latitude = Latitude.x, Longitude = Longitude.x)
 
-# Write merged specimen data to file.
-readr::write_excel_csv(dna_herbarium_spp,
-                       path = "data/beast/dna_herbarium_spp.csv")
-
-```
-
-```{r sequencedMaps, eval=FALSE}
-
-# Function wrapper to map sequenced DNA specimens with accession labels.
-map_sequenced <- function(dna_herbarium_spp_subs, aes_point,
-                          label_subset = "", x_nudge = 0, y_nudge = 0.275,
-                          f_adjt = 0.2) {
-  map_specimens(map_df = dna_herbarium_spp_subs, map_col = aes_point,
-                f_adj = f_adjt) +
-    geom_label2(data = dplyr::rename(dna_herbarium_spp_subs, taxa_label = label),
-                mapping = aes(x = Longitude, y = Latitude, label = taxa_label,
-                              subset = !(taxa_label %in% label_subset)),
-                inherit.aes = FALSE, na.rm = TRUE, label.size = 0.1,
-                alpha = 0.5, nudge_x = x_nudge, nudge_y = y_nudge) +
-    theme(legend.position = "bottom", legend.direction = "vertical") +
-    guides(col = guide_legend(ncol = 2))
-}
-
-# Check for merged data frame used in `map_sequenced.R` script and build maps.
-if (exists(x = "dna_herbarium_spp", where = .GlobalEnv)) {
-  source("R/map_sequenced.R")
-}
+# Select columns for mapping specimen subset and write to .csv file.
+dplyr::select(dna_herbarium_spp, label, Collection_Number, 
+              contains("Collector"), contains("Physaria"), 
+              contains("Taxon"), contains("ID_"), contains("Herbarium"),
+              contains("State"), contains("County"),
+              contains("Date"), App.A, Latitude, Longitude) %>%
+readr::write_csv(., path = "data/1.specimens/dna_map_spp.csv")
 
 ```
 
