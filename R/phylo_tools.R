@@ -23,7 +23,7 @@
 #' }
 #'
 phylo_tbl <- function(bayes_file, specimen_records,
-                      dna_spp_file = "data/phylogeny/dna_specimens.csv") {
+                      dna_spp_file = "data/1.specimens/dna_specimens.csv") {
 
   # Read in conensus tree file .nexus file as tibble object.
   bayes_tbl <- ggtree::read.beast(bayes_file) %>% ggplot2::fortify()

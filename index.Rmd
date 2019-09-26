@@ -99,7 +99,8 @@ gg_borders <- map_borders(border_color = "black")
 ```{r sequencedHerbariumRecords}
 
 # Read in sequenced DNA specimen information including accession labels.
-dna_specimens <- readr::read_csv(file = "data/phylogeny/dna_specimens.csv") %>%
+dna_specimens <- 
+  readr::read_csv(file = "data/1.specimens/dna_specimens.csv") %>%
   dplyr::rename(label = taxa_label)
 
 # Combine herbarium specimen record information with sequence documentation.
