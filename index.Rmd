@@ -58,7 +58,6 @@ require(ggmap)
 require(ggtree)
 require(msa)
 require(elevatr)
-require(sp)
 
 # Due to issue with ggmap call, developer branch of ggmap
 # addressing issue from https://github.com/dkahle/ggmap/issues/85
