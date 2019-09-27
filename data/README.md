@@ -1,41 +1,34 @@
+``` r
+# Get full path to project directory with the `here::` package (Müller 2017)
+require(here)
+
+# Set the root directory to knit at the project main level
+require(knitr)
+opts_knit$set(root.dir = here::here())  # Indexed to repository .git file
+
+# Utilizes `magrittr::` %>% pipe operator (Bache and Wickham 2014)
+require(magrittr)
+
+# Functions for FASTA reading and DNAStringSet manipulation
+require(Biostrings)
+
+# Nifty functional programming tools from tidyverse suite
+require(purrr)
+```
+
 Data Workflow
+-------------
+
+The root directory to knit this *.Rmd* document is set as the project root with the function `here::here()` defined by the top level *.git* file (Müller 2017). Example paths in this document should be considered from the project root.
+
+Specimen Data
 =============
 
-``` r
-#' Function to list files in a specimen data project subdirectory.
-#'
-#' Get full path to project directory with the `here::` package (Müller 2017).
-#' Path is identified by the .git file located at the project root.
-#' Utilizes `magrittr::` %>% pipe operator (Bache and Wickham 2014)
-#'
-#' @param project_directory Project subdirectory character vector
-#' @param file_pattern Optional string for parsing by regular expression.
-#' @return Character vector of file names in `project_directory`.
-project_files <- function(project_directory, file_pattern = "") {
-  full_path <- here::here()  # Assigns vector of path to project root.
-  list.files(path = paste0(full_path, project_directory), 
-             full.names = TRUE, pattern = file_pattern) %>%  
-  gsub(pattern = full_path, replacement = "", x = .)
-}
-```
+Records of voucher specimens on loan from lending herbaria (RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled into the excel file `Phys_species_totals.xlsx`. Information recorded from the vouchers included the identification history, collector, collection number, date, institution, locality, geographic coordinates, elevation, ecological description, and measurements of continuous and discrete specimen traits. The file is located in the `data/1.specimens/` project subdirectory. In total, this project considered 1635 unique collections dated as early as 1844 (Fremont's 2nd Expedition).
 
-1) Specimen Data
-================
+    data/1.specimens/Phys_species_totals.xlsx
 
-Records of voucher specimens on loan from lending herbaria (RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled into an excel *.xlsx* file. Information recorded from the vouchers included the identification history, collector, collection number, date, institution, locality, geographic coordinates, elevation, ecological description, and measurements of continuous and discrete specimen traits. The file named "Phys\_species\_totals.xlsx" is located in the `/data/1.specimens/` project subdirectory. In total, this project considered 1635 unique collections dated as early as 1844 (Fremont's 2nd Expedition).
-
-``` r
-# List files in the specimen data project subdirectory.
-project_files("/data/1.specimens")
-```
-
-    ## [1] "/data/1.specimens/~$dna_specimens-annotated.xlsx"
-    ## [2] "/data/1.specimens/dna_map_spp.csv"               
-    ## [3] "/data/1.specimens/dna_specimens-annotated.xlsx"  
-    ## [4] "/data/1.specimens/dna_specimens.csv"             
-    ## [5] "/data/1.specimens/Phys_species_totals.xlsx"
-
-To read the data into R for downstream phylogenetic, distribution, and morphological analyses, the script `/R/specimen_data.R` is sourced within `/index.Rmd` during the document build using `bookdown::` (Xie 2018). Briefly, the script accomplishes the following:
+To read the data into R for downstream phylogenetic, distribution, and morphological analyses, the script `R/specimen_data.R` is sourced within `index.Rmd` during the document build by `bookdown::render_book()` (Xie 2018). Briefly, the script accomplishes the following:
 
 -   Read in data from excel sheets with `specimens_read()`
     -   Utilizes `openxlsx::` (Walker 2018)
@@ -46,9 +39,9 @@ To read the data into R for downstream phylogenetic, distribution, and morpholog
     -   Brassicaceae
 -   Check collection date by regular expression with `date_mismatch()`
     -   Expected date format is MM/DD/YYYY
-    -   Write mismatches to the `/log/date_logs/` project subdirectory
+    -   Write mismatches to the `log/date_logs/` project subdirectory
 -   Combine data from the *.xlsx* file species sheets into a single data frame
-    -   Index sheet-respective rows to write .csv files after data cleaning
+    -   Index sheet-respective rows to write *.csv* files after data cleaning
 -   Parse prior annotations with `parse_priors()`
     -   Split the column `$Taxon` containing comma-separated annotation history
     -   Account for identification agreement denoted by "!"
@@ -61,10 +54,10 @@ To read the data into R for downstream phylogenetic, distribution, and morpholog
     -   Use `lubridate::` (Grolemund and Wickham 2011) to clean dates
         -   Add a column mutation to remove year from date for seasonality
 -   Write files with `specimens_write()`
-    -   Sheetname indexed .csv files to `/output/specimens/`
-    -   Tables of prior and reviewed identifications to `/log/synonyms/`
+    -   Sheetname indexed *.csv* files to `output/specimens/`
+    -   Tables of prior and reviewed identifications to `log/synonyms/`
 
-2) Distribution Maps
+Distribution Mapping
 ====================
 
 TODO - Writeup of `map_tools.R`
@@ -72,23 +65,21 @@ TODO - Writeup of `map_tools.R`
 DNA Specimens
 -------------
 
-A script was written to take the subset of specimens with sequencing data written in the `sequencedHerbariumRecords` chunk of `index.Rmd` and plot distribution maps. Each map is scale to a subset of the taxa and labelled by laboratory accession.
+The script `R/map_sequenced.R` writes distribution map subsets of specimens with sequencing data. A data frame for this script is written to `data/dna_map_spp.csv` in the `sequencedHerbariumRecords` chunk of `index.Rmd`. Each map is scaled to a subset of the taxa and labelled by laboratory accession.
 
 ``` r
 # Source script to write PDFs of map sequenced specimens.
-source("R/map_sequenced")
+source("R/map_sequenced.R")
 ```
 
+    data/2.distributions/sequenced/map_specimens_co_ut.pdf
+    data/2.distributions/sequenced/map_specimens_mt_east.pdf
+    data/2.distributions/sequenced/map_specimens_mt_west.pdf
+    data/2.distributions/sequenced/map_specimens_wy_east.pdf
+    data/2.distributions/sequenced/map_specimens_wy_west.pdf
 ``` r
-# List files in the distribution mapping project subdirectory.
-project_files("/data/2.distributions/sequenced")
 ```
 
-    ## [1] "/data/2.distributions/sequenced/map_specimens_co_ut.pdf"  
-    ## [2] "/data/2.distributions/sequenced/map_specimens_mt_east.pdf"
-    ## [3] "/data/2.distributions/sequenced/map_specimens_mt_west.pdf"
-    ## [4] "/data/2.distributions/sequenced/map_specimens_wy_east.pdf"
-    ## [5] "/data/2.distributions/sequenced/map_specimens_wy_west.pdf"
 
 References
 ==========
