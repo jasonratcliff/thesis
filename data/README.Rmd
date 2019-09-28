@@ -20,8 +20,9 @@ require(magrittr)
 # Functions for FASTA reading and DNAStringSet manipulation
 require(Biostrings)
 
-# Nifty functional programming tools from tidyverse suite
+# Nifty functional programming tools and data structures from tidyverse
 require(purrr)
+require(tibble)
 ```
 
 ## Data Workflow
@@ -94,6 +95,136 @@ list.files("data/2.distributions/sequenced",
            full.names = TRUE) %>% cat(sep = "\n")
 ```
 
+# FASTA Subset
+
+Multi-FASTA files from sequenced loci were assembled from sequence chromatograms and deposited in the `data/3.raw-fastas/` project subdirectory.  Here, FASTA headers are formatted with two fields `accession` and `locus` following ">". A single whitespace separates the sample accession from the name of the locus, for example: `>PACUT_48 rITS` or `>PACUT_12821 rps`. A given FASTA file contains sequences sampled from a single genetic locus and all FASTA headers in the file contain the same locus name in the second field.
+
+```{r fastaFiles}
+# Assign list of raw FASTA files from project subdirectory.
+fasta_files <-
+   list.files(path = "data/3.raw-fastas",
+              pattern = ".fasta$", full.names = TRUE)
+```
+
+----
+
+## Read FASTA into R
+
+The Biostrings package (Pagès et al. 2019) was used to read in FASTA files as DNAStringSets, R S4 objects of the XString subclass.  A list is assigned to hold the DNAStringSets read from the FASTA files, where each element of the list contains the DNA sequences read from a single FASTA file.
+
+```{r fastaList}
+# Assign list of DNAStringSet objects from FASTA files in input directory.
+fasta_list <- lapply(fasta_files, Biostrings::readDNAStringSet)
+```
+
+```{r fastaClass}
+class(fasta_list[[1]])  # Object class of 1st list element
+```
+
+```{r stringSetExample}
+fasta_list[[1]]  # S4 print of 1st DNAStrinSet
+```
+
+## Extract Header Names
+
+To find the intersecting set of sequence headers among multiple FASTA files, the names attributes are extracted and assigned to a list.
+
+```{r headerList}
+# Assign lists of FASTA header name vectors and associated loci.
+header_list <- lapply(fasta_list, names)
+head(header_list[1][[1]], n = 9)
+```
+
+FASTA loci separated by whitespace from the specimen accession label are extracted by iteratively splitting the vector elements of the list, subsetting the second element of the string split (i.e. the locus), and applying a call of `unique` to ensure a single element was extracted from the FASTA header splits.
+
+Three loci are expected:
+
+- rITS
+- *rps*
+- *ycf1*
+
+```{r fastaLoci}
+(fasta_loci <- lapply(header_list, function(locus_headers) {
+  unique(sapply(locus_headers, USE.NAMES = FALSE,
+                function(fas_header) {
+                  split_name <- unlist(strsplit(x = fas_header, " "))[2]
+                  }))
+  }))
+```
+
+## Extract FASTA Headers
+
+Loci extracted from the FASTA headers are assigned as the names attribute of the sequence header list.  To make logs of the header extraction, the header and locus name vectors are simultaneously mapped using the `purrr::map2()` (Henry and Wickham 2019) and `tibble::tibble()` (Müller and Wickham 2019) functions.
+
+```{r headerLog}
+# Assign names attribute to list of FASTA headers.
+names(header_list) <- fasta_loci
+
+# Write headers to locus-specific .csv files to log header extraction.
+invisible(
+  purrr::map2(header_list, fasta_loci, function(headers, locus) {
+    unlist(headers) %>% tibble::tibble() %>%
+      write.csv(x = ., file = paste0("data/3.raw-fastas/",
+                                     locus, "-headers.csv"))
+    })
+  )
+```
+
+## Clean and Reduce Header List
+
+To identify the intersecting set of sequence headers, the locus name is removed from the sequence headers and vectors of the sample accessions are stored in a new list, `specimen_list`.  This list contains character vectors of sequence headers for each FASTA file with the locus removed, matching the unprocessed sequence header character vectors in `header_list`.  The character vectors of `specimen_list` should be of equal length relative to `header_list`.
+
+```{r headerClean}
+# Remove gene metadata from list of FASTA headers and test split.
+specimen_list <- lapply(header_list, function(locus_headers) {
+  sapply(locus_headers, USE.NAMES = FALSE,  function(fas_header) {
+    split_name <- unlist(strsplit(x = fas_header, " "))[1]
+    })
+  })
+if (!identical(lapply(header_list, length),
+               lapply(specimen_list, length))) {
+  stop("Error in FASTA header splitting.")
+}
+```
+
+```{r headerLengths, echo=FALSE, comment=NA}
+cat("header_list\n\n")
+lapply(header_list, length)
+cat("\nspecimen_list\n\n")
+lapply(specimen_list, length)
+```
+
+The intersecting set of FASTA headers common to all input files is used to index `fasta_list` containing the DNAStringSet sequences.
+
+```{r fastaReduce}
+# Identify common FASTA headers among split names.
+(fasta_common <- Reduce(intersect, specimen_list))
+```
+
+For each vector of FASTA headers in `header_list`, the common headers are indexed against the locus FASTA headers.
+
+```{r fastaMatch}
+# Grep common names against DNAStringSet names for subset indexing.
+fasta_matches <- lapply(header_list, function(locus_headers) {
+  sapply(fasta_common, function(fasta_header) {
+    grep(fasta_header, locus_headers)
+    })
+  })
+```
+
+The header indexes are then used to subset the DNAStringSets and assign a new list with the common sequences for each locus.  Each subset DNAStringSet is written to a new FASTA file in the `data/4.subset-fastas/` project subdirectory.
+
+```{r fastaWrite}
+# Subset FASTA sequences by index of common FASTA headers and write to file.
+fasta_subsets <- list()
+for (i in seq_along(fasta_matches)) {
+  fasta_subsets[[i]] <- fasta_list[[i]][fasta_matches[[i]]]
+  writeXStringSet(x = fasta_subsets[[i]], width = 50,
+                  filepath = paste0("data/4.subset-fastas/",
+                                    fasta_loci[[i]], "-subset.fasta"))
+}
+```
+
 # References
 
 Bache SM, Wickham H. 2014. magrittr: A forward-pipe operator for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
@@ -106,10 +237,10 @@ Müller K. 2017. here: A simpler way to find your files. R package version 0.1. 
 
 Müller K, Wickham H. 2019. tibble: Simple data frames. R package version 2.0.1. https://CRAN.R-project.org/package=tibble
 
-O’Kane SL. 2010. *Physaria*. In: Flora of North America editorial committee. Flora of North America north of Mexico. Volume 7. Salicaceae to Brassicaceae. New York (NY): Oxford Univ. Press. p. 616-665. 
+O’Kane SL. 2010. *Physaria*. In: Flora of North America editorial committee. Flora of North America north of Mexico. Volume 7. Salicaceae to Brassicaceae. New York (NY): Oxford Univ. Press. p. 616-665.
 Payson EB. 1918. Notes on certain Cruciferae. Annals of the Missouri Botanical Garden. 5(2):143-147.
 
-Pagès H, Aboyoun P, Gentleman R, DebRoy S. 2019. Biostrings: Efficient manipulation of biological strings. R package version 2.50.2. https://www.bioconductor.org/packages/release/bioc/html/Biostrings.html 
+Pagès H, Aboyoun P, Gentleman R, DebRoy S. 2019. Biostrings: Efficient manipulation of biological strings. R package version 2.50.2. https://www.bioconductor.org/packages/release/bioc/html/Biostrings.html
 
 Walker A. 2018. openxlsx: Read, write and edit XLSX files. R package version 4.1.0. https://CRAN.R-project.org/package=openxlsx
 

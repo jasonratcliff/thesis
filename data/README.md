@@ -12,8 +12,9 @@ require(magrittr)
 # Functions for FASTA reading and DNAStringSet manipulation
 require(Biostrings)
 
-# Nifty functional programming tools from tidyverse suite
+# Nifty functional programming tools and data structures from tidyverse
 require(purrr)
+require(tibble)
 ```
 
 Data Workflow
@@ -77,7 +78,200 @@ source("R/map_sequenced.R")
     data/2.distributions/sequenced/map_specimens_mt_west.pdf
     data/2.distributions/sequenced/map_specimens_wy_east.pdf
     data/2.distributions/sequenced/map_specimens_wy_west.pdf
+
+FASTA Subset
+============
+
+Multi-FASTA files from sequenced loci were assembled from sequence chromatograms and deposited in the `data/3.raw-fastas/` project subdirectory. Here, FASTA headers are formatted with two fields `accession` and `locus` following "&gt;". A single whitespace separates the sample accession from the name of the locus, for example: `>PACUT_48 rITS` or `>PACUT_12821 rps`. A given FASTA file contains sequences sampled from a single genetic locus and all FASTA headers in the file contain the same locus name in the second field.
+
 ``` r
+# Assign list of raw FASTA files from project subdirectory.
+fasta_files <-
+   list.files(path = "data/3.raw-fastas",
+              pattern = ".fasta$", full.names = TRUE)
+```
+
+------------------------------------------------------------------------
+
+Read FASTA into R
+-----------------
+
+The Biostrings package (Pagès et al. 2019) was used to read in FASTA files as DNAStringSets, R S4 objects of the XString subclass. A list is assigned to hold the DNAStringSets read from the FASTA files, where each element of the list contains the DNA sequences read from a single FASTA file.
+
+``` r
+# Assign list of DNAStringSet objects from FASTA files in input directory.
+fasta_list <- lapply(fasta_files, Biostrings::readDNAStringSet)
+```
+
+``` r
+class(fasta_list[[1]])  # Object class of 1st list element
+```
+
+    ## [1] "DNAStringSet"
+    ## attr(,"package")
+    ## [1] "Biostrings"
+
+``` r
+fasta_list[[1]]  # S4 print of 1st DNAStrinSet
+```
+
+    ##   A DNAStringSet instance of length 70
+    ##      width seq                                         names               
+    ##  [1]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_48 rITS
+    ##  [2]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_3721 rITS
+    ##  [3]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_3769 rITS
+    ##  [4]   582 CCYGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_8621 rITS
+    ##  [5]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_12821 rITS
+    ##  ...   ... ...
+    ## [66]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_16713 rITS
+    ## [67]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_19075 rITS
+    ## [68]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTCGATG LARGY_7548 rITS
+    ## [69]   582 CCCGCGAACYTATTATCACC...CTCTCCCGAAGCTCTTGATG LFEND_4355 rITS
+    ## [70]   581 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG POBCO_3762 rITS
+
+Extract Header Names
+--------------------
+
+To find the intersecting set of sequence headers among multiple FASTA files, the names attributes are extracted and assigned to a list.
+
+``` r
+# Assign lists of FASTA header name vectors and associated loci.
+header_list <- lapply(fasta_list, names)
+head(header_list[1][[1]], n = 9)
+```
+
+    ## [1] "PACUT_48 rITS"    "PACUT_3721 rITS"  "PACUT_3769 rITS" 
+    ## [4] "PACUT_8621 rITS"  "PACUT_12821 rITS" "PACUT_14050 rITS"
+    ## [7] "PACUT_14222 rITS" "PACUT_16125 rITS" "PACUT_26706 rITS"
+
+FASTA loci separated by whitespace from the specimen accession label are extracted by iteratively splitting the vector elements of the list, subsetting the second element of the string split (i.e. the locus), and applying a call of `unique` to ensure a single element was extracted from the FASTA header splits.
+
+Three loci are expected:
+
+-   rITS
+-   *rps*
+-   *ycf1*
+
+``` r
+(fasta_loci <- lapply(header_list, function(locus_headers) {
+  unique(sapply(locus_headers, USE.NAMES = FALSE,
+                function(fas_header) {
+                  split_name <- unlist(strsplit(x = fas_header, " "))[2]
+                  }))
+  }))
+```
+
+    ## [[1]]
+    ## [1] "rITS"
+    ## 
+    ## [[2]]
+    ## [1] "rps"
+    ## 
+    ## [[3]]
+    ## [1] "ycf1"
+
+Extract FASTA Headers
+---------------------
+
+Loci extracted from the FASTA headers are assigned as the names attribute of the sequence header list. To make logs of the header extraction, the header and locus name vectors are simultaneously mapped using the `purrr::map2()` (Henry and Wickham 2019) and `tibble::tibble()` (Müller and Wickham 2019) functions.
+
+``` r
+# Assign names attribute to list of FASTA headers.
+names(header_list) <- fasta_loci
+
+# Write headers to locus-specific .csv files to log header extraction.
+invisible(
+  purrr::map2(header_list, fasta_loci, function(headers, locus) {
+    unlist(headers) %>% tibble::tibble() %>%
+      write.csv(x = ., file = paste0("data/3.raw-fastas/",
+                                     locus, "-headers.csv"))
+    })
+  )
+```
+
+Clean and Reduce Header List
+----------------------------
+
+To identify the intersecting set of sequence headers, the locus name is removed from the sequence headers and vectors of the sample accessions are stored in a new list, `specimen_list`. This list contains character vectors of sequence headers for each FASTA file with the locus removed, matching the unprocessed sequence header character vectors in `header_list`. The character vectors of `specimen_list` should be of equal length relative to `header_list`.
+
+``` r
+# Remove gene metadata from list of FASTA headers and test split.
+specimen_list <- lapply(header_list, function(locus_headers) {
+  sapply(locus_headers, USE.NAMES = FALSE,  function(fas_header) {
+    split_name <- unlist(strsplit(x = fas_header, " "))[1]
+    })
+  })
+if (!identical(lapply(header_list, length),
+               lapply(specimen_list, length))) {
+  stop("Error in FASTA header splitting.")
+}
+```
+
+    header_list
+
+    $rITS
+    [1] 70
+
+    $rps
+    [1] 66
+
+    $ycf1
+    [1] 49
+
+
+    specimen_list
+
+    $rITS
+    [1] 70
+
+    $rps
+    [1] 66
+
+    $ycf1
+    [1] 49
+
+The intersecting set of FASTA headers common to all input files is used to index `fasta_list` containing the DNAStringSet sequences.
+
+``` r
+# Identify common FASTA headers among split names.
+(fasta_common <- Reduce(intersect, specimen_list))
+```
+
+    ##  [1] "PACUT_48"       "PACUT_3721"     "PACUT_8621"     "PACUT_14050"   
+    ##  [5] "PACUT_14222"    "PACUT_26706"    "PBRAS_53"       "PBRAS_54"      
+    ##  [9] "PBRAS_3122"     "PBRAS_3130"     "PBRAS_4225"     "PCOND_40"      
+    ## [13] "PCOND_41"       "PCOND_3787"     "PCOND_16765"    "PDIDY_DI_46"   
+    ## [17] "PDIDY_DI_47"    "PDIDY_DI_3794"  "PDIDY_DI_12677" "PDIDY_LA_32"   
+    ## [21] "PDIDY_LA_52"    "PDIDY_LA_14773" "PDIDY_LY_45"    "PDIDY_LY_2689" 
+    ## [25] "PDIDY_LY_3855"  "PDORN_42"       "PDORN_4376"     "PACUT_5199"    
+    ## [29] "PEBUR_37"       "PEBUR_38"       "PEBUR_10410"    "PEBUR_14841"   
+    ## [33] "PINTE_43"       "PSAXI_DE_56"    "PSAXI_DE_4481"  "PSAXI_SA_39"   
+    ## [37] "PSAXI_SA_50"    "PSAXI_SA_9636"  "PSAXI_DE_9833"  "PSAXI_SA_74315"
+    ## [41] "PVITU_3754"     "PVITU_9837"     "PVITU_10105"    "PVITU_16713"   
+    ## [45] "PVITU_19075"    "LARGY_7548"     "LFEND_4355"
+
+For each vector of FASTA headers in `header_list`, the common headers are indexed against the locus FASTA headers.
+
+``` r
+# Grep common names against DNAStringSet names for subset indexing.
+fasta_matches <- lapply(header_list, function(locus_headers) {
+  sapply(fasta_common, function(fasta_header) {
+    grep(fasta_header, locus_headers)
+    })
+  })
+```
+
+The header indexes are then used to subset the DNAStringSets and assign a new list with the common sequences for each locus. Each subset DNAStringSet is written to a new FASTA file in the `data/4.subset-fastas/` project subdirectory.
+
+``` r
+# Subset FASTA sequences by index of common FASTA headers and write to file.
+fasta_subsets <- list()
+for (i in seq_along(fasta_matches)) {
+  fasta_subsets[[i]] <- fasta_list[[i]][fasta_matches[[i]]]
+  writeXStringSet(x = fasta_subsets[[i]], width = 50,
+                  filepath = paste0("data/4.subset-fastas/",
+                                    fasta_loci[[i]], "-subset.fasta"))
+}
 ```
 
 
