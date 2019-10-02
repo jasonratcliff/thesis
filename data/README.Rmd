@@ -198,7 +198,7 @@ The intersecting set of FASTA headers common to all input files is used to index
 
 ```{r fastaReduce}
 # Identify common FASTA headers among split names.
-(fasta_common <- Reduce(intersect, specimen_list))
+(fasta_common <- Reduce(intersect, specimen_list) %>% sort())
 ```
 
 For each vector of FASTA headers in `header_list`, the common headers are indexed against the locus FASTA headers.
@@ -223,6 +223,87 @@ for (i in seq_along(fasta_matches)) {
                   filepath = paste0("data/4.subset-fastas/",
                                     fasta_loci[[i]], "-subset.fasta"))
 }
+```
+
+# Sequence Alignment and Concatenation
+
+Untrimmed, single locus FASTA files from `data/3.raw-fastas` and FASTA files filtered to common specimens in `data/4.subset-fastas` were aligned using MAFFT. The G-INS-i alignment strategy with iterative refinement and 1PAM / k=2 nucleotide scoring matrix were set sat as the alignment parameters.  
+
+```{r alignedFastas, echo=FALSE, comment=NA}
+# Print aligned FASTA file, number of sequences, and range of alignments
+invisible(
+  list.files(c("data/3.raw-fastas",
+               "data/4.subset-fastas",
+               "data/5.alignments-single",
+               "data/5.alignments-concatenated"), 
+             pattern = "*.fasta", full.names = TRUE) %>%
+    lapply(., function(fasta_file) {
+      cat(fasta_file, "\n")
+      fasta_stringset <- readDNAStringSet(fasta_file)
+      cat("\n\tNumber of sequences:", length(fasta_stringset), "\n")
+      cat("\tRange of sequence width:",
+          range(sapply(fasta_stringset, length)), "\n\n")
+      })
+  )
+```
+
+The pipeline outlined above for subsetting FASTA files was used to read in the aligned subset of specimens for concatenated analysis. 
+
+```{r fastaConcatenation}
+
+# Assign list of DNAStringSet objects from FASTA files in input directory.
+ml_aligned <-
+  list.files(path = "data/5.alignments-concatenated/",
+             pattern = ".fasta$", full.names = TRUE) %>%
+  lapply(X = ., Biostrings::readDNAStringSet)
+
+# Assign lists of FASTA header name vectors and associated loci.
+ml_headers <- lapply(ml_aligned, names)
+
+# Extract locus names. 
+fasta_loci <- lapply(ml_headers, function(locus_headers) {
+  unique(sapply(locus_headers, USE.NAMES = FALSE,
+                function(fas_header) {
+                  split_name <- unlist(strsplit(x = fas_header, " "))[2]
+                }))
+})
+
+# Remove gene metadata from list of FASTA headers and test split.
+ml_specimens <- lapply(ml_headers, function(locus_headers) {
+  sapply(locus_headers, USE.NAMES = FALSE,  function(fas_header) {
+    split_name <- unlist(strsplit(x = fas_header, " "))[1]
+  })
+})
+if (!identical(lapply(header_list, length),
+               lapply(specimen_list, length))) {
+  stop("Error in FASTA header splitting.")
+}
+
+# Identify common FASTA headers among split names.
+fasta_common <- Reduce(intersect, ml_specimens) %>% sort()
+
+# Grep common names against DNAStringSet names for subset indexing.
+fasta_matches <- lapply(ml_headers, function(locus_headers) {
+  sapply(fasta_common, function(fasta_header) {
+    grep(fasta_header, locus_headers)
+  })
+})
+
+# Subset FASTA sequences by index of common FASTA headers and write to file.
+ml_fasta <- list()
+for (i in seq_along(fasta_matches)) {
+  ml_fasta[[i]] <- ml_aligned[[i]][fasta_matches[[i]]]
+}
+
+# Concatenate xstring (DNAStringSet) sequences sorted by name.
+ml_concat <-
+  xscat(ml_fasta[[1]], ml_fasta[[2]], ml_fasta[[3]])
+names(ml_concat) <- fasta_common  # Add names attribute from sorted headers.
+
+# Write DNAStringSet to FASTA file.
+writeXStringSet(ml_concat, width = 1999,
+                filepath = "data/5.multi-locus/ml_concatenated.fasta")
+
 ```
 
 # References

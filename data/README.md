@@ -115,7 +115,7 @@ class(fasta_list[[1]])  # Object class of 1st list element
 fasta_list[[1]]  # S4 print of 1st DNAStrinSet
 ```
 
-    ##   A DNAStringSet instance of length 70
+    ##   A DNAStringSet instance of length 72
     ##      width seq                                         names               
     ##  [1]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_48 rITS
     ##  [2]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_3721 rITS
@@ -123,11 +123,11 @@ fasta_list[[1]]  # S4 print of 1st DNAStrinSet
     ##  [4]   582 CCYGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_8621 rITS
     ##  [5]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PACUT_12821 rITS
     ##  ...   ... ...
-    ## [66]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_16713 rITS
-    ## [67]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_19075 rITS
-    ## [68]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTCGATG LARGY_7548 rITS
-    ## [69]   582 CCCGCGAACYTATTATCACC...CTCTCCCGAAGCTCTTGATG LFEND_4355 rITS
-    ## [70]   581 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG POBCO_3762 rITS
+    ## [68]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_16713 rITS
+    ## [69]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG PVITU_19075 rITS
+    ## [70]   582 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTCGATG LARGY_7548 rITS
+    ## [71]   582 CCCGCGAACYTATTATCACC...CTCTCCCGAAGCTCTTGATG LFEND_4355 rITS
+    ## [72]   581 CCCGCGAACCTATTATCACC...CTCTCCCGAAGCTCTTGATG POBCO_3762 rITS
 
 Extract Header Names
 --------------------
@@ -210,45 +210,46 @@ if (!identical(lapply(header_list, length),
     header_list
 
     $rITS
-    [1] 70
+    [1] 72
 
     $rps
     [1] 66
 
     $ycf1
-    [1] 49
+    [1] 51
 
 
     specimen_list
 
     $rITS
-    [1] 70
+    [1] 72
 
     $rps
     [1] 66
 
     $ycf1
-    [1] 49
+    [1] 51
 
 The intersecting set of FASTA headers common to all input files is used to index `fasta_list` containing the DNAStringSet sequences.
 
 ``` r
 # Identify common FASTA headers among split names.
-(fasta_common <- Reduce(intersect, specimen_list))
+(fasta_common <- Reduce(intersect, specimen_list) %>% sort())
 ```
 
-    ##  [1] "PACUT_48"       "PACUT_3721"     "PACUT_8621"     "PACUT_14050"   
-    ##  [5] "PACUT_14222"    "PACUT_26706"    "PBRAS_53"       "PBRAS_54"      
-    ##  [9] "PBRAS_3122"     "PBRAS_3130"     "PBRAS_4225"     "PCOND_40"      
-    ## [13] "PCOND_41"       "PCOND_3787"     "PCOND_16765"    "PDIDY_DI_46"   
-    ## [17] "PDIDY_DI_47"    "PDIDY_DI_3794"  "PDIDY_DI_12677" "PDIDY_LA_32"   
-    ## [21] "PDIDY_LA_52"    "PDIDY_LA_14773" "PDIDY_LY_45"    "PDIDY_LY_2689" 
-    ## [25] "PDIDY_LY_3855"  "PDORN_42"       "PDORN_4376"     "PACUT_5199"    
-    ## [29] "PEBUR_37"       "PEBUR_38"       "PEBUR_10410"    "PEBUR_14841"   
-    ## [33] "PINTE_43"       "PSAXI_DE_56"    "PSAXI_DE_4481"  "PSAXI_SA_39"   
-    ## [37] "PSAXI_SA_50"    "PSAXI_SA_9636"  "PSAXI_DE_9833"  "PSAXI_SA_74315"
-    ## [41] "PVITU_3754"     "PVITU_9837"     "PVITU_10105"    "PVITU_16713"   
-    ## [45] "PVITU_19075"    "LARGY_7548"     "LFEND_4355"
+    ##  [1] "LARGY_7548"     "LFEND_4355"     "PACUT_14050"    "PACUT_14222"   
+    ##  [5] "PACUT_26706"    "PACUT_3721"     "PACUT_48"       "PACUT_5199"    
+    ##  [9] "PACUT_7997"     "PACUT_8621"     "PBRAS_3122"     "PBRAS_3130"    
+    ## [13] "PBRAS_4225"     "PBRAS_53"       "PBRAS_54"       "PCOND_16765"   
+    ## [17] "PCOND_3787"     "PCOND_40"       "PCOND_41"       "PDIDY_DI_12677"
+    ## [21] "PDIDY_DI_3794"  "PDIDY_DI_46"    "PDIDY_DI_47"    "PDIDY_LA_14773"
+    ## [25] "PDIDY_LA_32"    "PDIDY_LA_52"    "PDIDY_LY_2689"  "PDIDY_LY_3855" 
+    ## [29] "PDIDY_LY_45"    "PDORN_42"       "PDORN_4376"     "PEBUR_10410"   
+    ## [33] "PEBUR_14841"    "PEBUR_37"       "PEBUR_38"       "PINTE_17493"   
+    ## [37] "PINTE_19288"    "PINTE_43"       "PINTE_44"       "PSAXI_DE_4481" 
+    ## [41] "PSAXI_DE_56"    "PSAXI_DE_9833"  "PSAXI_SA_39"    "PSAXI_SA_50"   
+    ## [45] "PSAXI_SA_74315" "PSAXI_SA_9636"  "PVITU_10105"    "PVITU_16713"   
+    ## [49] "PVITU_19075"    "PVITU_3754"     "PVITU_9837"
 
 For each vector of FASTA headers in `header_list`, the common headers are indexed against the locus FASTA headers.
 
@@ -274,6 +275,127 @@ for (i in seq_along(fasta_matches)) {
 }
 ```
 
+Sequence Alignment and Concatenation
+====================================
+
+Untrimmed, single locus FASTA files from `data/3.raw-fastas` and FASTA files filtered to common specimens in `data/4.subset-fastas` were aligned using MAFFT. The G-INS-i alignment strategy with iterative refinement and 1PAM / k=2 nucleotide scoring matrix were set sat as the alignment parameters.
+
+    data/3.raw-fastas/rITS-combined_raw.fasta 
+
+        Number of sequences: 72 
+        Range of sequence width: 581 583 
+
+    data/3.raw-fastas/rps-combined_raw.fasta 
+
+        Number of sequences: 66 
+        Range of sequence width: 802 852 
+
+    data/3.raw-fastas/ycf1-combined_raw.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 511 524 
+
+    data/4.subset-fastas/rITS-subset.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 581 583 
+
+    data/4.subset-fastas/rps-subset.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 802 852 
+
+    data/4.subset-fastas/ycf1-subset.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 511 524 
+
+    data/5.alignments-concatenated/rITS-ml.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 586 586 
+
+    data/5.alignments-concatenated/rps-ml.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 889 889 
+
+    data/5.alignments-concatenated/ycf1-ml.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 524 524 
+
+    data/5.alignments-single/rITS-single.fasta 
+
+        Number of sequences: 72 
+        Range of sequence width: 586 586 
+
+    data/5.alignments-single/rps-single.fasta 
+
+        Number of sequences: 66 
+        Range of sequence width: 889 889 
+
+    data/5.alignments-single/ycf1-single.fasta 
+
+        Number of sequences: 51 
+        Range of sequence width: 524 524 
+
+The pipeline outlined above for subsetting FASTA files was used to read in the aligned subset of specimens for concatenated analysis.
+
+``` r
+# Assign list of DNAStringSet objects from FASTA files in input directory.
+ml_aligned <-
+  list.files(path = "data/5.alignments-concatenated/",
+             pattern = ".fasta$", full.names = TRUE) %>%
+  lapply(X = ., Biostrings::readDNAStringSet)
+
+# Assign lists of FASTA header name vectors and associated loci.
+ml_headers <- lapply(ml_aligned, names)
+
+# Extract locus names. 
+fasta_loci <- lapply(ml_headers, function(locus_headers) {
+  unique(sapply(locus_headers, USE.NAMES = FALSE,
+                function(fas_header) {
+                  split_name <- unlist(strsplit(x = fas_header, " "))[2]
+                }))
+})
+
+# Remove gene metadata from list of FASTA headers and test split.
+ml_specimens <- lapply(ml_headers, function(locus_headers) {
+  sapply(locus_headers, USE.NAMES = FALSE,  function(fas_header) {
+    split_name <- unlist(strsplit(x = fas_header, " "))[1]
+  })
+})
+if (!identical(lapply(header_list, length),
+               lapply(specimen_list, length))) {
+  stop("Error in FASTA header splitting.")
+}
+
+# Identify common FASTA headers among split names.
+fasta_common <- Reduce(intersect, ml_specimens) %>% sort()
+
+# Grep common names against DNAStringSet names for subset indexing.
+fasta_matches <- lapply(ml_headers, function(locus_headers) {
+  sapply(fasta_common, function(fasta_header) {
+    grep(fasta_header, locus_headers)
+  })
+})
+
+# Subset FASTA sequences by index of common FASTA headers and write to file.
+ml_fasta <- list()
+for (i in seq_along(fasta_matches)) {
+  ml_fasta[[i]] <- ml_aligned[[i]][fasta_matches[[i]]]
+}
+
+# Concatenate xstring (DNAStringSet) sequences sorted by name.
+ml_concat <-
+  xscat(ml_fasta[[1]], ml_fasta[[2]], ml_fasta[[3]])
+names(ml_concat) <- fasta_common  # Add names attribute from sorted headers.
+
+# Write DNAStringSet to FASTA file.
+writeXStringSet(ml_concat, width = 1999,
+                filepath = "data/5.multi-locus/ml_concatenated.fasta")
+```
 
 References
 ==========
