@@ -125,7 +125,7 @@ dna_herbarium_spp <-
                 dplyr::contains("Physaria"), dplyr::contains("Taxon"),
                 dplyr::contains("ID_"), Herbarium.x, Herbarium.y,
                 State.x, State.y, County.x, County.y,
-                Date, Date_parsed, Date_md,
+                Date, Date_parsed, Date_md, multiLocus,
                 ID, App.A, `Elev_(m)`, `Elev_(ft.)`,
                 Latitude.x, Latitude.y, Longitude.x, Longitude.y,
                 Imaged, TRS2, Notes, Rosulate, Caudex, Pubescence,
@@ -144,8 +144,8 @@ dna_herbarium_spp <-
 # Select columns for mapping specimen subset and write to .csv file.
 dplyr::select(dna_herbarium_spp, label, Collection_Number, 
               contains("Collector"), contains("Physaria"), 
-              contains("Taxon"), contains("ID_"), contains("Herbarium"),
-              contains("State"), contains("County"),
+              contains("Taxon"), contains("ID_"), multiLocus,
+              contains("Herbarium"),  contains("State"), contains("County"),
               contains("Date"), App.A, Latitude, Longitude) %>%
 readr::write_csv(., path = "data/1.specimens/dna_map_spp.csv")
 

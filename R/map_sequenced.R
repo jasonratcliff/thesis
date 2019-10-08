@@ -1,13 +1,17 @@
 # Script to write maps of sequenced specimens distribution.
 
 source("R/map_tools.R")
-
+if (!dir.exists("data/2.distributions/sequenced")) {
+  dir.create("data/2.distributions/sequenced")
+}
+  
 # Read in DNA specimen subset assigned in `index.Rmd`.
 # .csv file is defined in chunk `sequencedHerbariumRecords`.
 dna_map_spp <-
   readr::read_csv("data/1.specimens/dna_map_spp.csv",
                   col_types = readr::cols(
                     label = col_character(),
+                    multiLocus = col_character(),
                     Collection_Number = col_double(),
                     Collector.x = col_character(),
                     Collector.y = col_character(),
@@ -33,7 +37,8 @@ dna_map_spp <-
                     App.A = col_character(),
                     Latitude = col_double(),
                     Longitude = col_double()
-                  ))
+                  )) %>%
+  dplyr::filter(multiLocus == TRUE)
 
 # Function wrapper to map sequenced DNA specimens with accession labels.
 map_sequenced <- function(dna_map_spp_subs, aes_point,
@@ -152,7 +157,7 @@ seq_wy_w_tbl5 <- dplyr::filter(dna_map_spp,
 seq_wy_w_map <-
   dplyr::filter(dna_map_spp,
                 Latitude < 45 & Latitude > 40 &
-                  Longitude > -112 & Longitude < -109) %>%
+                  Longitude > -112 & Longitude < -108.5) %>%
   map_sequenced(dna_map_spp_subs = ., aes_point = aesthetic,
                 label_subset = seq_wy_w_labels, y_nudge = 0.175, f_adjt = 0.7) +
   coord_fixed(xlim = c(-112.5, -108), ylim = c(40.75, 45.2)) +
@@ -206,7 +211,7 @@ seq_wy_e_tbl3 <- dplyr::filter(dna_map_spp,
 # Sequenced eastern Wyoming specimens
 seq_wy_east <-
   dplyr::filter(dna_map_spp,
-                Latitude < 45 & Latitude > 40 & Longitude > -108.5) %>%
+                Latitude < 45 & Latitude > 40 & Longitude > -109) %>%
   map_sequenced(dna_map_spp_subs = ., aes_point = aesthetic,
                 label_subset = seq_wy_e_labels, y_nudge = 0.2, f_adjt = 0.25) +
   geom_label2(data = seq_wy_e_tbl1, inherit.aes = FALSE,
@@ -237,7 +242,7 @@ map_themes(seq_wy_east, legend_title = ggplot_legend) %>%
 
 # Sequenced Colorado / Utah specimens
 seq_co_ut <-
-  dplyr::filter(dna_map_spp, Latitude < 40 & Latitude > 35) %>%
+  dplyr::filter(dna_map_spp, Latitude < 41 & Latitude > 35) %>%
   map_sequenced(dna_map_spp_subs = ., aes_point = aesthetic)
 
 # Save Colorado / Utah ggplot.
