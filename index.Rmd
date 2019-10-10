@@ -57,6 +57,7 @@ require(lemon)
 require(ggmap)
 require(ggtree)
 require(msa)
+library(Biostrings)
 require(elevatr)
 
 # Due to issue with ggmap call, developer branch of ggmap
@@ -69,15 +70,6 @@ if ("ggmap" %in% rownames(installed.packages()) == FALSE) {
   library(devtools)
   devtools::install_github("dkahle/ggmap")
 }
-
-# # Load bioconductor packages 'ggtree' and 'msa'
-# if ("ggtree" %in% rownames(installed.packages()) == FALSE) {
-#   biocLite("ggtree")
-# }
-#
-# if ("msa" %in% rownames(installed.packages()) == FALSE) {
-#   biocLite("msa")
-# }
 
 # Read specimen data to Global Environment and source R functions.
 source("R/specimen_data.R", keep.source = FALSE)

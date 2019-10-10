@@ -1,21 +1,15 @@
 
 ```{r msaAppendix}
 
-# Generate appendix sequence alignment figures
-library(Biostrings)  # Pagès et al. 2017
-
-# R 'msa' package ports LaTeX package TEXSHADE (Beitz 2000)
-library(msa)  # Bodenhofer et al. 2015
-
 # Establish a directory to store alignment appendix msa figures:
-if (!dir.exists("Phys_DNA/Alignment-Figs")) {
-  dir.create("Phys_DNA/Alignment-Figs")
+if (!dir.exists("output/alignments")) {
+  dir.create("output/alignments")
 }
 
 # Remove old .aux and .tex files from Alignment-Figures subdirectory.
-if (dir.exists("Phys_DNA/Alignment-Figs")) {
-  alignment_tex_files <- list.files(path = "Phys_DNA/Alignment-Figs/", 
-                                    pattern = ".aux|.tex|.fasta", 
+if (dir.exists("output/alignments")) {
+  alignment_tex_files <- list.files(path = "output/alignments/",
+                                    pattern = ".aux|.tex|.fasta",
                                     full.names = TRUE)
   invisible(file.remove(alignment_tex_files))
 }
@@ -28,28 +22,28 @@ if (dir.exists("Phys_DNA/Alignment-Figs")) {
 
 cat("\\chapter*{APPENDIX C}
 \\addcontentsline{toc}{chapter}{APPENDIX C: ITS SEQUENCE ALIGNMENT}
+\\vspace*{12pt}
 \\centering
 ITS SEQUENCE ALIGNMENT\n",
-file = "Phys_DNA/Alignment-Figs/msa_aligned_its.tex")
+file = "output/alignments/msa_aligned_its.tex")
 
-file_its <- paste0("Phys_DNA/Seq-Analysis/",
-                   "3.unwrapped_fastas_single/rITS-unwrapped_single.fasta")
+file_its <- "data/5.alignments-single/rITS-single.fasta"
 
 aligned_its <- readDNAMultipleAlignment(filepath = file_its, format = "fasta")
 
 msaPrettyPrint(aligned_its, y = c(1, 135), output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_its.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_its.tex",
+               alFile = "output/alignments/aligned_its.fasta",
+               file = "output/alignments/aligned_its.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_its.tex -m 7in -r ROTATE >> \\
-       Phys_DNA/Alignment-Figs/msa_aligned_its.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_its.tex -m 7in -r ROTATE >> \\
+       output/alignments/msa_aligned_its.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_its}
+\include{output/alignments/msa_aligned_its}
 
 \begin{landscape}
 
@@ -57,18 +51,18 @@ system("./Phys_DNA/msa_format.sh \\
 
 msaPrettyPrint(aligned_its, y = c(136, max(aligned_its@unmasked@ranges@width)),
                output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_its.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_its_end.tex",
+               alFile = "output/alignments/aligned_its.fasta",
+               file = "output/alignments/aligned_its_end.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_its_end.tex -r LANDSCAPE > \\
-       Phys_DNA/Alignment-Figs/msa_aligned_its_end.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_its_end.tex -r LANDSCAPE > \\
+       output/alignments/msa_aligned_its_end.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_its_end}
+\include{output/alignments/msa_aligned_its_end}
 
 \end{landscape}
 
@@ -76,28 +70,28 @@ system("./Phys_DNA/msa_format.sh \\
 
 cat("\\chapter*{APPENDIX D}
 \\addcontentsline{toc}{chapter}{APPENDIX D: \\textit{rps} SEQUENCE ALIGNMENT}
+\\vspace*{12pt}
 \\centering
 \\textit{rps} SEQUENCE ALIGNMENT\n",
-file = "Phys_DNA/Alignment-Figs/msa_aligned_rps.tex")
+file = "output/alignments/msa_aligned_rps.tex")
 
-file_rps <- paste0("Phys_DNA/Seq-Analysis/",
-                   "3.unwrapped_fastas_single/rps-unwrapped_single.fasta")
+file_rps <- "data/5.alignments-single/rps-single.fasta"
 
 aligned_rps <- readDNAMultipleAlignment(filepath = file_rps, format = "fasta")
 
 msaPrettyPrint(aligned_rps, y = c(1, 135), output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_rps.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_rps.tex",
+               alFile = "output/alignments/aligned_rps.fasta",
+               file = "output/alignments/aligned_rps.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_rps.tex -m 7in -r ROTATE >> \\
-       Phys_DNA/Alignment-Figs/msa_aligned_rps.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_rps.tex -m 7in -r ROTATE >> \\
+       output/alignments/msa_aligned_rps.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_rps}
+\include{output/alignments/msa_aligned_rps}
 
 \begin{landscape}
 
@@ -105,18 +99,18 @@ system("./Phys_DNA/msa_format.sh \\
 
 msaPrettyPrint(aligned_rps, y = c(136, max(aligned_rps@unmasked@ranges@width)),
                output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_rps.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_rps_end.tex",
+               alFile = "output/alignments/aligned_rps.fasta",
+               file = "output/alignments/aligned_rps_end.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_rps_end.tex -r LANDSCAPE > \\
-       Phys_DNA/Alignment-Figs/msa_aligned_rps_end.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_rps_end.tex -r LANDSCAPE > \\
+       output/alignments/msa_aligned_rps_end.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_rps_end}
+\include{output/alignments/msa_aligned_rps_end}
 
 \end{landscape}
 
@@ -124,28 +118,28 @@ system("./Phys_DNA/msa_format.sh \\
 
 cat("\\chapter*{APPENDIX E}
 \\addcontentsline{toc}{chapter}{APPENDIX E: \\textit{ycf1} SEQUENCE ALIGNMENT}
+\\vspace*{12pt}
 \\centering
 \\textit{ycf1} SEQUENCE ALIGNMENT\n",
-file = "Phys_DNA/Alignment-Figs/msa_aligned_ycf1.tex")
+file = "output/alignments/msa_aligned_ycf1.tex")
 
-file_ycf1 <- paste0("Phys_DNA/Seq-Analysis/",
-                   "3.unwrapped_fastas_single/ycf1-unwrapped_single.fasta")
+file_ycf1 <- "data/5.alignments-single/ycf1-single.fasta"
 
 aligned_ycf1 <- readDNAMultipleAlignment(filepath = file_ycf1, format = "fasta")
 
 msaPrettyPrint(aligned_ycf1, y = c(1, 135), output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_ycf1.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_ycf1.tex",
+               alFile = "output/alignments/aligned_ycf1.fasta",
+               file = "output/alignments/aligned_ycf1.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_ycf1.tex -m 7in -r ROTATE >> \\
-       Phys_DNA/Alignment-Figs/msa_aligned_ycf1.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_ycf1.tex -m 7in -r ROTATE >> \\
+       output/alignments/msa_aligned_ycf1.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_ycf1}
+\include{output/alignments/msa_aligned_ycf1}
 
 \begin{landscape}
 
@@ -153,18 +147,18 @@ system("./Phys_DNA/msa_format.sh \\
 
 msaPrettyPrint(aligned_ycf1, y = c(136, max(aligned_ycf1@unmasked@ranges@width)),
                output = "tex",
-               alFile = "Phys_DNA/Alignment-Figs/aligned_ycf1.fasta",
-               file = "Phys_DNA/Alignment-Figs/aligned_ycf1_end.tex",
+               alFile = "output/alignments/aligned_ycf1.fasta",
+               file = "output/alignments/aligned_ycf1_end.tex",
                showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
                furtherCode = "\\showruler{1}{top}")
 
-system("./Phys_DNA/msa_format.sh \\
-       -F Phys_DNA/Alignment-Figs/aligned_ycf1_end.tex -r LANDSCAPE > \\
-       Phys_DNA/Alignment-Figs/msa_aligned_ycf1_end.tex")
+system("./src/msa_format.sh \\
+       -F output/alignments/aligned_ycf1_end.tex -r LANDSCAPE > \\
+       output/alignments/msa_aligned_ycf1_end.tex")
 
 ```
 
-\include{Phys_DNA/Alignment-Figs/msa_aligned_ycf1_end}
+\include{output/alignments/msa_aligned_ycf1_end}
 
 \end{landscape}
 
