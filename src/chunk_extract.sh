@@ -7,6 +7,7 @@ if [[ -f log/chunks/rchunks.Rmd ]]
 then
   cat /dev/null > log/chunks/rchunks.Rmd
 fi
+tempfile="$(mktemp)"
 
 # Test for empty string to set all .Rmd files from bookdown build.
 if [[ -z "$1" ]]
@@ -39,6 +40,17 @@ for rmd in "${rmd_files[@]}"; do
           i--;
           print "\n", "\\clearpage", "\n"
       }
-  }' $rmd >> log/chunks/rchunks.Rmd
+  }' $rmd >> "$tempfile"
 done
+
+# Set root directory to knit from AWK Begin statement.
+awk '
+BEGIN { print "\
+```{r setup}\
+knitr::opts_knit$set(root.dir = here::here())\
+```\
+"
+}
+{ print $0 }
+' "$tempfile" >> log/chunks/rchunks.Rmd
 
