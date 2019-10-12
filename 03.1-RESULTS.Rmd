@@ -7,22 +7,23 @@ knitr_section(knitr_title = "Phylogenetic Analysis",
               knitr_type = "section")
 ```
 
-\paragraph{} Phylogenetic analyses using Bayesian inference were completed for two individual loci, rITS and *rps* intron. A concatenated analysis  including these two loci in addition to *ycf1* was also carried out.  Individual gene tree analyses revealed a high degree of sequence homogeneity, with seven groupings of identical genotypes for the rITS loci and nine for *rps*.  Additionally, the *ycf1* loci showed the highest degree of overall sequence similarity with 34 of 49 specimens having identical genotypes.
+\paragraph{} Phylogenetic analyses with MrBayes were completed for two individual loci, rITS and *rps* intron.  Pairwise distances of the *ycf1* loci revealed a high degree of sequence similarity with 36 of 51 specimens having identical genotypes.  Individual gene tree analyses also indicated a marked degree of sequence homogeneity, with seven groupings of identical genotypes for rITS and nine such groupings for *rps* intron.  In addition to the individual gene trees, a concatenated analysis was performed using samples with sequence data from rITS, *rps* intron, and *ycf1*, for which two groupings of identical combined genotypes were observed.
+
+<!-- <INSERT BEAST WRITEUP> -->
 
 ```{r resultsSubsectionItsSeq}
 knitr_section(knitr_title = "ITS Sequence Analysis",
               knitr_type = "subsection")
 ```
 
-\paragraph{} Sequences for the rITS loci ranged from 581 to 583 base pairs with an alignment length of 586 base pairs.  There were seven instances of identical genotypes, often between interspecific specimens according to previous annotations (Table \@ref(tab:resultsTable4IdenticalSeqITS)).  These included one group of 19 specimens (**genotype 1**) with four specimens each of previously annotated *P. dornii* and *P. condensata* from southwestern Wyoming; two specimens of *P. integrifolia* from Teton County, Wyoming; six specimens of *P. acutifolia* from southern Wyoming and western Colorado; and three specimens from the Big Horn Mountains (*Nelson 74315*, *O'Dea 32*, *Ratcliff and O'Kane 48*).  Three specimens of *P. vitulifera* from central Colorado and one of *P. acutifolia* from central Wyoming also had identical rITS sequences (**genotype 2**).  Another grouping of four specimens included three of putative *P. didymocarpa* subsp. *lanata* from Johnson County, Wyoming and one of *P. brassicoides* from Powder River County, Montana (**genotype 3**).  Additional groupings include two specimens from central Wyoming, *Smith 551* and *Ratcliff and O'Kane 50* (**genotype 4**); two specimens from Idaho previously annotated as *P. didymocarpa* subsp. *lyrata* (**genotype 5**); and two sets of two *P. eburniflora* specimens (**genotypes 6** and **7**).
+\paragraph{} Sequences for the rITS loci ranged from 581 to 583 base pairs with an alignment length of 586 base pairs.  There were seven instances of identical genotypes, often between interspecific specimens according to previous annotations (Table \@ref(tab:resultsTable4IdenticalSeqITS)).  These included one group of 20 specimens (**genotype 1**) with four specimens each of previously annotated *P. dornii* and *P. condensata* from southwestern Wyoming; two specimens of *P. integrifolia* from Teton County and one from Lincoln County; seven specimens of *P. acutifolia* from southern Wyoming and western Colorado; and three specimens from the Big Horn Mountains (*Nelson 74315*, *O'Dea 32*, *Ratcliff and O'Kane 48*).  Three specimens of *P. vitulifera* from central Colorado and one of *P. acutifolia* from central Wyoming also had identical rITS sequences (**genotype 2**).  Another grouping of four specimens included three of putative *P. didymocarpa* subsp. *lanata* from Johnson County, Wyoming and one of *P. brassicoides* from Powder River County, Montana (**genotype 3**).  Additional groupings include two specimens from central Wyoming, *Smith 551* and *Ratcliff and O'Kane 50* (**genotype 4**); two specimens from Idaho previously annotated as *P. didymocarpa* subsp. *lyrata* (**genotype 5**); and two sets of two *P. eburniflora* specimens (**genotypes 6** and **7**).
 
 \clearpage
 
 ```{r resultsTable4IdenticalSeqITS, fig.width=8}
 
 tbl_phylo_rITS <-
-  phylo_tbl(bayes_file = paste0("data/seq-consensus/",
-                                "rITS-single-1.1_infile.nex.con.tre"),
+  phylo_tbl(bayes_file = paste0("data/8.bayes/rITS-infile.nex.con.tre"),
             specimen_records = total_physaria)
 
 phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rITS) %>%
@@ -35,11 +36,9 @@ phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rITS) %>%
 
 \clearpage
 
-\paragraph{} Single gene Bayesian inference of the rITS loci showed low resolution, with a weakly supported 17 node polytomy (P=0.538, Figure \@ref(fig:resultsFigure3rITSPhyloTree)).  As previously described, no species were recovered as monophyletic groups in the rITS gene tree.  Inlcuded in the polytomy of this tree were specimens previously annotated as *P. vitulifera*, *P. saximontana* subsp. *saximontana*, *P. s.* subsp. *dentata*, *P. eburnifora*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*, *P. d.* subsp. *lyrata*, *P. dornii*, *P. condensata*, *P. brassicoides* and *P. acutifolia*.  Two specimens of *P. brassicoides* and one of *P. didymocarpa* subsp. *lanata* were recovered as a sister group to the polytomy-containing clade (P=0.969), while *P. obcordata*, *P. fendlerii* and *P. argyraea* were strongly supported as outgroup taxa (P=1.0)
+\paragraph{} As previously described, no species of were recovered as monophyletic groups in the rITS gene tree.  *P. obcordata*, *P. fendlerii* and *P. argyraea* were strongly supported as outgroup taxa (P=1.000).  Single gene Bayesian inference of the rITS loci showed low resolution overall, with a strongly supported 19 node soft polytomy (P=1.000, Figure \@ref(fig:resultsFigure3rITSPhyloTree)).  Inlcuded in the polytomy were specimens previously annotated as *P. vitulifera*, *P. saximontana* subsp. *dentata*, *P. eburnifora*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*, *P. d.* subsp. *lyrata*, *P. dornii*, *P. condensata*, *P. brassicoides* and *P. acutifolia*.  In the polytomy, **Genotype 1** consisted of all sampled individuals previously annotated as *Physaria condensata* (*Ratcliff and O'Kane, Jr. 40*; *Ratcliff and O'Kane, Jr. 41*; *O'Kane, Jr. 3787*; *Fertig 16765*) and *P. dornii* (*Ratcliff and O'Kane, Jr. 42*; *Refsdal and Refsdal 4376*; *Fertig 17503*; *Fertig 17506*) in addition to three *P. integrifolia* specimens (*Nelson 19288*, *Nelson and Scott 68918*, and *Fertig 17493*).  Six specimens of *P. acutifolia* from southern Wyoming and western Colorado in addition to three specimens from near Big Horn Canyon also had the identical genotype.
 
-\paragraph{} In the polytomy, **Genotype 1** consisted of all sampled individuals previously annotated as *Physaria condensata* (*Ratcliff and O'Kane, Jr. 40*; *Ratcliff and O'Kane, Jr. 41*; *O'Kane, Jr. 3787*; *Fertig 16765*) and *P. dornii* (*Ratcliff and O'Kane, Jr. 42*; *Refsdal and Refsdal 4376*; *Fertig 17503*; *Fertig 17506*) in addition to two *P. integrifolia* specimens (*Nelson 19288*, *Nelson and Scott 68918*).  Six specimens of *P. acutifolia* from southern Wyoming and western Colorado in addition to three specimens from near Big Horn Canyon also had the identical genotype.
-
-\paragraph{} A low support clade (P=0.562) including five specimens of *P. didymocarpa* subsp. *didymocarpa*, four specimens of *P. brassicoides*, three specimens of *P. saximontana* subsp. *dentata*, two specimens of *P. s.* subsp. *saximontana*, and one specimen of *P. d.* subsp. *lyrata* was recovered.  This clade also included a *P. acutifolia* collection from Utah (*Holmgren and Holmgren 14222*) and a collection from the Medicine Bow Range (*Ratcliff and O'Kane, Jr. 34*).  Two specimens of *P. saximontana* subsp. *saximontana* and one of *P. eburniflora* were recovered as a clade with low support (P=0.561) while another two *P. eburniflora* specimens (**genotype 7**) and one *P. integrifolia* were recovered as a separate clade (P=0.729).
+\paragraph{} A moderately supported polytomy (P=0.741) included four specimens of *P. didymocarpa* subsp. *didymocarpa*, two specimens of *P. saximontana* subsp. *dentata*, two specimens of *P. s.* subsp. *saximontana*, and single specimens of *P. didymocarpa* subsp. *lanata* and *P. d.* subsp. *lyrata*, *P. brassicoides*, a *P. acutifolia* collection from Utah (*Holmgren and Holmgren 14222*), and putative *P. vitulifera* from Carbon County (*Ratcliff and O'Kane, Jr. 34*).  Within the second polytomy, two nested clades of low and moderate support included *P. brassicoides* (P=0.958) and *P. saximontana* subsp. *dentata* (P=0.507).  Two additional clades recovered with high support included *P. saximontana* subsp. *saximontana* and  *P. eburniflora* (P=0.995), and *P. integrifolia* (P=0.982).
 
 \clearpage
 
@@ -47,9 +46,9 @@ phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rITS) %>%
 
 knitr_cap <- "Consensus tree from Baysian inference of the rITS gene tree."
 
-gridExtra::grid.arrange(phylo_ggplot(
+gridExtra::grid.arrange(phylo_ggplot(phylo_layout = "rectangular",
   phylo_tbl_obj = tbl_phylo_rITS, plot_title = "rITS Phylogeny",
-  legend_col = 1, x_expand = 0.02))
+  legend_col = 1, x_expand = 0.025))
 
 ```
 
@@ -68,8 +67,7 @@ knitr_section(knitr_title = "*rps* Intron Sequence Analysis",
 ```{r resultsTable5IdenticalSeqRps, fig.width=8}
 
 tbl_phylo_rps <-
-  phylo_tbl(bayes_file = paste0("data/seq-consensus/",
-                                "rps-single-1.1_infile.nex.con.tre"),
+  phylo_tbl(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
             specimen_records = total_physaria)
 tbl_multi_rps <- phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rps)
 
@@ -103,9 +101,7 @@ if (knitr_chunk == "latex") {
 
 if (knitr_chunk == "latex") {
   cat("\\captionsetup[table]{labelformat=default}")
-
   cat("\\captionsetup[table]{list=yes}")
-
   cat("\\setcounter{table}{5}")
 }
 
@@ -113,17 +109,17 @@ if (knitr_chunk == "latex") {
 
 \vspace*{12pt}
 
-\paragraph{} A third genotype consisted of three specimens (previously *P. saximontana*, *P. eburniflora*, and *P. acutifolia*) from Hot Springs county near the Wind River Range, and two specimens of *P. acutifolia* from western Sublette County, Wyoming and Rio Blanco, Colorado.  This group (**genotype 3**) also included *Dorn 10105*, a specimen from the Medicine Bow Range with a previous annotation as *P. vitulifera*.  A fourth group (**genotype 4**) included two other specimens (*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range.  Additionally, this group included collections of *P. integrifolia* from Lincoln County, Wyoming; *P. acutifola* from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.  Five specimens with identical sequences from Lincoln County, Wyoming (**genotype 5**) included two collections of *P. dornii*, two of *P. condensata*, and one collection of *P. integrifolia*.  Three specimens of *P. didymocarpa* subsp. *lanata* from the Big Horn Mountains and one of *P. acutifolia* from Uinta County, Wyoming comprised another group (**genotype 6**).  One specimen of *P. saximontana* subsp. *dentata* from Glacier County, Montana and one of *P. eburniflora* from Carbon County, Wyoming also had identical sequences (**genotype 7**).  Lastly, two *P. eburniflora* collections from Fremont County, Wyoming (**genotype 8**) and two *P. vitulifera* collections from Colorado (**genotype 9**) comprised two additional genotypes.
+\paragraph{} A third genotype consisted of three specimens with recent annotations as *P. saximontana*, *P. eburniflora*, and *P. acutifolia* from Hot Springs county near the Wind River Range, and two specimens of *P. acutifolia* from western Sublette County, Wyoming and Rio Blanco, Colorado.  This group (**genotype 3**) also included *Dorn 10105*, a specimen from the Medicine Bow Range with a previous annotation as *P. vitulifera*.  A fourth group (**genotype 4**) included two other specimens (*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range.  The fourth group also included collections of *P. integrifolia* from Lincoln County, Wyoming; *P. acutifola* from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.  Five specimens with identical sequences from Lincoln County, Wyoming (**genotype 5**) included two collections of *P. dornii*, two of *P. condensata*, and one collection of *P. integrifolia*.  Three specimens of *P. didymocarpa* subsp. *lanata* from the Big Horn Mountains and one of *P. acutifolia* from Uinta County, Wyoming comprised another group (**genotype 6**).  One specimen of *P. saximontana* subsp. *dentata* from Glacier County, Montana and one of *P. eburniflora* from Carbon County, Wyoming had identical sequences (**genotype 7**).  Lastly, two *P. eburniflora* collections from Fremont County, Wyoming (**genotype 8**) and two *P. vitulifera* collections from Colorado (**genotype 9**) comprised two additional genotypes.
 
-\paragraph{} Individual gene tree analysis for the *rps* intron did not recover monophyletic groups of species as previously described (Figure \@ref(fig:resultsFigure4rpsPhyloTree)).  Here, a 13 node polytomy was observed.  Unresolved taxa included *P. vitulifera* of Colorado, *P. eburniflora*, *P. acutifolia*, *P. saximontana* subsp. *saximontana*, *P. s.* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lyrata*, *P. d.* subsp. *lanata*, *P. integrifolia*, *P. obcordata*, and one specimen from the Medicine Bow Range.  Both *P. fendlerii* and *P. argyraea* were recovered as outgroups with high support (P=1.0).
+\paragraph{} Individual gene tree analysis for the *rps* intron did not recover monophyletic groups of species as previously described (Figure \@ref(fig:resultsFigure4rpsPhyloTree)).  Here, a 13 node polytomy was observed (P=1.000).  Unresolved taxa included *P. vitulifera* of Colorado, *P. eburniflora*, *P. acutifolia*, *P. saximontana* subsp. *saximontana*, *P. s.* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lyrata*, *P. d.* subsp. *lanata*, *P. integrifolia*, one specimen from the Medicine Bow Range, and *P. obcordata*.  Both *P. fendlerii* and *P. argyraea* were recovered as outgroups with high support (P=1.000).
 
-\paragraph{} For the *rps* intron, a higher degree of sequence heterogeneity was observed for putative *P. condensata*, *P. dornii*, and *P. integrifolia* relative to the rITS gene tree.  Here, a clade of moderate support (P=0.848) was recovered containing three specimens of *P. dornii*, three of *P. condensata*, two of *P. integrifolia*, and one *P. acutifolia* specimen from Montezuma County, Colorado.  One specimen of *P. condensata* was recovered in a separate, highly supported clade (P=0.987) also containing *P. saximontana* subsp. *saxmimontana*, *P. s* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*, *P. brassicoides*, and one specimen of *P. acutifolia*.  Two other clades with moderate to high support were also recovered, one with two Colorado *P. vitulifera* specimens (P=0.736) and another with *P. acutifolia*, *P. brassicoides*, *P. integrifolia*, and one specimen from the Medicine Bow Range (P=0.996).
+\paragraph{} For the *rps* intron, a higher degree of sequence heterogeneity was observed for putative *P. condensata*, *P. dornii*, and *P. integrifolia* relative to the rITS gene tree.  Here, a clade of moderate support (P=0.860) was recovered containing three specimens of *P. dornii*, three of *P. condensata*, two of *P. integrifolia*, and one *P. acutifolia* specimen from Montezuma County, Colorado.  One specimen of *P. condensata* was recovered in a separate, highly supported clade (P=0.980) also containing *P. saximontana* subsp. *saxmimontana* (n=3), *P. s* subsp. *dentata* (n=2), *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lanata* (n=2), *P. brassicoides* (n=1), and *P. acutifolia* (n=1).  Two other clades with moderate to high support were also recovered, one with Colorado *P. vitulifera* specimens (n=2, P=0.826) and another with *P. acutifolia* (n=1), *P. brassicoides* (n=1), *P. integrifolia* (n=1), and two specimen from the Medicine Bow Range (*Fertig and Welp 19075*, *Ratcliff and O'Kane, Jr. 34*; P=0.996).
 
 ```{r resultsFigure4rpsPhyloTree, fig.cap=knitr_cap, fig.height=10, fig.asp=1.3}
 
 knitr_cap <- "Consensus tree from Baysian inference of *rps* intron gene tree."
 
-gridExtra::grid.arrange(phylo_ggplot(
+gridExtra::grid.arrange(phylo_ggplot(phylo_layout = "rectangular",
   phylo_tbl_obj = tbl_phylo_rps,
   plot_title = expression(paste(italic("rps"), " intron Phylogeny")),
   legend_col = 1, x_expand = 0.015))
