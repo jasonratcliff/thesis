@@ -218,7 +218,7 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
                                      "roadmap", "hybrid")) {
 
   # Check registration of Google API key.
-  if (has_google_key() == FALSE) {
+  if (ggmap::has_google_key() == FALSE) {
     stop(paste("Register an API key with Google.",
                "See: https://github.com/dkahle/ggmap"))
   }
@@ -226,14 +226,16 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
   # Filter specimens by coordinates and get ggmap by median values.
   map_subset <- map_filter(map_df)
   if (!is.null(gg_longitude) && !is.null(gg_latitude)) {
-    map_gg_sat <- get_map(location = c(gg_longitude, gg_latitude), zoom = size,
-                          maptype = gg_map_type, messaging = FALSE)
+    map_gg_sat <-
+      ggmap::get_map(location = c(gg_longitude, gg_latitude), zoom = size,
+                     maptype = gg_map_type, messaging = FALSE)
   } else if (!is.null(gg_longitude) || !is.null(gg_latitude)) {
     stop("Enter numeric vector for both longitude and latitude coordinates.")
   } else {
     gg_median <- sapply(map_subset[, c("Longitude", "Latitude") ], median)
-    map_gg_sat <- get_map(location = gg_median, maptype = gg_map_type,
-                          zoom = size, source = "google", messaging = FALSE)
+    map_gg_sat <-
+      ggmap::get_map(location = gg_median, maptype = gg_map_type,
+                     zoom = size, source = "google", messaging = FALSE)
   }
 
   # Index the boundary of the ggmap plot to the x/y limits of ggmap base.
@@ -321,7 +323,7 @@ map_elev <- function(map_df, map_col, gg_borders,
     geom_point(data = map_df, aes(x = Longitude, y = Latitude),
                size = (geom_size + 2), colour = "black", alpha = 0.2) +
     geom_point(data = map_df, size = geom_size, na.rm = TRUE,
-               aes(x = Longitude, y = Latitude, 
+               aes(x = Longitude, y = Latitude,
                    colour = get(map_col), shape = get(map_col))) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude") +
@@ -398,6 +400,7 @@ spp_color <- c("Physaria acutifolia" = "yellow",
                "Physaria chambersii" = "springgreen",
                "Physaria" = "seashell",
                "Physaria flowering" = "seashell",
+               "Physaria obcordata" = "black",
                "Lesquerella fendleri" = "black",
                "Lesquerella argyrea" = "black")
 
@@ -426,6 +429,7 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria chambersii" = 17,
                "Physaria" = 16,
                "Physaria flowering" = 16,
+               "Physaria obcordata" = 16,
                "Lesquerella fendleri" = 15,
                "Lesquerella argyrea" = 18)
 
@@ -445,9 +449,9 @@ spp_labels <- c("Physaria acutifolia" =
                   expression(italic("Physaria floribunda")*" ssp. "*italic("floribunda")),
                 "Physaria floribunda ssp. osterhoutii" =
                   expression(italic("Physaria floribunda")*" ssp. "*italic("osterhoutii")),
-                "Physaria bellii" = 
+                "Physaria bellii" =
                   expression(italic("Physaria bellii")),
-                "Physaria rollinsii" = 
+                "Physaria rollinsii" =
                   expression(italic("Physaria rollinsii")),
                 "Physaria alpina" =
                   expression(italic("Physaria alpina")),
@@ -469,7 +473,7 @@ spp_labels <- c("Physaria acutifolia" =
                   expression(italic("Physaria eburniflora")),
                 "Physaria integrifolia" =
                   expression(italic("Physaria integrifolia")),
-                "Physaria dornii" = 
+                "Physaria dornii" =
                   expression(italic("Physaria dornii")),
                 "Physaria condensata" =
                   expression(italic("Physaria condensata")),
@@ -479,6 +483,8 @@ spp_labels <- c("Physaria acutifolia" =
                   expression(italic("Physaria")),
                 "Physaria flowering" =
                   expression(italic("Physaria flowering")),
+                "Physaria obcordata" = 
+                  expression(italic("Physaria obcordata")),
                 "Lesquerella fendleri" =
                   expression(italic("Lesquerella fendleri")),
                 "Lesquerella argyrea" =
@@ -511,6 +517,6 @@ map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
     scale_shape_manual(name = legend_title, labels = spp_labels,
                        values = spp_shape, na.value = 17) +
     theme(legend.text.align = 0, legend.title.align = 0.5)
-  
+
 }
 
