@@ -143,7 +143,8 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          plot_title = "A phylogenetic tree.",
                          phylo_layout = "slanted",
                          legend_col = 2, x_expand = 0.02,
-                         legend_y_pos = c(0, 0.9)) {
+                         legend_y_pos = c(0, 0.9), 
+                         legend_offset = c(0, 0)) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
   index_single_nodes <-
@@ -262,21 +263,24 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
               size = 3.5, hjust = 0) +
 
     # Theme adjustment for legend and scales.
-    theme(legend.position = legend_y_pos,
+    ggtitle(plot_title) +
+    theme(legend.background = element_blank(),
+          legend.position = legend_y_pos,
           legend.justification = c(0, 1),
           legend.direction = "vertical",
           legend.text = element_text(size = 7),
-          legend.box.background = element_blank()) +
+          legend.box.background = element_blank(),
+          plot.title = element_text(hjust = 0.5)) +
     guides(colour = guide_legend(ncol = legend_col, byrow = TRUE)) +
     scale_color_manual(legend_title, values = spp_color) +
     scale_shape_manual(legend_title, values = spp_shape) +
     expand_limits(x = x_expand) +
-    geom_treescale() +
-    ggtitle(plot_title)
+    geom_treescale()
 
     # Reposition legend with R package `lemon`.
     phylo_lemon <-
-      lemon::reposition_legend(phylo_ggtree, 'top left')
+      lemon::reposition_legend(phylo_ggtree, position = "top left",
+                               offset = legend_offset)
 }
 
 # Kable wrappers ----
