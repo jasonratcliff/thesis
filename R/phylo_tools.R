@@ -26,7 +26,7 @@ phylo_tbl <- function(bayes_file, specimen_records,
                       dna_spp_file = "data/1.specimens/dna_specimens.csv") {
 
   # Read in conensus tree file .nexus file as tibble object.
-  bayes_tbl <- ggtree::read.beast(bayes_file) %>% ggplot2::fortify()
+  bayes_tbl <- treeio::read.beast(bayes_file) %>% ggplot2::fortify()
 
   # Read in specimen record data frame from .csv file as data frame.
   dna_spp <- readr::read_csv(file = dna_spp_file)
@@ -143,8 +143,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          plot_title = "A phylogenetic tree.",
                          phylo_layout = "slanted",
                          legend_col = 2, x_expand = 0.02,
-                         legend_y_pos = c(0, 0.9), 
-                         legend_offset = c(0, 0)) {
+                         legend_y_pos = c(0, 0.9)) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
   index_single_nodes <-
@@ -277,10 +276,10 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
     expand_limits(x = x_expand) +
     geom_treescale()
 
-    # Reposition legend with R package `lemon`.
-    phylo_lemon <-
-      lemon::reposition_legend(phylo_ggtree, position = "top left",
-                               offset = legend_offset)
+    # # Reposition legend with R package `lemon`.
+    # phylo_lemon <-
+    #   lemon::reposition_legend(phylo_ggtree, position = "top left",
+    #                            offset = legend_offset)
 }
 
 # Kable wrappers ----
