@@ -143,7 +143,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          plot_title = "A phylogenetic tree.",
                          phylo_layout = "slanted",
                          legend_col = 2, x_expand = 0.02,
-                         legend_y_pos = c(0, 0.9)) {
+                         legend_y_pos = c(0, 0.9), legend_text = 7) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
   index_single_nodes <-
@@ -267,7 +267,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
           legend.position = legend_y_pos,
           legend.justification = c(0, 1),
           legend.direction = "vertical",
-          legend.text = element_text(size = 7),
+          legend.text = element_text(size = legend_text),
           legend.box.background = element_blank(),
           plot.title = element_text(hjust = 0.5)) +
     guides(colour = guide_legend(ncol = legend_col, byrow = TRUE)) +
