@@ -20,7 +20,7 @@ knitr_section(knitr_title = "Specimen Sampling and Tissue Sources",
 ```{r methodsTable2DnaSpecimens}
 # LaTeX specimen table
 if (knitr_chunk == "latex") {
-  read.csv("data/tables/methods-DNA-specimens.csv",
+  read.csv("data/1.specimens/methods-DNA-specimens.csv",
            header = TRUE, row.names = NULL, as.is = TRUE,
            check.names = FALSE, stringsAsFactors = FALSE,
            colClasses = "character") %>%
@@ -65,7 +65,7 @@ if (knitr_chunk == "latex") {
 # https://texblog.org/2010/05/02/excluding-items-from-list-of-figures-list-of-tables/
 
 if (knitr_chunk == "latex") {
-  read.csv("data/tables/methods-DNA-specimens-2.csv",
+  read.csv("data/1.specimens/methods-DNA-specimens-2.csv",
            header = TRUE, row.names = NULL, as.is = TRUE,
            check.names = FALSE, stringsAsFactors = FALSE,
            colClasses = "character") %>%
@@ -93,10 +93,10 @@ if (knitr_chunk == "latex") {
 # HTML specimen table
 if (knitr_chunk == "html") {
   bind_rows(
-    read.csv("data/tables/methods-DNA-specimens.csv",
+    read.csv("data/1.specimens/methods-DNA-specimens.csv",
            header = TRUE, row.names = NULL, as.is = TRUE, check.names = FALSE,
            stringsAsFactors = FALSE, colClasses = "character"),
-    read.csv("data/tables/methods-DNA-specimens-2.csv",
+    read.csv("data/1.specimens/methods-DNA-specimens-2.csv",
              header = TRUE, row.names = NULL, as.is = TRUE,
              check.names = FALSE, stringsAsFactors = FALSE,
              colClasses = "character")
@@ -155,7 +155,7 @@ knitr_section(knitr_title = "rITS PCR",
 
 ```{r methodsTable3DnaPrimers}
 # Sequence primer table
-read.csv("data/tables/methods-DNA-primers.csv",
+read.csv("data/1.specimens/methods-DNA-primers.csv",
          header = TRUE, row.names = NULL, as.is = TRUE,
          check.names = FALSE, stringsAsFactors = FALSE,
          colClasses = "character") %>%
