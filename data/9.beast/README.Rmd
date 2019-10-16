@@ -298,3 +298,19 @@ source ~/.bash_profile
 
 # BEAST Workflow
 
+The `Biostrings` and `ape` packages were used to read in the subset alignments from the concatenated analysis and write `NEXUS` formatted alignment files.
+
+```{r writeNexus, eval=FALSE}
+
+# Iterate aligned subsets from concatenated analysis to write nexus files.
+for (fasta in list.files("data/5.alignments-concatenated",
+                         full.names = TRUE)) {
+  locus_name <- strsplit(fasta, "/")[[1]][3] %>% gsub(".fasta", "", x = .)
+  print(locus_name)
+  locus_fasta <- Biostrings::readDNAMultipleAlignment(filepath = fasta)
+  ape::write.nexus.data(x = locus_fasta, interleaved = FALSE,
+                        file = paste0("data/9.beast/1.gene_nex_files/",
+                                      locus_name, ".nex"))
+}
+
+```
