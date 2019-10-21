@@ -310,7 +310,7 @@ for (fasta in list.files("data/5.alignments-concatenated",
   locus_name <- strsplit(fasta, "/")[[1]][3] %>% gsub(".fasta", "", x = .)
   print(locus_name)
   locus_fasta <- Biostrings::readDNAStringSet(filepath = fasta)
-  names(locus_fasta) <- gsub(" | +$", "_", names(locus_fasta))
+  names(locus_fasta) <- gsub(" .+$", "", names(locus_fasta))
   char_wrap <- lapply(locus_fasta, length) %>% unique() %>% unlist()
   ape::write.nexus.data(x = locus_fasta, interleaved = FALSE,
                         charsperline = char_wrap,

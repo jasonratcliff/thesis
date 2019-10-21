@@ -157,7 +157,7 @@ parse_priors <- function(specimen_annotations) {
   # Use `plyr::ldply()` to bind data frame from unequal annotation vectors.
   prior_df <- plyr::ldply(prior_list, rbind)
   prior_df[] <- lapply(prior_df, as.character)  # Prevent factor coercion.
-  names(prior_df) <-  # Name columns based on length of split 
+  names(prior_df) <-  # Name columns based on length of split
     paste0("Physaria_a_priori_", 1:ncol(prior_df))
 
   # Column bind vector of most recent (i.e. non-missing) annotations.
@@ -264,15 +264,15 @@ parse_synonyms <- function(recent_annotations) {
 # Establish vector of most recent annotation with converted synonyms.
 prior_synonyms <- parse_synonyms(recent_annotations = prior_df$Physaria_recent)
 
-# 4. Write specimen output files ----
-
 # Build data frame from `parse_priors()` and `parse_synonyms()` output.
 total_physaria <- dplyr::bind_cols(prior_df,
                                    as.data.frame(prior_synonyms,
                                                  stringsAsFactors = FALSE),
                                    specimen_df)
-names(total_physaria)[grep("prior_synonyms", 
+names(total_physaria)[grep("prior_synonyms",
                            names(total_physaria))] <- "Physaria_syn"
+
+# 4. Parse coordinate, data, and elevation data ----
 
 # Convert geographic coordinate column classes from character to numeric.
 total_physaria$Longitude <- as.numeric(total_physaria$Longitude)
@@ -286,6 +286,62 @@ total_physaria <-
   dplyr::mutate(.,
                 Date_md = gsub("[0-9]{4}-", "", x = .[["Date_parsed"]]) %>%
                   as.Date(., format = "%m-%d"))
+
+# Parse elevation data to rename columns and remove commas.
+total_physaria <-
+  dplyr::rename(total_physaria, Elev_ft = `Elev_(ft.)`, Elev_m = `Elev_(m)`) %>%
+  dplyr::mutate(Elev_ft = gsub(",", "", x = Elev_ft),
+                Elev_m = gsub(",", "", x = Elev_m))
+
+# Assign data frame of parsed elevation data to bind column wise.
+total_elevation <-
+  pmap_dfr(total_physaria, function(Collector, Collection_Number, 
+                               Elev_ft, Elev_m, ...) {
+    # Split dashed vector elements representing elevation ranges into tibble.
+    elev_split_df <-
+      purrr::map2_dfr(Elev_ft, Elev_m, function(x, y) {
+        elev_index <-
+          sapply(dplyr::bind_cols(Elev_ft = x, Elev_m = y), USE.NAMES = FALSE,
+                 function(x) {
+                   if (grepl(pattern = "-", x)) {
+                     strsplit(x, "-") %>% unlist()
+                   } else { list(x, x) }
+                 }) %>% unlist()
+        bind_cols(Elev_ft = x, Elev_m = y,
+                  elev_ft_min = elev_index[1], elev_ft_max = elev_index[2],
+                  elev_m_min = elev_index[3], elev_m_max = elev_index[4])
+      })
+    if (length(elev_split_df) != 6) {  # Check length of splits.
+      stop(paste("Unexpected character split length", Elev_ft, Elev_m))
+    }
+    
+    # Convert tibble elements to numeric vectors.
+    elev_names <- names(elev_split_df)
+    elev_num_df <-
+      purrr::map_dfr(elev_split_df, function(x) {
+        tryCatch(as.numeric(x), warning = function(c) return(NA))
+      }) %>% tibble::as_tibble()
+    names(elev_num_df) <- elev_names
+    
+    # Estimate ft. from m for cases of intersecting elevation data.
+    if (!is.na(elev_num_df$Elev_ft) & !is.na(elev_num_df$Elev_m)) {
+      elev_est <- (elev_num_df$elev_m_min * 3.281) %>% round(., digits = 0)
+      if (abs(elev_num_df$elev_ft_min - elev_est) > 10) {
+        message(paste("Estimated ft. from m. > 100", 
+                      elev_num_df$Elev_ft, elev_est, elev_num_df$Elev_m))
+      }
+    } else {
+      elev_est <- NA
+    }
+    
+    # Combine mapped specimen identifiers with parsed elevation data.
+    bind_cols(Collector.e = Collector, Collection_Number.e = Collection_Number,
+              elev_num_df, elev_est = elev_est)
+    })
+
+total_physaria <- bind_cols(total_physaria, total_elevation)
+
+# 5. Write specimen output files ----
 
 #' Write identification logs and output .csv files.
 #'
@@ -333,6 +389,6 @@ specimens_write <- function(total_specimens) {
 specimens_write(total_physaria)
 
 # Clean up workspace to remove unnecessary objects and functions.
-rm(prior_df, specimen_df, specimen_index, prior_synonyms)
+rm(prior_df, specimen_df, specimen_index, prior_synonyms, total_elevation)
 rm(specimens_read, date_mismatch, parse_priors, parse_synonyms, specimens_write)
 
