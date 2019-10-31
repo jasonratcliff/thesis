@@ -1,0 +1,174 @@
+---
+title: "*Physaria*"
+author: "Ratcliff"
+date: "`r Sys.Date()`"
+output:
+  ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, cache=TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+```
+
+```{r libraries, set.seed(1244)}
+require(magrittr)
+require(tidyverse)
+require(ggmap)
+require(elevatr)
+require(rgdal)
+
+source("R/specimen_data.R")
+source("R/specimen_tools.R")
+source("R/map_tools.R")
+source("R/trait_tools.R")
+gg_borders <- map_borders(border_color = "black")
+
+```
+
+## Western Wyoming Endemics
+
+```{r inteCompSpecimens}
+
+# Define subset of Western Wyoming putatative endemic specimens.
+spp_inte_comp <-
+  spp_subset(taxa_frame = total_physaria,
+             longitude = c(-113, -106),
+             latitude = c(39.5, 45)) %>%
+  dplyr::mutate(west_wyo_priors = purrr::map_chr(Physaria_syn,
+    function(taxon) {
+      ifelse(grepl(pattern =
+        paste0("^Physaria ",
+               paste("condensata", "dornii", "integrifolia", "acutifolia",
+                     sep = "|")), taxon),
+        yes = taxon, no = "Physaria spp.")
+      })
+    )
+
+```
+
+```{r inteCompGgmap}
+
+# Satellite distribution map
+(spp_inte_comp %>%
+   dplyr::group_by(Physaria_syn) %>% filter(n() > 3) %>%
+   map_ggmap(map_df = ., map_col = "Physaria_syn",
+             gg_latitude = 42.2, gg_longitude = -109.5,
+             gg_borders = gg_borders, size = 7, gg_map_type = "satellite",
+             jitter_pos = c(0.05, 0.05),
+             shape_opt = "Physaria_syn")) %>%
+  map_themes(gg_map_obj = ., legend_title = "Prior Annotations")
+
+```
+
+## Western Wyoming Endemics
+
+```{r inteCompRosetteHist}
+
+# Split trait ranges, calculate rosette difference, and combine priors.
+traits_inte_comp <- spp_inte_comp %>%
+  dplyr::filter(Longitude > -112, Longitude < -109,
+                Latitude > 41, Longitude < 44)
+traits_inte_stems <- continuous_tbl(trait_frame = traits_inte_comp, 
+                                    trait_name = "Stem_length_dm")
+traits_inte_leaves <- continuous_tbl(trait_frame = traits_inte_comp,
+                                     trait_name = "Basal_leaf_length_cm") %>%
+  {dplyr::select(., Basal_leaf_length_cm_min,
+                 Basal_leaf_length_cm_mid, Basal_leaf_length_cm_max)}
+traits_inte_comp <-
+  dplyr::bind_cols(traits_inte_stems, traits_inte_leaves) %>%
+  dplyr::mutate(rosette_ratio = Stem_length_dm_max * 10 -
+                  Basal_leaf_length_cm_max) %>%
+  dplyr::filter(!is.na(rosette_ratio)) %>%
+  dplyr::mutate(west_wyo_priors = purrr::map_chr(Physaria_syn,
+    function(taxon) {
+      ifelse(grepl(pattern =
+        paste0("^Physaria ",
+               paste("condensata", "dornii", "integrifolia", "acutifolia",
+                     sep = "|")), taxon),
+        yes = taxon, no = "Physaria spp.")
+      })
+    )
+
+# Plot histogram of stem / basal leaf differences and facet by ID.
+counts_inte_comp <- traits_inte_comp %>% 
+  dplyr::filter(!grepl("Physaria spp.", west_wyo_priors)) %>% 
+  dplyr::group_by(west_wyo_priors) %>% dplyr::summarize(counts = n()) %>%
+  dplyr::mutate(counts = paste0("n=", counts)) %>%
+  dplyr::mutate(x = rep(17.5, times = nrow(.)),
+                y = rep(16, times = nrow(.)))
+ggplot(traits_inte_comp %>% filter(!grepl("Physaria spp.", west_wyo_priors))) +
+  geom_histogram(binwidth = 0.5, color = "black",
+                 aes(x = rosette_ratio, fill = west_wyo_priors)) +
+  geom_text(data = counts_inte_comp, aes(x = x, y = y, label = counts)) +
+  facet_wrap(. ~ factor(west_wyo_priors, 
+    levels = c("Physaria condensata", "Physaria integrifolia",
+               "Physaria dornii", "Physaria acutifolia"))) +
+  theme(strip.text = element_text(face = c("bold.italic")),
+        legend.text = element_text(face = "italic")) +
+  labs(x = "Stem / Rosette Difference (cm)",
+       y = "Binned Counts\n(by 0.5 cm)",
+       fill = "Prior Annotation")
+
+rm(traits_inte_stems, traits_inte_leaves, counts_inte_comp)
+
+```
+
+## Western Wyoming Endemics
+
+```{r inteCompRosetteMap}
+
+# Remove outliers by filter to specimens with difference < 15.
+traits_inte_comp_filter <-
+  dplyr::filter(traits_inte_comp, rosette_ratio < 15)
+
+# Map traits
+ggplot_inte_rosette1 <-
+  gg_borders +
+  geom_jitter(data = traits_inte_comp_filter %>%
+                dplyr::filter(west_wyo_priors == "Physaria spp."),
+              inherit.aes = FALSE, na.rm = TRUE, size = 2,
+              aes(x = Longitude, y = Latitude,
+                  fill = rosette_ratio, shape = west_wyo_priors)) +
+  geom_jitter(data = traits_inte_comp_filter %>%
+                dplyr::filter(grepl("Physaria acutifolia", west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 3, alpha = 0.5,
+              aes(x = Longitude, y = Latitude,
+                  fill = rosette_ratio, shape = west_wyo_priors)) +
+  geom_jitter(data = traits_inte_comp_filter %>%
+                dplyr::filter(grepl("dornii|condensata|integrifolia",
+                                    west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 4,
+              color = "black", alpha = 0.7,
+              aes(x = Longitude, y = Latitude,
+                  fill = rosette_ratio, shape = west_wyo_priors)) +
+  coord_fixed(xlim = grDevices::extendrange(c(-112, -109), f = 0),
+              ylim = grDevices::extendrange(c(41, 44), f = 0)) +
+  theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+  scale_fill_gradientn(name = "Difference\n   (cm)",
+    colors = RColorBrewer::brewer.pal(n = 6, name = "YlGnBu")) +
+  scale_shape_manual(name = "Prior Annotations",
+                     values = c("Physaria spp." = 3,
+                                "Physaria acutifolia" = 21,
+                                "Physaria integrifolia" = 24,
+                                "Physaria dornii" = 22,
+                                "Physaria condensata" = 25)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Stem / Rosette Difference")
+
+ggplot_inte_rosette1
+
+```
+
+## Western Wyoming Endemics
+
+```{r inteCompRosetteZoom}
+
+ggplot_inte_rosette1 +
+  geom_rect(data = NULL, inherit.aes = FALSE, fill = NA,
+            color = "yellow", size = 2,
+            aes(xmin = -111.5, xmax = -110, ymin = 41, ymax = 42.5))
+
+```
+
