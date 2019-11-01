@@ -34,32 +34,37 @@ gg_borders <- map_borders(border_color = "black")
 spp_inte_comp <-
   spp_subset(taxa_frame = total_physaria,
              longitude = c(-113, -106),
-             latitude = c(39.5, 45)) %>%
-  dplyr::mutate(west_wyo_priors = purrr::map_chr(Physaria_syn,
-    function(taxon) {
-      ifelse(grepl(pattern =
-        paste0("^Physaria ",
-               paste("condensata", "dornii", "integrifolia", "acutifolia",
-                     sep = "|")), taxon),
-        yes = taxon, no = "Physaria spp.")
-      })
-    )
+             latitude = c(39.5, 45))
 
 ```
 
 ```{r inteCompGgmap}
 
 # Satellite distribution map
-(spp_inte_comp %>%
-   dplyr::group_by(Physaria_syn) %>% filter(n() > 3) %>%
-   map_ggmap(map_df = ., map_col = "Physaria_syn",
-             gg_latitude = 42.2, gg_longitude = -109.5,
-             gg_borders = gg_borders, size = 7, gg_map_type = "satellite",
-             jitter_pos = c(0.05, 0.05),
-             shape_opt = "Physaria_syn")) %>%
+ggmap_spp_inte_comp <- 
+  (spp_inte_comp %>%
+     dplyr::group_by(Physaria_syn) %>% filter(n() > 3) %>%
+     map_ggmap(map_df = ., map_col = "Physaria_syn",
+               gg_latitude = 42.2, gg_longitude = -109.5,
+               gg_borders = gg_borders, size = 7, gg_map_type = "satellite",
+               jitter_pos = c(0.05, 0.05), shape_opt = "Physaria_syn")) %>%
   map_themes(gg_map_obj = ., legend_title = "Prior Annotations")
 
+ggmap_spp_inte_comp
+
 ```
+
+## Western Wyoming Endemics
+
+```{r inteCompGgmapRect}
+
+ggmap_spp_inte_comp +
+  geom_rect(data = NULL, inherit.aes = FALSE, fill = NA,
+            color = "black", size = 2,
+            aes(xmin = -112, xmax = -109, ymin = 41, ymax = 44))
+
+```
+
 
 ## Western Wyoming Endemics
 
@@ -85,32 +90,47 @@ traits_inte_comp <-
       ifelse(grepl(pattern =
         paste0("^Physaria ",
                paste("condensata", "dornii", "integrifolia", "acutifolia",
-                     sep = "|")), taxon),
+                     "didymocarpa ssp\\. didymocarpa", sep = "|")), taxon),
         yes = taxon, no = "Physaria spp.")
-      })
-    )
+      })) %>%
+  dplyr::mutate(west_wyo_factors = factor(west_wyo_priors,
+    levels = c("Physaria condensata", "Physaria integrifolia",
+               "Physaria acutifolia", "Physaria dornii",
+               "Physaria didymocarpa ssp. didymocarpa")))
 
 # Plot histogram of stem / basal leaf differences and facet by ID.
 counts_inte_comp <- traits_inte_comp %>% 
-  dplyr::filter(!grepl("Physaria spp.", west_wyo_priors)) %>% 
-  dplyr::group_by(west_wyo_priors) %>% dplyr::summarize(counts = n()) %>%
+  dplyr::filter(!grepl("Physaria spp\\.", west_wyo_priors)) %>% 
+    dplyr::group_by(west_wyo_factors) %>% dplyr::summarize(counts = n()) %>%
   dplyr::mutate(counts = paste0("n=", counts)) %>%
-  dplyr::mutate(x = rep(17.5, times = nrow(.)),
-                y = rep(16, times = nrow(.)))
-ggplot(traits_inte_comp %>% filter(!grepl("Physaria spp.", west_wyo_priors))) +
+  dplyr::mutate(x = rep(15.2, times = nrow(.)),
+                y = rep(16.2, times = nrow(.)))
+
+ggplot_inte_hist <-
+  ggplot(traits_inte_comp %>% filter(!grepl("Physaria spp.", west_wyo_priors))) +
   geom_histogram(binwidth = 0.5, color = "black",
                  aes(x = rosette_ratio, fill = west_wyo_priors)) +
-  geom_text(data = counts_inte_comp, aes(x = x, y = y, label = counts)) +
-  facet_wrap(. ~ factor(west_wyo_priors, 
-    levels = c("Physaria condensata", "Physaria integrifolia",
-               "Physaria dornii", "Physaria acutifolia"))) +
+  geom_text(data = counts_inte_comp, aes(x = x, y = y, label = counts),
+            hjust = 0) +
+  facet_wrap(. ~ west_wyo_factors,
+    labeller = labeller(west_wyo_factors = label_wrap_gen(22))) +
+  scale_fill_discrete(labels = 
+    c("Physaria condensata" = "Physaria condensata", 
+      "Physaria integrifolia" = "Physaria integrifolia",
+      "Physaria acutifolia" = "Physaria acutifolia", 
+      "Physaria dornii" = "Physaria dornii",
+      "Physaria didymocarpa ssp. didymocarpa" =
+        "Physaria didymocarpa \n   ssp. didymocarpa")) + 
   theme(strip.text = element_text(face = c("bold.italic")),
         legend.text = element_text(face = "italic")) +
   labs(x = "Stem / Rosette Difference (cm)",
        y = "Binned Counts\n(by 0.5 cm)",
        fill = "Prior Annotation")
 
-rm(traits_inte_stems, traits_inte_leaves, counts_inte_comp)
+lemon::reposition_legend(ggplot_inte_hist, panel = "panel-3-2",
+                         position = "top left")
+
+rm(traits_inte_stems, traits_inte_leaves, counts_inte_comp, ggplot_inte_hist)
 
 ```
 
@@ -136,7 +156,8 @@ ggplot_inte_rosette1 <-
               aes(x = Longitude, y = Latitude,
                   fill = rosette_ratio, shape = west_wyo_priors)) +
   geom_jitter(data = traits_inte_comp_filter %>%
-                dplyr::filter(grepl("dornii|condensata|integrifolia",
+                dplyr::filter(grepl(paste0("dornii|condensata|",
+                                           "integrifolia|didymocarpa"),
                                     west_wyo_priors)),
               inherit.aes = FALSE, na.rm = TRUE, size = 4,
               color = "black", alpha = 0.7,
@@ -150,6 +171,7 @@ ggplot_inte_rosette1 <-
   scale_shape_manual(name = "Prior Annotations",
                      values = c("Physaria spp." = 3,
                                 "Physaria acutifolia" = 21,
+                                "Physaria didymocarpa ssp. didymocarpa" = 23,
                                 "Physaria integrifolia" = 24,
                                 "Physaria dornii" = 22,
                                 "Physaria condensata" = 25)) +
