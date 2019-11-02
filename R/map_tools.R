@@ -293,7 +293,8 @@ map_elev <- function(map_df, map_col, gg_borders,
   # Cite: https://registry.opendata.aws/terrain-tiles/
   prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   map_elev_raster <-
-    get_elev_raster(locations = map_df[, c("Longitude", "Latitude")],
+    get_elev_raster(locations = 
+                      as.data.frame(map_df[, c("Longitude", "Latitude")]),
                     z = raster_zoom, prj = prj_dd, clip = "bbox", src = "aws")
 
   # Use "raster" package function aggregate() to decrease data resolution and
@@ -330,7 +331,8 @@ map_elev <- function(map_df, map_col, gg_borders,
     coord_equal(xlim = c(min(map_df$Longitude), max(map_df$Longitude)),
                 ylim = c(min(map_df$Latitude), max(map_df$Latitude)),
                 expand = FALSE) +
-    scale_fill_gradientn("Elevation (m)", colours = terrain.colors(7)) +
+    scale_fill_gradientn("Elevation (m)", colours = terrain.colors(7),
+                         guide = guide_colourbar(order = 1)) +
     theme(panel.grid = element_blank(), panel.background = element_blank(),
           legend.direction = "vertical", legend.position = "bottom",
           panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
@@ -401,8 +403,8 @@ spp_color <- c("Physaria acutifolia" = "yellow",
                "Physaria" = "seashell",
                "Physaria flowering" = "seashell",
                "Physaria obcordata" = "black",
-               "Lesquerella fendleri" = "black",
-               "Lesquerella argyrea" = "black")
+               "Physaria fendleri" = "black",
+               "Physaria argyraea" = "black")
 
 spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria vitulifera"= 8,
@@ -430,8 +432,8 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria" = 16,
                "Physaria flowering" = 16,
                "Physaria obcordata" = 16,
-               "Lesquerella fendleri" = 15,
-               "Lesquerella argyrea" = 18)
+               "Physaria fendleri" = 15,
+               "Physaria argyraea" = 18)
 
 spp_labels <- c("Physaria acutifolia" =
                   expression(italic("Physaria acutifolia")),
@@ -485,10 +487,10 @@ spp_labels <- c("Physaria acutifolia" =
                   expression(italic("Physaria flowering")),
                 "Physaria obcordata" = 
                   expression(italic("Physaria obcordata")),
-                "Lesquerella fendleri" =
-                  expression(italic("Lesquerella fendleri")),
-                "Lesquerella argyrea" =
-                  expression(italic("Lesquerella argyrea")))
+                "Physaria fendleri" =
+                  expression(italic("Physaria fendleri")),
+                "Physaria argyraea" =
+                  expression(italic("Physaria argyraea")))
 
 #' Modify map ggplot themes.
 #'
