@@ -65,7 +65,6 @@ ggmap_spp_inte_comp +
 
 ```
 
-
 ## Western Wyoming Endemics
 
 ```{r inteCompRosetteHist}
@@ -194,3 +193,77 @@ ggplot_inte_rosette1 +
 
 ```
 
+## *Physaria dornii* and *P. condensata*
+
+```{r inteDornCondRosette}
+
+# Subset dornii and condensata specimens
+traits_dorn_cond <- traits_inte_comp_filter %>%
+  dplyr::filter(Longitude > -111.3, Longitude < -110,
+                Latitude > 41, Longitude < 42.3)
+
+# Map traits
+ggplot_dorn_cond <-
+  gg_borders +
+  geom_jitter(data = traits_dorn_cond %>%
+                dplyr::filter(grepl("dornii|condensata|integrifolia",
+                                    west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 4, color = "black",
+              width = 0.02, height = 0.02, alpha = 0.7,
+              aes(x = Longitude, y = Latitude,
+                  fill = rosette_ratio, shape = west_wyo_priors)) +
+  coord_fixed(xlim = grDevices::extendrange(c(-111.3, -110), f = 0),
+              ylim = grDevices::extendrange(c(41, 42.3), f = 0)) +
+  theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)", 
+                       guide = guide_colourbar(order = 1),
+                       colors = c("Red", "Orange", "Yellow", "Green", "Blue")) +
+  scale_shape_manual(name = "Prior Annotations",
+                     values = c("Physaria spp." = 3,
+                                "Physaria acutifolia" = 21,
+                                "Physaria integrifolia" = 24,
+                                "Physaria dornii" = 22,
+                                "Physaria condensata" = 25)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Stem / Rosette Difference")
+
+ggplot_dorn_cond
+
+```
+
+## *Physaria dornii* and *P. condensata*
+
+```{r inteDornCondRosetteZoom}
+
+# Split trait ranges
+traits_dorn_cond <- traits_inte_comp_filter %>%
+  dplyr::filter(Longitude > -111.1, Longitude < -110.3,
+                Latitude > 41.3, Longitude < 42.1)
+
+# Map traits
+gg_borders +
+  geom_jitter(data = traits_dorn_cond %>%
+                dplyr::filter(grepl("dornii|condensata|integrifolia",
+                                    west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 4, color = "black",
+              width = 0.075, height = 0.05, alpha = 0.7,
+              aes(x = Longitude, y = Latitude,
+                  fill = rosette_ratio, shape = west_wyo_priors)) +
+  coord_fixed(xlim = grDevices::extendrange(c(-111.1, -110.3), f = 0),
+              ylim = grDevices::extendrange(c(41.3, 42.1), f = 0)) +
+  theme(panel.border = element_rect(colour = "slategrey", fill = NA, size = 3)) +
+  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)", 
+                       guide = guide_colourbar(order = 1),
+                       colors = c("Red", "Orange", "Yellow", "Green", "Blue")) +
+  scale_shape_manual(name = "Prior Annotations",
+                     values = c("Physaria spp." = 3,
+                                "Physaria acutifolia" = 21,
+                                "Physaria integrifolia" = 24,
+                                "Physaria dornii" = 22,
+                                "Physaria condensata" = 25)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Stem / Rosette Difference")
+
+```
