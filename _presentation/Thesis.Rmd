@@ -9,20 +9,77 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message=FALSE, cache=TRUE)
 knitr::opts_knit$set(root.dir = here::here())
-```
-
-```{r libraries, set.seed(1244)}
 require(magrittr)
 require(tidyverse)
 require(ggmap)
 require(elevatr)
 require(rgdal)
+require(knitr)
+require(kableExtra)
+```
 
+```{r globals}
 source("R/specimen_data.R")
 source("R/specimen_tools.R")
 source("R/map_tools.R")
 source("R/trait_tools.R")
 gg_borders <- map_borders(border_color = "black")
+set.seed(12344)
+```
+
+## Methods 
+
+```{r specimenCount}
+
+# Calculate total number of specimens accounting for duplicated records.
+specimen_count <-
+  total_physaria %>% 
+  dplyr::select(Collector, Collection_Number, Date, Herbarium) %>%
+  dplyr::mutate(row_id = 1:nrow(.)) %>%
+  dplyr::mutate(Herbarium =
+    stringr::str_remove_all(Herbarium, pattern = "\\[|\\]") %>%
+    stringr::str_split(., pattern = ", +") %>%
+      map_chr(., function(herbarium) {
+        unlist(herbarium) %>% sort() %>% 
+          stringr::str_c(., collapse = " ")
+        })) %>%
+  dplyr::distinct(., Collector, Collection_Number, Date, Herbarium,
+                  .keep_all = TRUE) %>% nrow()
+
+```
+
+<div style="float: left; width: 45%;">
+
+### **Specimen Overview**
+
+\ 
+
+* **Herbarium Records**
+    + `r specimen_count` specimens
+
+\ 
+
+* **14 Herbaria**
+
+</div>
+
+<div style="float: right; width: 45%;">
+
+\ 
+
+### **Lending Institutions**
+
+```{r herbaria}
+
+data.frame(x = c("RM", "NY", "MO", "F", "ISTC", "MONTU", "MONT"),
+           y = c("RSA-POM", "UC", "UTC", "GH", "US", "CAS", "IDS")) %>%
+  knitr::kable(., col.names = NULL) %>%
+  kableExtra::kable_styling(bootstrap_options = "bordered", font_size = 14) %>%
+  column_spec(c(1, 2), bold = TRUE)
+
+```
+
+</div>
 
 ```
 
