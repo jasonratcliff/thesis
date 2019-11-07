@@ -141,8 +141,8 @@ phylo_tbl <- function(bayes_file, specimen_records,
 phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
                          legend_title = "Previous Annotations",
                          plot_title = "A phylogenetic tree.",
-                         phylo_layout = "slanted",
-                         legend_col = 2, x_expand = 0.02,
+                         phylo_layout = "slanted", text_tip_size = 3.5,
+                         legend_col = 2, x_expand = 0.02, rate_offset = -1,
                          legend_y_pos = c(0, 0.9), legend_text = 7) {
 
   # Index vectors to subset tibble by nodes with single or multiple samples.
@@ -241,7 +241,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
     geom_text(data = tbl_multi_node_labels,
               aes(x = x, y = y, label = genotype_label),
               nudge_x = (range(tbl_inner_node$x)[2] * 0.05),
-              size = 3.5, hjust = 0, fontface = "bold") +
+              size = text_tip_size, hjust = 0, fontface = "bold") +
 
     # Map text strings of probabilities to inner nodes as labels.
     geom_label(data = tbl_inner_node,
@@ -259,7 +259,7 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
     geom_text(data = phylo_tbl_obj[index_single_nodes, ],
               aes(x = x, y = y, label = label), na.rm = TRUE,
               nudge_x = (range(tbl_inner_node$x)[2] * 0.05),
-              size = 3.5, hjust = 0) +
+              size = text_tip_size, hjust = 0) +
 
     # Theme adjustment for legend and scales.
     ggtitle(plot_title) +
@@ -269,17 +269,12 @@ phylo_ggplot <- function(phylo_tbl_obj, spp_id = "Physaria_syn",
           legend.direction = "vertical",
           legend.text = element_text(size = legend_text),
           legend.box.background = element_blank(),
-          plot.title = element_text(hjust = 0.5)) +
+          plot.title = element_text(hjust = 0.5, face = "bold")) +
     guides(colour = guide_legend(ncol = legend_col, byrow = TRUE)) +
     scale_color_manual(legend_title, values = spp_color) +
     scale_shape_manual(legend_title, values = spp_shape) +
     expand_limits(x = x_expand) +
-    geom_treescale()
-
-    # # Reposition legend with R package `lemon`.
-    # phylo_lemon <-
-    #   lemon::reposition_legend(phylo_ggtree, position = "top left",
-    #                            offset = legend_offset)
+    geom_treescale(offset = rate_offset)
 }
 
 # Kable wrappers ----
