@@ -16,6 +16,8 @@ require(elevatr)
 require(rgdal)
 require(knitr)
 require(kableExtra)
+require(ggtree)
+require(scales)
 ```
 
 ```{r globals}
@@ -23,8 +25,61 @@ source("R/specimen_data.R")
 source("R/specimen_tools.R")
 source("R/map_tools.R")
 source("R/trait_tools.R")
+source("R/phylo_tools.R")
 gg_borders <- map_borders(border_color = "black")
 set.seed(12344)
+
+```
+
+```{r beastData}
+
+# Read in sequenced DNA specimen information including accession labels.
+dna_specimens <-
+  readr::read_csv(file = "data/1.specimens/dna_specimens.csv") %>%
+  dplyr::rename(label = taxa_label)
+
+# Combine herbarium specimen record information with sequence documentation.
+dna_herbarium_spp <-
+  purrr::pmap_dfr(dna_specimens,
+    function(label, Collector, Collection_Number, ...) {
+
+      # Subset total herbarium record data frame by collector and collection.
+      dna_herbarium <-
+        total_physaria[intersect(
+          stringr::str_which(string = total_physaria$Collector,
+                             pattern = Collector),
+          stringr::str_which(string = total_physaria$Collection_Number,
+                             pattern = as.character(Collection_Number))), ] %>%
+        dplyr::mutate(Collection_Number = as.numeric(Collection_Number))
+
+      # Join the herbarium records to matching sequencing specimen .csv rows.
+      specimen_label = label
+      dplyr::left_join(dplyr::filter(dna_specimens, label == specimen_label),
+                       dna_herbarium, by = "Collection_Number")
+}) %>% # Clean up a few columns and reorder for easy review.
+  dplyr::select(label, Collection_Number, Collector.x, Collector.y,
+                dplyr::contains("Physaria"), dplyr::contains("Taxon"),
+                dplyr::contains("ID_"), Herbarium.x, Herbarium.y,
+                State.x, State.y, County.x, County.y,
+                Date, Date_parsed, Date_md, multiLocus,
+                ID, App.A, dplyr::contains("Elev"), dplyr::contains("elev"),
+                Latitude.x, Latitude.y, Longitude.x, Longitude.y,
+                Imaged, TRS2, Notes, Rosulate, Caudex, Pubescence,
+                Basal_leaf_trichomes, Fruit_trichomes, Stem_count,
+                Stem_shape, Stem_length_dm, Petiole, Basal_leaf_length_cm,
+                Basal_leaf_shape, Basal_leaf_margins, Cauline_leaf_length_mm,
+                Cauline_leaf_shape, Cauline_leaf_margins, Racemes,
+                Pedicel_shape, Pedicels_secund, Sepal_length_mm, Sepal_shape,
+                Petal_color, Petal_length_mm, Petal_shape, Style_length_mm,
+                Mature_fruit_length_mm, Mature_fruit_width_mm, Fruit,
+                Mature_fruit_apices, Replum_pubescence, Inner_valve_pubescence,
+                Ovule_number, Replum_shape, Seed_color, Seed_shape,
+                Mature_seed_length_mm) %>%
+  dplyr::rename(Latitude = Latitude.x, Longitude = Longitude.x)
+
+
+```
+
 ```
 
 ## Methods 
@@ -81,9 +136,56 @@ data.frame(x = c("RM", "NY", "MO", "F", "ISTC", "MONTU", "MONT"),
 
 </div>
 
+##
+
+```{r rITSBayes, fig.asp=0.78, fig.cap="MrBayes Gene Tree"}
+
+tbl_ITS <-
+  phylo_tbl(bayes_file = paste0("data/8.bayes/rITS-infile.nex.con.tre"),
+            specimen_records = total_physaria)
+ggtree_ITS <-
+  phylo_ggplot(phylo_tbl_obj = tbl_ITS,
+               phylo_layout = "rectangular", plot_title = "rITS Phylogeny",
+               legend_col = 2, x_expand = 0.025, rate_offset = -1.5,
+               legend_text = 10, text_tip_size = 3.3)
+lemon::reposition_legend(aplot = ggtree_ITS, position = "top left", plot = TRUE)
+
 ```
 
-## Western Wyoming Endemics
+##
+
+```{r rpsBayes, fig.asp=0.78, fig.cap="MrBayes Gene Tree"}
+
+tbl_rps <-
+  phylo_tbl(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
+            specimen_records = total_physaria)
+ggtree_rps <-
+  phylo_ggplot(phylo_tbl_obj = tbl_rps, phylo_layout = "rectangular",
+               plot_title = expression(paste(bolditalic("rps"),
+                                                  bold(" intron Phylogeny"))),
+               legend_col = 2, x_expand = 0.015,
+               legend_text = 10, text_tip_size = 3.2)
+lemon::reposition_legend(aplot = ggtree_rps, position = "top left", plot = TRUE)
+
+```
+
+##
+
+```{r mlBayes, fig.asp=0.78, fig.cap="MrBayes Concatenated Tree"}
+
+tbl_phylo_ml <-
+  phylo_tbl(bayes_file = "data/8.bayes/ml-infile.nex.con.tre",
+            specimen_records = total_physaria)
+ggtree_ml <-
+  phylo_ggplot(phylo_tbl_obj = tbl_phylo_ml, phylo_layout = "rectangular",
+               plot_title = "Multi-locus Phylogeny",
+               legend_col = 2, x_expand = 0.025, rate_offset = -1.5,
+               legend_text = 10, text_tip_size = 3.2)
+lemon::reposition_legend(aplot = ggtree_ml, position = "top left", plot = TRUE)
+
+```
+
+## Western Wyoming Endemics | Distribution
 
 ```{r inteCompSpecimens}
 
@@ -111,7 +213,7 @@ ggmap_spp_inte_comp
 
 ```
 
-## Western Wyoming Endemics
+## Western Wyoming Endemics | Distribution
 
 ```{r inteCompGgmapRect}
 
@@ -122,7 +224,7 @@ ggmap_spp_inte_comp +
 
 ```
 
-## Western Wyoming Endemics
+## Western Wyoming Endemics | Rosette Difference
 
 ```{r inteCompRosetteHist}
 
@@ -190,7 +292,7 @@ rm(traits_inte_stems, traits_inte_leaves, counts_inte_comp, ggplot_inte_hist)
 
 ```
 
-## Western Wyoming Endemics
+## Western Wyoming Endemics | Rosette Difference
 
 ```{r inteCompRosetteMap}
 
@@ -239,7 +341,7 @@ ggplot_inte_rosette1
 
 ```
 
-## Western Wyoming Endemics
+## Western Wyoming Endemics | Rosette Difference
 
 ```{r inteCompRosetteZoom}
 
