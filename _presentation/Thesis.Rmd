@@ -82,20 +82,20 @@ dna_herbarium_spp <-
 
 ```
 
-## Methods 
+## Methods
 
 ```{r specimenCount}
 
 # Calculate total number of specimens accounting for duplicated records.
 specimen_count <-
-  total_physaria %>% 
+  total_physaria %>%
   dplyr::select(Collector, Collection_Number, Date, Herbarium) %>%
   dplyr::mutate(row_id = 1:nrow(.)) %>%
   dplyr::mutate(Herbarium =
     stringr::str_remove_all(Herbarium, pattern = "\\[|\\]") %>%
     stringr::str_split(., pattern = ", +") %>%
       map_chr(., function(herbarium) {
-        unlist(herbarium) %>% sort() %>% 
+        unlist(herbarium) %>% sort() %>%
           stringr::str_c(., collapse = " ")
         })) %>%
   dplyr::distinct(., Collector, Collection_Number, Date, Herbarium,
@@ -107,12 +107,12 @@ specimen_count <-
 
 ### **Specimen Overview**
 
-\ 
+\
 
 * **Herbarium Records**
     + `r specimen_count` specimens
 
-\ 
+\
 
 * **14 Herbaria**
 
@@ -120,7 +120,7 @@ specimen_count <-
 
 <div style="float: right; width: 45%;">
 
-\ 
+\
 
 ### **Lending Institutions**
 
@@ -200,7 +200,7 @@ spp_inte_comp <-
 ```{r inteCompGgmap}
 
 # Satellite distribution map
-ggmap_spp_inte_comp <- 
+ggmap_spp_inte_comp <-
   (spp_inte_comp %>%
      dplyr::group_by(Physaria_syn) %>% filter(n() > 3) %>%
      map_ggmap(map_df = ., map_col = "Physaria_syn",
@@ -232,7 +232,7 @@ ggmap_spp_inte_comp +
 traits_inte_comp <- spp_inte_comp %>%
   dplyr::filter(Longitude > -112, Longitude < -109,
                 Latitude > 41, Longitude < 44)
-traits_inte_stems <- continuous_tbl(trait_frame = traits_inte_comp, 
+traits_inte_stems <- continuous_tbl(trait_frame = traits_inte_comp,
                                     trait_name = "Stem_length_dm")
 traits_inte_leaves <- continuous_tbl(trait_frame = traits_inte_comp,
                                      trait_name = "Basal_leaf_length_cm") %>%
@@ -257,8 +257,8 @@ traits_inte_comp <-
                "Physaria didymocarpa ssp. didymocarpa")))
 
 # Plot histogram of stem / basal leaf differences and facet by ID.
-counts_inte_comp <- traits_inte_comp %>% 
-  dplyr::filter(!grepl("Physaria spp\\.", west_wyo_priors)) %>% 
+counts_inte_comp <- traits_inte_comp %>%
+  dplyr::filter(!grepl("Physaria spp\\.", west_wyo_priors)) %>%
     dplyr::group_by(west_wyo_factors) %>% dplyr::summarize(counts = n()) %>%
   dplyr::mutate(counts = paste0("n=", counts)) %>%
   dplyr::mutate(x = rep(15.2, times = nrow(.)),
@@ -272,13 +272,13 @@ ggplot_inte_hist <-
             hjust = 0) +
   facet_wrap(. ~ west_wyo_factors,
     labeller = labeller(west_wyo_factors = label_wrap_gen(22))) +
-  scale_fill_discrete(labels = 
-    c("Physaria condensata" = "Physaria condensata", 
+  scale_fill_discrete(labels =
+    c("Physaria condensata" = "Physaria condensata",
       "Physaria integrifolia" = "Physaria integrifolia",
-      "Physaria acutifolia" = "Physaria acutifolia", 
+      "Physaria acutifolia" = "Physaria acutifolia",
       "Physaria dornii" = "Physaria dornii",
       "Physaria didymocarpa ssp. didymocarpa" =
-        "Physaria didymocarpa \n   ssp. didymocarpa")) + 
+        "Physaria didymocarpa \n   ssp. didymocarpa")) +
   theme(strip.text = element_text(face = c("bold.italic")),
         legend.text = element_text(face = "italic")) +
   labs(x = "Stem / Rosette Difference (cm)",
@@ -374,7 +374,7 @@ ggplot_dorn_cond <-
   coord_fixed(xlim = grDevices::extendrange(c(-111.3, -110), f = 0),
               ylim = grDevices::extendrange(c(41, 42.3), f = 0)) +
   theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
-  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)", 
+  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)",
                        guide = guide_colourbar(order = 1),
                        colors = c("Red", "Orange", "Yellow", "Green", "Blue")) +
   scale_shape_manual(name = "Prior Annotations",
@@ -412,7 +412,7 @@ gg_borders +
   coord_fixed(xlim = grDevices::extendrange(c(-111.1, -110.3), f = 0),
               ylim = grDevices::extendrange(c(41.3, 42.1), f = 0)) +
   theme(panel.border = element_rect(colour = "slategrey", fill = NA, size = 3)) +
-  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)", 
+  scale_fill_gradientn(name = "Stem Length to Rosette\n Difference (cm)",
                        guide = guide_colourbar(order = 1),
                        colors = c("Red", "Orange", "Yellow", "Green", "Blue")) +
   scale_shape_manual(name = "Prior Annotations",
@@ -424,5 +424,50 @@ gg_borders +
   xlab("Longitude") +
   ylab("Latitude") +
   ggtitle("Stem / Rosette Difference")
+
+```
+
+## Western Wyoming Endemics | Basal Leaves
+
+```{r inteCompBasalLeaves}
+
+# Map traits
+ggplot_inte_basal <-
+  gg_borders +
+  geom_jitter(data = traits_inte_comp %>%
+                dplyr::filter(west_wyo_priors == "Physaria spp."),
+              inherit.aes = FALSE, na.rm = TRUE, size = 2,
+              aes(x = Longitude, y = Latitude,
+                  fill = Basal_leaf_length_cm_max, shape = west_wyo_priors)) +
+  geom_jitter(data = traits_inte_comp %>%
+                dplyr::filter(grepl("Physaria acutifolia", west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 3, alpha = 0.5,
+              aes(x = Longitude, y = Latitude,
+                  fill = Basal_leaf_length_cm_max, shape = west_wyo_priors)) +
+  geom_jitter(data = traits_inte_comp %>%
+                dplyr::filter(grepl(paste0("dornii|condensata|",
+                                           "integrifolia|didymocarpa"),
+                                    west_wyo_priors)),
+              inherit.aes = FALSE, na.rm = TRUE, size = 4,
+              color = "black", alpha = 0.7,
+              aes(x = Longitude, y = Latitude,
+                  fill = Basal_leaf_length_cm_max, shape = west_wyo_priors)) +
+  coord_fixed(xlim = grDevices::extendrange(c(-112, -109), f = 0),
+              ylim = grDevices::extendrange(c(41, 44), f = 0)) +
+  theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+  scale_fill_gradientn(name = "Max Basal Leaf Length\n (cm)",
+    colors = RColorBrewer::brewer.pal(n = 6, name = "YlGnBu")) +
+  scale_shape_manual(name = "Prior Annotations",
+                     values = c("Physaria spp." = 3,
+                                "Physaria acutifolia" = 21,
+                                "Physaria didymocarpa ssp. didymocarpa" = 23,
+                                "Physaria integrifolia" = 24,
+                                "Physaria dornii" = 22,
+                                "Physaria condensata" = 25)) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Basal Leaf Length")
+
+ggplot_inte_basal
 
 ```
