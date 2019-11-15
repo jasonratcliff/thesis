@@ -84,84 +84,63 @@ brushed_specimens <- function(spp_df, map_cols) {
 
 # Distribution Plotting UI ----
 ui <- fluidPage(
-    
-    # Application title
-    titlePanel("Physaria Spatial Analysis"),
-    
-    # Sidebar with a select input for subsetting data frame total_physaria.
-    # Select input for state is drawn from the set of unique total states.
-    # Text input should represent a regular expression of species to subset.
-    # - separate species in RegEx by pipe character "|" for OR logical.
-    # Action button executes shinyServer() function call in server.R script.  
-    sidebarLayout(
-      sidebarPanel(
-        
-        # Optional choice to subset specimens by coordinate data.
-        # - passes subset_spp() argument for LONGITUDE and LATITUDE in server.
-        # - text input should be comma separated decimal degrees values.
-        checkboxInput(inputId = "coordinates",
-                      label = "Subset by Longitude and Latitude?",
-                      value = FALSE),
-        conditionalPanel(condition = "input.coordinates == true",
-                         textInput(inputId = "longitude",
-                                   label = "Longitude", value = NULL,
-                          placeholder = "Decimal Degrees for Longitude"),
-                         textInput(inputId = "latitude",
-                                   label = "Latitude", value = NULL,
-                          placeholder = "Decimal Degrees for Latitude")),
-      
-        # Text input of species regular expression.
-        # - passes subset_spp() argument for SPECIES in server.R 
-        textInput(inputId = "species_subset",
-                  label = "Subset of species:",
-                  value = ""),
-        
-        # Select input for column of identification type (priors, post).
-        # - passes subset_spp() argument for TAXA_ID in server.R
-        selectInput(inputId = "subset_taxa_id",
-                    label = "Subset Taxa ID",
-                    choices = as.list(unique(names(total_physaria)[grep(
-                      "Physaria|Taxon_a_posteriori", names(total_physaria))])),
-                    selected = "Physaria_syn"),
-        
-        # Select input for specimen status passed to subset_spp().
-        selectInput(inputId = "mapped_status",
-                    label = "Specimen Status",
-                    choices = c("skip", "questioned", "remain", "confirmed"),
-                    selected = "skip"),
-        
-        # Select input for ggplot color aesthetic
-        # - passes map_spp() argument for TAXA_ID in server.R
-        selectInput(inputId = "mapped_taxa_id",
-                    label = "Mapped Taxa ID",
-                    choices = names(total_physaria),
-                    selected = "Taxon_a_posteriori"),
-        
-        # Conditional panel for finding individual specimen voucher.
-        checkboxInput(inputId = "spp_find", value = FALSE, 
-                      label = "Find individual specimen?"),
-        conditionalPanel(
-          condition = "input.spp_find == true",
-          # Text input for collection number and collector.
-          # - passes map_spp() argument for ID_SPP in server.R
-          textInput(inputId = "collector_id",
-                    label = "Collector"),
-          textInput(inputId = "collection_id",
-                    label = "Collection Number")),
-        
-        # Action button to generate map based on user inputs.
-        actionButton("map_button", "Generate map")
+  titlePanel("Physaria Spatial Analysis"),
+  
+  # Show a plot of the generated map and allow brushing geom points.
+  mainPanel(
+    sidebarPanel(
+      actionButton("map_button", "Generate map")
       ),
-      
-      # Show a plot of the generated map and allow brushing geom points.
-      mainPanel(
-        h1("Physaria", align = "center"),
-        plotOutput("mapPlot", 
-                   brush = brushOpts(id = "map_brush",
-                                     resetOnNew = TRUE)),
-        verbatimTextOutput("mapTest"),
-        verbatimTextOutput("brushPlants", placeholder = FALSE)
+    tabsetPanel(
+      tabPanel("Distribution",
+               plotOutput("mapPlot", height = "1000px",
+                 brush = brushOpts(id = "map_brush", resetOnNew = TRUE))),
+      tabPanel("Parameters",
+        br(),
+        h3("Subsetting and Mapping Columns"),
+        br(),
+        fluidRow(
+          # Select column for specimen subsetting and ggplot color aesthetic.
+          selectInput(inputId = "subset_taxa_id", label = "Subset Taxa ID",
+            choices = as.list(unique(names(specimen_data)[grep(
+              "Physaria|Taxon_a_posteriori", names(specimen_data))])),
+            selected = "Physaria_syn"),
+          selectInput(inputId = "map_color_aes", label = "Mapped Taxa ID",
+            choices = names(specimen_data), selected = "Physaria_syn")
+          ),
+        br(),
+        h4("Optional Parameters"),
+        hr(),
+        fluidRow(
+          column(4,
+            # Optional choice to subset specimens by coordinate data.
+            checkboxInput(inputId = "coordinates", value = FALSE,
+                          label = "Subset by Latitude and Longitude?"),
+            conditionalPanel(condition = "input.coordinates == true",
+                             uiOutput("Latitude"), uiOutput("Longitude"))
+            ),
+          column(4,
+            # Optional choice to subset specimens RegEx (w/ | w/o exlusion).
+            checkboxInput(inputId = "spp_filter", value = FALSE,
+                          label = "Subset by species?"),
+            conditionalPanel(condition = "input.spp_filter == true",
+              textInput(inputId = "taxa_filter", label = "Species", 
+                        value = NULL, placeholder = "Species RegEx"),
+              checkboxInput(inputId = "exclude", value = FALSE,
+                            label = "Exclude species subset?"))
+            ),
+          column(4,
+            # Conditional panel for finding individual voucher.
+            checkboxInput(inputId = "spp_find", value = FALSE,
+                          label = "Find individual specimen?"),
+            conditionalPanel(condition = "input.spp_find == true",
+              textInput(inputId = "collector_id", label = "Collector"),
+              textInput(inputId = "collection_id", label = "Collection Number"))
+            )
+          ),
+          hr()
         )
+      )
     )
   )
 
