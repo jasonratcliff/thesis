@@ -1,15 +1,71 @@
 library(shiny)
-
-# Read specimen data to Global Environment
-source("R/load_species.R")
+require(magrittr)
+require(readr)
+require(ggplot2)
+# require(grid)
 
 # Source R functions
-source("R/find_spp.R")
-source("R/subset_spp.R")
-source("R/topo_spp.R")
-source("R/map_spp.R")
+source("R/map_tools.R")
+gg_borders <- map_borders(border_color = "black")
 
-# Function definition to format brushed specimen output:
+specimen_data <- 
+  purrr::map_dfr(list.files("output/specimens", full.names = TRUE),
+    function(specimens_file) {
+      spp_csv <- 
+        readr::read_csv(specimens_file, col_names = TRUE,
+          col_types = cols(Physaria_a_priori_1 = col_character(), Physaria_a_priori_2 = col_character(), Physaria_a_priori_3 = col_character(), Physaria_a_priori_4 = col_character(), Physaria_recent = col_character(), Physaria_syn = col_character(), Taxon = col_character(), Taxon_a_posteriori = col_character(), Collector = col_character(), Collection_Number = col_character(), Date = col_character(), Herbarium = col_character(), State = col_character(), County = col_character(), Latitude = col_double(), Longitude = col_double(), ID = col_character(), App.A = col_character(), Imaged = col_character(), Elev_m = col_character(), Elev_ft = col_character(), DNA_extraction_complete = col_character(), Google_Earth = col_character(), Mature_Fruit = col_character(), Juvenile_Fruit = col_character(), TRS2 = col_character(), Notes = col_character(), Rosulate = col_character(), Caudex = col_character(), Pubescence = col_character(), Basal_leaf_trichomes = col_character(), Fruit_trichomes = col_character(), Stem_count = col_character(), Stem_shape = col_character(), Stem_length_dm = col_character(), Petiole = col_character(), Basal_leaf_length_cm = col_character(), Basal_leaf_shape = col_character(), Basal_leaf_margins = col_character(), Cauline_leaf_length_mm = col_character(), Cauline_leaf_shape = col_character(), Cauline_leaf_margins = col_character(), Racemes = col_character(), Pedicel_shape = col_character(), Pedicels_secund = col_character(), Sepal_length_mm = col_character(), Sepal_shape = col_character(), Petal_color = col_character(), Petal_length_mm = col_character(), Petal_shape = col_character(), Style_length_mm = col_character(), Mature_fruit_length_mm = col_character(), Mature_fruit_width_mm = col_character(), Fruit = col_character(), Mature_fruit_apices = col_character(), Replum_pubescence = col_character(), Inner_valve_pubescence = col_character(), Ovule_number = col_character(), Replum_shape = col_character(), Seed_color = col_character(), Seed_shape = col_character(), Mature_seed_length_mm = col_character(), `Chromosome.#` = col_character(), Date_parsed = col_date(format = "%Y-%m-%d"), Date_md = col_date(format = "%Y-%m-%d"), elev_raw_ft = col_character(), elev_raw_m = col_character(), elev_min = col_double(), elev_max = col_double()))
+      dplyr::bind_rows(spp_csv)
+      })
+
+# Subset Specimens Function ----
+spp_subset <- function(taxa_frame, state = NULL, county = NULL,
+                       longitude = NULL, latitude = NULL,
+                       spp_str = NULL, taxa_col = NULL,
+                       exclude = c(FALSE, TRUE)) {
+  
+  # Subset by geographic coordinates.
+  parse_coordinates <- function(coordinates) {
+    coordinate_range <- 
+      gsub(" +", "", x = coordinates) %>% 
+      gsub("![0-9\\.,-]", "", x = .) %>%
+      strsplit(coordinates, split = ",") %>% unlist()
+    if (length(coordinate_range) != 2) {
+      stop("Ensure coordinates are two comma separated values.")
+    } else {
+      sort(as.numeric(coordinate_range))
+    }
+  }
+  if (!is.null(latitude)) {
+    if (nchar(latitude) > 0) {
+      coordinate_values <- parse_coordinates(latitude)
+      taxa_frame <- taxa_frame %>% 
+        dplyr::filter(Latitude > coordinate_values[1] & 
+                        Latitude < coordinate_values[2])
+    }
+  }
+  if (!is.null(longitude)) {
+    if (nchar(longitude) > 0) {
+      coordinate_values <- parse_coordinates(longitude)
+      taxa_frame <- taxa_frame %>% 
+        dplyr::filter(Longitude > coordinate_values[1] & 
+                        Longitude < coordinate_values[2])
+    }
+  }
+
+  # Subset specimen records by species string.
+  if (!is.null(spp_str)) {
+    if (is.null(taxa_col)) {
+      stop("Set `taxa_col` argument for column subset.")
+    } else {
+      taxa_frame <- 
+        taxa_frame[grep(pattern = paste(spp_str, collapse = "|"),
+                        x = taxa_frame[, taxa_col][[1]], invert = exclude), ]
+      }
+    }
+  return(taxa_frame)
+}
+
+# Brushed Specimens Function ----
 brushed_specimens <- function(spp_df, map_cols) {
   for (i in 1:nrow(spp_df)) {
     
@@ -20,13 +76,13 @@ brushed_specimens <- function(spp_df, map_cols) {
     } else { taxon <- spp_df[i, map_cols[1]]}
     
     cat(spp_df[i, "Collector"], "\n",
-        "  ", spp_df[i, "Collection_Number"], "\n",
+        "  ", spp_df[i, "Collection_Number"], spp_df[i, "County"], "\n",
         "\t", taxon, '\n')
     cat("\n")
   }
 }
 
-# Define UI for application that draws a Physaria map plot:
+# Distribution Plotting UI ----
 ui <- fluidPage(
     
     # Application title
