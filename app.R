@@ -191,110 +191,46 @@ ui <- fluidPage(
     )
   )
 
-server <- function(input, output) {
-  
-  # Declare reactive values for specimen data frame to be mapped, or
-  # for subsetting by county or geographic coordinate (i.e. lat / long).
-  map_set <- reactiveValues(map_df = NULL, map_subset = NULL, 
-                            county_string = NULL, coords = NULL,
-                            longitude = NULL, latitude = NULL,
-                            species_string = NULL, taxa_identification = NULL,
-                            taxa_status = NULL, find_specimens = NULL,
-                            id_collector = NULL, id_collection = NULL)
+# Shiny App Server ----
+server <- function(input, output, session) {
 
-  # Observe button to generate map plot with user parameters declared.
-  observeEvent(input$map_button, {
-    
-    # Initial set prevents map generation until user input is declared.
+  # Set coordinate range reactive conductors.
+  react_lat <- reactive({ input$latitude })
+  react_long <- reactive({ input$longitude })
+
+  # Reactive tibble data frame of subset specimens by user input.
+  specimen_subset <- reactive({
+    input$map_button
+    species_string <- isolate(input$taxa_filter)
+    spp_subset(taxa_frame = specimen_data,
+               latitude = isolate(react_lat()),
+               longitude = isolate(react_long()),
+               taxa_col = input$subset_taxa_id,
+               spp_str = species_string,
+               exclude = input$exclude)
+  })
+  # Render map from reactive subset ----
+  output$mapPlot <- renderPlot({
     if (input$map_button == 0) {
       return()
     } else {
-  
-      # # Checkbox sets reactive value COUNTY_STRING by input COUNTIES.
-      # if (input$county_opt == TRUE) {
-      #   map_set$county_string <- input$counties
+      map_plot <-
+        map_specimens(map_df = specimen_subset(),
+                    map_gg_base = gg_borders,
+                    map_col = input$map_color_aes) +
+        theme(legend.direction = "vertical", legend.position = "bottom",
+              legend.text.align = 0, legend.title.align = 0.5,
+              legend.text = element_text(size = 12),
+              legend.title = element_text(face = "bold", size = 15)) +
+        guides(colour = guide_legend(ncol = 2, byrow = FALSE))
+      map_plot
+      # lemon::reposition_legend(map_plot, position = "bottom")
+      # if () {
+      #   map_plot <- map_plot +
       # }
-      
-      # Set reactive values based on user interface inputs.
-      map_set$species_string <- as.character(input$species_subset)
-      map_set$taxa_identification <- as.character(input$subset_taxa_id)
-      map_set$taxa_status <- as.character(input$mapped_status)
-      map_set$mapped_taxa <- as.character(input$mapped_taxa_id)
-      map_set$find_specimens <- as.logical(input$spp_find)
-      map_set$id_collector <- input$collector_id
-      map_set$id_collection <- input$collection_id
-      
-      # Checkbox sets reactive value COUNTY_STRING by input COUNTIES.
-      if (input$coordinates == TRUE) {
-        map_set$longitude <- as.numeric(strsplit(input$longitude, ", ")[[1]])
-        map_set$latitude <- as.numeric(strsplit(input$latitude, ", ")[[1]])
       }
-      
-      # Subset specimens by mandatory variable for state,
-      # and optional variables county, species, taxa ID,  
-      map_set$map_subset <- subset_spp(taxa_frame = total_physaria,
-                                       state = "", county = "",
-                                       longitude = map_set$longitude,
-                                       latitude = map_set$latitude,
-                                       spp_str = map_set$species_string,
-                                       taxa_id = map_set$taxa_identification)
-      
-      map_set$map_df <- map_set$map_subset  # full specimen data frame
-      output$mapPlot <- renderPlot({
-        map_spp(map_frame = map_set$map_df,
-                base = "map_base",
-                taxa_id = map_set$mapped_taxa,
-                mapped_spp = map_set$taxa_status,
-                map_borders = "black", map_fill = "ghostwhite",
-                id_spp = map_set$find_specimens,
-                collector = map_set$id_collector,
-                collection_number = map_set$id_collection)
+    })
       })
-      
-      # Subset data frame of non-missing coordinates for max / min boundary border
-      map_set$coords <- map_set$map_df[
-        which(!is.na(map_set$map_df$Latitude | map_set$map_df$Longitude)),
-        c("Longitude", "Latitude")]
-
-      output$mapTest <- renderPrint({
-        cat("Boundary Borders",
-            "\n", "\t", "Longitude:", "\t",
-            min(map_set$coords[, "Longitude"]), "\t",
-            max(map_set$coords[, "Longitude"]), "\t",
-            "\n", "\t", "Latitude:","\t",
-            min(map_set$coords[, "Latitude"]), "\t",
-            max(map_set$coords[, "Latitude"]), "\t",
-            "\n\n", "Mapped Specimens:", "\n",
-            "- Rows:", nrow(map_set$map_df),  "\n",
-            "- Columns:", ncol(map_set$map_df), "\n\n",
-            map_set$county_string)
-      })
-    }
-    
-  })
-  
-  observeEvent(input$map_brush, {
-    
-    req(input$map_brush)
-    
-    map_cols <- c(as.character(input$mapped_taxa_id),
-                  "Collector", "Collection_Number")
-    
-    # Remove rows with missing Lat / Long values
-    mapped_brush <- map_set$map_df[
-      which(!is.na(map_set$map_df$Latitude |
-                     map_set$map_df$Longitude)), ]
-    
-    brushed_spp <- brushedPoints(mapped_brush[, c(map_cols,
-                                                  "Latitude", "Longitude")],
-                                 brush = input$map_brush,
-                                 xvar = "Longitude", yvar = "Latitude")
-    
-    if (nrow(brushed_spp) > 0) {
-      output$brushPlants <- renderPrint({
-        brushed_specimens(brushed_spp, map_cols)
-      })
-    }
   })
 }
 
