@@ -230,7 +230,29 @@ server <- function(input, output, session) {
       # }
       }
     })
+
+  # Coordinate Range UI ----
+  output$Latitude <- renderUI({
+    input$map_button
+    range_lat <- isolate({
+      paste(
+        min(specimen_subset() %>% dplyr::select(Latitude), na.rm = TRUE), ",",
+        max(specimen_subset() %>% dplyr::select(Latitude), na.rm = TRUE))
       })
+    textInput(inputId = "latitude", label = "Latitude", value = NULL,
+              placeholder = range_lat)
+    })
+  output$Longitude <- renderUI({
+    input$map_button
+    range_long <- isolate({
+      paste(
+        min(specimen_subset() %>% dplyr::select(Longitude), na.rm = TRUE), ",",
+        max(specimen_subset() %>% dplyr::select(Longitude), na.rm = TRUE))
+      })
+    textInput(inputId = "longitude", label = "Longitude", value = NULL,
+              placeholder = range_long)
+    })
+
   })
 }
 
