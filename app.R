@@ -1,4 +1,4 @@
-library(shiny)
+require(shiny)
 require(magrittr)
 require(readr)
 require(ggplot2)
@@ -16,6 +16,11 @@ specimen_data <-
           col_types = cols(Physaria_a_priori_1 = col_character(), Physaria_a_priori_2 = col_character(), Physaria_a_priori_3 = col_character(), Physaria_a_priori_4 = col_character(), Physaria_recent = col_character(), Physaria_syn = col_character(), Taxon = col_character(), Taxon_a_posteriori = col_character(), Collector = col_character(), Collection_Number = col_character(), Date = col_character(), Herbarium = col_character(), State = col_character(), County = col_character(), Latitude = col_double(), Longitude = col_double(), ID = col_character(), App.A = col_character(), Imaged = col_character(), Elev_m = col_character(), Elev_ft = col_character(), DNA_extraction_complete = col_character(), Google_Earth = col_character(), Mature_Fruit = col_character(), Juvenile_Fruit = col_character(), TRS2 = col_character(), Notes = col_character(), Rosulate = col_character(), Caudex = col_character(), Pubescence = col_character(), Basal_leaf_trichomes = col_character(), Fruit_trichomes = col_character(), Stem_count = col_character(), Stem_shape = col_character(), Stem_length_dm = col_character(), Petiole = col_character(), Basal_leaf_length_cm = col_character(), Basal_leaf_shape = col_character(), Basal_leaf_margins = col_character(), Cauline_leaf_length_mm = col_character(), Cauline_leaf_shape = col_character(), Cauline_leaf_margins = col_character(), Racemes = col_character(), Pedicel_shape = col_character(), Pedicels_secund = col_character(), Sepal_length_mm = col_character(), Sepal_shape = col_character(), Petal_color = col_character(), Petal_length_mm = col_character(), Petal_shape = col_character(), Style_length_mm = col_character(), Mature_fruit_length_mm = col_character(), Mature_fruit_width_mm = col_character(), Fruit = col_character(), Mature_fruit_apices = col_character(), Replum_pubescence = col_character(), Inner_valve_pubescence = col_character(), Ovule_number = col_character(), Replum_shape = col_character(), Seed_color = col_character(), Seed_shape = col_character(), Mature_seed_length_mm = col_character(), `Chromosome.#` = col_character(), Date_parsed = col_date(format = "%Y-%m-%d"), Date_md = col_date(format = "%Y-%m-%d"), elev_raw_ft = col_character(), elev_raw_m = col_character(), elev_min = col_double(), elev_max = col_double()))
       dplyr::bind_rows(spp_csv)
       })
+
+# Select input options for subsetting / mapping aesthetics.
+select_names <-
+  as.list(unique(names(specimen_data)[grep(
+    "Physaria|Taxon_a_posteriori", names(specimen_data))]))
 
 # Subset Specimens Function ----
 spp_subset <- function(taxa_frame, state = NULL, county = NULL,
@@ -149,11 +154,9 @@ ui <- fluidPage(
         fluidRow(
           # Select column for specimen subsetting and ggplot color aesthetic.
           selectInput(inputId = "subset_taxa_id", label = "Subset Taxa ID",
-            choices = as.list(unique(names(specimen_data)[grep(
-              "Physaria|Taxon_a_posteriori", names(specimen_data))])),
-            selected = "Physaria_syn"),
+            choices = select_names, selected = "Physaria_syn"),
           selectInput(inputId = "map_color_aes", label = "Mapped Taxa ID",
-            choices = names(specimen_data), selected = "Physaria_syn")
+            choices = select_names, selected = "Physaria_syn")
           ),
         br(),
         h4("Optional Parameters"),
