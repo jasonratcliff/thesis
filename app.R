@@ -216,8 +216,9 @@ server <- function(input, output, session) {
     } else {
       map_plot <-
         map_specimens(map_df = specimen_subset(),
-                    map_gg_base = gg_borders,
-                    map_col = input$map_color_aes) +
+                      map_gg_base = gg_borders,
+                      map_col = input$map_color_aes,
+                      jitter_pos = c(0.035, 0.035)) +
         theme(legend.direction = "vertical", legend.position = "bottom",
               legend.text.align = 0, legend.title.align = 0.5,
               legend.text = element_text(size = 12),
