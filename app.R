@@ -148,6 +148,12 @@ ui <- fluidPage(
     tabsetPanel(
       tabPanel("Distribution",
         fluidRow(
+          br(),
+          column(4,
+                 tableOutput("mapRange")
+                 )
+          ),
+        fluidRow(
           plotOutput("mapPlot",
                      brush = brushOpts(id = "map_brush", resetOnNew = TRUE))
           ),
@@ -205,11 +211,9 @@ ui <- fluidPage(
 # Shiny App Server ----
 server <- function(input, output, session) {
 
-  # Set coordinate range reactive conductors.
+  # Reactive Specimen Subset ----
   react_lat <- reactive({ input$latitude })
   react_long <- reactive({ input$longitude })
-
-  # Reactive tibble data frame of subset specimens by user input.
   specimen_subset <- reactive({
     input$map_button
     species_string <- isolate(input$taxa_filter)
@@ -220,7 +224,8 @@ server <- function(input, output, session) {
                spp_str = species_string,
                exclude = input$exclude)
   })
-  # Render map from reactive subset ----
+
+  # Render Map Plot ----
   map_ggplot <- reactive({
     input$map_button
     map_specimens(map_df = specimen_subset(),
@@ -262,24 +267,34 @@ server <- function(input, output, session) {
   output$Latitude <- renderUI({
     input$map_button
     range_lat <- isolate({
-      paste(
-        min(specimen_subset() %>% dplyr::select(Latitude), na.rm = TRUE), ",",
-        max(specimen_subset() %>% dplyr::select(Latitude), na.rm = TRUE))
+      specimen_subset() %>% dplyr::select(Latitude) %>%
+        range(na.rm = TRUE) %>% paste(collapse = ", ")
       })
-    textInput(inputId = "latitude", label = "Latitude", value = NULL,
-              placeholder = range_lat)
+    textInput(inputId = "latitude", label = "Latitude", value = range_lat)
     })
   output$Longitude <- renderUI({
     input$map_button
     range_long <- isolate({
-      paste(
-        min(specimen_subset() %>% dplyr::select(Longitude), na.rm = TRUE), ",",
-        max(specimen_subset() %>% dplyr::select(Longitude), na.rm = TRUE))
+      specimen_subset() %>% dplyr::select(Longitude) %>%
+        range(na.rm = TRUE) %>% paste(collapse = ", ")
       })
-    textInput(inputId = "longitude", label = "Longitude", value = NULL,
-              placeholder = range_long)
+    textInput(inputId = "longitude", label = "Longitude", value = range_long)
     })
 
+  # Coordinate Range Kable ----
+  output$mapRange <- function() {
+    if (input$map_button == 0) {
+      return()
+    } else {
+      map_latitude <- map_ggplot()$coordinates$limits$y %>% sort()
+      map_longitude <- map_ggplot()$coordinates$limits$x %>% sort
+      dplyr::bind_cols(Latitude = map_latitude,
+                       Longitude = map_longitude) %>% t() %>%
+        # dplyr::rename(`[,1]` = "Minimum", `[,2]`  = "Maximum") %>%
+        knitr::kable("html") %>%
+        kableExtra::kable_styling(bootstrap_options = c("bordered"))
+    }
+  }
   })
 }
 
