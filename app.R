@@ -1,13 +1,15 @@
 require(shiny)
 require(magrittr)
 require(readr)
+require(knitr)
+require(kableExtra)
 require(ggplot2)
-# require(grid)
+require(lemon)
+require(gridExtra)
 
-# Source R functions
+# Source R functions, build ggplot map borders and specimen data.
 source("R/map_tools.R")
 gg_borders <- map_borders(border_color = "black")
-
 specimen_data <-
   purrr::map_dfr(list.files("output/specimens", full.names = TRUE),
     function(specimens_file) {
@@ -145,8 +147,14 @@ ui <- fluidPage(
       ),
     tabsetPanel(
       tabPanel("Distribution",
-               plotOutput("mapPlot", height = "1000px",
-                 brush = brushOpts(id = "map_brush", resetOnNew = TRUE))),
+        fluidRow(
+          plotOutput("mapPlot",
+                     brush = brushOpts(id = "map_brush", resetOnNew = TRUE))
+          ),
+        fluidRow(
+          plotOutput("mapLegend")
+          )
+        ),
       tabPanel("Parameters",
         br(),
         h3("Subsetting and Mapping Columns"),
@@ -213,26 +221,41 @@ server <- function(input, output, session) {
                exclude = input$exclude)
   })
   # Render map from reactive subset ----
+  map_ggplot <- reactive({
+    input$map_button
+    map_specimens(map_df = specimen_subset(),
+                  map_gg_base = gg_borders,
+                  map_col = input$map_color_aes,
+                  jitter_pos = c(0.035, 0.035)) +
+      theme(legend.direction = "vertical", legend.position = "right",
+            legend.text.align = 0, legend.title.align = 0.5,
+            legend.text = element_text(size = 12),
+            legend.title = element_text(face = "bold", size = 15))
+  })
+
+  # Output map ggplot.
   output$mapPlot <- renderPlot({
     if (input$map_button == 0) {
       return()
-    } else {
-      map_plot <-
-        map_specimens(map_df = specimen_subset(),
-                      map_gg_base = gg_borders,
-                      map_col = input$map_color_aes,
-                      jitter_pos = c(0.035, 0.035)) +
-        theme(legend.direction = "vertical", legend.position = "bottom",
-              legend.text.align = 0, legend.title.align = 0.5,
-              legend.text = element_text(size = 12),
-              legend.title = element_text(face = "bold", size = 15)) +
-        guides(colour = guide_legend(ncol = 2, byrow = FALSE))
-      map_plot
-      # lemon::reposition_legend(map_plot, position = "bottom")
-      # if () {
-      #   map_plot <- map_plot +
-      # }
+      } else {
+        map_ggplot() + theme(legend.position = "none")
       }
+    },
+    height = function() {
+      session$clientData$output_mapPlot_height
+      })
+
+  # Ouptut extracted ggplot legend.
+  output$mapLegend <- renderPlot({
+    if (input$map_button == 0) {
+      return()
+      } else {
+        map_legend <- lemon::g_legend(map_ggplot())
+        gridExtra::grid.arrange(map_legend)
+      }
+  },
+  height = function() {
+    session$clientData$output_mapLegend_height
     })
 
   # Coordinate Range UI ----
@@ -260,4 +283,6 @@ server <- function(input, output, session) {
   })
 }
 
+# Run app ----
 shinyApp(ui, server)
+
