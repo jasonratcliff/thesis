@@ -119,21 +119,36 @@ spp_subset <- function(taxa_frame, state = NULL, county = NULL,
   return(taxa_frame)
 }
 
-# Brushed Specimens Function ----
-brushed_specimens <- function(spp_df, map_cols) {
-  for (i in 1:nrow(spp_df)) {
+# Find Specimen Function ----
+spp_find <- function(gg_map_obj, taxa_frame, collector, collection_number) {
 
-    if (grepl("ssp.", spp_df[i, map_cols[1]])) {
-      taxa_char <- unlist(strsplit(spp_df[i, map_cols[1]],
-                                   split = " ssp. ", fixed = TRUE))
-      taxon <- paste(taxa_char[1], taxa_char[2], sep = "\n\t\t  ssp. ")
-    } else { taxon <- spp_df[i, map_cols[1]]}
-
-    cat(spp_df[i, "Collector"], "\n",
-        "  ", spp_df[i, "Collection_Number"], spp_df[i, "County"], "\n",
-        "\t", taxon, '\n')
-    cat("\n")
+  # Find collection by collector and collection number.
+  if (is.na(collector) | is.na(collection_number)) {
+    warning("Enter arguments for collector and collection number...")
+  } else {
+    spp_id <- taxa_frame %>%
+      dplyr::filter(grepl(Collector, pattern = collector) &
+                      grepl(Collection_Number, pattern = collection_number)) %>%
+      dplyr::select(Collector, Collection_Number,
+                    Latitude, Longitude)
   }
+  
+  # Calculate label offset for plotting.
+  x_adjust <- (dist(gg_map_obj$coordinates$limits$x)[1]) * .15
+  y_adjust <- (dist(gg_map_obj$coordinates$limits$y)[1]) * -.2
+    
+  # Plot additional map layer to include the individual specimen.
+  gg_map_obj +
+    geom_point(data = spp_id, inherit.aes = FALSE,
+               mapping = aes(x = Longitude, y = Latitude),
+               show.legend = FALSE, size = 6, shape = 5, fill = NA) +
+    geom_label(data = spp_id, inherit.aes = FALSE,
+               nudge_x = 0.25, nudge_y = -0.15,
+               label.padding = unit(0.1, "lines"), size = 4,
+               mapping = aes(x = Longitude, y = Latitude,
+                             label = paste(spp_id$Collector,
+                                           spp_id$Collection_Number,
+                                           sep = "\n")), alpha = 0.5)
 }
 
 # Distribution Plotting UI ----
@@ -201,8 +216,10 @@ ui <- fluidPage(
             checkboxInput(inputId = "spp_find", value = FALSE,
                           label = "Find individual specimen?"),
             conditionalPanel(condition = "input.spp_find == true",
-              textInput(inputId = "collector_id", label = "Collector"),
-              textInput(inputId = "collection_id", label = "Collection Number"))
+              textInput(inputId = "collector_id", value = NA,
+                        label = "Collector"),
+              textInput(inputId = "collection", value = NA,
+                        label = "Collection Number"))
             )
           ),
           hr()
@@ -232,14 +249,27 @@ server <- function(input, output, session) {
   # Render Map Plot ----
   map_ggplot <- reactive({
     input$map_button
-    map_specimens(map_df = specimen_subset(),
-                  map_gg_base = gg_borders,
-                  map_col = input$map_color_aes,
-                  jitter_pos = c(0.035, 0.035)) +
+    spp_distribution <-
+      map_specimens(map_df = specimen_subset(),
+                    map_gg_base = gg_borders,
+                    map_col = input$map_color_aes,
+                    jitter_pos = c(0.035, 0.035)) +
       theme(legend.direction = "vertical", legend.position = "right",
             legend.text.align = 0, legend.title.align = 0.5,
             legend.text = element_text(size = 12),
             legend.title = element_text(face = "bold", size = 15))
+
+    # Optionally plot specimen identification.
+    if (isolate(input$spp_find) == TRUE) {
+      req(input$collector_id)
+      req(input$collection)
+      spp_distribution <-
+        spp_find(gg_map_obj = spp_distribution,
+                 taxa_frame = specimen_subset(),
+                 collector = isolate(input$collector_id),
+                 collection_number = isolate(input$collection))
+    }
+      spp_distribution
   })
 
   # Output map ggplot.
@@ -310,6 +340,7 @@ server <- function(input, output, session) {
         dplyr::select(Collector, Collection_Number,
                       Physaria_syn, Taxon_a_posteriori) %>%
         dplyr::arrange(Taxon_a_posteriori, Collector) %>%
+        dplyr::distinct() %>%
         dplyr::rename(`Collection Number` = Collection_Number,
                       `Recent Annotation` = Physaria_syn,
                       `Reviewed Annotation` = Taxon_a_posteriori) %>%
@@ -317,7 +348,7 @@ server <- function(input, output, session) {
         kableExtra::kable_styling(bootstrap_options = c("bordered"))
       }
     })
-  }
+}
 
 # Run app ----
 shinyApp(ui, server)
