@@ -240,28 +240,20 @@ server <- function(input, output, session) {
 
   # Output map ggplot.
   output$mapPlot <- renderPlot({
-    if (input$map_button == 0) {
-      return()
-      } else {
-        map_ggplot() + theme(legend.position = "none")
-      }
-    },
-    height = function() {
+    req(input$map_button)
+    map_ggplot() + theme(legend.position = "none")
+    }, height = function() {
       session$clientData$output_mapPlot_height
       })
 
   # Ouptut extracted ggplot legend.
   output$mapLegend <- renderPlot({
-    if (input$map_button == 0) {
-      return()
-      } else {
-        map_legend <- lemon::g_legend(map_ggplot())
-        gridExtra::grid.arrange(map_legend)
-      }
-  },
-  height = function() {
-    session$clientData$output_mapLegend_height
-    })
+    req(input$map_button)
+    map_legend <- lemon::g_legend(map_ggplot())
+    gridExtra::grid.arrange(map_legend)
+    }, height = function() {
+      session$clientData$output_mapLegend_height
+      })
 
   # Coordinate Range UI ----
   output$Latitude <- renderUI({
@@ -283,14 +275,15 @@ server <- function(input, output, session) {
 
   # Coordinate Range Kable ----
   output$mapRange <- function() {
-    if (input$map_button == 0) {
-      return()
-    } else {
-      map_latitude <- map_ggplot()$coordinates$limits$y %>% sort()
-      map_longitude <- map_ggplot()$coordinates$limits$x %>% sort
-      dplyr::bind_cols(Latitude = map_latitude,
-                       Longitude = map_longitude) %>% t() %>%
-        # dplyr::rename(`[,1]` = "Minimum", `[,2]`  = "Maximum") %>%
+    req(input$map_button)
+    map_latitude <- map_ggplot()$coordinates$limits$y %>% sort()
+    map_longitude <- map_ggplot()$coordinates$limits$x %>% sort
+    dplyr::bind_cols(Latitude = map_latitude,
+                     Longitude = map_longitude) %>% t() %>%
+      knitr::kable("html", col.names = c("Minimum", "Maximum")) %>%
+      kableExtra::kable_styling(bootstrap_options = c("bordered"))
+  }
+
         knitr::kable("html") %>%
         kableExtra::kable_styling(bootstrap_options = c("bordered"))
     }
