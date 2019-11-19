@@ -149,8 +149,11 @@ ui <- fluidPage(
       tabPanel("Distribution",
         fluidRow(
           br(),
-          column(4,
+          column(6,
                  tableOutput("mapRange")
+                 ),
+          column(6,
+                 tableOutput("brushedArea")
                  )
           ),
         fluidRow(
@@ -203,7 +206,8 @@ ui <- fluidPage(
             )
           ),
           hr()
-        )
+        ),
+      tabPanel("Brushed Specimens", tableOutput("brushedPlants"))
       )
     )
   )
@@ -284,12 +288,36 @@ server <- function(input, output, session) {
       kableExtra::kable_styling(bootstrap_options = c("bordered"))
   }
 
+  # Map Brush ----
+  observeEvent(input$map_brush, {
+    brush_dim <- reactive({
+      req(input$map_brush)
+      brushOpts(input$map_brush)$id[c("xmin", "xmax", "ymin", "ymax")]
+      })
+
+    # Output brush dimensions to kable.
+    output$brushedArea <- function() {
+      dplyr::bind_cols(`Brushed x` = unlist(brush_dim()[c("xmin", "xmax")]),
+                       `Brushed y` = unlist(brush_dim()[c("ymin", "ymax")])) %>%
+        t() %>% knitr::kable("html", col.names = c("Minimum", "Maximum")) %>%
+        kableExtra::kable_styling(bootstrap_options = c("bordered"))
+      }
+
+    # Output brushed specimens to kable.
+    output$brushedPlants <- function() {
+      brushedPoints(df = specimen_subset(), brush = input$map_brush,
+                    xvar = "Longitude", yvar = "Latitude") %>%
+        dplyr::select(Collector, Collection_Number,
+                      Physaria_syn, Taxon_a_posteriori) %>%
+        dplyr::arrange(Taxon_a_posteriori, Collector) %>%
+        dplyr::rename(`Collection Number` = Collection_Number,
+                      `Recent Annotation` = Physaria_syn,
+                      `Reviewed Annotation` = Taxon_a_posteriori) %>%
         knitr::kable("html") %>%
         kableExtra::kable_styling(bootstrap_options = c("bordered"))
-    }
+      }
+    })
   }
-  })
-}
 
 # Run app ----
 shinyApp(ui, server)
