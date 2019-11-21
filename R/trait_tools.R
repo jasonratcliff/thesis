@@ -9,10 +9,13 @@
 #' @return Tibble data frame with split trait data from specimen observations.
 #'
 continuous_tbl <- function(trait_frame, trait_name) {
-  dplyr::select(trait_frame, dplyr::starts_with("Physaria"),
-                Taxon_a_posteriori, Collector, Collection_Number,
-                Date, Date_parsed, Date_md, Latitude, Longitude, 
-                dplyr::starts_with("Elev"), trait_name) %>%
+  min_col <- paste0(trait_name, "_min")
+  min_name <- enquo(min_col)
+  max_col <- paste0(trait_name, "_max")
+  max_name <- enquo(max_col)
+  mid_col <- paste0(trait_name, "_mid")
+  mid_name <- enquo(mid_col)
+  trait_frame %>% dplyr::select(trait_name) %>%
     dplyr::bind_cols(.,
       trait_transform =
         map_dfr(.[[trait_name]], function(x) {
@@ -21,16 +24,15 @@ continuous_tbl <- function(trait_frame, trait_name) {
             if (grepl("-", x)) {
               trait_split <- strsplit(x, split = "-") %>%
                 unlist(.) %>% as.numeric(.)
-              trait_split[3] <- (trait_split[1] + trait_split[2]) / 2
+              trait_split[3] <- (min(trait_split) + max(trait_split)) / 2
               } else {
                 trait_split <- rep(as.numeric(x), 3)
                 }
             } else {
               trait_split <- rep(NA, 3)
               }
-          dplyr::bind_cols(trait_min = trait_split[1],
-                           trait_max = trait_split[2],
-                           trait_mid = trait_split[3])
-          })) %>% tibble::as_tibble()
+          dplyr::bind_cols(!!min_name := min(trait_split),
+                           !!max_name := max(trait_split),
+                           !!mid_name := trait_split[3])
+          })) %>% dplyr::select(-trait_name) %>% tibble::as_tibble()
 }
-
