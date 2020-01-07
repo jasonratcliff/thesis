@@ -522,3 +522,32 @@ map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
 
 }
 
+#' Generate vector for `ggtext::element_markdown()` function call.
+#'
+#' Requires installation of `ggtext` as follows:
+#'   remotes::install_github("clauswilke/ggtext")
+#'
+#' @param specimen_tibble Tibble subset of specimens to construct ggtext labels.
+#' @return Character vector of html markup named by specimen identification.
+#' 
+spp_labels <- function(specimen_tibble) {
+  
+  # Add italics, html line break and non-breaking space characters.
+  # Assigns tibble object of final identifications and markdown expression.
+  spp_labels_tibble <-
+    specimen_tibble %>%
+    dplyr::select(Taxon_a_posteriori) %>% dplyr::distinct() %>%
+    dplyr::filter(!grepl("\\?|^Physaria$|^Ca\\.",
+                         x = Taxon_a_posteriori)) %>%
+    dplyr::mutate(., label = Taxon_a_posteriori %>%
+                    gsub(" ssp\\. ", "*<br><span>&nbsp;&nbsp;&nbsp;</span>  ssp\\. *",
+                         x = .) %>% paste0("*", .) %>% paste0(., "*"))
+  
+  # Pluck character vector with html label and name by specimen identification.
+  spp_labels_vector <- spp_labels_tibble %>% purrr::pluck("label")
+  names(spp_labels_vector) <-
+    spp_labels_tibble %>% purrr::pluck("Taxon_a_posteriori")
+  
+  return(spp_labels_vector) # Return named character vector.
+  
+}
