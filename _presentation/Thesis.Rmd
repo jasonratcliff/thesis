@@ -88,6 +88,196 @@ dna_herbarium_spp <-
 
 ```
 
+class: animated, fadeIn
+background-image: url("images/00.Hooker-1830-Map.png")
+background-size: contain
+
+## &nbsp;&nbsp;&nbsp;Overview
+
+.left-footnote[
+
+<em>Flora Boreali-Americana</em> (Hooker 1830)
+https://about.biodiversitylibrary.org/
+
+]
+
+---
+
+class: animated, fadeIn
+background-position: 45% 55%
+background-image: url("images/00.Hooker-1830-Map.png")
+
+.left-footnote[
+
+<em>Flora Boreali-Americana</em> (Hooker 1830)
+
+]
+
+???
+
+- Polar Expeditions
+    - Auspices of Captain **Sir John Franklin**
+        - British Royal Navy
+
+- Two overland expeditions:
+    - 1819-1822
+    - 1825-1827
+    
+- 2nd Expedition
+    - **Sir John Richardson**
+        - Naval surgeon
+        - Expedition naturalist
+        - 2nd in command
+
+---
+
+class: animated, fadeIn
+background-position: 18% 85%
+background-image: url("images/00.Hooker-1830-Map.png")
+
+.left-footnote[
+
+<em>Flora Boreali-Americana</em> (Hooker 1830)
+
+]
+
+???
+
+- In 1825, 2nd Expedition:
+    - **Thomas Drummond**
+        - *Assistant* to **expedition naturalist**
+
+- Split from main party
+    - *Cumberland House*
+
+- Six months in Canadian Rockies by horesback
+    - Perilous 
+    - On return to *Carlton House*:
+        - Encounters **David Douglas**
+
+<br>
+
+Hoeniger JFM. 2003. DRUMMOND, THOMAS. Dictionary of Canadian Biography, vol. 6 [Internet]. Toronto (Canada): University of Toronto/Université Laval; [cited December 22, 2019]. Available from http://www.biographi.ca/en/bio/drummond_thomas_6E.html
+
+---
+
+class: animated, fadeIn
+background-position: 72% 0.1%
+background-image: url("images/00.Hooker-1830-Map.png")
+
+.left-footnote[
+
+<em>Flora Boreali-Americana</em> (Hooker 1830)
+
+]
+
+???
+
+- Franklin's Expeditions
+    - Returned collections from:
+        - Drummond
+        - Douglas
+
+- Sir William Jackson Hooker
+    - Flora Boreali Americana
+        - 2 volumes
+
+---
+
+class: animated, slideInUp
+
+## Systematic History
+
+### *Physaria* (Nuttall ex Torrey & A. Gray) A. Gray [Brassicaceae]
+
+<div style="float: left; width: 45%;">
+  <img src="images/01.Plate-XVI-Hooker.png"; style="max-height: 420px; float: left;" />
+  <p style="font-size:15px; float: center;">
+    <em>Flora Boreali-Americana</em> (Hooker 1830)
+  </p>
+</div>
+
+---
+
+layout: true
+
+## Systematic History
+
+### *Physaria* (Nuttall ex Torrey & A. Gray) A. Gray [Brassicaceae]
+
+<div style="float: left; width: 45%;">
+  <img src="images/01.Plate-XVI-Hooker.png"; style="max-height: 420px; float: left;" />
+  <p style="font-size:15px; float: center;">
+    <em>Flora Boreali-Americana</em> (Hooker 1830)
+  </p>
+</div>
+
+---
+
+.pull-right[
+
+.large[*Vesicaria*]
+
+1. *V. ludoviciana*
+2. *V. arctica*
+3. _**V. didymocarpa**_, sp. nov.
+
+]
+
+???
+
+- Hooker describes 3 species of *Vesicaria*
+    - Formerly spp. of _**Alyssum**_
+
+---
+
+.pull-right[
+
+.large[Canandian Rocky Mountains]
+
+- *Drummond*
+    - Between 52º and 57º Latitude
+      
+- *Douglas* 
+    - Of the **Columbia River**:
+        - Kettle Falls, Washington
+        - Wallawallah, Oregon
+
+]
+
+???
+
+- Hudson Bay Company trading post
+    - On Westward expansion:
+
+> The far-seeing stateman and philosopher will look into the future, and keep pace with the mighty sweep of civilization in its onward course towards the setting sun...
+
+<br>
+
+Columbus O. Citizens' Committee, Medary S. 1843. Report on the Territory of Oregon:  American West Series [Internet]. Columbus [OH]: Ohio Statesman; [cited 2020 Jan 7]. Available from https://books.google.com/books?id=s3RNAAAAYAAJ
+
+---
+
+.pull-right[
+
+.large[***J. Hooker***]
+
+- Posited generic-level character
+    - Based on fruit morphology
+
+- Phenotype
+    - Broad leaves
+    - Stellate trichomes
+    - Large yellow flowers
+    - Deep sinuses
+    
+- Otherwise similar to *Vesicaria* spp.
+
+]
+
+---
+layout: false
+
 ## Methods
 
 ```{r specimenCount}
