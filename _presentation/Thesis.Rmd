@@ -3,21 +3,28 @@ title: "*Physaria*"
 author: "Ratcliff"
 date: "`r Sys.Date()`"
 output:
-  ioslides_presentation
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "animate.css", "styles.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      countIncrementalSlides: false
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message=FALSE, cache=TRUE)
 knitr::opts_knit$set(root.dir = here::here())
-require(magrittr)
-require(tidyverse)
-require(ggmap)
-require(elevatr)
-require(rgdal)
-require(knitr)
-require(kableExtra)
-require(ggtree)
-require(scales)
+library(magrittr)
+library(tidyverse)
+library(ggtext)  # remotes::install_github("clauswilke/ggtext")
+library(ggtext)
+library(ggmap)
+library(elevatr)
+library(rgdal)
+library(knitr)
+library(kableExtra)
+library(ggtree)
+library(scales)
 ```
 
 ```{r globals}
@@ -27,7 +34,6 @@ source("R/map_tools.R")
 source("R/trait_tools.R")
 source("R/phylo_tools.R")
 gg_borders <- map_borders(border_color = "black")
-set.seed(12344)
 
 ```
 
@@ -136,6 +142,8 @@ data.frame(x = c("RM", "NY", "MO", "F", "ISTC", "MONTU", "MONT"),
 
 </div>
 
+---
+
 ##
 
 ```{r rITSBayes, fig.asp=0.78, fig.cap="MrBayes Gene Tree"}
@@ -151,6 +159,8 @@ ggtree_ITS <-
 lemon::reposition_legend(aplot = ggtree_ITS, position = "top left", plot = TRUE)
 
 ```
+
+---
 
 ##
 
@@ -168,6 +178,8 @@ ggtree_rps <-
 lemon::reposition_legend(aplot = ggtree_rps, position = "top left", plot = TRUE)
 
 ```
+
+---
 
 ##
 
