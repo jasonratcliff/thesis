@@ -104,8 +104,8 @@ https://about.biodiversitylibrary.org/
 ---
 
 class: animated, fadeIn
-background-position: 45% 55%
-background-image: url("images/00.Hooker-1830-Map.png")
+background-image: url("images/00.Hooker-1830-Map-Franklin.png")
+background-size: contain
 
 .left-footnote[
 
@@ -151,7 +151,7 @@ background-image: url("images/00.Hooker-1830-Map.png")
     - *Cumberland House*
 
 - Six months in Canadian Rockies by horesback
-    - Perilous 
+    - Perilous journey, grizzly encounter, low supplies
     - On return to *Carlton House*:
         - Encounters **David Douglas**
 
@@ -199,8 +199,6 @@ class: animated, slideInUp
 
 ---
 
-layout: true
-
 ## Systematic History
 
 ### *Physaria* (Nuttall ex Torrey & A. Gray) A. Gray [Brassicaceae]
@@ -211,8 +209,6 @@ layout: true
     <em>Flora Boreali-Americana</em> (Hooker 1830)
   </p>
 </div>
-
----
 
 .pull-right[
 
@@ -231,9 +227,24 @@ layout: true
 
 ---
 
+layout: true
+
+## Systematic History
+
+### *Vesicaria didymocarpa* Hooker
+
+<div style="float: left; width: 45%;">
+  <img src="images/01.Plate-XVI-Hooker.png"; style="max-height: 420px; float: left;" />
+  <p style="font-size:15px; float: center;">
+    <em>Flora Boreali-Americana 1</em> (Hooker 1830)
+  </p>
+</div>
+
+---
+
 .pull-right[
 
-.large[Canandian Rocky Mountains]
+.large[Canadian Rocky Mountains]
 
 - *Drummond*
     - Between 52º and 57º Latitude
@@ -260,7 +271,7 @@ Columbus O. Citizens' Committee, Medary S. 1843. Report on the Territory of Oreg
 
 .pull-right[
 
-.large[***J. Hooker***]
+.large[_**J. Hooker**_]
 
 - Posited generic-level character
     - Based on fruit morphology
@@ -271,14 +282,17 @@ Columbus O. Citizens' Committee, Medary S. 1843. Report on the Territory of Oreg
     - Large yellow flowers
     - Deep sinuses
     
-- Otherwise similar to *Vesicaria* spp.
+- Habit otherwise similar to *Vesicaria* spp.
 
 ]
 
 ---
-layout: false
+
+layout: true
 
 ## Methods
+
+---
 
 ```{r specimenCount}
 
