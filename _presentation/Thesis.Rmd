@@ -313,44 +313,42 @@ specimen_count <-
 
 ```
 
-<div style="float: left; width: 45%;">
+.pull-left[
 
-### **Specimen Overview**
+### Specimen Overview
 
-\
+- Herbarium Records
+    - `r specimen_count` specimens
 
-* **Herbarium Records**
-    + `r specimen_count` specimens
+- 14 Herbaria
 
-\
+]
 
-* **14 Herbaria**
+.pull-right[
 
-</div>
-
-<div style="float: right; width: 45%;">
-
-\
-
-### **Lending Institutions**
+### Lending Institutions
 
 ```{r herbaria}
 
 data.frame(x = c("RM", "NY", "MO", "F", "ISTC", "MONTU", "MONT"),
            y = c("RSA-POM", "UC", "UTC", "GH", "US", "CAS", "IDS")) %>%
-  knitr::kable(., col.names = NULL) %>%
+  knitr::kable(., col.names = NULL, format = "html") %>%
   kableExtra::kable_styling(bootstrap_options = "bordered", font_size = 14) %>%
-  column_spec(c(1, 2), bold = TRUE)
+  kableExtra::column_spec(c(1, 2), bold = TRUE)
 
 ```
 
-</div>
+]
 
 ---
 
-##
+---
 
-```{r rITSBayes, fig.asp=0.78, fig.cap="MrBayes Gene Tree"}
+
+---
+layout: false
+
+```{r rITSBayes, fig.asp=1.3}
 
 tbl_ITS <-
   phylo_tbl(bayes_file = paste0("data/8.bayes/rITS-infile.nex.con.tre"),
@@ -366,9 +364,7 @@ lemon::reposition_legend(aplot = ggtree_ITS, position = "top left", plot = TRUE)
 
 ---
 
-##
-
-```{r rpsBayes, fig.asp=0.78, fig.cap="MrBayes Gene Tree"}
+```{r rpsBayes, fig.asp=1.3}
 
 tbl_rps <-
   phylo_tbl(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
@@ -385,9 +381,7 @@ lemon::reposition_legend(aplot = ggtree_rps, position = "top left", plot = TRUE)
 
 ---
 
-##
-
-```{r mlBayes, fig.asp=0.78, fig.cap="MrBayes Concatenated Tree"}
+```{r mlBayes, fig.asp=1.3}
 
 tbl_phylo_ml <-
   phylo_tbl(bayes_file = "data/8.bayes/ml-infile.nex.con.tre",
@@ -401,17 +395,12 @@ lemon::reposition_legend(aplot = ggtree_ml, position = "top left", plot = TRUE)
 
 ```
 
-## Western Wyoming Endemics | Distribution
 
-```{r inteCompSpecimens}
 
-# Define subset of Western Wyoming putatative endemic specimens.
-spp_inte_comp <-
-  spp_subset(taxa_frame = total_physaria,
-             longitude = c(-113, -106),
-             latitude = c(39.5, 45))
 
 ```
+
+---
 
 ```{r inteCompGgmap}
 
