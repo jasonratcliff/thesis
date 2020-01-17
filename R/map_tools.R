@@ -497,14 +497,24 @@ spp_labels <- c("Physaria acutifolia" =
 #' This function overwrites the default discrete scales present in map ggplots
 #' with manual values set by `spp_color` and `spp_shape` vectors.
 #'
+#' @param gg_map_obj Ggmap returned by `map_specimens()` function.
+#' @param mapped_specimens Tibble (or cast data frame) of specimens to map.
+#'  Use same argument for `map_specimens(map_df = [mapped_specimens])`
+#' @param map_id Character vector of column name for label parsing.
 #' @param legend_title Character vector of length one to set the ggplot
 #' legend title.
-#' @inheritParams map_spp_id
 #'
 #' @examples
-#' map_themes(gg_map_obj = co_ggmap)
+#' map_themes(gg_map_obj = co_ggplot, mapped_specimens = co_subset,
+#'            map_id = "Physaria_syn", legend_title = "Prior Annotations")
 #'
-map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
+map_themes <- function(gg_map_obj, mapped_specimens, map_id,
+                       legend_title = "Reviewed Annotations") {
+
+  # Assign map specimen tibble cast from data frame
+  if (!tibble::is_tibble(mapped_specimens)) {
+    mapped_specimens <- tibble::as_tibble(mapped_specimens)
+  }
 
   # Reset discrete scales to manually set shape and colour scales.
   scale_index <-
@@ -514,11 +524,17 @@ map_themes <- function(gg_map_obj, legend_title = "Reviewed Annotations") {
 
   # Build ggplot map object with manual scales.
   gg_map_obj +
-    scale_color_manual(name = legend_title, labels = spp_labels,
+    scale_color_manual(name = legend_title,
+      labels = spp_labels(specimen_tibble = mapped_specimens,
+                          id_column = map_id),
                        values = spp_color, na.value = "black") +
-    scale_shape_manual(name = legend_title, labels = spp_labels,
-                       values = spp_shape, na.value = 17) +
-    theme(legend.text.align = 0, legend.title.align = 0.5)
+    scale_shape_manual(name = legend_title,
+      labels = spp_labels(specimen_tibble = mapped_specimens,
+                          id_column = map_id),
+      values = spp_shape, na.value = 17) +
+    theme(legend.text.align = 0, legend.title.align = 0.5,
+          legend.direction = "vertical",
+          legend.text = ggtext::element_markdown())
 
 }
 
