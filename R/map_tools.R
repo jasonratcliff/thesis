@@ -555,14 +555,29 @@ spp_labels <- function(specimen_tibble, id_column) {
 
   # Add italics, html line break and non-breaking space characters.
   # Assigns tibble object of final identifications and markdown expression.
-  spp_labels_tibble <-
-    specimen_tibble %>%
+  spp_labels_tibble <- specimen_tibble %>%
     dplyr::select(., !!id_column) %>% dplyr::distinct() %>%
-    dplyr::filter(!grepl("\\?|^Physaria$|^Ca\\.",
-                         x = .[[!!id_column]])) %>%
     dplyr::mutate(., label = .[[!!id_column]] %>%
-                    gsub(" ssp\\. ", "*<br><span>&nbsp;&nbsp;&nbsp;</span>  ssp\\. *",
-                         x = .) %>% paste0("*", .) %>% paste0(., "*"))
+      purrr::map_chr(.x = ., .f = function(label) {
+        split_label <- unlist(strsplit(label, " "))
+        if (length(split_label) %in% c(1, 2)) {
+          # Genus with or without specific epithet.
+          parsed_label <- paste0("*", label, "*")
+        } else {
+          if (grepl("ssp\\.", x = label)) {
+            # Add html formatting to split ssp. onto second line.
+            parsed_label <-
+              paste0("*", paste0(split_label[1:2], collapse = " "),
+                     "*", collapse = "") %>%
+              paste0(., gsub(pattern = "s?sp\\.|var\\.", x = split_label[3],
+                replacement = "<br><span>&nbsp;&nbsp;&nbsp;</span>  ssp\\. *"),
+                split_label[4:length(split_label)], "*")
+          } else {
+            parsed_label <- paste0("*", label, "*")  # Any other cases
+          }
+        }
+        return(parsed_label)
+    }))
 
   # Pluck character vector with html label and name by specimen identification.
   spp_labels_vector <- spp_labels_tibble %>% purrr::pluck("label")
