@@ -1,3 +1,4 @@
+require(tidyverse)
 
 # 1. Read in specimen data ----
 
@@ -14,11 +15,11 @@
 specimens_read <- function(herbarium_file) {
 
   # Vector of .xlsx spreadsheet tabs to read.
-  species_tabs <- c("P. Remaining", "P. acutifolia", "P. saximontana",
+  species_tabs <- c("P. Remaining", "P. acutifolia",
                     "P. eburniflora", "P. didymocarpa", "P. chambersii",
                     "P. vitulifera_CO", "P. vitulifera_WY",
                     "P. integrifolia", "P. Idaho", "P. others",
-                    "P. DNA", "P. NC_WY", "P. brassicoides")
+                    "P. DNA", "P. brassicoides")
 
   # Assign list of data frames read from excel tabs and filter by annotation.
   specimen_list <- lapply(species_tabs, function(xlsx_tab) {
@@ -244,10 +245,10 @@ elev_split <- function(elev_vector, elev_type) {
     stop("elev_vector must be a vector of elevation data (ft. or m)")
   }
   elev_tbl <-
-    map_dfr(elev_vector, function(elev) {
+    purrr::map_dfr(elev_vector, function(elev) {
       if (grepl("-", x = elev)) {
-        elev_row <- str_split(string = elev, pattern = "-",
-                              simplify = TRUE) %>% as.numeric()
+        elev_row <- stringr::str_split(string = elev, pattern = "-",
+                                       simplify = TRUE) %>% as.numeric()
         if (elev_row[1] > elev_row[2]) { stop(elev) }
       } else {
         elev_row <- as.numeric(c(elev, elev))
@@ -335,7 +336,7 @@ specimens_write <- function(total_specimens) {
              specimen_subset <- total_specimens[df_rows, ]
              specimen_name <- gsub(" +", "", df_name) %>%
                gsub("\\.", "_", x = .)
-             write.csv(specimen_subset,
+             write.csv(specimen_subset, row.names = FALSE,
                        file = paste0("output/specimens/",
                                      specimen_name, ".csv"))
   }))
@@ -347,5 +348,5 @@ specimens_write(total_physaria)
 # Clean up workspace to remove unnecessary objects and functions.
 rm(prior_df, specimen_df, specimen_index, prior_synonyms)
 rm(elev_split, elev_merge, total_elevation)
-rm(specimens_read, date_mismatch, parse_priors, parse_synonyms, specimens_write)
+rm(specimens_read, date_mismatch, parse_priors, specimens_write)
 
