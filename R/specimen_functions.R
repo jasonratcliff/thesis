@@ -3,7 +3,7 @@ require(rlang)
 require(plyr)
 
 #' Split Numeric Ranges
-#' 
+#'
 #' Given a tibble of range data in a character vector, split ranges separated
 #' by "-" character.  Creates two new tibble columns containing numeric vectors
 #' with minimum and maximum sorted numeric values split from character range.
@@ -26,25 +26,26 @@ range_split <- function(split_var) {
         ifelse(length(element) > 1, warning("Multiple '-' detected."), element)
       })
   }
-  
+
   # Split character vector of "-" separated range into list of sorted numerics.
   split_var %>% dplyr::pull() %>%
     purrr::map(function(range_element) {
       if (grepl(pattern = "-", x = range_element)) {
         str_split(string = range_element, pattern = "-") %>% unlist() %>%
           as.numeric() %>% sort()
-      } else { c(range_element, range_element) }
-    }) %>% 
-    
+      } else { as.numeric(c(range_element, range_element)) }
+    }) %>%
+
     # Cast list of split range data into tibble and add column of original data.
     plyr::ldply(.data = ., .fun = rbind) %>% tibble::as_tibble() %>%
-    tibble::add_column(split_var, .before = TRUE) %>%
-    
+    dplyr::mutate(split_var = split_var %>% dplyr::pull()) %>%
+    dplyr::select(split_var, `1`, `2`) %>%
+
     # Rename tibble variables wth minimum and maximum range data.
     # https://dplyr.tidyverse.org/articles/programming.html#different-input-and-output-variable
     dplyr::rename(!!names(split_var) := split_var,
                   !!paste0(names(split_var), "_min") := `1`,
                   !!paste0(names(split_var), "_max") := `2`)
-  
+
 }
 
