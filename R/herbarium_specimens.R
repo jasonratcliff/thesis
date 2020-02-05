@@ -1,10 +1,12 @@
 require(tidyverse)
 require(readxl)
+require(rlang)
+require(here)
 source("R/specimen_functions.R")
 
 # 1. Read in specimen data ----
 #
-# An .xlsx file located in the `data/1.specimens/` subdirectory contains 
+# An .xlsx file located in the `data/1.specimens/` subdirectory contains
 # specimen voucher information from project herbarium records, including
 # geographic coordinate data (decimal degrees), collectionn dates,
 # annotation information, trait measurements and observations.
@@ -14,9 +16,9 @@ specimen_file <- paste0(here::here(),
                         "/data/1.specimens/Phys_species_totals.xlsx")
 
 # Vector for indexing column types.
-column_types <- c(rep("text", 16), rep("skip", 10), 
+column_types <- c(rep("text", 16), rep("skip", 10),
                   rep("text", 2), rep("skip", 1), rep("text", 36))
-  
+
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
 specimens_raw <-
   readxl::excel_sheets(path = specimen_file) %>%
@@ -25,30 +27,28 @@ specimens_raw <-
                       na = c("", "NA", "s.n."), col_types = column_types) %>%
       tibble::add_column(excel_sheet = excel_sheet, .before = TRUE)
     }) %>%
-  
+
   # bind row-wise and remove rows not matching Genera / Family of interest.
-  dplyr::bind_rows() %>% 
+  dplyr::bind_rows() %>%
   dplyr::filter(grepl("Physaria|Lesquerella|Brassicaceae", Taxon)) %>%
-    
+
   # Parse dates with lubridate, create vector for month / day and reorder.
   dplyr::mutate(Date_parsed = lubridate::mdy(Date)) %>%
   dplyr::mutate(Date_md = gsub("[0-9]{4}-", "", x = .[["Date"]]) %>%
                   as.Date(., format = "%m-%d")) %>%
   dplyr::select(excel_sheet:Date, Date_parsed, Date_md,
                 Herbarium:`Chromosome #`)
-  
+
 # Clean up workspace.
 rm(specimen_file, column_types)
 
-system.time({
-  
 # 2. Log collection and ID date formats ----
 #
 # In the herbarium specimen .xlsx file, dates were converted to an
 # Excel Date format "mm/dd/yyyy" (e.g. 06/15/2003) and saved to a new column
 # using the expression '=TEXT(<CELL>, "mm/dd/yyyy")'.  That column was copied
-# and saved to a new column using 'paste special...' by value. 
-# 
+# and saved to a new column using 'paste special...' by value.
+#
 # Check for log directory, create if non-existent, and open log file.
 if (!dir.exists(paste0(here::here(), "/log"))) {
   dir.create(paste0(here::here(), "/log"))
@@ -58,13 +58,11 @@ if (!dir.exists(paste0(here::here(), "/log"))) {
 specimens_raw %>%
   dplyr::select(excel_sheet, Collector, Collection_Number, Date,
                 Date_parsed, ID) %>%
-  dplyr::filter(., 
+  dplyr::filter(.,
     !grepl(pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
            x = as.character(Date_parsed)) & !is.na(Date) |
       !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)) %>%
   readr::write_excel_csv(x = ., path = "log/remaining_dates.csv")
-
-})
 
 # 3. Parse prior identifications ----
 #
@@ -89,13 +87,13 @@ specimens_split <- specimens_raw %>% dplyr::pull(Taxon) %>%
 specimens_recent <- specimens_split %>%
   purrr::map_chr(function(annotations) {
     annotations[length(annotations)]
-  }) %>% 
+  }) %>%
   # Remove author names and replace variety with subsp. abbreviations.
   stringr::str_replace_all(string = ., replacement = "",
     pattern =  " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins") %>%
-  stringr::str_replace_all(string = ., 
+  stringr::str_replace_all(string = .,
     pattern = "var\\.?|var\\.$|ssp(?= )", replacement = "ssp.") %>%
-  
+
   # Replace identification synonyms.
   ifelse(grepl("australis|purpurea|stylosa", x = .),
          yes = "Physaria acutifolia", no = .) %>%
@@ -107,7 +105,7 @@ specimens_recent <- specimens_split %>%
          yes = "Physaria didymocarpa ssp. lanata", no = .) %>%
   ifelse(grepl("Physaria saximontana$", x = .),
          yes = "Physaria saximontana ssp. saximontana", no = .) %>%
-  
+
   # Enframe character vector as tibble.
   tibble::enframe(value = "prior_id", name = NULL)
 
@@ -170,3 +168,32 @@ herbarium_specimens <-
 
 rm(elev_parsed, specimens_parsed) # Clean up workspace
 
+# 6. Bind DNA Extraction Information ----
+
+# Combine herbarium specimen record information with sequence documentation.
+dna_metadata <-
+  readr::read_csv(file = "data/1.specimens/dna_specimens.csv") %>%
+  dplyr::rename(label = taxa_label)
+
+dna_specimens <- purrr::pmap_dfr(dna_metadata,
+  function(label, Collector, Collection_Number, ...) {
+
+    # Tidy enquosures for column filtering.
+    Collector <- rlang::enquo(Collector)
+    Collection_Number <- rlang::enquo(Collection_Number)
+    label <- rlang::enquo(label)
+
+    # Subset total herbarium record data frame by collector and collection.
+    record_match <- herbarium_specimens %>%
+      dplyr::filter(., Collector == !!Collector &
+                      Collection_Number == !!Collection_Number)  %>%
+      dplyr::mutate(Collection_Number = as.numeric(Collection_Number)) %>%
+      select(-c(State, County))
+
+    # Join the herbarium records to matching sequencing specimen .csv rows.
+    dplyr::left_join(dplyr::filter(dna_metadata, label == !!label),
+      record_match, by = c("Collector", "Collection_Number",
+                           "Latitude", "Longitude"))
+    })
+
+rm(dna_metadata) # Clean up workspace
