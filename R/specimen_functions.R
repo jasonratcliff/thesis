@@ -2,6 +2,8 @@ require(tidyverse)
 require(rlang)
 require(plyr)
 
+# General Trait Parsing ----
+
 #' Split Numeric Ranges
 #'
 #' Given a tibble of range data in a character vector, split ranges separated
@@ -49,30 +51,32 @@ range_split <- function(split_var) {
 
 }
 
+# Specimen Access Tools ----
+
 #' Subset specimen data by geographic coordinates.
-#' 
+#'
 #' Given an input data.frame and at least one of latitude or longitude
 #' vectors with minimum and maximum values to subset coordinate data.
-#' 
-#' @param specimen_df Data.frame with columns Latitude / Longitude.
+#'
+#' @param specimen_tbl Data.frame with columns Latitude / Longitude.
 #'   Should be numeric vectors of decimal degree coordinates.
 #' @param Latitude Character vector length two min / max latitude.
 #' @param Longitude Character vector length two min / max longitude.
 #' @return Data.frame of specimens within coordinate bounds.
 #' @examples
 #' \dontrun{
-#' specimen_subset <- subset_coords(specimen_df = total_physaria,
+#' specimen_subset <- subset_coords(specimen_tbl = herbarium_specimens,
 #'                      Latitude = c(41, 45), Longitude = c(-109, -105))
 #' range(specimen_subset$Latitude)
 #' range(specimen_subset$Longitude)
 #' }
-subset_coords <- function(specimen_df, Latitude = NULL, Longitude = NULL) {
-  
+subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
+
   # Test for at list one of latitude / longitude vectors.
   if (is.null(Latitude) & is.null(Longitude)) {
     stop("Enter a vector for subsetting coordinates.")
   }
-  
+
   # Assign list of coordinates and test that values are ranges.
   filter_coordinates <-
     list("Longitude" = Longitude, "Latitude" = Latitude) %>%
@@ -83,7 +87,7 @@ subset_coords <- function(specimen_df, Latitude = NULL, Longitude = NULL) {
         return(coordinate)
       }
     })
-  
+
   # Map coordinate tibble ranges with minimum / maximum coordinate values.
   coordinate_tbl <-
     filter_coordinates[which(lapply(filter_coordinates, is.null) == FALSE)] %>%
@@ -96,12 +100,12 @@ subset_coords <- function(specimen_df, Latitude = NULL, Longitude = NULL) {
             warning("Coordinates not in the same hemisphere...")
             }
         dplyr::bind_rows(
-          dplyr::bind_cols(parallel = parallel_name, edge = "minimum", 
+          dplyr::bind_cols(parallel = parallel_name, edge = "minimum",
                            coordinate = min(coordinate_ranges)),
           dplyr::bind_cols(parallel = parallel_name, edge = "maximum",
                            coordinate = max(coordinate_ranges)))
         })
-  
+
   # Construct dplyr filter statements from mapped coordinate tibble.
   filter_statements <-
     purrr::pmap_dfr(coordinate_tbl, function(parallel, edge, coordinate) {
@@ -109,12 +113,80 @@ subset_coords <- function(specimen_df, Latitude = NULL, Longitude = NULL) {
       filter_statement <- paste(parallel, operand, coordinate, collapse = " ")
       bind_cols(construct = filter_statement)
     }) %>% purrr::pluck("construct") %>% paste0("filter(", .) %>% paste0(., ")")
-  
+
   # Construct data filter pipeline by coordinate ranges and return evaluation.
-  filter_expr <- paste("specimen_df %>%",
+  filter_expr <- paste("specimen_tbl %>%",
                        paste(filter_statements[1:length(filter_statements) - 1],
                              collapse = " %>% "), "%>%",
                        filter_statements[length(filter_statements)])
+  eval(rlang::parse_expr(filter_expr))
+}
+
+#' Find specimens by Collector, Collection Number, or Row ID
+#'
+#' @param specimen_tbl Tibble of herbarium specimens built from
+#'  `herbarium_specimens.R` script.
+#' @param collector Character scalar to filter specimen by collector name.
+#' @param collection Numeric vector to filter specimens by collection number.
+#' @param row_id Numeric vector of row indexes to slice tibble.
+#'
+#' @examples
+#' \dontrun{
+#' find_spp(herbarium_specimens, collector = "Rollins")
+#' find_spp(herbarium_specimens, collector = "Rollins", collection = 81337)
+#' find_spp(herbarium_specimens, row_id = c(1:12))
+#' }
+find_spp <- function(specimen_tbl, collector = NULL, collection = NULL,
+                     row_id = numeric()) {
+
+  # Check for input tibble.
+  if (!tibble::is_tibble(specimen_tbl)) {
+    stop("Pass a tibble object for `specimen_tbl` argument.")
+  }
+
+  # Test arguments to warn when `row_id` and `collector` or `collection`.
+  test_args <- rlang::enquos(collector, collection)
+  names(test_args) <- c("collector", "collection")
+  if (length(row_id) > 0 &
+      TRUE %in% c(!is.null(collector) | !is.null(collection))) {
+    null_args <- purrr::map_lgl(test_args, function(arg) {
+      is.null(rlang::eval_tidy(arg))
+    })
+    warning(paste0("Arguments `row_id` and `",
+                   paste(names(null_args)[which(null_args == FALSE)],
+                         collapse = "` & `"), '` have been passed.'))
+  }
+
+  # Select columns from taxa data frame to return.
+  filtered_spp <- specimen_tbl %>%
+    dplyr::select(Taxon, prior_id, Taxon_a_posteriori,
+                  Collector, Collection_Number,
+                  Latitude, Longitude, State, County, Herbarium)
+
+  # Slice by row index.
+  if (is.numeric(row_id) & length(row_id) > 0) {
+    filtered_spp <- dplyr::slice(filtered_spp, row_id)
+  } else if (!is.numeric(row_id)) {
+    warning("Ensure `row_id` is a numeric vector.")
+  }
+
+  # Map collector / collection enquosures and parse filter expression.
+  names(test_args) <- c("Collector", "Collection_Number")
+  filter_statements <-  # Keep non-null enquosures.
+    purrr::keep(test_args, function(arg) {
+    !is.null(rlang::eval_tidy(arg))
+  }) %>% unlist() %>%
+    # Build filter statements with quoted Collector as character vector.
+    purrr::map2(., names(.), function(arg, variable) {
+      paste0("grepl(x = ", variable, ", pattern = ",
+             ifelse(variable == "Collector",
+                    paste0("'", rlang::eval_tidy(arg), "'"),
+                    rlang::eval_tidy(arg)), ")")  # Unquoted collection number.
+    }) %>% unlist() %>% paste(collapse = ", ") %>%
+    paste0("dplyr::filter(", ., ")", collapse = "")
+
+  # Construct data filter pipeline to find specimens by collector / collection.
+  filter_expr <- paste("filtered_spp %>%", filter_statements, collapse = "")
   eval(rlang::parse_expr(filter_expr))
 }
 
