@@ -1,3 +1,7 @@
+library(ggplot2)
+library(ggtext)
+library(ggmap)
+library(elevatr)
 
 # Build Border Layer ----
 
@@ -16,29 +20,27 @@
 map_borders <- function(border_color, border_fill = NA,
                         border_size_county = .125,
                         border_size_state = 1.5) {
-  
+
   # Define vector of states / regions to get boundary geoms.
   border_regions <- c("Montana", "Wyoming", "Colorado",
                       "Utah", "Idaho", "Nebraska",
                       "North Dakota", "South Dakota",
                       "New Mexico", "Arizona", "Nevada",
                       "Washington", "Oregon", "California")
-  
+
   # Initialize ggplot base map layer of county lines with state borders.
   border_states <- map_data("state", region = border_regions)
   border_counties <- map_data("county", region = border_regions)
-  gg_borders <-
-    ggplot(data = border_counties,
-           mapping = aes(x = long, y = lat, group = group)) +
+
+  # Return ggplot object with county and state boundary layers.
+  ggplot(data = border_counties,
+         mapping = aes(x = long, y = lat, group = group)) +
     geom_polygon(color = border_color, fill = border_fill,
                  size = border_size_county) +
     geom_polygon(data = border_states, fill = NA,
                  color = border_color, size = border_size_state) +
     theme(panel.grid = element_blank(), panel.background = element_blank(),
           panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
-  
-  # Return ggplot object with county and state boundary layers.
-  return(gg_borders)
 }
 
 # Build Specimen Layer ----
@@ -67,7 +69,7 @@ map_borders <- function(border_color, border_fill = NA,
 map_specimens <- function(specimen_tbl, map_col, border_color = "black",
                           shape_opt = NULL, geom_size = 3,
                           jitter_pos = c(0, 0), f_adj = -0.05, ...) {
-  
+
   # Plot specimens over state and county borders.
   map_gg_base <- map_borders(border_color = border_color, ...)
   gg_basic_map <- map_gg_base +
@@ -83,7 +85,7 @@ map_specimens <- function(specimen_tbl, map_col, border_color = "black",
     theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
     xlab("Longitude") +
     ylab("Latitude")
-  
+
   # Return ggplot object with specimens mapped over `map_borders()` base layer.
   return(gg_basic_map)
 }
@@ -110,38 +112,40 @@ map_specimens <- function(specimen_tbl, map_col, border_color = "black",
 #' gg_borders <- map_borders("black")
 #'
 #' # Subset Colorado front range specimens.
-#' co_front_range <-
-#'   spp_subset(total_physaria,
-#'              longitude = c(-107.7551, -104.2394),
-#'              latitude = c(38.12828, 40.84102),
-#'              spp_str = "Physaria \\?",
-#'              taxa_col = "Taxon_a_posteriori", exclude = TRUE)
+#' co_front_range <- subset_coords(herbarium_specimens,
+#'                                 Longitude = c(-107.7551, -104.2394),
+#'                                 Latitude = c(38.12828, 40.84102))
 #'
 #' # Build ggmap object with borders and specimens plotted over satellite image.
-#' co_ggmap <- map_ggmap(map_df = co_front_range,
+#' co_ggmap <- map_ggmap(specimen_tbl = co_front_range, size = 8,
 #'                       map_col = "Taxon_a_posteriori",
 #'                       shape_opt = "Taxon_a_posteriori",
-#'                       gg_borders = gg_borders, size = 8,
 #'                       gg_longitude = -106, gg_latitude = 39.5,
 #'                       gg_map_type = "satellite")
 #'
-map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
+#' # Add theme specifications and markdown legend.
+#' map_themes(gg_map_obj = co_ggmap, mapped_specimens = co_front_range,
+#'            map_id = "Taxon_a_posteriori")
+#'
+map_ggmap <- function(specimen_tbl, map_col, size = 7,
                       border_size_county = .125,
                       border_size_state = 1.5,
                       shape_opt = NULL, geom_size = 3,
                       jitter_pos = c(0, 0),
                       gg_longitude = NULL, gg_latitude = NULL,
                       gg_map_type = c("terrain", "satellite",
-                                      "roadmap", "hybrid")) {
-  
+                                      "roadmap", "hybrid"), ...) {
+
   # Check registration of Google API key.
   if (ggmap::has_google_key() == FALSE) {
     stop(paste("Register an API key with Google.",
                "See: https://github.com/dkahle/ggmap"))
   }
-  
+
+  # Plot specimens over state and county borders.
+  map_gg_base <- map_borders(border_color = "white", ...)
+
   # Filter specimens by coordinates and get ggmap by median values.
-  map_subset <- map_filter(map_df)
   if (!is.null(gg_longitude) && !is.null(gg_latitude)) {
     map_gg_sat <-
       ggmap::get_map(location = c(gg_longitude, gg_latitude), zoom = size,
@@ -149,41 +153,41 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
   } else if (!is.null(gg_longitude) || !is.null(gg_latitude)) {
     stop("Enter numeric vector for both longitude and latitude coordinates.")
   } else {
-    gg_median <- sapply(map_subset[, c("Longitude", "Latitude") ], median)
+    gg_median <- sapply(specimen_tbl[, c("Longitude", "Latitude") ], median)
     map_gg_sat <-
       ggmap::get_map(location = gg_median, maptype = gg_map_type,
                      zoom = size, source = "google", messaging = FALSE)
   }
-  
+
   # Index the boundary of the ggmap plot to the x/y limits of ggmap base.
   map_xlim = c(attr(map_gg_sat, "bb")$ll.lon,
                attr(map_gg_sat, "bb")$ur.lon)
   map_ylim = c(attr(map_gg_sat, "bb")$ll.lat,
                attr(map_gg_sat, "bb")$ur.lat)
-  
+
   # Plot Google base layer with county and state border geom layers.
   gg_sat_map <-
     ggmap(ggmap = map_gg_sat, extent = "normal", maprange = FALSE) +
-    geom_polygon(data = gg_borders$plot_env$border_counties,
+    geom_polygon(data = map_gg_base$plot_env$border_counties,
                  aes(x = long, y = lat, group = group),
                  color = "white", fill = NA, size = .5) +
-    geom_polygon(data = gg_borders$plot_env$border_states,
+    geom_polygon(data = map_gg_base$plot_env$border_states,
                  aes(x = long, y = lat, group = group),
                  color = "moccasin", fill = NA, size = 1.25) +
-    
+
     # Add specimen plot layer subset.
-    geom_jitter(data = map_subset,
+    geom_jitter(data = specimen_tbl,
                 mapping = aes_string(x = "Longitude", y = "Latitude",
                                      colour = map_col, shape = shape_opt),
                 size = geom_size, inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
-    
+
     # Adjust axis limits to edge of ggmap and modify theme.
     coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
     theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude")
-  
+
   # Return ggplot of specimens mapped over ggmap and county border layers.
   return(gg_sat_map)
 }
@@ -201,19 +205,28 @@ map_ggmap <- function(map_df, map_col, gg_borders, size = 7,
 #' @inheritParams map_ggmap
 #'
 #' @examples
-#' co_elev <- elev_spp(specimens = co_front_range, raster_zoom = 7)
+#' co_elev <- map_elev(specimen_tbl = co_front_range, raster_zoom = 7,
+#'                     map_col = "Taxon_a_posteriori",
+#'                     shape_opt = "Taxon_a_posteriori")
+#' 
+#' # Add theme specifications and markdown legend.
+#' map_themes(gg_map_obj = co_elev, mapped_specimens = co_front_range,
+#'            map_id = "Taxon_a_posteriori")
 #'
-map_elev <- function(map_df, map_col, gg_borders,
-                     raster_zoom = 7, raster_factor = 2, geom_size = 3) {
-  
+map_elev <- function(specimen_tbl, map_col, shape_opt = NULL,
+                     raster_zoom = 7, raster_factor = 2, geom_size = 3, ...) {
+
+  # Plot specimens over state and county borders.
+  map_gg_base <- map_borders(border_color = "black", ...)
+
   # Define projection and get AWS Open Data terrain tiles.
   # Cite: https://registry.opendata.aws/terrain-tiles/
   prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   map_elev_raster <-
-    get_elev_raster(locations = 
-                      as.data.frame(map_df[, c("Longitude", "Latitude")]),
+    get_elev_raster(locations =
+                      as.data.frame(specimen_tbl[, c("Longitude", "Latitude")]),
                     z = raster_zoom, prj = prj_dd, clip = "bbox", src = "aws")
-  
+
   # Use "raster" package function aggregate() to decrease data resolution and
   # reduce the size / memory of elevation raster objects (Hijmans 2017).
   # Cite: http://pakillo.github.io/R-GIS-tutorial/#resolution
@@ -221,32 +234,34 @@ map_elev <- function(map_df, map_col, gg_borders,
     map_elev_raster <-
       raster::aggregate(map_elev_raster, fact = raster_factor, fun = mean)
   }
-  
+
   # Use "sp" package to define a spatial grid from the raster layer.
   # Cite: https://groups.google.com/forum/#!msg/ggplot2/9fS4OfHEQq8/ZafTyvVKfJIJ
   map_elev_df <-
     as(map_elev_raster, "SpatialPixelsDataFrame") %>% as.data.frame()
-  
+
   # ggplot elevation projection with county & state borders.
-  map_elev_ggplot <- ggplot(map_elev_df, aes(x=x, y=y)) +
+  map_elev_ggplot <- ggplot(map_elev_df, aes(x = x, y = y)) +
     geom_tile(aes(fill = layer)) +
-    geom_polygon(data = gg_borders$plot_env$border_counties,
+    geom_polygon(data = map_gg_base$plot_env$border_counties,
                  aes(x = long, y = lat, group = group),
                  color = "black", fill = NA, size = .5) +
-    geom_polygon(data = gg_borders$plot_env$border_states,
+    geom_polygon(data = map_gg_base$plot_env$border_states,
                  aes(x = long, y = lat, group = group),
                  color = "moccasin", fill = NA, size = 1.25) +
-    
+
     # Add specimen data layers and modify theme elements.
-    geom_point(data = map_df, aes(x = Longitude, y = Latitude),
+    geom_point(data = specimen_tbl, aes(x = Longitude, y = Latitude),
                size = (geom_size + 2), colour = "black", alpha = 0.2) +
-    geom_point(data = map_df, size = geom_size, na.rm = TRUE,
-               aes(x = Longitude, y = Latitude,
-                   colour = get(map_col), shape = get(map_col))) +
+    geom_point(data = specimen_tbl, size = geom_size, na.rm = TRUE,
+               aes_string(x = "Longitude", y = "Latitude",
+                   colour = map_col, shape = shape_opt)) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude") +
-    coord_equal(xlim = c(min(map_df$Longitude), max(map_df$Longitude)),
-                ylim = c(min(map_df$Latitude), max(map_df$Latitude)),
+    coord_equal(xlim = c(min(specimen_tbl$Longitude),
+                         max(specimen_tbl$Longitude)),
+                ylim = c(min(specimen_tbl$Latitude),
+                         max(specimen_tbl$Latitude)),
                 expand = FALSE) +
     scale_fill_gradientn("Elevation (m)", colours = terrain.colors(7),
                          guide = guide_colourbar(order = 1)) +
@@ -270,13 +285,13 @@ map_elev <- function(map_df, map_col, gg_borders,
 #'
 map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
                        h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
-  
+
   # Call `spp_find()` function to get specimen annotation data.
   spp_id <- spp_find(taxa_frame = taxa_frame,
                      collector = collector,
                      collection_number = collection_number,
                      geom = TRUE, label = TRUE)
-  
+
   # Plot additional map layer to include the specimen returned by spp_find().
   gg_spp_id <- gg_map_obj +
     geom_point(data = spp_id, inherit.aes = FALSE,
@@ -287,7 +302,7 @@ map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
                label.padding = unit(0.1, "lines"), size = label_size,
                mapping = aes(x = Longitude, y = Latitude,
                              label = taxon_label), alpha = 0.5)
-  
+
   # Return ggplot map with specimen annotation.
   return(gg_spp_id)
 }
@@ -359,7 +374,7 @@ spp_shape <- c("Physaria acutifolia" = 3,
 #'
 #' @param gg_map_obj Ggmap returned by specimen mapping function.
 #' @param mapped_specimens Tibble of specimens to map.
-#'  Use same argument for `map_specimens(map_df = [mapped_specimens])`
+#'  Use same argument for `map_specimens(specimen_tbl = [mapped_specimens])`
 #' @param map_id Character vector of column name for label parsing.
 #' @param legend_title Character vector of length one to set the ggplot
 #' legend title.
@@ -370,33 +385,33 @@ spp_shape <- c("Physaria acutifolia" = 3,
 #'
 map_themes <- function(gg_map_obj, mapped_specimens, map_id,
                        legend_title = "Reviewed Annotations") {
-  
+
   # Assign map specimen tibble cast from data frame
   if (!tibble::is_tibble(mapped_specimens)) {
     mapped_specimens <- tibble::as_tibble(mapped_specimens)
   }
-  
+
   # Reset discrete scales to manually set shape and colour scales.
   scale_index <-
     grep(pattern = "ScaleDiscrete",
          x = lapply(gg_map_obj$scales$scales, class), invert = TRUE)
   gg_map_obj$scales$scales <- gg_map_obj$scales$scales[scale_index]
-  
+
   # Build ggplot map object with manual scales.
   gg_map_obj +
     scale_color_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
                                            id_column = map_id),
                        values = spp_color, na.value = "black") +
-    
+
     scale_shape_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
                                            id_column = map_id),
                        values = spp_shape, na.value = 17) +
-    
+
     theme(legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical",
           legend.text = ggtext::element_markdown())
-  
+
 }
 
