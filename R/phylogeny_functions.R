@@ -10,6 +10,8 @@
 #' @param dna_specimens_tbl Tibble of DNA specimens assigned in script
 #'   `herbarium_specimens.R`
 #' @param id_column Character scalar of identification column to group geoms by.
+#' @param geom_size_scale Character vector of length two with min / max values
+#'   to rescale the geom size aesthetic for multi-taxa tips.
 #' @return Tibble formatted for `ggtree` plotting with geom size scaled by ID.
 #'
 #' @examples
@@ -65,4 +67,46 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 
 }
 
+# ggtree Plotting ----
+
+#' Plot MrBayes ggtree
+#'
+#' Given the output of `bayes_tibble()`, build a ggplot with color / shape
+#' aesthetics defined by identification column.
+#'
+#' @param bayes_tbl Parsed ggtree tibble returned by `bayes_tibble()` with
+#'   split sample observations and scaled geom size aesthetics.
+#' @param scale_name Character scalar with name for scale title.
+#' @inheritParams bayes_tibble
+#' @examples
+#' id_column <- "prior_id"
+#' scale_name <- "Review Annotations"
+bayes_ggtree <- function(bayes_tbl, id_column, scale_name) {
+
+  # Filter out polytomy nodes for labels.
+  bayes_labels <- bayes_test %>% dplyr::filter(prob != 1 & !is.na(prob))
+
+  # Build ggtree plot from Bayes results.
+  ggtree(bayes_test, layout = "rectangular") +
+    geom_point(aes_string(color = id_column, shape = id_column,
+                          size = "geom_scale"), na.rm = TRUE) +
+
+    # Add labels with rounded posterior probabilities to resolved nodes.
+    geom_label(data = bayes_labels,
+      aes(x = x, y = y, label = sprintf("%0.3f", as.numeric(prob), digits = 3)),
+      nudge_x = (-range(bayes_labels$x[2] * 0.05)),
+      fontface = "bold", fill = "lightgoldenrod", size = 4.5, alpha = 0.5) +
+
+    # Adjust color and shape scales with spp_labels() markdown ggtext elements.
+    scale_color_manual(scale_name, values = spp_color,
+      labels = spp_labels(specimen_tibble = bayes_test, id_column = id_column)) +
+    scale_shape_manual(scale_name, values = spp_shape,
+      labels = spp_labels(specimen_tibble = bayes_test, id_column = id_column)) +
+    theme(legend.text = ggtext::element_markdown()) +
+
+    # Modify scale of size aesthetic and spacing of color / shape guide.
+    scale_size_continuous(range = c(3, 9), guide = "none") +
+    guides(color = guide_legend(override.aes = list(size = 4),
+                                keyheight = 0.35, default.unit = "inch"))
+}
 
