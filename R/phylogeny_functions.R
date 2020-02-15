@@ -78,6 +78,9 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 #'   split sample observations and scaled geom size aesthetics.
 #' @param scale_name Character scalar with name for scale title.
 #' @inheritParams bayes_tibble
+#' @return ggtree object with tips aesthetics determined by `id_column` and
+#' posterior probabilities on resolved (i.e. non-polytomy) nodes.
+#'
 #' @examples
 #' id_column <- "prior_id"
 #' scale_name <- "Review Annotations"
@@ -108,5 +111,60 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name) {
     scale_size_continuous(range = c(3, 9), guide = "none") +
     guides(color = guide_legend(override.aes = list(size = 4),
                                 keyheight = 0.35, default.unit = "inch"))
+}
+
+#' Add ggtree Plot Tip Labels
+#'
+#' Adds tip labels to ggtree plot for single-taxa tips with unique genotypes.
+#' Multi-taxa tips returned by the `multi_taxa_nodes` are marked by grouped
+#' genotype numbered by node order ranking.
+#'
+#' @param bayes_ggtree_obj ggtree object returned by `bayes_ggtree()` function.
+#' @inheritParams bayes_ggtree
+#' @return ggtree object with text geoms identifying taxa tip labels.
+#' 
+bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
+  
+  # Assign tibbles for multi-taxa and single-taxon tip labels.
+  multi_taxa_tbl <- multi_taxa_nodes(bayes_tbl)
+  single_taxa_tbl <- bayes_test %>%
+    dplyr::group_by(node) %>% dplyr::count(vars = "node") %>% 
+    dplyr::ungroup() %>% dplyr::right_join(., bayes_test, by = "node") %>%
+    dplyr::filter(n == 1) %>% dplyr::select(x, y, label.x)
+  
+  # Add tip labels for single- and multi-taxa tip labels.
+  bayes_ggtree_obj +
+    geom_text(data = multi_taxa_tbl,
+              aes(x = x, y = y, label = node_group),
+              nudge_x = (range(multi_taxa_tbl$x)[2] * 0.03),
+              size = 3, hjust = 0, vjust = 0.25, fontface = "bold") +
+    geom_text(data = single_taxa_tbl,
+              aes(x = x, y = y, label = label.x), na.rm = TRUE,
+              nudge_x = (range(single_taxa_tbl$x)[2] * 0.025),
+              size = 3, hjust = 0)
+}
+
+#' Multi-taxa Tips
+#'
+#' Filter samples from output of `bayes_tibble()` function to nodes with
+#' multiple taxa grouped by identical genotypes.
+#'
+#' @inheritParams bayes_tibble
+#' @return Tibble of filtered multi-taxa tips grouped by node.
+#'
+multi_taxa_nodes <- function(bayes_tbl) {
+  
+  # Select tibble variables for filtering multi-taxa tips.
+  multi_taxa_nodes <- bayes_test %>%
+    dplyr::select(node, label.x, x, y, label.y)
+  
+  # Filter multi-taxa nodes and create group index for combined genotype.
+  multi_taxa_nodes %>%
+    dplyr::group_by(node) %>% dplyr::count(vars = "node") %>%
+    dplyr::right_join(., multi_taxa_nodes, by = "node") %>%
+    dplyr::filter(n > 1) %>% dplyr::arrange(node) %>% dplyr::ungroup() %>%
+    dplyr::mutate(node_group = group_indices(., node, n) %>%
+                    paste0("genotype ", .))
+
 }
 
