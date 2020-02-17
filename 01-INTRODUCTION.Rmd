@@ -79,28 +79,21 @@ knitr_section(knitr_title = "Geographical Distribution and Ecology",
 ```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} sensu stricto herbarium specimens."}
 
 # Subset specimens for mapping prior annotations.
-total_priors <- spp_subset(taxa_frame = total_physaria,
-                           longitude = c(-115.2, -103),
-                           latitude = c(37, 49.1),
-                           spp_str = c("acutifolia", "brassicoides",
-                                      "didymocarpa",  "vitulifera",
-                                      "saximontana", "eburniflora",
-                                      "integrifolia", "dornii",
-                                      "condensata", "floribunda", "chambersii",
-                                      "rollinsii", "Physaria$"),
-                           taxa_col = "Taxon") %>%
-  spp_subset(spp_str = c("Lesquerella", "geyeri", "stylosa", "\\?"),
-             exclude = TRUE, taxa_col = "Physaria_syn")
+total_priors <- herbarium_specimens%>%
+  dplyr::select(prior_id, Latitude, Longitude) %>%
+  subset_coords(specimen_tbl = .,
+                Latitude = c(37, 49.1),
+                Longitude = c(-115.2, -103)) %>%
+  # Filter out Lesquerella / Physaria sensu lato spp.
+  dplyr::filter(!grepl(paste("Lesquerella", "cnema", "alpina", "cordiformis",
+                              "macrantha", sep = "|", collapse = ""),
+                       x = prior_id))
 
-# Build ggplot map with prior annotations
-ggmap_priors <- map_specimens(map_df = total_priors, f_adj = 0.01,
-                              map_gg_base = gg_borders,
-                              map_col = "Physaria_syn",
-                              shape_opt = "Physaria_syn") %>%
-  map_themes(legend_title = "Prior Annotations") %>%
-  ggplot_build()
-
-ggmap_priors$plot  # Return grob plot
+# Build ggplot map of subet by prior annotations.
+map_specimens(specimen_tbl = total_priors, borders = "black", f_adj = 0.01,
+              map_col = "prior_id", shape_opt = "prior_id") %>%
+  map_themes(gg_map_obj = ., mapped_specimens = total_priors,
+             map_id = "prior_id", legend_title = "Prior Annotations")
 
 ```
 
