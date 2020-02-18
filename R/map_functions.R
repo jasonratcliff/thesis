@@ -48,7 +48,7 @@ map_borders <- function(border_color, border_fill = NA,
 #' Build ggplot of specimen records over map borders.
 #'
 #' @param specimen_tbl Tibble of herbarium specimens subset.
-#' @param map_col Character vector matching column for geom color aesthetic.
+#' @param id_column Character vector matching specimen tibble ID column.
 #' @param shape_opt Character vector matching column for geom shape aesthetic.
 #' @param geom_size Numeric scalar for size of jitter aesthetic.
 #' @param jitter_pos Numeric vector of length two with jitter geom
@@ -64,18 +64,24 @@ map_borders <- function(border_color, border_fill = NA,
 #' # Subset Colorado specimens and plot over state and county borders.
 #' co_subset <- subset_coords(specimen_tbl = herbarium_specimens,
 #'                            Longitude = c(-109, -105), Latitude = c(37, 41))
-#' co_ggplot <- map_specimens(specimen_tbl = co_subset, map_col = "prior_id")
+#' co_ggplot <- map_specimens(specimen_tbl = co_subset, id_column = "prior_id")
 #'
-map_specimens <- function(specimen_tbl, map_col, border_color = "black",
+map_specimens <- function(specimen_tbl, id_column, borders = "black",
                           shape_opt = NULL, geom_size = 3,
                           jitter_pos = c(0, 0), f_adj = -0.05, ...) {
+  
+  # Group specimens by count of identification column.
+  id_quo <- enquo(id_column)
+  specimen_tbl <- specimen_tbl %>%
+    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::mutate(id_count = n()) %>% arrange(desc(id_count))
 
   # Plot specimens over state and county borders.
-  map_gg_base <- map_borders(border_color = border_color, ...)
+  map_gg_base <- map_borders(border_color = borders, ...)
   gg_basic_map <- map_gg_base +
     geom_jitter(data = specimen_tbl,
                 mapping = aes_string(x = "Longitude", y = "Latitude",
-                                     colour = map_col, shape = shape_opt),
+                                     colour = id_column, shape = shape_opt),
                 size = geom_size, inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
     coord_fixed(xlim = grDevices::extendrange(specimen_tbl$Longitude,
@@ -118,23 +124,29 @@ map_specimens <- function(specimen_tbl, map_col, border_color = "black",
 #'
 #' # Build ggmap object with borders and specimens plotted over satellite image.
 #' co_ggmap <- map_ggmap(specimen_tbl = co_front_range, size = 8,
-#'                       map_col = "Taxon_a_posteriori",
+#'                       id_column = "Taxon_a_posteriori",
 #'                       shape_opt = "Taxon_a_posteriori",
 #'                       gg_longitude = -106, gg_latitude = 39.5,
 #'                       gg_map_type = "satellite")
 #'
 #' # Add theme specifications and markdown legend.
 #' map_themes(gg_map_obj = co_ggmap, mapped_specimens = co_front_range,
-#'            map_id = "Taxon_a_posteriori")
+#'            id_column = "Taxon_a_posteriori")
 #'
-map_ggmap <- function(specimen_tbl, map_col, size = 7,
+map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
+                      size = 7, geom_size = 3,
                       border_size_county = .125,
                       border_size_state = 1.5,
-                      shape_opt = NULL, geom_size = 3,
                       jitter_pos = c(0, 0),
                       gg_longitude = NULL, gg_latitude = NULL,
                       gg_map_type = c("terrain", "satellite",
                                       "roadmap", "hybrid"), ...) {
+
+  # Group specimens by count of identification column.
+  id_quo <- enquo(id_column)
+  specimen_tbl <- specimen_tbl %>%
+    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::mutate(id_count = n()) %>% arrange(desc(id_count))
 
   # Check registration of Google API key.
   if (ggmap::has_google_key() == FALSE) {
@@ -178,7 +190,7 @@ map_ggmap <- function(specimen_tbl, map_col, size = 7,
     # Add specimen plot layer subset.
     geom_jitter(data = specimen_tbl,
                 mapping = aes_string(x = "Longitude", y = "Latitude",
-                                     colour = map_col, shape = shape_opt),
+                                     colour = id_column, shape = shape_opt),
                 size = geom_size, inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
 
@@ -206,15 +218,21 @@ map_ggmap <- function(specimen_tbl, map_col, size = 7,
 #'
 #' @examples
 #' co_elev <- map_elev(specimen_tbl = co_front_range, raster_zoom = 7,
-#'                     map_col = "Taxon_a_posteriori",
+#'                     id_column = "Taxon_a_posteriori",
 #'                     shape_opt = "Taxon_a_posteriori")
 #' 
 #' # Add theme specifications and markdown legend.
 #' map_themes(gg_map_obj = co_elev, mapped_specimens = co_front_range,
-#'            map_id = "Taxon_a_posteriori")
+#'            id_column = "Taxon_a_posteriori")
 #'
-map_elev <- function(specimen_tbl, map_col, shape_opt = NULL,
+map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
                      raster_zoom = 7, raster_factor = 2, geom_size = 3, ...) {
+
+  # Group specimens by count of identification column.
+  id_quo <- enquo(id_column)
+  specimen_tbl <- specimen_tbl %>%
+    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::mutate(id_count = n()) %>% arrange(desc(id_count))
 
   # Plot specimens over state and county borders.
   map_gg_base <- map_borders(border_color = "black", ...)
@@ -255,7 +273,7 @@ map_elev <- function(specimen_tbl, map_col, shape_opt = NULL,
                size = (geom_size + 2), colour = "black", alpha = 0.2) +
     geom_point(data = specimen_tbl, size = geom_size, na.rm = TRUE,
                aes_string(x = "Longitude", y = "Latitude",
-                   colour = map_col, shape = shape_opt)) +
+                   colour = id_column, shape = shape_opt)) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude") +
     coord_equal(xlim = c(min(specimen_tbl$Longitude),
@@ -320,6 +338,7 @@ spp_color <- c("Physaria acutifolia" = "yellow",
                "Physaria bellii" = "blue",
                "Physaria rollinsii" = "darkorchid1",
                "Physaria alpina" = "firebrick",
+               "Physaria geyeri" = "plum1",
                "Physaria brassicoides" = "olivedrab2",
                "Physaria didymocarpa ssp. didymocarpa" = "skyblue",
                "Physaria didymocarpa ssp. lanata" = "goldenrod",
@@ -349,6 +368,7 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria bellii" = 4,
                "Physaria rollinsii" = 17,
                "Physaria alpina" = 15,
+               "Physaria geyeri" = 18,
                "Physaria brassicoides" = 16,
                "Physaria didymocarpa ssp. didymocarpa" = 15,
                "Physaria didymocarpa ssp. lanata" = 25,
@@ -375,15 +395,15 @@ spp_shape <- c("Physaria acutifolia" = 3,
 #' @param gg_map_obj Ggmap returned by specimen mapping function.
 #' @param mapped_specimens Tibble of specimens to map.
 #'  Use same argument for `map_specimens(specimen_tbl = [mapped_specimens])`
-#' @param map_id Character vector of column name for label parsing.
+#' @param id_column Character vector matching specimen tibble ID column.
 #' @param legend_title Character vector of length one to set the ggplot
 #' legend title.
 #'
 #' @examples
 #' map_themes(gg_map_obj = co_ggplot, mapped_specimens = co_subset,
-#'            map_id = "prior_id", legend_title = "Prior Annotations")
+#'            id_column = "prior_id", legend_title = "Prior Annotations")
 #'
-map_themes <- function(gg_map_obj, mapped_specimens, map_id,
+map_themes <- function(gg_map_obj, mapped_specimens, id_column,
                        legend_title = "Reviewed Annotations") {
 
   # Assign map specimen tibble cast from data frame
@@ -401,16 +421,16 @@ map_themes <- function(gg_map_obj, mapped_specimens, map_id,
   gg_map_obj +
     scale_color_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
-                                           id_column = map_id),
+                                           id_column = id_column),
                        values = spp_color, na.value = "black") +
 
     scale_shape_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
-                                           id_column = map_id),
+                                           id_column = id_column),
                        values = spp_shape, na.value = 17) +
 
     theme(legend.text.align = 0, legend.title.align = 0.5,
-          legend.direction = "vertical",
+          legend.direction = "vertical", legend.key= element_blank(),
           legend.text = ggtext::element_markdown())
 
 }
