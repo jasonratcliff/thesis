@@ -81,36 +81,50 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 #' @return ggtree object with tips aesthetics determined by `id_column` and
 #' posterior probabilities on resolved (i.e. non-polytomy) nodes.
 #'
-#' @examples
-#' id_column <- "prior_id"
-#' scale_name <- "Review Annotations"
-bayes_ggtree <- function(bayes_tbl, id_column, scale_name) {
+bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
+                         x_expand = 0.02) {
+
+  # Re-assign Bayes tibble to prevent function scoping issue.
+  bayes_tbl_obj <- bayes_tbl
+  id_quo <- rlang::ensym(id_column)
+  id_expr <- rlang::expr(!is.na(!!id_quo))
 
   # Filter out polytomy nodes for labels.
   bayes_labels <- bayes_tbl %>% dplyr::filter(prob != 1 & !is.na(prob))
   nudge_xlim <- -(max(range(bayes_labels$x)) * 0.05)
 
   # Build ggtree plot from Bayes results.
-  ggtree(bayes_test, layout = "rectangular") +
-    geom_point(aes_string(color = id_column, shape = id_column,
+  ggtree_plot <- ggtree(bayes_tbl, layout = "rectangular") +
+    geom_point(data = dplyr::filter(bayes_tbl, !!id_expr),
+               aes_string(color = id_column, shape = id_column,
                           size = "geom_scale"), na.rm = TRUE) +
 
     # Add labels with rounded posterior probabilities to resolved nodes.
     geom_label(data = bayes_labels, nudge_x = nudge_xlim,
       aes(x = x, y = y, label = sprintf("%0.3f", as.numeric(prob), digits = 3)),
-      fontface = "bold", fill = "lightgoldenrod", size = 4.5, alpha = 0.5) +
+      fontface = "bold", fill = "lightgoldenrod", size = 4, alpha = 0.35) +
 
     # Adjust color and shape scales with spp_labels() markdown ggtext elements.
     scale_color_manual(scale_name, values = spp_color,
       labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
     scale_shape_manual(scale_name, values = spp_shape,
       labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
-    theme(legend.text = ggtext::element_markdown()) +
+    theme(legend.text = ggtext::element_markdown(size = 8),
+          legend.background = element_blank(),
+          legend.title = element_text(hjust = 0.5, size = 14, face = "bold")) +
+    expand_limits(x = x_expand) +
 
     # Modify scale of size aesthetic and spacing of color / shape guide.
     scale_size_continuous(range = c(3, 9), guide = "none") +
-    guides(color = guide_legend(override.aes = list(size = 4),
-                                keyheight = 0.35, default.unit = "inch"))
+    guides(color = guide_legend(override.aes = list(size = 3),
+                                ncol = 2, byrow = TRUE,
+                                keyheight = 0.15, default.unit = "inch"))
+
+  # Return ggtree plot with labels
+  bayes_tip_labels(bayes_ggtree_obj = ggtree_plot,
+                   bayes_tbl = bayes_tbl_obj) +
+    ggtree::geom_treescale(offset = -1.5)
+
 }
 
 #' Add ggtree Plot Tip Labels
@@ -122,27 +136,27 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name) {
 #' @param bayes_ggtree_obj ggtree object returned by `bayes_ggtree()` function.
 #' @inheritParams bayes_ggtree
 #' @return ggtree object with text geoms identifying taxa tip labels.
-#' 
+#'
 bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
-  
+
   # Assign tibbles for multi-taxa and single-taxon tip labels.
   multi_taxa_tbl <- multi_taxa_nodes(bayes_tbl)
   single_taxa_tbl <- bayes_tbl %>%
-    dplyr::group_by(node) %>% dplyr::count(vars = "node") %>% 
+    dplyr::group_by(node) %>% dplyr::count(vars = "node") %>%
     dplyr::ungroup() %>% dplyr::right_join(., bayes_tbl, by = "node") %>%
     dplyr::filter(n == 1) %>% dplyr::select(x, y, label.x)
-  
+
   # Add tip labels for single- and multi-taxa tip labels.
   xnudge_multi <- max(range(multi_taxa_tbl$x)) * 0.03
   xnudge_single <- max(range(single_taxa_tbl$x)) * 0.025
-  
+
   bayes_ggtree_obj +
     geom_text(data = multi_taxa_tbl,
               aes(x = x, y = y, label = node_group), nudge_x = xnudge_multi,
-              size = 3, hjust = 0, vjust = 0.25, fontface = "bold") +
+              size = 2.5, hjust = 0, vjust = 0.25, fontface = "bold") +
     geom_text(data = single_taxa_tbl,
               aes(x = x, y = y, label = label.x), na.rm = TRUE,
-              nudge_x = xnudge_single, size = 3, hjust = 0)
+              nudge_x = xnudge_single, size = 2.5, hjust = 0)
 }
 
 #' Multi-taxa Tips
@@ -154,11 +168,11 @@ bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
 #' @return Tibble of filtered multi-taxa tips grouped by node.
 #'
 multi_taxa_nodes <- function(bayes_tbl) {
-  
+
   # Select tibble variables for filtering multi-taxa tips.
   multi_taxa_nodes <- bayes_tbl %>%
     dplyr::select(node, label.x, x, y, label.y)
-  
+
   # Filter multi-taxa nodes and create group index for combined genotype.
   multi_taxa_nodes %>%
     dplyr::group_by(node) %>% dplyr::count(vars = "node") %>%
