@@ -297,32 +297,36 @@ map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
 #' @param h_adjust Numeric vector of length one for horizontal label adjustment.
 #' @param v_adjust Numeric vector of length one for vertical label adjustment.
 #' @param label_size Numeric vector of length one for label size.
-#' @inheritParams spp_find
+#' @inheritParams find_spp
 #'
 #' @return ggplot object with added specimen annotation layer.
 #'
-map_spp_id <- function(gg_map_obj, taxa_frame, collector, collection_number,
+map_spp_id <- function(gg_map_obj, specimen_tbl, collector, collection,
+                       id_column, shape_opt = NULL, geom_size = 3,
                        h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
 
-  # Call `spp_find()` function to get specimen annotation data.
-  spp_id <- spp_find(taxa_frame = taxa_frame,
-                     collector = collector,
-                     collection_number = collection_number,
-                     geom = TRUE, label = TRUE)
+  # Call `find_spp()` function to get specimen annotation data.
+  spp_id <- find_spp(specimen_tbl = specimen_tbl,
+                     collector = collector, collection = collection) %>%
+    dplyr::mutate(taxa_label = stringr::str_remove_all(string = Collector,
+       pattern = "[A-Z]\\. ?") %>% stringr::str_replace(string = .,
+       pattern = "and|with", replacement =  "&") %>%
+    paste(., Collection_Number, collapse = "", sep = "\n"))
 
   # Plot additional map layer to include the specimen returned by spp_find().
-  gg_spp_id <- gg_map_obj +
+  gg_map_obj +
     geom_point(data = spp_id, inherit.aes = FALSE,
                mapping = aes(x = Longitude, y = Latitude),
                show.legend = FALSE, size = 5, shape = 5, fill = NA) +
+    geom_point(data = spp_id, size = geom_size,
+               mapping = aes_string(x = "Longitude", y = "Latitude",
+                                    colour = id_column, shape = shape_opt)) +
     geom_label(data = spp_id, inherit.aes = FALSE,
                nudge_x = h_adjust, nudge_y = v_adjust,
                label.padding = unit(0.1, "lines"), size = label_size,
                mapping = aes(x = Longitude, y = Latitude,
-                             label = taxon_label), alpha = 0.5)
+                             label = taxa_label), alpha = 0.5)
 
-  # Return ggplot map with specimen annotation.
-  return(gg_spp_id)
 }
 
 # Map Themes ----
