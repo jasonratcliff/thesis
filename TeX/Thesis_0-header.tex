@@ -1,19 +1,17 @@
 \usepackage[labelsep=period]{caption} % Caption separator set to a period
 \usepackage{texshade} % Beitz 2000
 \usepackage{rotating} % Fairbairns et al. 2016
-\usepackage[T1]{fontenc} % Font encoding
-\usepackage[utf8]{inputenc}
 
 % Load American Mathematical Society fonts
 \usepackage{amsmath, amscd, amsthm, amssymb, mathrsfs,amsfonts}
 
-% Three part table call of kableExtraa requires LaTeX package "makecell"
+% Three part table call of kableExtra requires LaTeX package "makecell"
 \usepackage{makecell}
 
 \usepackage{showframe}
 \usepackage{lscape}
 \usepackage{pdflscape}
-\usepackage{longtable}
+\usepackage{caption}
 
 % Set knitr chunks as float placements
 \usepackage{float}
@@ -114,6 +112,7 @@
 
 % For code syntax highlighting, use package LISTINGS (Hoffman et al. 2015)
 \usepackage{listings}
+\usepackage{textcomp}
 \lstdefinelanguage{mybash}{ % Define keywords and respective coloring schemes
   language=bash,
   keywordstyle=\color{blue}\bfseries,
