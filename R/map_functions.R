@@ -154,9 +154,6 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
                "See: https://github.com/dkahle/ggmap"))
   }
 
-  # Plot specimens over state and county borders.
-  map_gg_base <- map_borders(border_color = "white", ...)
-
   # Filter specimens by coordinates and get ggmap by median values.
   if (!is.null(gg_longitude) && !is.null(gg_latitude)) {
     map_gg_sat <-
@@ -172,36 +169,33 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
   }
 
   # Index the boundary of the ggmap plot to the x/y limits of ggmap base.
-  map_xlim = c(attr(map_gg_sat, "bb")$ll.lon,
-               attr(map_gg_sat, "bb")$ur.lon)
-  map_ylim = c(attr(map_gg_sat, "bb")$ll.lat,
-               attr(map_gg_sat, "bb")$ur.lat)
+  map_gg_base <- map_borders(border_color = "white", ...)
+  map_bbox <- ggmap::bb2bbox(bb = attr(map_gg_sat, "bb"))
+  map_xlim <- c(map_bbox["left"] * 0.9975, map_bbox["right"] * 1.0025)
+  map_ylim <- c(map_bbox["bottom"] * 1.005, map_bbox["top"] * 0.995)
 
   # Plot Google base layer with county and state border geom layers.
-  gg_sat_map <-
-    ggmap(ggmap = map_gg_sat, extent = "normal", maprange = FALSE) +
-    geom_polygon(data = map_gg_base$plot_env$border_counties,
-                 aes(x = long, y = lat, group = group),
-                 color = "white", fill = NA, size = .5) +
-    geom_polygon(data = map_gg_base$plot_env$border_states,
-                 aes(x = long, y = lat, group = group),
-                 color = "moccasin", fill = NA, size = 1.25) +
+  ggmap(ggmap = map_gg_sat, extent = "panel") +
+    geom_path(data = map_gg_base$plot_env$border_counties,
+              aes(x = long, y = lat, group = group),
+              color = "white", size = .5) +
+    geom_path(data = map_gg_base$plot_env$border_states,
+              aes(x = long, y = lat, group = group),
+              color = "moccasin", size = 1.25) +
 
     # Add specimen plot layer subset.
     geom_jitter(data = specimen_tbl,
                 mapping = aes_string(x = "Longitude", y = "Latitude",
                                      colour = id_column, shape = shape_opt),
-                size = geom_size, inherit.aes = FALSE,
+                size = geom_size, #inherit.aes = FALSE,
                 width = jitter_pos[1], height = jitter_pos[2]) +
 
     # Adjust axis limits to edge of ggmap and modify theme.
     coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
-    theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+    theme(panel.border = element_rect(colour = "black", fill=NA, size=3)) +
     scale_x_continuous("Longitude") +
     scale_y_continuous("Latitude")
 
-  # Return ggplot of specimens mapped over ggmap and county border layers.
-  return(gg_sat_map)
 }
 
 # Build Elevation Raster Layer ----
@@ -407,6 +401,8 @@ spp_shape <- c("Physaria acutifolia" = 3,
 #' map_themes(gg_map_obj = co_ggplot, mapped_specimens = co_subset,
 #'            id_column = "prior_id", legend_title = "Prior Annotations")
 #'
+#' map_themes(gg_map_obj = co_ggmap, mapped_specimens = co_front_range,
+#'            id_column = "Taxon_a_posteriori")
 map_themes <- function(gg_map_obj, mapped_specimens, id_column,
                        legend_title = "Reviewed Annotations") {
 
@@ -435,6 +431,8 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
 
     theme(legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical", legend.key= element_blank(),
+          legend.background = element_rect(fill = "grey90",
+                                           color =  "black"),
           legend.text = ggtext::element_markdown())
 
 }
