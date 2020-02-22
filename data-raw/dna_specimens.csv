@@ -1,0 +1,73 @@
+﻿taxa_label,Collector,Collection_Number,Herbarium,State,County,Latitude,Longitude,ID_prior,ID_final,multiLocus,header_rITS,header_rps,header_ycf1,beastSpecies
+LARGY_7548,Missing,7548,NA,Unknown,NA,NA,NA,Physaria argyraea,Physaria argyraea,TRUE,LARGY_7548 rITS,LARGY_7548 rps,LARGY_7548 ycf1,L. argyreae
+LFEND_4355,Oroth,4355,NA,New Mexico,McKinley,NA,NA,Physaria fendleri,Physaria fendleri,TRUE,LFEND_4355 rITS,LFEND_4355 rps,LFEND_4355 ycf1,L. fendlerii
+PACUT_12821,R.L. Hartman with K.H. Dueholm,12821,UTC,Wyoming,Hot Springs,43.6339,-108.0067,Physaria acutifolia,,FALSE,PACUT_12821 rITS,PACUT_12821 rps,MISSING,
+PACUT_14050,W. Fertig,14050,RM,Wyoming,Natrona,42.7004,-106.3326,Physaria acutifolia,,TRUE,PACUT_14050 rITS,PACUT_14050 rps,PACUT_14050 ycf1,P. acutifolia
+PACUT_14222,"N.H., P.K. Holmgren",14222,ISTC,Utah,Grand,38.6653,-109.4194,Physaria acutifolia,Physaria acutifolia,TRUE,PACUT_14222 rITS,PACUT_14222 rps,PACUT_14222 ycf1,P. acutifolia
+PACUT_16125,W. Fertig,16125,RM,Wyoming,Sweetwater,42.0905,-108.7717,Physaria acutifolia,,FALSE,PACUT_16125 rITS,PACUT_16125 rps,MISSING,
+PACUT_26706,B. E. Nelson with R. Nelson,26706,RM,Wyoming,Sublette,42.3843,-110.2758,Physaria acutifolia,,TRUE,PACUT_26706 rITS,PACUT_26706 rps,PACUT_26706 ycf1,P. acutifolia
+PACUT_3721,"S.L. O'Kane, Jr. & J.A. Anderson",3721,ITSC,Colorado,Ouray,38.2914,-107.7589,Physaria acutifolia,Physaria acutifolia,TRUE,PACUT_3721 rITS,PACUT_3721 rps,PACUT_3721 ycf1,P. acutifolia
+PACUT_3769,"S.L. O'Kane, Jr.",3769,RM,Colorado,Rio Blanco,40.1808,-108.8417,Physaria acutifolia,,FALSE,PACUT_3769 rITS,PACUT_3769 rps,FRAMESHIFT,
+PACUT_48,"J. Ratcliff & S. L. O'Kane, Jr.",48,ISTC,Montana,Carbon,45.0086,-108.4236,Physaria acutifolia,,TRUE,PACUT_48 rITS,PACUT_48 rps,PACUT_48 ycf1,P. acutifolia
+PACUT_5199,L. M. Moore,5199,RM,Colorado,Montezuma,37.3928,-108.4724,Physaria acutifolia,Physaria acutifolia,TRUE,PACUT_5199 rITS,PACUT_5199 rps,PACUT_5199 ycf1,P. acutifolia
+PACUT_7997,R. Dorn,7997,RM,Wyoming,Uinta,41.0916,-110.0956,Physaria acutifolia,Physaria acutifolia,TRUE,PACUT_7997 rITS,PACUT_7997 rps,PACUT_7997 ycf1,P. acutifolia
+PACUT_8621,Rollins and Rollins,8621,RM,Wyoming,Albany,41.1589,-105.9333,Physaria acutifolia,,TRUE,PACUT_8621 rITS,PACUT_8621 rps,PACUT_8621 ycf1,P. acutifolia
+PBRAS_1811,B. Heidel,1811,MONTU,Montana,Powder River,45.025,-105.8917,Physaria brassicoides,,FALSE,PBRAS_1811 rITS,PBRAS_1811 rps,MISSING,
+PBRAS_3122,A. Salywon & D. Dierig,3122,ISTC,Wyoming,Converse,42.6786,-105.3939,Physaria brassicoides,,TRUE,PBRAS_3122 rITS,PBRAS_3122 rps,PBRAS_3122 ycf1,P. brassicoides
+PBRAS_3130,A. Salywon & D. Dierig,3130,ISTC,Wyoming,Campbell,42.8261,-105.0561,Physaria brassicoides,,TRUE,PBRAS_3130 rITS,PBRAS_3130 rps,PBRAS_3130 ycf1,P. brassicoides
+PBRAS_4225,R. Dorn,4225,RM,Wyoming,Platte,42.1689,-104.8226,Physaria brassicoides,,TRUE,PBRAS_4225 rITS,PBRAS_4225 rps,PBRAS_4225 ycf1,P. brassicoides
+PBRAS_53,"J. Ratcliff & S. L. O'Kane, Jr.",53,ISTC,Montana,Crook,44.6872,-104.5994,Physaria brassicoides,,TRUE,PBRAS_53 rITS,PBRAS_53 rps,PBRAS_53 ycf1,P. brassicoides
+PBRAS_54,"J. Ratcliff & S. L. O'Kane, Jr.",54,ISTC,Montana,Crook,44.4797,-104.2414,Physaria brassicoides,,TRUE,PBRAS_54 rITS,PBRAS_54 rps,PBRAS_54 ycf1,P. brassicoides
+PCOND_16765,W. Fertig,16765,RM,Wyoming,Lincoln,41.687,-110.9143,Physaria condensata,,TRUE,PCOND_16765 rITS,PCOND_16765 rps,PCOND_16765 ycf1,P. condensata
+PCOND_3787,"S.L. O'Kane, Jr.",3787,ISTC,Wyoming,Uinta,41.3308,-110.4194,Physaria condensata,,TRUE,PCOND_3787 rITS,PCOND_3787 rps,PCOND_3787 ycf1,P. condensata
+PCOND_40,"J. Ratcliff & S. L. O'Kane, Jr.",40,ISTC,Wyoming,Lincoln,41.8997,-110.4142,Physaria condensata,,TRUE,PCOND_40 rITS,PCOND_40 rps,PCOND_40 ycf1,P. condensata
+PCOND_41,"J. Ratcliff & S. L. O'Kane, Jr.",41,ISTC,Wyoming,Lincoln,41.8261,-110.6447,Physaria condensata,,TRUE,PCOND_41 rITS,PCOND_41 rps,PCOND_41 ycf1,P. condensata
+PDIDY_DI_12677,E. F. Evert,12677,RM,Wyoming,Park,44.5053,-109.9456,Physaria didymocarpa ssp. didymocarpa,,TRUE,PDIDY_DI_12677 rITS,PDIDY_DI_12677 rps,PDIDY_DI_12677 ycf1,P. didymocarpa
+PDIDY_DI_3794,"S.L. O'Kane, Jr.",3794,ISTC,Montana,Granite,46.7111,-113.2453,Physaria didymocarpa ssp. didymocarpa,,TRUE,PDIDY_DI_3794 rITS,PDIDY_DI_3794 rps,PDIDY_DI_3794 ycf1,P. didymocarpa
+PDIDY_DI_46,"J. Ratcliff & S. L. O'Kane, Jr.",46,ISTC,Montana,Granite,46.7119,-113.2456,Physaria didymocarpa ssp. didymocarpa,,TRUE,PDIDY_DI_46 rITS,PDIDY_DI_46 rps,PDIDY_DI_46 ycf1,P. didymocarpa
+PDIDY_DI_47,"J. Ratcliff & S. L. O'Kane, Jr.",47,ISTC,Montana,Granite,45.7029,-110.9314,Physaria didymocarpa ssp. didymocarpa,,TRUE,PDIDY_DI_47 rITS,PDIDY_DI_47 rps,PDIDY_DI_47 ycf1,P. didymocarpa
+PDIDY_DI_551,S. Smith,551,RM,Wyoming,Park,43.9215,-109.0978,Physaria didymocarpa ssp. didymocarpa,,FALSE,PDIDY_DI_551 rITS,PDIDY_DI_551 rps,MISSING,
+PDIDY_LA_14773,W. Fertig & J. Britt,14773,RM,Wyoming,Sheridan,44.9032,-107.3671,Physaria didymocarpa ssp. lanata,,TRUE,PDIDY_LA_14773 rITS,PDIDY_LA_14773 rps,PDIDY_LA_14773 ycf1,P. didymocarpa
+PDIDY_LA_3136,A. Salywon & D. Dierig,3136,ISTC,Wyoming,Johnson,44.3256,-106.8136,Physaria didymocarpa ssp. lanata,,FALSE,PDIDY_LA_3136 rITS,PDIDY_LA_3136 rps,MISSING,
+PDIDY_LA_3138,A. Salywon & D. Dierig,3138,ISTC,Wyoming,Johnson,44.3289,-106.8425,Physaria didymocarpa ssp. lanata,,FALSE,PDIDY_LA_3138 rITS,PDIDY_LA_3138 rps,MISSING,
+PDIDY_LA_32,K. O'Dea,32,RM,Wyoming,Big Horn,44.8612,-107.853,Physaria didymocarpa ssp. lanata,,TRUE,PDIDY_LA_32 rITS,PDIDY_LA_32 rps,PDIDY_LA_32 ycf1,P. didymocarpa
+PDIDY_LA_52,"J. Ratcliff & S. L. O'Kane, Jr.",52,ISTC,Wyoming,Johnson,44.3306,-106.8458,Physaria didymocarpa ssp. lanata,,TRUE,PDIDY_LA_52 rITS,PDIDY_LA_52 rps,PDIDY_LA_52 ycf1,P. didymocarpa
+PDIDY_LY_2689,R. Rosentreter,2689,NY,Idaho,Lemhi,44.9761,-113.5358,Physaria didymocarpa ssp. lyrata,,TRUE,PDIDY_LY_2689 rITS,PDIDY_LY_2689 rps,PDIDY_LY_2689 ycf1,P. didymocarpa
+PDIDY_LY_3855,R. Rosentreter,3855,NY,Idaho,Lemhi,44.9906,-113.5766,Physaria didymocarpa ssp. lyrata,,TRUE,PDIDY_LY_3855 rITS,PDIDY_LY_3855 rps,PDIDY_LY_3855 ycf1,P. didymocarpa
+PDIDY_LY_45,"J. Ratcliff & S. L. O'Kane, Jr.",45,ISTC,Idaho,Lemhi,45.0819,-113.9622,Physaria didymocarpa ssp. lyrata,,TRUE,PDIDY_LY_45 rITS,PDIDY_LY_45 rps,PDIDY_LY_45 ycf1,P. didymocarpa
+PDORN_17503,W. Fertig,17503,RM,Wyoming,Lincoln,41.9417,-110.8773,Physaria dornii,,FALSE,PDORN_17503 rITS,FRAMESHIFT,MISSING,
+PDORN_17506,W. Fertig,17506,RM,Wyoming,Lincoln,42.0161,-110.8579,Physaria dornii,,FALSE,PDORN_17506 rITS,PDORN_17506 rps,MISSING,
+PDORN_42,"J. Ratcliff & S. L. O'Kane, Jr.",42,ISTC,Wyoming,Lincoln,41.8369,-110.8833,Physaria dornii,Physaria integrifolia,TRUE,PDORN_42 rITS,PDORN_42 rps,PDORN_42 ycf1,P. dornii
+PDORN_4376,C. H. Refsdal with L. Refsdal,4376,RM,Wyoming,Uinta,41.2648,-110.7084,Physaria dornii,Physaria condensata,TRUE,PDORN_4376 rITS,PDORN_4376 rps,PDORN_4376 ycf1,P. dornii
+PEBUR_10410,R. Dorn,10410,RM,Wyoming,Carbon,42.35,-106.4692,Physaria eburniflora,,TRUE,PEBUR_10410 rITS,PEBUR_10410 rps,PEBUR_10410 ycf1,P. eburniflora
+PEBUR_14841,W. Fertig,14841,RM,Wyoming,Fremont,42.63,-108.1795,Physaria eburniflora,,TRUE,PEBUR_14841 rITS,PEBUR_14841 rps,PEBUR_14841 ycf1,P. eburniflora
+PEBUR_3120,A. Salywon & D. Dierig,3120,ISTC,Wyoming,Carbon,42.3458,-107.4597,Physaria eburniflora,,FALSE,PEBUR_3120 rITS,FRAMESHIFT,MISSING,
+PEBUR_3121,A. Salywon & D. Dierig,3121,ISTC,Wyoming,Natrona,42.4333,-107.225,Physaria eburniflora,,FALSE,PEBUR_3121 rITS,FRAMESHIFT,MISSING,
+PEBUR_37,"J. Ratcliff & S. L. O'Kane, Jr.",37,ISTC,Wyoming,Fremont,42.3067,-107.6322,Physaria eburniflora,,TRUE,PEBUR_37 rITS,PEBUR_37 rps,PEBUR_37 ycf1,P. eburniflora
+PEBUR_38,"J. Ratcliff & S. L. O'Kane, Jr.",38,ISTC,Wyoming,Fremont,42.4417,-107.1967,Physaria eburniflora,,TRUE,PEBUR_38 rITS,PEBUR_38 rps,PEBUR_38 ycf1,P. eburniflora
+PINTE_17493,W. Fertig,17493,RM,Wyoming,Lincoln,41.9268,-110.8773,Physaria integrifolia,,TRUE,PINTE_17493 rITS,PINTE_17493 rps,PINTE_17493 ycf1,P. integrifolia
+PINTE_19288,B. E. Nelson,19288,RM,Wyoming,Teton,43.6052,-110.3772,Physaria integrifolia,,TRUE,PINTE_19288 rITS,PINTE_19288 rps,PINTE_19288 ycf1,P. integrifolia
+PINTE_3149,A. Salywon with D. Dierig,3149,ISTC,Wyoming,Sublette,42.8389,-110.5844,Physaria integrifolia,,FALSE,PINTE_3149 rITS,FRAMESHIFT,MISSING,
+PINTE_43,"J. Ratcliff & S. L. O'Kane, Jr.",43,ISTC,Wyoming,Lincoln,42.7258,-110.9094,Physaria integrifolia,,TRUE,PINTE_43 rITS,PINTE_43 rps,PINTE_43 ycf1,P. integrifolia
+PINTE_44,"J. Ratcliff & S. L. O'Kane, Jr.",44,ISTC,Wyoming,Lincoln,43.1972,-110.8897,Physaria integrifolia,,TRUE,PINTE_44 rITS,PINTE_44 rps,PINTE_44 ycf1,P. integrifolia
+PINTE_68918,B. E. Nelson with D. Scott,68918,NY,Wyoming,Teton,43.7914,-110.533,Physaria integrifolia,,FALSE,PINTE_68918 rITS,FRAMESHIFT,MISSING,
+POBCO_3762,Missing,3762,NA,Unknown,NA,NA,NA,Physaria obcordata,,FALSE,POBCO_3762 rITS,POBCO_3762 rps,MISSING,
+PSAXI_DE_4481,P. Lesica,4481,GH,Montana,Stillwater,45.4724,-110.0253,Physaria saximontana ssp. dentata,,TRUE,PSAXI_DE_4481 rITS,PSAXI_DE_4481 rps,PSAXI_DE_4481 ycf1,P. saximontana
+PSAXI_DE_56,J. Ratcliff & M. Horsch,56,ISTC,Montana,Glacier,48.735,-113.3939,Physaria saximontana ssp. dentata,,TRUE,PSAXI_DE_56 rITS,PSAXI_DE_56 rps,PSAXI_DE_56 ycf1,P. saximontana
+PSAXI_DE_79,R.S. Wirt,79,ISTC,Montana,Pondera,48.1384,-113.0299,Physaria saximontana ssp. dentata,,FALSE,PSAXI_DE_79 rITS,PSAXI_DE_79 rps,MISSING,
+PSAXI_DE_89,R.S. Wirt,89,ISTC,Montana,Flathead,47.6906,-113.256,Physaria saximontana ssp. dentata,,FALSE,PSAXI_DE_89 rITS,PSAXI_DE_89 rps,MISSING,
+PSAXI_DE_9833,P. Lesica & D. Hanna,9833,MONTU,Montana,Fergus,46.7711,-109.3573,Physaria saximontana ssp. dentata,,TRUE,PSAXI_DE_9833 rITS,PSAXI_DE_9833 rps,PSAXI_DE_9833 ycf1,P. saximontana
+PSAXI_SA_3153,A. Salywon & D. Dierig,3153,ISTC,Wyoming,Fremont,42.6131,-108.6056,Physaria saximontana ssp. saximontana,,FALSE,PSAXI_SA_3153 rITS,FRAMESHIFT,MISSING,
+PSAXI_SA_39,"J. Ratcliff & S. L. O'Kane, Jr.",39,ISTC,Wyoming,Fremont,42.6917,-108.1794,Physaria saximontana ssp. saximontana,,TRUE,PSAXI_SA_39 rITS,PSAXI_SA_39 rps,PSAXI_SA_39 ycf1,P. saximontana
+PSAXI_SA_50,"J. Ratcliff & S. L. O'Kane, Jr.",50,ISTC,Wyoming,Fremont,43.6986,-108.8783,Physaria saximontana ssp. saximontana,,TRUE,PSAXI_SA_50 rITS,PSAXI_SA_50 rps,PSAXI_SA_50 ycf1,P. saximontana
+PSAXI_SA_74315,B.E. Nelson,74315,ISTC,Montana,Carbon,45.0145,-108.2925,Physaria saximontana ssp. saximontana,,TRUE,PSAXI_SA_74315 rITS,PSAXI_SA_74315 rps,PSAXI_SA_74315 ycf1,P. saximontana
+PSAXI_SA_9636,P. Lesica with P. Kittelson,9636,MONTU,Montana,Madison,45.1967,-111.9552,Physaria saximontana ssp. saximontana,,TRUE,PSAXI_SA_9636 rITS,PSAXI_SA_9636 rps,PSAXI_SA_9636 ycf1 ,P. saximontana
+PVITU_10105,R. Dorn,10105,RM,Wyoming,Carbon,41.0172,-106.8503,Physaria vitulifera - Carbon,Physaria vitulifera,TRUE,PVITU_10105 rITS,PVITU_10105 rps,PVITU_10105 ycf1,P. vitulifera
+PVITU_16713,W. Fertig,16713,RM,Wyoming,Carbon,41.2144,-107.1844,Physaria vitulifera - Carbon,Physaria vitulifera,TRUE,PVITU_16713 rITS,PVITU_16713 rps,PVITU_16713 ycf1,P. vitulifera
+PVITU_19075,W. Fertig & L. Welp,19075,RM,Wyoming,Carbon,41.3397,-106.5584,Physaria vitulifera - Carbon,Physaria vitulifera,TRUE,PVITU_19075 rITS,PVITU_19075 rps,PVITU_19075 ycf1,P. vitulifera
+PVITU_34,"J. Ratcliff & S. L. O'Kane, Jr.",34,ISTC,Wyoming,Carbon,41.1735,-106.8196,Physaria vitulifera - Carbon,,FALSE,PVITU_34 rITS,PVITU_34 rps,FRAMESHIFT,
+PVITU_3754,"S.L. O'Kane, Jr.",3754,ISTC,Colorado,Gilpin,39.7333,-105.4167,Physaria vitulifera,Physaria vitulifera,TRUE,PVITU_3754 rITS,PVITU_3754 rps,PVITU_3754 ycf1,P. vitulifera
+PVITU_489,S.F. Smith,489,RM,Colorado,Teller,38.8667,-105.1167,Physaria vitulifera,,FALSE,PVITU_489 rITS,PVITU_489 rps,MISSING,
+PVITU_500,S.F. Smith,500,RM,Colorado,Park,38.95,-105.9917,Physaria vitulifera,,FALSE,PVITU_500 rITS,PVITU_500 rps,MISSING,
+PVITU_9196,"O'Kane, Jr., Steve L. ",9196,RM,Colorado,Chaffee,38.8113,-106.3131,Physaria vitulifera,,FALSE,PVITU_9196 rITS,PVITU_9196 rps,FRAMESHIFT,
+PVITU_9837,R. Dorn,9837,RM,Colorado,Douglas,39.3067,-105.195,Physaria vitulifera,Physaria vitulifera,TRUE,PVITU_9837 rITS,PVITU_9837 rps,PVITU_9837 ycf1,P. vitulifera
