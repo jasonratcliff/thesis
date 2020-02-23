@@ -132,3 +132,120 @@ subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
   eval(rlang::parse_expr(filter_expr))
 }
 
+#' Find specimens by Collector, Collection Number, or Row ID
+#'
+#' @param specimen_tbl Tibble of herbarium specimens built from
+#'  `herbarium_specimens.R` script.
+#' @param collector Character scalar to filter specimen by collector name.
+#' @param collection Numeric vector to filter specimens by collection number.
+#' @param row_id Numeric vector of row indexes to slice tibble.
+#'
+#' @examples
+#' find_spp(herbarium_specimens, collector = "Rollins")
+#' find_spp(herbarium_specimens, collector = "Rollins", collection = 81337)
+#' find_spp(herbarium_specimens, row_id = c(1:12))
+#'
+#' @export
+#'
+find_spp <- function(specimen_tbl, collector = NULL, collection = NULL,
+                     row_id = numeric()) {
+
+  # Check for input tibble.
+  if (!tibble::is_tibble(specimen_tbl)) {
+    stop("Pass a tibble object for `specimen_tbl` argument.")
+  }
+
+  # Test arguments to warn when `row_id` and `collector` or `collection`.
+  test_args <- rlang::enquos(collector, collection)
+  names(test_args) <- c("collector", "collection")
+  if (length(row_id) > 0 &
+      TRUE %in% c(!is.null(collector) | !is.null(collection))) {
+    null_args <- purrr::map_lgl(test_args, function(arg) {
+      is.null(rlang::eval_tidy(arg))
+    })
+    warning(paste0("Arguments `row_id` and `",
+                   paste(names(null_args)[which(null_args == FALSE)],
+                         collapse = "` & `"), '` have been passed.'))
+  }
+
+  # Select columns from taxa data frame to return.
+  filtered_spp <- specimen_tbl %>%
+    dplyr::select("Taxon", "prior_id", "Taxon_a_posteriori",
+                  "Collector", "Collection_Number",
+                  "Latitude", "Longitude", "State", "County", "Herbarium")
+
+  # Slice by row index.
+  if (is.numeric(row_id) & length(row_id) > 0) {
+    filtered_spp <- dplyr::slice(filtered_spp, row_id)
+  } else if (!is.numeric(row_id)) {
+    warning("Ensure `row_id` is a numeric vector.")
+  }
+
+  # Map collector / collection enquosures and parse filter expression.
+  names(test_args) <- c("Collector", "Collection_Number")
+  filter_statements <-  # Keep non-null enquosures.
+    purrr::keep(test_args, function(arg) {
+    !is.null(rlang::eval_tidy(arg))
+  }) %>% unlist() %>%
+    # Build filter statements with quoted Collector as character vector.
+    purrr::map2(., names(.), function(arg, variable) {
+      paste0("grepl(x = ", variable, ", pattern = ",
+             ifelse(variable == "Collector",
+                    paste0("'", rlang::eval_tidy(arg), "'"),
+                    rlang::eval_tidy(arg)), ")")  # Unquoted collection number.
+    }) %>% unlist() %>% paste(collapse = ", ") %>%
+    paste0("dplyr::filter(", ., ")", collapse = "")
+
+  # Construct data filter pipeline to find specimens by collector / collection.
+  filter_expr <- paste("filtered_spp %>%", filter_statements, collapse = "")
+  eval(rlang::parse_expr(filter_expr))
+}
+
+# ggplot Legends ----
+
+
+#' Generate vector for `ggtext::element_markdown()` function call.
+#'
+#' Requires installation of `ggtext` as follows:
+#'   remotes::install_github("clauswilke/ggtext")
+#'
+#' @param specimen_tibble Tibble subset of specimens to construct ggtext labels.
+#' @param id_column Character vector matching specimen tibble ID column.
+#' @return Character vector of html markup named by specimen identification.
+#'
+spp_labels <- function(specimen_tibble, id_column) {
+
+  label_markdown <- function(label_vector) {
+    purrr::map_chr(.x = label_vector, .f = function(label) {
+      split_label <- unlist(strsplit(label, " "))
+      if (length(split_label) %in% c(1, 2)) {
+        # Genus with or without specific epithet.
+        parsed_label <- paste0("*", label, "*")
+      } else {
+        if (grepl("ssp\\.", x = label)) {
+          # Add html formatting to split ssp. onto second line.
+          parsed_label <-
+            paste0("*", paste0(split_label[1:2], collapse = " "),
+                   "*", collapse = "") %>%
+            paste0(., gsub(pattern = "s?sp\\.|var\\.", x = split_label[3],
+              replacement = "<br><span>&nbsp;&nbsp;&nbsp;</span>  ssp\\. *"),
+              split_label[4:length(split_label)], "*")
+          } else {  # Any other cases
+            parsed_label <- paste0("*", label, "*")
+          }
+        }
+      return(parsed_label)
+    })
+  }
+
+  # Add italics, html line break and non-breaking space characters.
+  id_quo <- rlang::enquo(id_column)  # quosures for tidy evaluation.
+  labels_vector <- specimen_tibble %>%
+    dplyr::select(., !!id_quo) %>% dplyr::distinct(.) %>% dplyr::pull()
+  labels_html <- label_markdown(labels_vector)
+  names(labels_html) <- labels_vector
+
+  # Return named vector of final identifications and markdown expression.
+  return(labels_html)
+}
+
