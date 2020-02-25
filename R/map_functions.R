@@ -201,3 +201,63 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
 
 }
 
+# Map Themes ----
+
+#' Modify map ggplot themes.
+#'
+#' This function overwrites the default discrete scales present in map ggplots
+#' with manual values set by `spp_color` and `spp_shape` vectors.
+#'
+#' @param gg_map_obj Ggmap returned by specimen mapping function.
+#' @param mapped_specimens Tibble of specimens to map.
+#'   Use same argument for `map_specimens(specimen_tbl = [mapped_specimens])`
+#' @param legend_title Character vector of length one to set the ggplot
+#'   legend title.
+#' @import ggplot2
+#' @inheritParams map_specimens
+#' @inherit map_ggmap examples
+#'
+#' @examples
+#'
+#' # Add theme specifications and markdown legend.
+#' \dontrun{
+#' map_themes(gg_map_obj = co_ggmap, mapped_specimens = co_front_range,
+#'            id_column = "Taxon_a_posteriori")
+#' }
+#'
+#' @export
+#'
+map_themes <- function(gg_map_obj, mapped_specimens, id_column,
+                       legend_title = "Reviewed Annotations") {
+
+  # Assign map specimen tibble cast from data frame
+  if (!tibble::is_tibble(mapped_specimens)) {
+    mapped_specimens <- tibble::as_tibble(mapped_specimens)
+  }
+
+  # Reset discrete scales to manually set shape and colour scales.
+  scale_index <-
+    grep(pattern = "ScaleDiscrete",
+         x = lapply(gg_map_obj$scales$scales, class), invert = TRUE)
+  gg_map_obj$scales$scales <- gg_map_obj$scales$scales[scale_index]
+
+  # Build ggplot map object with manual scales.
+  gg_map_obj +
+    scale_color_manual(name = legend_title,
+                       labels = spp_labels(specimen_tibble = mapped_specimens,
+                                           id_column = id_column),
+                       values = spp_color, na.value = "black") +
+
+    scale_shape_manual(name = legend_title,
+                       labels = spp_labels(specimen_tibble = mapped_specimens,
+                                           id_column = id_column),
+                       values = spp_shape, na.value = 17) +
+
+    theme(legend.text.align = 0, legend.title.align = 0.5,
+          legend.direction = "vertical", legend.key= element_blank(),
+          legend.background = element_rect(fill = "grey90",
+                                           color =  "black"),
+          legend.text = ggtext::element_markdown())
+
+}
+
