@@ -278,7 +278,7 @@ map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
           panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
 }
 
-# Map Themes ----
+# Helper Functions ----
 
 #' Modify map ggplot themes.
 #'
@@ -337,7 +337,56 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
 
 }
 
-# Helper Functions ----
+#' Map Individual Specimen
+#'
+#' Add label for individual specimen.
+#'
+#' @param h_adjust Numeric vector of length one for horizontal label adjustment.
+#' @param v_adjust Numeric vector of length one for vertical label adjustment.
+#' @param label_size Numeric vector of length one for label size.
+#' @inheritParams map_specimens
+#' @inheritParams map_themes
+#' @inheritParams find_spp
+#'
+#' @return ggplot object with added specimen annotation layer.
+#'
+#' @examples
+#' \dontrun{
+#' map_spp_id(gg_map_obj = co_ggmap, specimen_tbl = co_front_range,
+#'           id_column = "prior_id", shape_opt = "prior_id",
+#'           collector = "Wolf", collection = 642)
+#' }
+#'
+#' @export
+#'
+map_spp_id <- function(gg_map_obj, id_column, shape_opt = NULL,  geom_size = 3,
+                       specimen_tbl, collector, collection,
+                       h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
+
+  # Call `find_spp()` function to get specimen annotation data.
+  spp_id <- find_spp(specimen_tbl = specimen_tbl,
+                     collector = collector, collection = collection) %>%
+    dplyr::mutate(taxa_label = stringr::str_remove_all(string = .data$Collector,
+      pattern = "[A-Z]\\. ?") %>%
+        stringr::str_replace(string = ., pattern = "and|with",
+                             replacement =  "&") %>%
+          paste(., .data$Collection_Number, collapse = "", sep = "\n"))
+
+  # Plot additional map layer to include the specimen returned by spp_find().
+  gg_map_obj +
+    geom_point(data = spp_id, inherit.aes = FALSE,
+               mapping = aes(x = .data$Longitude, y = .data$Latitude),
+               show.legend = FALSE, size = 5, shape = 5, fill = NA) +
+    geom_point(data = spp_id, size = geom_size,
+               mapping = aes_string(x = "Longitude", y = "Latitude",
+                                    colour = id_column, shape = shape_opt)) +
+    geom_label(data = spp_id, inherit.aes = FALSE,
+               nudge_x = h_adjust, nudge_y = v_adjust,
+               label.padding = unit(0.1, "lines"), size = label_size,
+               mapping = aes(x = .data$Longitude, y = .data$Latitude,
+                             label = .data$taxa_label), alpha = 0.5)
+
+}
 
 #' Arrange Grouped Specimens
 #'
