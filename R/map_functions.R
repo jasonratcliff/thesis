@@ -47,3 +47,63 @@ map_borders <- function(border_color, border_fill = NA,
           panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
 }
 
+# Build Specimen Layer ----
+
+#' Build ggplot of specimen records over map borders.
+#'
+#' @param specimen_tbl Tibble of herbarium specimens subset.
+#' @param id_column Character scalar matching specimen tibble ID column.
+#' @param borders Charcacter scalar for color of ggplot borders.
+#' @param shape_opt Character scalar matching column for geom shape aesthetic.
+#' @param geom_size Numeric scalar for size of jitter aesthetic.
+#' @param jitter_pos Numeric vector of length two with jitter geom
+#'   position arguments for width (1) and height (2). Defaults to `c(0, 0)`.
+#' @param f_adj Numeric vector of length one for a fraction to extend
+#'   the range of x and y limits.  Passed as limit arguments of
+#' `grDevices::extendrange()` function call.
+#' @param ... Options inherited for `map_borders()` function call.
+#' @import ggplot2
+#' @importFrom rlang !!
+#'
+#' @return Object of `ggplot` class with specimen data plotted over base layers
+#'   of state and county borders.
+#'
+#' @examples
+#' # Subset Colorado specimens and plot over state and county borders.
+#' co_subset <- subset_coords(specimen_tbl = herbarium_specimens,
+#'                            Longitude = c(-109, -105), Latitude = c(37, 41))
+#' co_ggplot <- map_specimens(specimen_tbl = co_subset, id_column = "prior_id")
+#'
+#' @export
+#'
+map_specimens <- function(specimen_tbl, id_column, borders = "black",
+                          shape_opt = NULL, geom_size = 3,
+                          jitter_pos = c(0, 0), f_adj = -0.05, ...) {
+
+  # Group specimens by count of identification column.
+  id_quo <- rlang::enquo(id_column)
+  specimen_tbl <- specimen_tbl %>%
+    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::mutate(id_count = dplyr::n()) %>%
+    dplyr::arrange(dplyr::desc(.data$id_count))
+
+  # Plot specimens over state and county borders.
+  map_gg_base <- map_borders(border_color = borders, ...)
+  gg_basic_map <- map_gg_base +
+    geom_jitter(data = specimen_tbl,
+                mapping = aes_string(x = "Longitude", y = "Latitude",
+                                     colour = id_column, shape = shape_opt),
+                size = geom_size, inherit.aes = FALSE,
+                width = jitter_pos[1], height = jitter_pos[2]) +
+    coord_fixed(xlim = grDevices::extendrange(specimen_tbl$Longitude,
+                                              f = f_adj),
+                ylim = grDevices::extendrange(specimen_tbl$Latitude,
+                                              f = f_adj)) +
+    theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
+    xlab("Longitude") +
+    ylab("Latitude")
+
+  # Return ggplot object with specimens mapped over `map_borders()` base layer.
+  return(gg_basic_map)
+}
+
