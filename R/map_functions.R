@@ -193,6 +193,91 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
 
 }
 
+# Build Elevation Raster Layer ----
+
+#' Build elevation maps for `ggplot` base layer.
+#'
+#' @param raster_zoom Integer vector of length 1 for zoom level passed to
+#' `elevatr::get_elev_raster()` function call.  Must be between 1 and 14.
+#' @param raster_factor Integer vector of length 1 for optional aggregation
+#' of elevation raster to decrease resolution / object size.
+#' @inheritParams map_specimens
+#'
+#' @examples
+#' \dontrun{
+#' co_elev <- map_elev(specimen_tbl = co_front_range, raster_zoom = 7,
+#'                     id_column = "Taxon_a_posteriori",
+#'                     shape_opt = "Taxon_a_posteriori")
+#'
+#' # Add theme specifications and markdown legend.
+#' map_themes(gg_map_obj = co_elev, mapped_specimens = co_front_range,
+#'            id_column = "Taxon_a_posteriori")
+#' }
+#'
+#' @export
+#'
+map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
+                     raster_zoom = 7, raster_factor = 2, geom_size = 3, ...) {
+
+  # Group specimens by count of identification column.
+  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
+
+  # Plot specimens over state and county borders.
+  map_gg_base <- map_borders(border_color = "black", ...)
+
+  # Define projection and get AWS Open Data terrain tiles.
+  # Cite: https://registry.opendata.aws/terrain-tiles/
+  prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  map_elev_raster <-
+    elevatr::get_elev_raster(locations =
+      as.data.frame(specimen_tbl[, c("Longitude", "Latitude")]),
+      z = raster_zoom, prj = prj_dd, clip = "bbox", src = "aws")
+
+  # Use "raster" package function aggregate() to decrease data resolution and
+  # reduce the size / memory of elevation raster objects (Hijmans 2017).
+  # Cite: http://pakillo.github.io/R-GIS-tutorial/#resolution
+  if (raster_factor > 1) {
+    map_elev_raster <-
+      raster::aggregate(map_elev_raster, fact = raster_factor, fun = mean)
+  }
+
+  # Use "sp" package to define a spatial grid from the raster layer.
+  # Cite: https://groups.google.com/forum/#!msg/ggplot2/9fS4OfHEQq8/ZafTyvVKfJIJ
+  map_elev_df <-
+    methods::as(map_elev_raster, "SpatialPixelsDataFrame") %>% as.data.frame()
+
+  # ggplot elevation projection with county & state borders.
+  map_elev_ggplot <- ggplot(map_elev_df, aes(x = .data$x, y = .data$y)) +
+    geom_tile(aes(fill = layer)) +
+    geom_polygon(data = map_gg_base$plot_env$border_counties,
+                 aes(x = .data$long, y = .data$lat, group = .data$group),
+                 color = "black", fill = NA, size = .5) +
+    geom_polygon(data = map_gg_base$plot_env$border_states,
+                 aes(x = .data$long, y = .data$lat, group = .data$group),
+                 color = "moccasin", fill = NA, size = 1.25) +
+
+    # Add specimen data layers and modify theme elements.
+    geom_point(data = specimen_tbl,
+               aes(x = .data$Longitude, y = .data$Latitude),
+               size = (geom_size + 2), colour = "black", alpha = 0.2) +
+    geom_point(data = specimen_tbl, size = geom_size, na.rm = TRUE,
+               aes_string(x = "Longitude", y = "Latitude",
+                          colour = id_column, shape = shape_opt)) +
+    scale_x_continuous("Longitude") +
+    scale_y_continuous("Latitude") +
+    coord_equal(xlim = c(min(specimen_tbl$Longitude),
+                         max(specimen_tbl$Longitude)),
+                ylim = c(min(specimen_tbl$Latitude),
+                         max(specimen_tbl$Latitude)),
+                expand = FALSE) +
+    scale_fill_gradientn("Elevation (m)",
+                         colours = grDevices::terrain.colors(7),
+                         guide = guide_colourbar(order = 1)) +
+    theme(panel.grid = element_blank(), panel.background = element_blank(),
+          legend.direction = "vertical", legend.position = "bottom",
+          panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
+}
+
 # Map Themes ----
 
 #' Modify map ggplot themes.
