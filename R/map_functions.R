@@ -81,11 +81,7 @@ map_specimens <- function(specimen_tbl, id_column, borders = "black",
                           jitter_pos = c(0, 0), f_adj = -0.05, ...) {
 
   # Group specimens by count of identification column.
-  id_quo <- rlang::enquo(id_column)
-  specimen_tbl <- specimen_tbl %>%
-    dplyr::group_by_at(vars(!!id_quo)) %>%
-    dplyr::mutate(id_count = dplyr::n()) %>%
-    dplyr::arrange(dplyr::desc(.data$id_count))
+  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
 
   # Plot specimens over state and county borders.
   map_gg_base <- map_borders(border_color = borders, ...)
@@ -144,11 +140,7 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
                                       "roadmap", "hybrid"), ...) {
 
   # Group specimens by count of identification column.
-  id_quo <- rlang::enquo(id_column)
-  specimen_tbl <- specimen_tbl %>%
-    dplyr::group_by_at(vars(!!id_quo)) %>%
-    dplyr::mutate(id_count = dplyr::n()) %>%
-    dplyr::arrange(dplyr::desc(.data$id_count))
+  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
 
   # Check registration of Google API key.
   if (ggmap::has_google_key() == FALSE) {
@@ -255,9 +247,32 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
 
     theme(legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical", legend.key= element_blank(),
-          legend.background = element_rect(fill = "grey90",
-                                           color =  "black"),
+          legend.background = element_rect(fill = "grey90", color =  "black"),
           legend.text = ggtext::element_markdown())
 
+}
+
+# Helper Functions ----
+
+#' Arrange Grouped Specimens
+#'
+#' Order specimens for ggplot layers grouped by identification column.  Ggplot
+#' layers are determined by row number, where group swith higher counts are
+#' arranged first.
+#'
+#' @inheritParams map_specimens
+#'
+#' @return Tibble data frame sorted by grouped specimen identifications.
+#'
+#' @export
+#'
+map_order <- function(specimen_tbl, id_column) {
+
+  # Group specimens by count of identification column.
+  id_quo <- rlang::enquo(id_column)
+  specimen_tbl %>%
+    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::mutate(id_count = dplyr::n()) %>%
+    dplyr::arrange(dplyr::desc(.data$id_count))
 }
 
