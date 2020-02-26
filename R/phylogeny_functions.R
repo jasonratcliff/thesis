@@ -129,3 +129,40 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
 
 }
 
+#' Add ggtree Plot Tip Labels
+#'
+#' Adds tip labels to ggtree plot for single-taxa tips with unique genotypes.
+#' Multi-taxa tips returned by the `multi_taxa_nodes` are marked by grouped
+#' genotype numbered by node order ranking.
+#'
+#' @param bayes_ggtree_obj ggtree object returned by `bayes_ggtree()` function.
+#' @inheritParams bayes_ggtree
+#'
+#' @return ggtree object with text geoms identifying taxa tip labels.
+#'
+#' @export
+#'
+bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
+
+  # Assign tibbles for multi-taxa and single-taxon tip labels.
+  multi_taxa_tbl <- multi_taxa_nodes(bayes_tbl)
+  single_taxa_tbl <- bayes_tbl %>%
+    dplyr::group_by(.data$node) %>% dplyr::count(vars = "node") %>%
+    dplyr::ungroup() %>% dplyr::right_join(., bayes_tbl, by = "node") %>%
+    dplyr::filter(.data$n == 1) %>%
+    dplyr::select(.data$x, .data$y, .data$label.x)
+
+  # Add tip labels for single- and multi-taxa tip labels.
+  xnudge_multi <- max(range(multi_taxa_tbl$x)) * 0.03
+  xnudge_single <- max(range(single_taxa_tbl$x)) * 0.025
+
+  bayes_ggtree_obj +
+    geom_text(data = multi_taxa_tbl,
+              aes(x = .data$x, y = .data$y, label = .data$node_group),
+              nudge_x = xnudge_multi,
+              size = 2.5, hjust = 0, vjust = 0.25, fontface = "bold") +
+    geom_text(data = single_taxa_tbl,
+              aes(x = .data$x, y = .data$y, label = .data$label.x),
+              na.rm = TRUE, nudge_x = xnudge_single, size = 2.5, hjust = 0)
+}
+
