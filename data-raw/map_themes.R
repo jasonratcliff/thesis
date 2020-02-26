@@ -59,5 +59,5 @@ spp_shape <- c("Physaria acutifolia" = 3,
                "Physaria argyraea" = 18)
 
 # Save objects as internal R data
-usethis::use_data(spp_color, spp_shape, internal = TRUE)
+usethis::use_data(spp_color, spp_shape)
 

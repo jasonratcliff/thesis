@@ -323,12 +323,12 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
     scale_color_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
                                            id_column = id_column),
-                       values = spp_color, na.value = "black") +
+                       values = ThesisPackage::spp_color, na.value = "black") +
 
     scale_shape_manual(name = legend_title,
                        labels = spp_labels(specimen_tibble = mapped_specimens,
                                            id_column = id_column),
-                       values = spp_shape, na.value = 17) +
+                       values = ThesisPackage::spp_shape, na.value = 17) +
 
     theme(legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical", legend.key= element_blank(),
@@ -336,6 +336,20 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
           legend.text = ggtext::element_markdown())
 
 }
+
+#' Species Color Aesthetics
+#'
+#' \describe{
+#' \item{spp_color}{Vector with values for ggplot color aesthetics}
+#' }
+"spp_color"
+
+#' Species Shape Aesthetics
+#'
+#' \describe{
+#' \item{spp_shape}{Vector with values for ggplot shape aesthetics}
+#' }
+"spp_shape"
 
 #' Map Individual Specimen
 #'

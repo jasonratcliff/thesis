@@ -195,11 +195,10 @@ dna_specimens <- purrr::pmap_dfr(dna_metadata,
 rm(dna_metadata) # Clean up workspace
 
 
-# 7. Create .Rdata files.
+# 7. Create .Rdatfiles.
 
-save(herbarium_specimens, file = "data/herbarium_specimens.rdata")
-
-save(dna_specimens, file = "data/dna_specimens.rdata")
+usethis::use_data(herbarium_specimens)
+usethis::use_data(dna_specimens)
 
 # # TODO ----
 # 2/4/20 Check if this stuff is still needed.
