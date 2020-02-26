@@ -188,8 +188,7 @@ dna_specimens <- purrr::pmap_dfr(dna_metadata,
 
     # Join the herbarium records to matching sequencing specimen .csv rows.
     dplyr::left_join(dplyr::filter(dna_metadata, label == !!label),
-      record_match, by = c("Collector", "Collection_Number", "Herbarium",
-                           "Latitude", "Longitude"))
+      record_match, by = c("Collector", "Collection_Number"))
     })
 
 rm(dna_metadata) # Clean up workspace
