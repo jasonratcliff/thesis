@@ -67,3 +67,65 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 
 }
 
+# ggtree Plotting ----
+
+#' Plot MrBayes ggtree
+#'
+#' Given the output of `bayes_tibble()`, build a ggplot with color / shape
+#' aesthetics defined by identification column.
+#'
+#' @param bayes_tbl Parsed ggtree tibble returned by `bayes_tibble()` with
+#'   split sample observations and scaled geom size aesthetics.
+#' @param scale_name Character scalar with name for scale title.
+#' @inheritParams bayes_tibble
+#' @return ggtree object with tips aesthetics determined by `id_column` and
+#' posterior probabilities on resolved (i.e. non-polytomy) nodes.
+#'
+bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
+                         x_expand = 0.02) {
+
+  # Re-assign Bayes tibble to prevent function scoping issue.
+  bayes_tbl_obj <- bayes_tbl
+  id_quo <- rlang::ensym(id_column)
+  id_expr <- rlang::expr(!is.na(!!id_quo))
+
+  # Filter out polytomy nodes for labels.
+  bayes_labels <- bayes_tbl %>%
+    dplyr::filter(.data$prob != 1 & !is.na(.data$prob))
+  nudge_xlim <- -(max(range(bayes_labels$x)) * 0.05)
+
+  # Build ggtree plot from Bayes results.
+  ggtree_plot <- ggtree::ggtree(bayes_tbl, layout = "rectangular") +
+    geom_point(data = dplyr::filter(bayes_tbl, !!id_expr),
+               aes_string(color = id_column, shape = id_column,
+                          size = "geom_scale"), na.rm = TRUE) +
+
+    # Add labels with rounded posterior probabilities to resolved nodes.
+    geom_label(data = bayes_labels, nudge_x = nudge_xlim,
+      aes(x = .data$x, y = .data$y,
+          label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)),
+      fontface = "bold", fill = "lightgoldenrod", size = 4, alpha = 0.35) +
+
+    # Adjust color and shape scales with spp_labels() markdown ggtext elements.
+    scale_color_manual(scale_name, values = ThesisPackage::spp_color,
+      labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
+    scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
+      labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
+    theme(legend.text = ggtext::element_markdown(size = 8),
+          legend.background = element_blank(),
+          legend.title = element_text(hjust = 0.5, size = 14, face = "bold")) +
+    expand_limits(x = x_expand) +
+
+    # Modify scale of size aesthetic and spacing of color / shape guide.
+    scale_size_continuous(range = c(3, 9), guide = "none") +
+    guides(color = guide_legend(override.aes = list(size = 3),
+                                ncol = 2, byrow = TRUE,
+                                keyheight = 0.15, default.unit = "inch"))
+
+  # Return ggtree plot with labels
+  bayes_tip_labels(bayes_ggtree_obj = ggtree_plot,
+                   bayes_tbl = bayes_tbl_obj) +
+    ggtree::geom_treescale(offset = -1.5)
+
+}
+
