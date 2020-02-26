@@ -77,9 +77,13 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 #' @param bayes_tbl Parsed ggtree tibble returned by `bayes_tibble()` with
 #'   split sample observations and scaled geom size aesthetics.
 #' @param scale_name Character scalar with name for scale title.
+#' @param x_expand Numeric scalar for x-axis expansion of ggtree plot.
 #' @inheritParams bayes_tibble
+#'
 #' @return ggtree object with tips aesthetics determined by `id_column` and
 #' posterior probabilities on resolved (i.e. non-polytomy) nodes.
+#'
+#' @export
 #'
 bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
                          x_expand = 0.02) {
@@ -192,5 +196,34 @@ multi_taxa_nodes <- function(bayes_tbl) {
     dplyr::mutate(node_group = dplyr::group_indices(., .data$node, .data$n) %>%
                     paste0("genotype ", .))
 
+}
+
+#' Build ggtree Plot Grid
+#'
+#' Wrapper function to plot legend inset onto ggtree object.
+#'
+#' @inheritParams bayes_tip_labels
+#' @param plot_x Numeric scalar for plot x position.
+#' @param plot_y Numeric scalar for plot y position.
+#' @param plot_width Numeric scalar for plot width.
+#' @param plot_height Numeric scale for plot height.
+#' @inheritDotParams cowplot::draw_plot
+#'
+#' @return Ggplot with ggtree and legend inset.
+#'
+#' @export
+#'
+ggtree_plot <- function(bayes_ggtree_obj, plot_x = 0.1, plot_y = 0.5,
+                        plot_width = 0.25, plot_height = 0.5, ...) {
+
+  # Remove legend from base ggtree plot.
+  ggtree_plot_build <- bayes_ggtree_obj +
+    ggtree::theme_tree(legend.position = "none")
+
+    # Extract legend and build a plot grid with inset legend.
+    ggtree_legend <- cowplot::get_legend(bayes_ggtree_obj)
+    cowplot::ggdraw(ggtree_plot_build) +
+      cowplot::draw_plot(plot = ggtree_legend, x = plot_x, y = plot_y,
+                         width = plot_width, height = plot_height, ...)
 }
 
