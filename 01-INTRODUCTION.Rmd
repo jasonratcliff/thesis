@@ -87,13 +87,13 @@ total_priors <- herbarium_specimens%>%
   # Filter out Lesquerella / Physaria sensu lato spp.
   dplyr::filter(!grepl(paste("Lesquerella", "cnema", "alpina", "cordiformis",
                               "macrantha", sep = "|", collapse = ""),
-                       x = prior_id))
+                       x = prior_id) & !grepl("\\?|Brassicaceae", x = prior_id))
 
 # Build ggplot map of subet by prior annotations.
 map_specimens(specimen_tbl = total_priors, borders = "black", f_adj = 0.01,
-              map_col = "prior_id", shape_opt = "prior_id") %>%
+              id_column = "prior_id", shape_opt = "prior_id") %>%
   map_themes(gg_map_obj = ., mapped_specimens = total_priors,
-             map_id = "prior_id", legend_title = "Prior Annotations")
+             id_column = "prior_id", legend_title = "Prior Annotations")
 
 ```
 
@@ -191,28 +191,49 @@ carbon_bears_ear$map_ber <- c("Bears Ears Range", "North",
 carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
 carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
 
+# Subset specimens to add map labels.
+specimens$carbon_wyo_labels <- specimens$carbon_wyo %>%
+  dplyr::filter(grepl("Kastning|Nelson", Collector)) %>%
+  dplyr::filter(grepl("1462|1725|49286|49478", Collection_Number))
+
+specimens$carbon_wyo_spp <- specimens$carbon_wyo %>%
+  dplyr::filter(!grepl("Kastning|Nelson", Collector) &
+                  !grepl("1462|1725|49286|49478", Collection_Number))
+
 # Satellite map of Carbon, WY specimens.
-(map_ggmap(map_df = spp_carbon_wyo, map_col = "Taxon_a_posteriori",
-            gg_borders = gg_borders, size = 8, gg_map_type = "satellite",
-            jitter_pos = c(.05, .05), shape_opt = "Taxon_a_posteriori")  +
+(ThesisPackage::map_ggmap(specimen_tbl = specimens$carbon_wyo_spp,
+                          size = 8, gg_map_type = "satellite",
+                          jitter_pos = c(.05, .05),
+                          id_column = "Taxon_a_posteriori",
+                          shape_opt = "Taxon_a_posteriori") +
   geom_text(data = carbon_bears_ear,
             aes(map_x, map_y, label = map_ber, group = NULL),
             color = "white", size = 3.5)) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Kastning", collection_number = 1462,
+  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
+             collector = "Kastning", collection = 1462,
+           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
              h_adjust = -0.425, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Kastning", collection_number = 1725,
+  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
+             collector = "Kastning", collection = 1725,
+           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
              h_adjust = -0.4, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Nelson", collection_number = 49286,
+  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
+             collector = "Nelson", collection = 49286,
+           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
              h_adjust = 0.275, v_adjust = -0.1) %>%
-  map_spp_id(gg_map_obj = ., taxa_frame = spp_carbon_wyo,
-             collector = "Nelson", collection_number = 49478,
+  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
+             collector = "Nelson", collection = 49478,
+           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
              h_adjust = -0.225, v_adjust = -0.12) %>%
-  map_themes(gg_map_obj = .) +
+  map_themes(gg_map_obj = .,
+             mapped_specimens = dplyr::bind_rows(specimens$carbon_wyo_spp,
+                                                 specimens$carbon_wyo_labels),
+             id_column = "Taxon_a_posteriori",
+             legend_title = "Reviewed Identifications") +
+  
   theme(legend.direction = "vertical", legend.position = "bottom") +
   guides(colour = guide_legend(ncol = 2, byrow = TRUE))
+rm(carbon_bears_ear)
 
 ```
 
