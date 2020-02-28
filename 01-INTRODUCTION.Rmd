@@ -115,63 +115,78 @@ knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyo
 ```{r introTable1CarbonVituSpecs}
 
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
-spp_subset(taxa_frame = spp_carbon_wyo,
-           spp_str = "vitulifera", taxa_col = "Taxon",
-           longitude = c(-108, -105.8), latitude = c(40.5, 41.5)) %>%
-  tibble::as_tibble(.) %>%
-  dplyr:: select(Physaria_syn, Taxon, Collector, Collection_Number,
-                 State, County, Herbarium) %>%
-  dplyr::arrange(desc(Physaria_syn)) %>%
+specimens$carbon_kable <- herbarium_specimens %>%
+  dplyr:: select(prior_id, Taxon, Collector, Collection_Number, Date_parsed,
+                 State, County, Herbarium, Latitude, Longitude) %>%
+  dplyr::filter(grepl("vitulifera", x = Taxon) &
+                  grepl("Carbon", x = County)) %>% 
+  dplyr::arrange(Date_parsed, prior_id) %>%
+
+  # Clean up collector names to remove initials and punctuation.
   dplyr::mutate(Collector = sapply(Collector, function(collector) {
     gsub("[A-Z]\\. ?", "", collector) %>%
       gsub("&", "and", x = .)
-  })) %>%
-  # Add asterisk to specimens reviewed by Jennings (2004).
-  dplyr::bind_cols(.,
-    purrr::pmap_dfr(., function(Physaria_syn, Collection_Number, ...) {
-      if (Collection_Number %in% c("411", "3695", "63", "54", "19075", "19078",
-                                   "19073", "16713", "19510", "6", "16475")) {
-        mra <- paste0("*", Physaria_syn, "*\\*")
-        } else {
-          mra <- paste0("*", Physaria_syn, "*")
-          }
-      dplyr::bind_cols(annotation = mra)
-      })) %>%
-  # Remove brackets from herbarium column of separate records.
-  dplyr::mutate(Herbarium = 
-    purrr::map_chr(Herbarium, function(herbarium) {
+  }))
+
+# Add asterisk to specimens reviewed by Jennings (2004).
+specimens$carbon_kable <-
+  dplyr::bind_cols(specimens$carbon_kable,
+    purrr::pmap_dfr(specimens$carbon_kable,
+      function(prior_id, Collection_Number, ...) {
+        if (Collection_Number %in%
+            c("411", "3695", "63", "54", "19075", "19078", "11363", "16699",
+              "19073", "16713", "19510", "6", "16475")) {
+          mra <- paste0("*", prior_id, "*\\*")
+          } else {
+            mra <- paste0("*", prior_id, "*")
+            }
+        dplyr::bind_cols(annotation = mra)
+        }))
+
+# Remove brackets from herbarium column of separate records.
+specimens$carbon_kable <-
+  dplyr::mutate(specimens$carbon_kable,
+    Herbarium = purrr::map_chr(Herbarium, function(herbarium) {
       gsub("\\[|\\]", "", herbarium) %>%
         gsub(" +", " ", x = .)
-    })) %>%
-  # Parse asterisks for LaTeX italicization.
-  dplyr::mutate(annotation =
-    purrr::map_chr(annotation, function(x) {
+    }))
+
+# Parse asterisks for LaTeX italicization.
+specimens$carbon_kable <-
+  dplyr::mutate(specimens$carbon_kable,
+    annotation = purrr::map_chr(annotation, function(x) {
       if (knitr_chunk == "latex") {
         if (stringr::str_detect(x, "\\*\\\\\\*$")) {
           gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
             gsub(pattern = "\\*\\\\\\*$", replacement = "}\\*", x = .)
-          } else { 
+          } else {
             gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
               gsub(pattern = "\\*$", replacement = "}", x = .)
             }
-        } else { x }
-      })) %>%
+        }
+      }))
+
+# Group by collection / collector and filter to single specimen.
+specimens$carbon_kable <- specimens$carbon_kable %>%
+  dplyr::group_by(Collection_Number, Collector) %>%
+  dplyr::filter(dplyr::row_number() == 1) %>%
   dplyr::rename(`Collection Number` = Collection_Number,
                 `Most Recent Annotation` = annotation) %>%
-  dplyr::select(., `Most Recent Annotation`, Collector, 
-                `Collection Number`, Herbarium) %>%
-  dplyr::distinct(.) %>%  # remove duplicated rows
-  kable(format = knitr_chunk, escape = FALSE, row.names = FALSE,
-        caption = knitr_caption(
-          caption = paste0("Putative Carbon County, Wyoming ",
-                           "\\textit{Physaria vitulifera} specimens."))) %>%
-  kable_styling(full_width = FALSE,
-                latex_options= "HOLD_position",
+  dplyr::select(., `Most Recent Annotation`, Collector,
+                `Collection Number`, Herbarium)
+
+# Kable of putative Wyoming P. vitulifera specimens.
+knitr::kable(x = specimens$carbon_kable,
+  format = knitr_chunk, escape = FALSE, row.names = FALSE,
+  caption = knitr_caption(
+    caption = paste0("Putative Carbon County, Wyoming ",
+                     "\\textit{Physaria vitulifera} specimens."))) %>%
+  kableExtra::kable_styling(full_width = FALSE,  latex_options= "HOLD_position",
                 position = "center") %>%
-  row_spec(row = 0, bold = TRUE, font_size = 11) %>%
-  column_spec(1, border_left = TRUE) %>%
-  column_spec(3, width = "2.5cm") %>%
-  column_spec(4, border_right = TRUE)
+  kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
+  kableExtra::column_spec(1, border_left = TRUE) %>%
+  kableExtra::column_spec(3, width = "2.5cm") %>%
+  kableExtra::column_spec(4, border_right = TRUE)
 
 ```
 
