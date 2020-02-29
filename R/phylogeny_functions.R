@@ -30,7 +30,7 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
   id_quo <- rlang::enquo(id_column)
 
   # Read in conensus tree file .nexus file as tibble object.
-  bayes_tbl <- treeio::read.beast(bayes_file) %>% ggplot2::fortify()
+  bayes_tbl <- treeio::read.beast(bayes_file) %>% ggtree::fortify()
 
   # Map data frame rows with split labels and node key for relational data.
   # Labels are split by RegEx of number-underscore-letter.
@@ -53,7 +53,7 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 
   # Group data by node and identification column to calculate scaled geom sizes.
   tbl_tree_merged <- tbl_tree_long %>%
-    dplyr::group_by_at(vars(.data$node, !!id_quo)) %>%
+    dplyr::group_by_at(dplyr::vars(.data$node, !!id_quo)) %>%
     dplyr::count(name = "geom_size", .drop = FALSE) %>%
     dplyr::left_join(., tbl_tree_long, by = c("node", id_column)) %>%
     dplyr::ungroup()
