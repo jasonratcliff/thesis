@@ -296,3 +296,46 @@ beast_ggtree <- function(beast_file, id_column, scale_name,
                        width = plot_width, height = plot_height)
 }
 
+#' Extract BEAST Legend
+#'
+#' Use `cowplot::get_legend()` to extract legend of specimen
+#' identifications from ggtree object.
+#'
+#' @param tree_data Tibble of merged BEAST .mcc data with DNA specimens.
+#' @inheritParams bayes_tibble
+#' @inheritParams bayes_ggtree
+#' @inheritDotParams beast_ggtree
+#'
+#' @return gtable object of legened extracted from BEAST ggtree build.
+#'
+#' @export
+#'
+beast_legend <- function(tree_data, id_column, scale_name, ...) {
+
+  # Assign symbol / expression objects for filtering .
+  id_quo <- rlang::ensym(id_column)
+  id_expr <- rlang::expr(!is.na(!!id_quo))
+
+  # Build ggtree with specimen identifications indicated by `id_column`.
+  beast_ggtree <-
+    ggtree::ggtree(tree_data) +
+    ggplot2::geom_point(data = dplyr::filter(tree_data, !!id_expr),
+      ggplot2::aes_string(color = id_column, shape = id_column),
+      size = 3, na.rm = TRUE) +
+    ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
+      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+        id_column = id_column), na.translate = FALSE) +
+    ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
+      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+        id_column = id_column),  na.translate = FALSE) +
+    ggplot2::theme(legend.text = ggtext::element_markdown(size = 6),
+          legend.title = ggplot2::element_text(hjust = 0.5, size = 11,
+                                               face = "bold")) +
+
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 3),
+      ncol = 2, byrow = TRUE, keyheight = 0.1, default.unit = "inch"))
+
+  # Extract legend with specimen ID key.
+  return(cowplot::get_legend(plot = beast_ggtree))
+}
+
