@@ -227,3 +227,72 @@ ggtree_plot <- function(bayes_ggtree_obj, plot_x = 0.1, plot_y = 0.5,
                          width = plot_width, height = plot_height, ...)
 }
 
+# BEAST Functions ----
+
+#' Build BEAST ggtree
+#'
+#' Read in nexus file of consenus tree exported from fig tree.
+#' Consensus of .mcc file built from BEAST .trees output using tree annotator:
+#'  ~/Applications/BEASTv1.10.4/bin/treeannotator
+#'
+#' @param beast_file Filepath to .mcc concensus tree file.
+#' @inheritParams bayes_tibble
+#' @inheritParams bayes_ggtree
+#' @inheritParams ggtree_plot
+#'
+#' @return BEAST ggtree object with posterior probabilities and spp ID.
+#'
+#' @export
+#'
+beast_ggtree <- function(beast_file, id_column, scale_name,
+                         plot_x = 0.1, plot_y = 0.5,
+                         plot_width = 0.25, plot_height = 0.5) {
+
+  # Join DNA information to BEAST results.
+  tree_data <- treeio::read.beast(file = beast_file) %>% ggtree::fortify() %>%
+    dplyr::left_join(., ThesisPackage::dna_specimens, by = "label")
+
+  # Re-assign Bayes tibble to prevent function scoping issue.
+  id_quo <- rlang::ensym(id_column)
+  id_expr <- rlang::expr(!is.na(!!id_quo))
+
+  # beast_ggtree <- beast_ggtree +
+  beast_ggtree <-
+    ggtree::ggtree(tree_data, ggplot2::aes(color = .data$posterior)) +
+      ggplot2::scale_color_gradientn(name = "Posterior\nProbablility",
+        colors = c("red", "orange", "green", "cyan", "blue"),
+        guide = ggplot2::guide_colourbar(order = 1)) +
+
+    # Add new color scale to plot IDs on tips.
+    ggnewscale::new_scale_color() +
+    ggplot2::geom_point(data = dplyr::filter(tree_data, !!id_expr),
+                        size = 3, na.rm = TRUE,
+                        ggplot2::aes_string(color = id_column,
+                                            shape = id_column)) +
+    ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
+      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+                                         id_column = id_column)) +
+    ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
+      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+                                         id_column = id_column)) +
+
+    # Add tip labels and posterior probabilities node labels.
+    ggtree::geom_tiplab(offset = 0.00015, align = TRUE) +
+    ggtree::geom_label2(data = tree_data, alpha = 0.4,
+                        nudge_x = (max(tree_data$x) * -0.035),
+                        nudge_y = (max(tree_data$y) * 0.012),
+                        ggplot2::aes(subset = .data$posterior > 0.5,
+                                     label = round(.data$posterior, 2))) +
+    ggtree::xlim_expand(xlim = c(0, 0.005), panel = "Tree") +
+    ggplot2::guides(colour = FALSE, shape = FALSE) # Overwrite ID guides
+
+  # Build cowplot grid with inset legend extracted with `beast_legend()`.
+  spp_legend <-
+    ThesisPackage::beast_legend(tree_data = tree_data,
+                                id_column = id_column, scale_name = scale_name)
+
+  cowplot::plot_grid(beast_ggtree) +
+    cowplot::draw_plot(plot = spp_legend, x = plot_x, y = plot_y,
+                       width = plot_width, height = plot_height)
+}
+
