@@ -100,35 +100,35 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
 
   # Build ggtree plot from Bayes results.
   ggtree_plot <- ggtree::ggtree(bayes_tbl, layout = "rectangular") +
-    geom_point(data = dplyr::filter(bayes_tbl, !!id_expr),
-               aes_string(color = id_column, shape = id_column,
+    ggplot2::geom_point(data = dplyr::filter(bayes_tbl, !!id_expr),
+      ggplot2::aes_string(color = id_column, shape = id_column,
                           size = "geom_scale"), na.rm = TRUE) +
 
     # Add labels with rounded posterior probabilities to resolved nodes.
-    geom_label(data = bayes_labels, nudge_x = nudge_xlim,
-      aes(x = .data$x, y = .data$y,
-          label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)),
+    ggplot2::geom_label(data = bayes_labels, nudge_x = nudge_xlim,
+      ggplot2::aes(x = .data$x, y = .data$y,
+        label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)),
       fontface = "bold", fill = "lightgoldenrod", size = 4, alpha = 0.35) +
 
     # Adjust color and shape scales with spp_labels() markdown ggtext elements.
-    scale_color_manual(scale_name, values = ThesisPackage::spp_color,
+    ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
       labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
-    scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
+    ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
       labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
-    theme(legend.text = ggtext::element_markdown(size = 8),
-          legend.background = element_blank(),
-          legend.title = element_text(hjust = 0.5, size = 14, face = "bold")) +
-    expand_limits(x = x_expand) +
+    ggplot2::theme(legend.text = ggtext::element_markdown(size = 8),
+                   legend.background = ggplot2::element_blank(),
+                   legend.title = ggplot2::element_text(hjust = 0.5, size = 14,
+                                                        face = "bold")) +
+    ggplot2::expand_limits(x = x_expand) +
 
     # Modify scale of size aesthetic and spacing of color / shape guide.
-    scale_size_continuous(range = c(3, 9), guide = "none") +
-    guides(color = guide_legend(override.aes = list(size = 3),
-                                ncol = 2, byrow = TRUE,
-                                keyheight = 0.15, default.unit = "inch"))
+    ggplot2::scale_size_continuous(range = c(3, 9), guide = "none") +
+    ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(size = 3),
+      ncol = 2, byrow = TRUE, keyheight = 0.15, default.unit = "inch"))
 
   # Return ggtree plot with labels
-  bayes_tip_labels(bayes_ggtree_obj = ggtree_plot,
-                   bayes_tbl = bayes_tbl_obj) +
+  ThesisPackage::bayes_tip_labels(bayes_ggtree_obj = ggtree_plot,
+                                  bayes_tbl = bayes_tbl_obj) +
     ggtree::geom_treescale(offset = -1.5)
 
 }
@@ -161,13 +161,12 @@ bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
   xnudge_single <- max(range(single_taxa_tbl$x)) * 0.025
 
   bayes_ggtree_obj +
-    geom_text(data = multi_taxa_tbl,
-              aes(x = .data$x, y = .data$y, label = .data$node_group),
-              nudge_x = xnudge_multi,
-              size = 2.5, hjust = 0, vjust = 0.25, fontface = "bold") +
-    geom_text(data = single_taxa_tbl,
-              aes(x = .data$x, y = .data$y, label = .data$label.x),
-              na.rm = TRUE, nudge_x = xnudge_single, size = 2.5, hjust = 0)
+    ggplot2::geom_text(data = multi_taxa_tbl, fontface = "bold",
+      ggplot2::aes(x = .data$x, y = .data$y, label = .data$node_group),
+      nudge_x = xnudge_multi, size = 2.5, hjust = 0, vjust = 0.25) +
+    ggplot2::geom_text(data = single_taxa_tbl,
+      ggplot2::aes(x = .data$x, y = .data$y, label = .data$label.x),
+      na.rm = TRUE, nudge_x = xnudge_single, size = 2.5, hjust = 0)
 }
 
 #' Multi-taxa Tips
