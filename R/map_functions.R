@@ -10,7 +10,6 @@
 #'   Default is set to `NA` for a transparent fill of county polygons.
 #' @param border_size_county Numeric value for county border size aesthetic.
 #' @param border_size_state Numeric value for state border size aesthetic.
-#' @import ggplot2
 #'
 #' @return Object of `ggplot` class with polygon layers of state and county
 #' borders.
@@ -32,19 +31,21 @@ map_borders <- function(border_color, border_fill = NA,
                       "Washington", "Oregon", "California")
 
   # Initialize ggplot base map layer of county lines with state borders.
-  border_states <- map_data("state", region = border_regions)
-  border_counties <- map_data("county", region = border_regions)
+  border_states <- ggplot2::map_data("state", region = border_regions)
+  border_counties <- ggplot2::map_data("county", region = border_regions)
 
   # Return ggplot object with county and state boundary layers.
-  ggplot(data = border_counties,
-         mapping = aes(x = .data$long, y = .data$lat, group = .data$group)) +
-    geom_polygon(color = border_color, fill = border_fill,
+  ggplot2::ggplot(data = border_counties,
+                  mapping = ggplot2::aes(x = .data$long, y = .data$lat,
+                                         group = .data$group)) +
+    ggplot2::geom_polygon(color = border_color, fill = border_fill,
                  size = border_size_county) +
-    geom_polygon(data = border_states, fill = NA,
+    ggplot2::geom_polygon(data = border_states, fill = NA,
                  color = border_color, size = border_size_state) +
-    theme(panel.grid = element_blank(),
-          panel.background = element_blank(),
-          panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   panel.border = ggplot2::element_rect(colour = "slategrey",
+                                                        fill=NA, size=3))
 }
 
 # Build Specimen Layer ----
@@ -62,7 +63,6 @@ map_borders <- function(border_color, border_fill = NA,
 #'   the range of x and y limits.  Passed as limit arguments of
 #' `grDevices::extendrange()` function call.
 #' @param ... Options inherited for `map_borders()` function call.
-#' @import ggplot2
 #' @importFrom rlang !!
 #'
 #' @return Object of `ggplot` class with specimen data plotted over base layers
@@ -81,23 +81,25 @@ map_specimens <- function(specimen_tbl, id_column, borders = "black",
                           jitter_pos = c(0, 0), f_adj = -0.05, ...) {
 
   # Group specimens by count of identification column.
-  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
+  specimen_tbl <- ThesisPackage::map_order(specimen_tbl = specimen_tbl,
+                                           id_column = id_column)
 
   # Plot specimens over state and county borders.
-  map_gg_base <- map_borders(border_color = borders, ...)
+  map_gg_base <- ThesisPackage::map_borders(border_color = borders, ...)
   gg_basic_map <- map_gg_base +
-    geom_jitter(data = specimen_tbl,
-                mapping = aes_string(x = "Longitude", y = "Latitude",
-                                     colour = id_column, shape = shape_opt),
-                size = geom_size, inherit.aes = FALSE,
-                width = jitter_pos[1], height = jitter_pos[2]) +
-    coord_fixed(xlim = grDevices::extendrange(specimen_tbl$Longitude,
-                                              f = f_adj),
-                ylim = grDevices::extendrange(specimen_tbl$Latitude,
-                                              f = f_adj)) +
-    theme(panel.border = element_rect(colour = "slategrey", fill=NA, size=3)) +
-    xlab("Longitude") +
-    ylab("Latitude")
+    ggplot2::geom_jitter(data = specimen_tbl,
+      mapping = ggplot2::aes_string(x = "Longitude", y = "Latitude",
+                                    colour = id_column, shape = shape_opt),
+      size = geom_size, inherit.aes = FALSE,
+      width = jitter_pos[1], height = jitter_pos[2]) +
+    ggplot2::coord_fixed(xlim = grDevices::extendrange(specimen_tbl$Longitude,
+                                                       f = f_adj),
+                         ylim = grDevices::extendrange(specimen_tbl$Latitude,
+                                                       f = f_adj)) +
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "slategrey",
+                                                        fill=NA, size=3)) +
+    ggplot2::xlab("Longitude") +
+    ggplot2::ylab("Latitude")
 
   # Return ggplot object with specimens mapped over `map_borders()` base layer.
   return(gg_basic_map)
@@ -116,7 +118,6 @@ map_specimens <- function(specimen_tbl, id_column, borders = "black",
 #' from `ggmap::get_map()` function call.
 #' @inheritParams map_specimens
 #' @importFrom rlang .data !!
-#' @import ggplot2
 #'
 #' @examples
 #' # Subset Colorado front range specimens.
@@ -140,7 +141,8 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
                                       "roadmap", "hybrid"), ...) {
 
   # Group specimens by count of identification column.
-  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
+  specimen_tbl <- ThesisPackage::map_order(specimen_tbl = specimen_tbl,
+                                           id_column = id_column)
 
   # Check registration of Google API key.
   if (ggmap::has_google_key() == FALSE) {
@@ -164,32 +166,33 @@ map_ggmap <- function(specimen_tbl, id_column, shape_opt = NULL,
   }
 
   # Index the boundary of the ggmap plot to the x/y limits of ggmap base.
-  map_gg_base <- map_borders(border_color = "white", ...)
+  map_gg_base <- ThesisPackage::map_borders(border_color = "white", ...)
   map_bbox <- ggmap::bb2bbox(bb = attr(map_gg_sat, "bb"))
   map_xlim <- c(map_bbox["left"] * 0.9975, map_bbox["right"] * 1.0025)
   map_ylim <- c(map_bbox["bottom"] * 1.005, map_bbox["top"] * 0.995)
 
   # Plot Google base layer with county and state border geom layers.
   ggmap::ggmap(ggmap = map_gg_sat, extent = "panel") +
-    geom_path(data = map_gg_base$plot_env$border_counties,
-              aes(x = .data$long, y = .data$lat, group = .data$group),
-              color = "white", size = .5) +
-    geom_path(data = map_gg_base$plot_env$border_states,
-              aes(x = .data$long, y = .data$lat, group = .data$group),
-              color = "moccasin", size = 1.25) +
+    ggplot2::geom_path(data = map_gg_base$plot_env$border_counties,
+      ggplot2::aes(x = .data$long, y = .data$lat, group = .data$group),
+      color = "white", size = .5) +
+    ggplot2::geom_path(data = map_gg_base$plot_env$border_states,
+      ggplot2::aes(x = .data$long, y = .data$lat, group = .data$group),
+      color = "moccasin", size = 1.25) +
 
     # Add specimen plot layer subset.
-    geom_jitter(data = specimen_tbl,
-                mapping = aes_string(x = "Longitude", y = "Latitude",
-                                     colour = id_column, shape = shape_opt),
-                size = geom_size, #inherit.aes = FALSE,
-                width = jitter_pos[1], height = jitter_pos[2]) +
+    ggplot2::geom_jitter(data = specimen_tbl,
+      mapping = ggplot2::aes_string(x = "Longitude", y = "Latitude",
+                                    colour = id_column, shape = shape_opt),
+      size = geom_size, width = jitter_pos[1], height = jitter_pos[2]) +
 
     # Adjust axis limits to edge of ggmap and modify theme.
-    coord_map(projection = "mercator", xlim = map_xlim, ylim = map_ylim) +
-    theme(panel.border = element_rect(colour = "black", fill=NA, size=3)) +
-    scale_x_continuous("Longitude") +
-    scale_y_continuous("Latitude")
+    ggplot2::coord_map(projection = "mercator",
+                       xlim = map_xlim, ylim = map_ylim) +
+    ggplot2::theme(panel.border = ggplot2::element_rect(colour = "black",
+                                                        fill=NA, size=3)) +
+    ggplot2::scale_x_continuous("Longitude") +
+    ggplot2::scale_y_continuous("Latitude")
 
 }
 
@@ -220,10 +223,11 @@ map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
                      raster_zoom = 7, raster_factor = 2, geom_size = 3, ...) {
 
   # Group specimens by count of identification column.
-  specimen_tbl <- map_order(specimen_tbl = specimen_tbl, id_column = id_column)
+  specimen_tbl <- ThesisPackage::map_order(specimen_tbl = specimen_tbl,
+                                           id_column = id_column)
 
   # Plot specimens over state and county borders.
-  map_gg_base <- map_borders(border_color = "black", ...)
+  map_gg_base <- ThesisPackage::map_borders(border_color = "black", ...)
 
   # Define projection and get AWS Open Data terrain tiles.
   # Cite: https://registry.opendata.aws/terrain-tiles/
@@ -247,35 +251,37 @@ map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
     methods::as(map_elev_raster, "SpatialPixelsDataFrame") %>% as.data.frame()
 
   # ggplot elevation projection with county & state borders.
-  map_elev_ggplot <- ggplot(map_elev_df, aes(x = .data$x, y = .data$y)) +
-    geom_tile(aes(fill = layer)) +
-    geom_polygon(data = map_gg_base$plot_env$border_counties,
-                 aes(x = .data$long, y = .data$lat, group = .data$group),
-                 color = "black", fill = NA, size = .5) +
-    geom_polygon(data = map_gg_base$plot_env$border_states,
-                 aes(x = .data$long, y = .data$lat, group = .data$group),
-                 color = "moccasin", fill = NA, size = 1.25) +
+  map_elev_ggplot <- ggplot2::ggplot(map_elev_df,
+                                     ggplot2::aes(x = .data$x, y = .data$y)) +
+    ggplot2::geom_tile(ggplot2::aes(fill = .data$layer)) +
+    ggplot2::geom_polygon(data = map_gg_base$plot_env$border_counties,
+      ggplot2::aes(x = .data$long, y = .data$lat, group = .data$group),
+      color = "black", fill = NA, size = .5) +
+    ggplot2::geom_polygon(data = map_gg_base$plot_env$border_states,
+      ggplot2::aes(x = .data$long, y = .data$lat, group = .data$group),
+      color = "moccasin", fill = NA, size = 1.25) +
 
     # Add specimen data layers and modify theme elements.
-    geom_point(data = specimen_tbl,
-               aes(x = .data$Longitude, y = .data$Latitude),
-               size = (geom_size + 2), colour = "black", alpha = 0.2) +
-    geom_point(data = specimen_tbl, size = geom_size, na.rm = TRUE,
-               aes_string(x = "Longitude", y = "Latitude",
+    ggplot2::geom_point(data = specimen_tbl,
+      ggplot2::aes(x = .data$Longitude, y = .data$Latitude),
+      size = (geom_size + 2), colour = "black", alpha = 0.2) +
+    ggplot2::geom_point(data = specimen_tbl, size = geom_size, na.rm = TRUE,
+      ggplot2::aes_string(x = "Longitude", y = "Latitude",
                           colour = id_column, shape = shape_opt)) +
-    scale_x_continuous("Longitude") +
-    scale_y_continuous("Latitude") +
-    coord_equal(xlim = c(min(specimen_tbl$Longitude),
-                         max(specimen_tbl$Longitude)),
-                ylim = c(min(specimen_tbl$Latitude),
-                         max(specimen_tbl$Latitude)),
-                expand = FALSE) +
-    scale_fill_gradientn("Elevation (m)",
-                         colours = grDevices::terrain.colors(7),
-                         guide = guide_colourbar(order = 1)) +
-    theme(panel.grid = element_blank(), panel.background = element_blank(),
-          legend.direction = "vertical", legend.position = "bottom",
-          panel.border = element_rect(colour = "slategrey", fill=NA, size=3))
+    ggplot2::scale_x_continuous("Longitude") +
+    ggplot2::scale_y_continuous("Latitude") +
+    ggplot2::coord_equal(xlim = c(min(specimen_tbl$Longitude),
+                                  max(specimen_tbl$Longitude)),
+                         ylim = c(min(specimen_tbl$Latitude),
+                                  max(specimen_tbl$Latitude)), expand = FALSE) +
+    ggplot2::scale_fill_gradientn("Elevation (m)",
+      colours = grDevices::terrain.colors(7),
+      guide = ggplot2::guide_colourbar(order = 1)) +
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   legend.direction = "vertical", legend.position = "bottom",
+                   panel.border = ggplot2::element_rect(colour = "slategrey",
+                                                        fill=NA, size=3))
 }
 
 # Helper Functions ----
@@ -290,7 +296,6 @@ map_elev <- function(specimen_tbl, id_column, shape_opt = NULL,
 #'   Use same argument for `map_specimens(specimen_tbl = [mapped_specimens])`
 #' @param legend_title Character vector of length one to set the ggplot
 #'   legend title.
-#' @import ggplot2
 #' @inheritParams map_specimens
 #' @inherit map_ggmap examples
 #'
@@ -320,19 +325,19 @@ map_themes <- function(gg_map_obj, mapped_specimens, id_column,
 
   # Build ggplot map object with manual scales.
   gg_map_obj +
-    scale_color_manual(name = legend_title,
-                       labels = spp_labels(specimen_tibble = mapped_specimens,
-                                           id_column = id_column),
-                       values = ThesisPackage::spp_color, na.value = "black") +
-
-    scale_shape_manual(name = legend_title,
-                       labels = spp_labels(specimen_tibble = mapped_specimens,
-                                           id_column = id_column),
-                       values = ThesisPackage::spp_shape, na.value = 17) +
-
-    theme(legend.text.align = 0, legend.title.align = 0.5,
-          legend.direction = "vertical", legend.key= element_blank(),
-          legend.background = element_rect(fill = "grey90", color =  "black"),
+    ggplot2::scale_color_manual(name = legend_title,
+      labels = ThesisPackage::spp_labels(specimen_tibble = mapped_specimens,
+                                        id_column = id_column),
+      values = ThesisPackage::spp_color, na.value = "black") +
+    ggplot2::scale_shape_manual(name = legend_title,
+      labels = ThesisPackage::spp_labels(specimen_tibble = mapped_specimens,
+                                         id_column = id_column),
+      values = ThesisPackage::spp_shape, na.value = 17) +
+    ggplot2::theme(legend.text.align = 0, legend.title.align = 0.5,
+          legend.direction = "vertical",
+          legend.key = ggplot2::element_blank(),
+          legend.background = ggplot2::element_rect(fill = "grey90",
+                                                          color =  "black"),
           legend.text = ggtext::element_markdown())
 
 }
@@ -378,8 +383,9 @@ map_spp_id <- function(gg_map_obj, id_column, shape_opt = NULL,  geom_size = 3,
                        h_adjust = 0.25, v_adjust = -0.15, label_size = 3) {
 
   # Call `find_spp()` function to get specimen annotation data.
-  spp_id <- find_spp(specimen_tbl = specimen_tbl,
-                     collector = collector, collection = collection) %>%
+  spp_id <- ThesisPackage::find_spp(specimen_tbl = specimen_tbl,
+                                    collector = collector,
+                                    collection = collection) %>%
     dplyr::mutate(taxa_label = stringr::str_remove_all(string = .data$Collector,
       pattern = "[A-Z]\\. ?") %>%
         stringr::str_replace(string = ., pattern = "and|with",
@@ -388,16 +394,16 @@ map_spp_id <- function(gg_map_obj, id_column, shape_opt = NULL,  geom_size = 3,
 
   # Plot additional map layer to include the specimen returned by spp_find().
   gg_map_obj +
-    geom_point(data = spp_id, inherit.aes = FALSE,
-               mapping = aes(x = .data$Longitude, y = .data$Latitude),
+    ggplot2::geom_point(data = spp_id, inherit.aes = FALSE,
+      mapping = ggplot2::aes(x = .data$Longitude, y = .data$Latitude),
                show.legend = FALSE, size = 5, shape = 5, fill = NA) +
-    geom_point(data = spp_id, size = geom_size,
-               mapping = aes_string(x = "Longitude", y = "Latitude",
+    ggplot2::geom_point(data = spp_id, size = geom_size,
+      mapping = ggplot2::aes_string(x = "Longitude", y = "Latitude",
                                     colour = id_column, shape = shape_opt)) +
-    geom_label(data = spp_id, inherit.aes = FALSE,
-               nudge_x = h_adjust, nudge_y = v_adjust,
-               label.padding = unit(0.1, "lines"), size = label_size,
-               mapping = aes(x = .data$Longitude, y = .data$Latitude,
+    ggplot2::geom_label(data = spp_id, inherit.aes = FALSE,
+      nudge_x = h_adjust, nudge_y = v_adjust,
+      label.padding = ggplot2::unit(0.1, "lines"), size = label_size,
+      mapping = ggplot2::aes(x = .data$Longitude, y = .data$Latitude,
                              label = .data$taxa_label), alpha = 0.5)
 
 }
@@ -419,7 +425,7 @@ map_order <- function(specimen_tbl, id_column) {
   # Group specimens by count of identification column.
   id_quo <- rlang::enquo(id_column)
   specimen_tbl %>%
-    dplyr::group_by_at(vars(!!id_quo)) %>%
+    dplyr::group_by_at(dplyr::vars(!!id_quo)) %>%
     dplyr::mutate(id_count = dplyr::n()) %>%
     dplyr::arrange(dplyr::desc(.data$id_count))
 }
