@@ -213,6 +213,8 @@ find_spp <- function(specimen_tbl, collector = NULL, collection = NULL,
 #' @param id_column Character vector matching specimen tibble ID column.
 #' @return Character vector of html markup named by specimen identification.
 #'
+#' @export
+#'
 spp_labels <- function(specimen_tibble, id_column) {
 
   label_markdown <- function(label_vector) {
