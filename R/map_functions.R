@@ -397,7 +397,7 @@ map_spp_id <- function(gg_map_obj, id_column, shape_opt = NULL,  geom_size = 3,
     ggplot2::geom_point(data = spp_id, inherit.aes = FALSE,
       mapping = ggplot2::aes(x = .data$Longitude, y = .data$Latitude),
                show.legend = FALSE, size = 5, shape = 5, fill = NA) +
-    ggplot2::geom_point(data = spp_id, size = geom_size,
+    ggplot2::geom_point(data = spp_id, size = geom_size,  inherit.aes = FALSE,
       mapping = ggplot2::aes_string(x = "Longitude", y = "Latitude",
                                     colour = id_column, shape = shape_opt)) +
     ggplot2::geom_label(data = spp_id, inherit.aes = FALSE,
