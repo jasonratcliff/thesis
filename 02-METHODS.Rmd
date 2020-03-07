@@ -18,12 +18,13 @@ knitr_section(knitr_title = "Specimen Sampling and Tissue Sources",
 \paragraph{} For the regional endemics *P. brassicoides* and *P. integrifolia*, six and five individuals were sampled, respectively.  For *P. vitulifera*, three individuals from Colorado and four putative specimens with annotations as *P. vitulifera* from Carbon County, Wyoming were included.  The Carbon County population is of interest due to the questionable status of this species’ distribution in the state of Wyoming (Heidel & O’Kane 2012).  Finally, twelve individuals of the widespread *P. acutifolia* from Utah, Colorado, and Wyoming were included.  Sequence data were obtained from 72 specimens for the rITS locus, 66 for the *rps* intron, and 51 for *ycf1*.  Analyses of concatenated multi-locus or partitioned data were limited to specimens for which sequencing of all three loci was completed.
 
 ```{r methodsTable2DnaSpecimens}
+
 # LaTeX specimen table
 if (knitr_chunk == "latex") {
-  read.csv("data/1.specimens/methods-DNA-specimens.csv",
+  read.csv("data/methods/DNA-specimens.csv",
            header = TRUE, row.names = NULL, as.is = TRUE,
            check.names = FALSE, stringsAsFactors = FALSE,
-           colClasses = "character") %>%
+           colClasses = "character") %>% dplyr::slice(1:39) %>%
     dplyr::mutate(`Voucher Information` = sapply(
       `Voucher Information`, function(voucher) {
         gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
@@ -65,10 +66,10 @@ if (knitr_chunk == "latex") {
 # https://texblog.org/2010/05/02/excluding-items-from-list-of-figures-list-of-tables/
 
 if (knitr_chunk == "latex") {
-  read.csv("data/1.specimens/methods-DNA-specimens-2.csv",
+  read.csv("data/methods/DNA-specimens.csv",
            header = TRUE, row.names = NULL, as.is = TRUE,
            check.names = FALSE, stringsAsFactors = FALSE,
-           colClasses = "character") %>%
+           colClasses = "character") %>% dplyr::slice(40:68) %>%
     dplyr::mutate(`Voucher Information` = sapply(
       `Voucher Information`, function(voucher) {
         gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
@@ -92,15 +93,9 @@ if (knitr_chunk == "latex") {
 ```{r methodsTable2DnaSpecimensHtml}
 # HTML specimen table
 if (knitr_chunk == "html") {
-  bind_rows(
-    read.csv("data/1.specimens/methods-DNA-specimens.csv",
+  read.csv("data/methods/DNA-specimens.csv",
            header = TRUE, row.names = NULL, as.is = TRUE, check.names = FALSE,
-           stringsAsFactors = FALSE, colClasses = "character"),
-    read.csv("data/1.specimens/methods-DNA-specimens-2.csv",
-             header = TRUE, row.names = NULL, as.is = TRUE,
-             check.names = FALSE, stringsAsFactors = FALSE,
-             colClasses = "character")
-    ) %>%
+           stringsAsFactors = FALSE, colClasses = "character") %>%
     dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
       gsub("\\\\textit\\{", "\\*", taxon) %>%
         gsub("\\}$", "\\*", x = .) %>%
@@ -155,7 +150,7 @@ knitr_section(knitr_title = "rITS PCR",
 
 ```{r methodsTable3DnaPrimers}
 # Sequence primer table
-read.csv("data/1.specimens/methods-DNA-primers.csv",
+read.csv("data/methods/DNA-primers.csv",
          header = TRUE, row.names = NULL, as.is = TRUE,
          check.names = FALSE, stringsAsFactors = FALSE,
          colClasses = "character") %>%
