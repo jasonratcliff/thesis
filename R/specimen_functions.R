@@ -132,73 +132,38 @@ subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
   eval(rlang::parse_expr(filter_expr))
 }
 
-#' Find specimens by Collector, Collection Number, or Row ID
+#' Find specimens by Collector and Collection Number.
 #'
 #' @param specimen_tbl Tibble of herbarium specimens built from
 #'  `herbarium_specimens.R` script.
 #' @param collector Character scalar to filter specimen by collector name.
 #' @param collection Numeric vector to filter specimens by collection number.
-#' @param row_id Numeric vector of row indexes to slice tibble.
 #'
 #' @examples
 #' find_spp(herbarium_specimens, collector = "Rollins")
 #' find_spp(herbarium_specimens, collector = "Rollins", collection = 81337)
-#' find_spp(herbarium_specimens, row_id = c(1:12))
 #'
 #' @export
 #'
-find_spp <- function(specimen_tbl, collector = NULL, collection = NULL,
-                     row_id = numeric()) {
+find_spp <- function(specimen_tbl, collector = NULL, collection = NULL) {
 
-  # Check for input tibble.
-  if (!tibble::is_tibble(specimen_tbl)) {
-    stop("Pass a tibble object for `specimen_tbl` argument.")
-  }
+  # Keep non-null arguments from list of function inputs.
+  args_find <- list(Collector = collector,
+                    Collection_Number = as.character(collection)) %>%
+    purrr::keep(~ !rlang::is_null(.x) & length(.x) > 0)
 
-  # Test arguments to warn when `row_id` and `collector` or `collection`.
-  test_args <- rlang::enquos(collector, collection)
-  names(test_args) <- c("collector", "collection")
-  if (length(row_id) > 0 &
-      TRUE %in% c(!is.null(collector) | !is.null(collection))) {
-    null_args <- purrr::map_lgl(test_args, function(arg) {
-      is.null(rlang::eval_tidy(arg))
-    })
-    warning(paste0("Arguments `row_id` and `",
-                   paste(names(null_args)[which(null_args == FALSE)],
-                         collapse = "` & `"), '` have been passed.'))
-  }
+  # Map inputs and argument names to create function call objects.
+  args_sym <- names(args_find)
+  spp_filter <-
+    purrr::map2(args_sym, args_find,
+      ~ rlang::call2(rlang::expr(dplyr::filter),
+          rlang::call2(rlang::expr(stringr::str_detect),
+                       string = rlang::sym(.x), pattern = .y))) %>%
+    purrr::reduce(~ rlang::expr(!!.x %>% !!.y),
+                  .init = rlang::expr(specimen_tbl))
 
-  # Select columns from taxa data frame to return.
-  filtered_spp <- specimen_tbl %>%
-    dplyr::select("Taxon", "prior_id", "Taxon_a_posteriori",
-                  "Collector", "Collection_Number",
-                  "Latitude", "Longitude", "State", "County", "Herbarium")
-
-  # Slice by row index.
-  if (is.numeric(row_id) & length(row_id) > 0) {
-    filtered_spp <- dplyr::slice(filtered_spp, row_id)
-  } else if (!is.numeric(row_id)) {
-    warning("Ensure `row_id` is a numeric vector.")
-  }
-
-  # Map collector / collection enquosures and parse filter expression.
-  names(test_args) <- c("Collector", "Collection_Number")
-  filter_statements <-  # Keep non-null enquosures.
-    purrr::keep(test_args, function(arg) {
-    !is.null(rlang::eval_tidy(arg))
-  }) %>% unlist() %>%
-    # Build filter statements with quoted Collector as character vector.
-    purrr::map2(., names(.), function(arg, variable) {
-      paste0("grepl(x = ", variable, ", pattern = ",
-             ifelse(variable == "Collector",
-                    paste0("'", rlang::eval_tidy(arg), "'"),
-                    rlang::eval_tidy(arg)), ")")  # Unquoted collection number.
-    }) %>% unlist() %>% paste(collapse = ", ") %>%
-    paste0("dplyr::filter(", ., ")", collapse = "")
-
-  # Construct data filter pipeline to find specimens by collector / collection.
-  filter_expr <- paste("filtered_spp %>%", filter_statements, collapse = "")
-  eval(rlang::parse_expr(filter_expr))
+  # Return evaluated call object.
+  rlang::eval_tidy(spp_filter)
 }
 
 # ggplot Legends ----
