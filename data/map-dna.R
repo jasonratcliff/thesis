@@ -1,3 +1,5 @@
+# library(ThesisPackage)
+
 #  Assign Specimen Data ----
 dna_specimens <- ThesisPackage::dna_specimens %>%
   dplyr::select(-c("Latitude.y", "Longitude.y")) %>%
@@ -8,17 +10,16 @@ dna_specimens <- ThesisPackage::dna_specimens %>%
   dplyr::left_join(x = ., y = readxl::read_excel("data/map-labels.xlsx",
     col_types = c("text", "numeric", "numeric"), na = c("", "NA")),
     by = "label") %>%
-  dplyr::mutate(Collector = gsub(pattern = "\\'", replacement = "\\\\'",
-                                 x = Collector),
-                x_nudge = ifelse(is.na(x_nudge), 0.25, x_nudge),
-                y_nudge= ifelse(is.na(y_nudge), -0.15, y_nudge))
+  dplyr::mutate(x_nudge = ifelse(is.na(x_nudge), 0.25, x_nudge),
+                y_nudge= ifelse(is.na(y_nudge), -0.15, y_nudge)) %>%
+  dplyr::filter(!is.na(Latitude) & !is.na(Longitude))
 
 # Prior Annotations ----
-total_priors <- herbarium_specimens%>%
+total_priors <- ThesisPackage::herbarium_specimens %>%
   dplyr::select(prior_id, Latitude, Longitude) %>%
-  subset_coords(specimen_tbl = .,
-                Latitude = c(37, 49.1),
-                Longitude = c(-115.2, -103)) %>%
+  ThesisPackage::subset_coords(specimen_tbl = .,
+                               Latitude = c(37, 49.1),
+                               Longitude = c(-115.2, -103)) %>%
   # Filter out Lesquerella / Physaria sensu lato spp.
   dplyr::filter(!grepl(paste("Lesquerella", "cnema", "alpina", "cordiformis",
                              "macrantha", sep = "|", collapse = ""),
@@ -45,7 +46,8 @@ map_labels <-
                            h_adjust = x_nudge, v_adjust = y_nudge)
             }) %>%
   # Reduce the expression to collapse species id label call objects into chain.
-  purrr::reduce(~ expr(!!.x %>% !!.y), .init = dna_ggplot)
+  purrr::reduce(~ rlang::expr(!!.x %>% !!.y),
+                .init = rlang::expr(dna_ggplot))
 
 # Evaluate call object chain and save plot to file.
 rlang::eval_tidy(map_labels) %>%
