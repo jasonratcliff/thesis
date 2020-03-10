@@ -2,7 +2,7 @@ require(tidyverse)
 require(readxl)
 require(rlang)
 require(here)
-source("R/specimen_functions.R")
+library(ThesisPackage)
 
 # 1. Read in specimen data ----
 #
@@ -143,7 +143,8 @@ elev_parsed <-
 # Map tibble data frame with split range data and conver meters to ft.
 elev_parsed <-
   dplyr::bind_cols(dplyr::select(elev_parsed, Elev_var),
-                   dplyr::select(elev_parsed, Elev_raw) %>% range_split()) %>%
+                   dplyr::select(elev_parsed, Elev_raw) %>%
+                     ThesisPackage::range_split()) %>%
   purrr::pmap_dfr(function(Elev_var, Elev_raw_min, Elev_raw_max, Elev_raw) {
     if (Elev_var == "Elev_m") {
       elev_min <- as.numeric(Elev_raw_min) * 3.281
