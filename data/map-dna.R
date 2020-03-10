@@ -1,4 +1,4 @@
-# library(ThesisPackage)
+library(ThesisPackage)
 
 #  Assign Specimen Data ----
 dna_specimens <- ThesisPackage::dna_specimens %>%
@@ -51,5 +51,6 @@ map_labels <-
 
 # Evaluate call object chain and save plot to file.
 rlang::eval_tidy(map_labels) %>%
-cowplot::ggsave2(filename = "data/map-dna.pdf", plot = ., scale = 3)
+cowplot::ggsave2(filename = "data/map-dna.pdf", plot = .,
+                 width = 13, height = 13)
 
