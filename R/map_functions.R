@@ -390,7 +390,9 @@ map_spp_id <- function(gg_map_obj, id_column, shape_opt = NULL,  geom_size = 3,
       pattern = "[A-Z]\\. ?") %>%
         stringr::str_replace(string = ., pattern = "and|with",
                              replacement =  "&") %>%
-          paste(., .data$Collection_Number, collapse = "", sep = "\n"))
+          paste(., .data$Collection_Number, collapse = "", sep = "\n")) %>%
+    # Account for duplicate label matches from joining.
+    dplyr::group_by(.data$taxa_label) %>% dplyr::slice(1) %>% dplyr::ungroup()
 
   # Plot additional map layer to include the specimen returned by spp_find().
   gg_map_obj +
