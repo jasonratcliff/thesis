@@ -190,10 +190,12 @@ dna_specimens <- purrr::pmap_dfr(dna_metadata,
     # Join the herbarium records to matching sequencing specimen .csv rows.
     dplyr::left_join(dplyr::filter(dna_metadata, label == !!label),
       record_match, by = c("Collector", "Collection_Number"))
-    })
+    }) %>%
+
+  # Account for duplicate label matches from joining.
+  dplyr::group_by(.data$label) %>% dplyr::slice(1) %>% dplyr::ungroup()
 
 rm(dna_metadata) # Clean up workspace
-
 
 # 7. Create .Rdatfiles.
 
