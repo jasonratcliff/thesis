@@ -143,8 +143,8 @@ elev_parsed <-
 # Map tibble data frame with split range data and conver meters to ft.
 elev_parsed <-
   dplyr::bind_cols(dplyr::select(elev_parsed, Elev_var),
-                   dplyr::select(elev_parsed, Elev_raw) %>%
-                     ThesisPackage::range_split()) %>%
+    ThesisPackage::range_split(trait_tbl = elev_parsed,
+                               split_var = "Elev_raw")) %>%
   purrr::pmap_dfr(function(Elev_var, Elev_raw_min, Elev_raw_max, Elev_raw) {
     if (Elev_var == "Elev_m") {
       elev_min <- as.numeric(Elev_raw_min) * 3.281
