@@ -2,6 +2,7 @@
 title: "Systematics of *Physaria* sensu stricto"
 author: "Jason Ratcliff"
 date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
 maintfont: Palatino
 fontsize: 12
 output:
@@ -13,7 +14,6 @@ output:
     toc: false
     keep_tex: yes
 subparagraph: true
-site: bookdown::bookdown_site
 documentclass: report
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
@@ -25,7 +25,7 @@ description: "R Bookdown build to compile MS Thesis."
 # Set Global knitr chunk options
 library(knitr)
 knitr::opts_chunk$set(dev='pdf', echo=FALSE, results="asis",
-                      message=FALSE, cache=FALSE)
+                      message=FALSE) #, cache=TRUE, autodep = TRUE)
 opts_knit$set(eval.after = 'fig.cap')
 ```
 
@@ -41,43 +41,17 @@ opts_knit$set(eval.after = 'fig.cap')
 
 \include{TeX/Thesis_6-tables}
 
-```{r globalSet}
+```{r globalSet, message = FALSE}
+# For PDF compilation of Bookdown Doc, LaTeX install required.
+require(tinytex)
+
 # Load libraries
-require(dplyr)
-require(purrr)
-require(readr)
-require(knitr)
-require(magrittr)
-require(lubridate)
-require(stringr)
-require(tibble)
-require(kableExtra)
-require(ggplot2)
-require(lemon)
-require(ggmap)
-require(ggtree)
-require(msa)
-library(Biostrings)
-require(elevatr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
 
-# Due to issue with ggmap call, developer branch of ggmap
-# addressing issue from https://github.com/dkahle/ggmap/issues/85
-# with fix at https://github.com/dkahle/ggmap/pull/88
-# used for ggmap build.  See citation here:
-# https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
-if ("ggmap" %in% rownames(installed.packages()) == FALSE) {
-  # Install from author github repo master branch
-  library(devtools)
-  devtools::install_github("dkahle/ggmap")
-}
-
-# Read specimen data to Global Environment and source R functions.
-source("R/specimen_data.R", keep.source = FALSE)
-source("R/specimen_tools.R", keep.source = FALSE)
-source("R/map_tools.R", keep.source = FALSE)
-source("R/phylo_tools.R", keep.source = FALSE)
-source("R/trait_tools.R", keep.source = FALSE)
-source("R/knitr_helper.R", keep.source = FALSE)
+# Load specimen data and Thesis functions.
+library(ThesisPackage)
 
 # Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
 knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
@@ -87,12 +61,64 @@ gg_borders <- map_borders(border_color = "black")
 
 ```
 
-```{r chapter1Set}
+```{r knitrFunctions}
+# Function to replace LaTeX italics with HTML markdown for firgure captions.
+knitr_caption <- function(caption) {
+  chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
+  if (chunk_type == "html") {
+    caption <- gsub("\\\\textit\\{", "*", caption)
+    caption <- gsub("\\}", "*", caption)
+  }
+  return(caption)
+}
 
-# Subset Carbon County, Wyoming specimens within bounding box.
-spp_carbon_wyo <- spp_subset(taxa_frame = total_physaria,
-                             state = c("Wyoming", "Colorado"),
-                             longitude = c(-107.9, -105.1),
-                             latitude = c(39.1, 41.9))
+#' Knitr section writer
+#'
+#' Function to return text to stdout based on the knit option of markdown to
+#' pandoc conversion for either "html" or "latex" output.  For composing
+#' Bookdown documents in HTML or LaTeX output.
+#'
+#' @param knitr_title Character vector of length one matching the section title.
+#' @param knitr_type Character vector of length one matching the section type.
+#'
+knitr_section <- function(knitr_title, knitr_type) {
+
+  # Check `knitr_type` against list of possible section names.
+  knitr_chunk_list <- list(section = "##", subsection = "###")
+  if (!TRUE %in% (knitr_type %in% names(knitr_chunk_list))) {
+    message("\nArgument `knitr_chunk_list` must match one of:\n\n")
+    message(paste(names(knitr_chunk_list), collapse = "\n"), "\n")
+    stop()
+  }
+
+  # Get knit conversion type and output respective section header.
+  knitr_chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
+  if (knitr_chunk_type == "html") {
+    cat(paste(knitr_chunk_list[knitr_type], knitr_title))
+  } else if (knitr_chunk_type == "latex") {
+    # Check regular expression pattern in `knitr_title` string for italics.
+    if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
+        grepl("\\*{2}", knitr_title) == FALSE) {
+      split_title <- unlist(strsplit(knitr_title, ""))
+      split_index <- grep("\\*", split_title)
+      split_fix <- as.logical(seq_along(split_index) %% 2)
+      split_title[split_index][split_fix] <- "\\textit{"
+      split_title[split_index][which(split_fix == FALSE)] <- "}"
+      knitr_title <- paste(split_title, collapse = "")
+      }
+    cat(paste("\\", knitr_type, "{", knitr_title, "}", sep = ""))
+  }
+}
+
+#' Table 2 Bookdown
+#'
+#' Methods table reference for DNA specimens.
+knitr_table2 <- function() {
+  if (knitr_chunk == "latex") {
+    paste0("\\@ref(tab:methodsTable2DnaSpecimens)")
+  } else if (knitr_chunk == "html") {
+    paste0("\\@ref(tab:methodsTable2DnaSpecimensHtml)")
+  }
+}
 
 ```
