@@ -379,3 +379,33 @@ beast_legend <- function(tree_data, id_column, scale_name, ...) {
   return(cowplot::get_legend(plot = beast_ggtree))
 }
 
+# Phylogenetics Kable ----
+
+#' Kable build for multi-specimen nodes.
+#'
+#' @param tbl_multi_node Tibble of multi-taxa nodes returned by
+#'   `bayes_tibble_multi()`.
+#' @param kable_caption Character vector for caption passed to
+#'   `knitr::kable()` argument `caption`.
+#' @param knitr_chunk Character vector passed to `knitr::kable()` argument
+#'  `format` - one of "latex" or "html".  Defined by
+#'  `opts_knit$get("rmarkdown.pandoc.to")` in `index.Rmd` of Thesis Bookedown.
+#'
+#' @return `kable` object contained multi-taxa nodes with locality and specimen
+#'   information.
+#'
+#' @export
+#'
+phylo_kable <- function(tbl_multi_node, kable_caption, knitr_chunk) {
+  knitr::kable(tbl_multi_node, caption = kable_caption, format = knitr_chunk,
+               escape = F, row.names = FALSE,
+               align=c("c", "c", "l", "l", "l")) %>%
+    kableExtra::kable_styling(full_width = FALSE, font_size = 10,
+                              latex_options= "hold_position") %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE) %>%
+    kableExtra::column_spec(2, width = "3.7cm") %>%
+    kableExtra::column_spec(5, border_right = TRUE, width = "2cm") %>%
+    kableExtra::collapse_rows(columns = 1:3)
+}
+
