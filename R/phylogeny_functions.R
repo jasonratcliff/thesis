@@ -67,6 +67,46 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 
 }
 
+#' Multi-Node Tibble
+#'
+#' Given the Bayes results joined to DNA speciemens returned by
+#' `bayes_tibble()`, group by node and filter to specimens with identical nodes
+#' (i.e. with identical genotypes).
+#'
+#' @param bayes_tbl Parsed ggtree tibble returned by `bayes_tibble()` with
+#'   split sample observations and scaled geom size aesthetics.
+#' @inheritParams bayes_tibble
+#'
+#' @return Tibble of specimens from multi-taxa nodes.
+#'
+#' @export
+#'
+bayes_tibble_multi <- function(bayes_tbl, id_column) {
+
+  bayes_tbl %>% # Select columns and filter to distinct observations.
+    dplyr::select(!!id_column, "State", "Collector", "Collection_Number",
+                  "node") %>% dplyr::distinct() %>%
+
+    # Group by node and filter to multi-taxa specimens.
+    dplyr::group_by(.data$node) %>% dplyr::mutate(Count = dplyr::n()) %>%
+    dplyr::filter(.data$Count > 1) %>% dplyr::arrange(.data$node) %>%
+
+    # Add unique genotype ID and select rows.
+    dplyr::mutate(Genotype = dplyr::group_indices()) %>% dplyr::ungroup() %>%
+    dplyr::select("Genotype", !!id_column, "State",
+                  "Collector", "Collection_Number") %>%
+
+    # Text substitution to standardize collector names.
+    dplyr::mutate(Collector = purrr::map_chr(.data$Collector,
+      function(collector) {
+        gsub("[A-Z]\\. ?", "", collector) %>% gsub("&|with", "and", x = .)
+        })) %>%
+
+    # Rename column with tidy eval.
+    dplyr::rename(Species = rlang::sym(!!id_column),
+                  `Collection Number` = .data$Collection_Number)
+}
+
 # ggtree Plotting ----
 
 #' Plot MrBayes ggtree
@@ -74,11 +114,10 @@ bayes_tibble <- function(bayes_file, dna_specimens_tbl,
 #' Given the output of `bayes_tibble()`, build a ggplot with color / shape
 #' aesthetics defined by identification column.
 #'
-#' @param bayes_tbl Parsed ggtree tibble returned by `bayes_tibble()` with
-#'   split sample observations and scaled geom size aesthetics.
 #' @param scale_name Character scalar with name for scale title.
 #' @param x_expand Numeric scalar for x-axis expansion of ggtree plot.
 #' @inheritParams bayes_tibble
+#' @inheritParams bayes_tibble_multi
 #'
 #' @return ggtree object with tips aesthetics determined by `id_column` and
 #' posterior probabilities on resolved (i.e. non-polytomy) nodes.
@@ -141,6 +180,7 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
 #'
 #' @param bayes_ggtree_obj ggtree object returned by `bayes_ggtree()` function.
 #' @inheritParams bayes_ggtree
+#' @inheritParams bayes_tibble_multi
 #'
 #' @return ggtree object with text geoms identifying taxa tip labels.
 #'
@@ -175,6 +215,7 @@ bayes_tip_labels <- function(bayes_ggtree_obj, bayes_tbl) {
 #' multiple taxa grouped by identical genotypes.
 #'
 #' @inheritParams bayes_ggtree
+#' @inheritParams bayes_tibble_multi
 #'
 #' @return Tibble of filtered multi-taxa tips grouped by node.
 #'
