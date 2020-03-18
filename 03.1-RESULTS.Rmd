@@ -22,11 +22,9 @@ knitr_section(knitr_title = "ITS Sequence Analysis",
 
 ```{r resultsTable4IdenticalSeqITS, fig.width=8}
 
-tbl_phylo_rITS <-
-  phylo_tbl(bayes_file = paste0("data/8.bayes/rITS-infile.nex.con.tre"),
-            specimen_records = total_physaria)
-
-phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rITS) %>%
+bayes_tibble(bayes_file = paste0("data/8.bayes/rITS-infile.nex.con.tre"),
+             dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_tibble_multi(bayes_tbl = ., id_column = "prior_id") %>%
   phylo_kable(tbl_multi_node = .,
               kable_caption =
                     paste0("$Physaria$ DNA specimens with identical ",
@@ -46,10 +44,11 @@ phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rITS) %>%
 
 knitr_cap <- "Consensus tree from Baysian inference of the rITS gene tree."
 
-phylo_ggplot(phylo_tbl_obj = tbl_phylo_rITS,
-             phylo_layout = "rectangular", plot_title = "rITS Phylogeny",
-             legend_col = 1, x_expand = 0.025, legend_text = 10) %>%
-  lemon::reposition_legend(aplot = ., position = "top left")
+bayes_tibble(bayes_file = "data/8.bayes/rITS-infile.nex.con.tre",
+             dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_ggtree(bayes_tbl = ., id_column =  "prior_id",
+               x_expand = 0.025, scale_name = "Reviewed Identifications") %>%
+  ggtree_plot(bayes_ggtree_obj = ., plot_x = 0.125, plot_y = 0.425)
 
 ```
 
@@ -67,10 +66,10 @@ knitr_section(knitr_title = "*rps* Intron Sequence Analysis",
 
 ```{r resultsTable5IdenticalSeqRps, fig.width=8}
 
-tbl_phylo_rps <-
-  phylo_tbl(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
-            specimen_records = total_physaria)
-tbl_multi_rps <- phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_rps)
+tbl_multi_rps <-
+  bayes_tibble(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
+               dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_tibble_multi(bayes_tbl = ., id_column = "prior_id")
 
 if (knitr_chunk == "html") {
  phylo_kable(tbl_multi_node = tbl_multi_rps,
@@ -97,7 +96,7 @@ if (knitr_chunk == "html") {
 
 if (knitr_chunk == "latex") {
   phylo_kable(tbl_multi_node = tbl_multi_rps[22:47, ],
-            kable_caption = "Table 5. Continued.")
+              kable_caption = "Table 5. Continued.")
 }
 
 if (knitr_chunk == "latex") {
@@ -120,14 +119,12 @@ if (knitr_chunk == "latex") {
 
 knitr_cap <- "Consensus tree from Baysian inference of *rps* intron gene tree."
 
-ggtree_rps <-
-  phylo_ggplot(phylo_tbl_obj = tbl_phylo_rps, phylo_layout = "rectangular",
-               plot_title = expression(paste(italic("rps"),
-                                             " intron Phylogeny")),
-               legend_col = 1, x_expand = 0.015, legend_text = 10) +
-  ylim(y = c(0, 35))
-
-lemon::reposition_legend(aplot = ggtree_rps, position = "top left")
+bayes_tibble(bayes_file = "data/8.bayes/rps-infile.nex.con.tre",
+             dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_ggtree(bayes_tbl = ., id_column =  "prior_id",  x_expand = 0.01,
+               scale_name = "Reviewed Identifications") %>%
+  ggtree_plot(bayes_ggtree_obj = ., plot_x = .15, plot_y = 0.55,
+              plot_height = .425)
 
 ```
 
@@ -151,22 +148,20 @@ knitr_cap <-
          " for the $ycf1$ loci.")
 
 # Format ycf1 identical sequence .csv files into split tables.
-ycf1_id_seqs <- read.csv("data/6.MEGA/ycf1_identical_seqs.csv",
+ycf1_id_seqs <- read.csv("data/ycf1_identical_seqs.csv",
                          header = TRUE, row.names = NULL, as.is = TRUE,
                          check.names = FALSE, stringsAsFactors = FALSE,
                          colClasses = "character") %>%
   dplyr::mutate(., Collector =
-                    map_chr(.[["Collector"]], function(collector) {
+                    purrr::map_chr(.[["Collector"]], function(collector) {
                       gsub("[A-Z]\\. ?", "", collector) %>%
                         gsub("&|with", "and", x = .)})) %>%
   dplyr::select(., Genotype, Species, State, Collector, `Collection Number`)
 
 if (knitr_chunk == "html") {
-  phylo_kable(tbl_multi_node = ycf1_id_seqs,
-              kable_caption = knitr_cap)
+  phylo_kable(tbl_multi_node = ycf1_id_seqs, kable_caption = knitr_cap)
 } else if (knitr_chunk == "latex") {
-  phylo_kable(tbl_multi_node = ycf1_id_seqs[1:23, ],
-              kable_caption = knitr_cap)
+  phylo_kable(tbl_multi_node = ycf1_id_seqs[1:23, ], kable_caption = knitr_cap)
 }
 
 ```
@@ -187,9 +182,7 @@ if (knitr_chunk == "latex") {
 
 if (knitr_chunk == "latex") {
   cat("\\captionsetup[table]{labelformat=default}")
-
   cat("\\captionsetup[table]{list=yes}")
-
   cat("\\setcounter{table}{6}")
 }
 
@@ -208,11 +201,9 @@ knitr_section(knitr_title = "Concatenated Multi-locus Analysis",
 
 ```{r resultsTable7IdenticalSeqML, fig.width=8}
 
-tbl_phylo_ml <-
-  phylo_tbl(bayes_file = "data/8.bayes/ml-infile.nex.con.tre",
-            specimen_records = total_physaria)
-
-phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_ml) %>%
+bayes_tibble(bayes_file = "data/8.bayes/ml-infile.nex.con.tre",
+             dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_tibble_multi(bayes_tbl = ., id_column = "prior_id") %>%
   phylo_kable(tbl_multi_node = .,
               kable_caption =
                 paste0("$Physaria$ DNA specimens with identical sequences",
@@ -225,12 +216,12 @@ phylo_multi_tbl(phylo_tbl_obj = tbl_phylo_ml) %>%
 knitr_cap <- paste0("Consensus tree from Baysian inference of",
                     " concatenated multi-locus data.")
 
-ggtree_ml <-
-  phylo_ggplot(tbl_phylo_ml, plot_title = "Multi-locus Phylogeny",
-               phylo_layout = "rectangular", legend_col = 1, x_expand = 0.025,
-               legend_text = 10)
-
-lemon::reposition_legend(aplot = ggtree_ml, position = "top left")
+bayes_tibble(bayes_file = "data/8.bayes/ml-infile.nex.con.tre",
+             geom_size_scale = c(2, 4),
+             dna_specimens_tbl = dna_specimens, id_column = "prior_id") %>%
+  bayes_ggtree(bayes_tbl = ., id_column =  "prior_id", x_expand = 0.022,
+               scale_name = "Reviewed Identifications") %>%
+  ggtree_plot(bayes_ggtree_obj = ., plot_x = .15, plot_y = .45)
 
 ```
 
@@ -241,6 +232,6 @@ lemon::reposition_legend(aplot = ggtree_ml, position = "top left")
 
 ```{r chapter3_1ResultsCleanup}
 # Workspace cleanup
-rm(ycf1_id_seqs)
+rm(ycf1_id_seqs, tbl_multi_rps)
 ```
 
