@@ -6,6 +6,7 @@ site: bookdown::bookdown_site
 maintfont: Palatino
 fontsize: 12
 output:
+  bookdown::gitbook: default
   bookdown::pdf_book:
     includes:
       in_header: TeX/Thesis_0-header.tex
@@ -23,10 +24,18 @@ description: "R Bookdown build to compile MS Thesis."
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
 # Set Global knitr chunk options
-library(knitr)
-knitr::opts_chunk$set(dev='pdf', echo=FALSE, results="asis",
-                      message=FALSE) #, cache=TRUE, autodep = TRUE)
-opts_knit$set(eval.after = 'fig.cap')
+knitr::opts_chunk$set(echo=FALSE, results="asis", message=FALSE) 
+                      #cache=TRUE, autodep = TRUE)
+
+# Allow caption assignment in chunk.
+knitr::opts_knit$set(eval.after = 'fig.cap')
+
+# Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
+knitr_chunk <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+if (knitr_chunk == "latex") {
+  knitr::opts_chunk$set(dev='pdf')
+}
+
 ```
 
 \include{TeX/Thesis_1-copyright}
@@ -42,8 +51,10 @@ opts_knit$set(eval.after = 'fig.cap')
 \include{TeX/Thesis_6-tables}
 
 ```{r globalSet, message = FALSE}
+
 # For PDF compilation of Bookdown Doc, LaTeX install required.
 require(tinytex)
+require(bookdown)
 
 # Load libraries
 library(ggplot2)
@@ -53,72 +64,12 @@ library(kableExtra)
 # Load specimen data and Thesis functions.
 library(ThesisPackage)
 
-# Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
-knitr_chunk <- opts_knit$get("rmarkdown.pandoc.to")
-
 # Define map object for state and county boundaries.
 gg_borders <- map_borders(border_color = "black")
 
 ```
 
-```{r knitrFunctions}
-# Function to replace LaTeX italics with HTML markdown for firgure captions.
-knitr_caption <- function(caption) {
-  chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
-  if (chunk_type == "html") {
-    caption <- gsub("\\\\textit\\{", "*", caption)
-    caption <- gsub("\\}", "*", caption)
-  }
-  return(caption)
-}
 
-#' Knitr section writer
-#'
-#' Function to return text to stdout based on the knit option of markdown to
-#' pandoc conversion for either "html" or "latex" output.  For composing
-#' Bookdown documents in HTML or LaTeX output.
-#'
-#' @param knitr_title Character vector of length one matching the section title.
-#' @param knitr_type Character vector of length one matching the section type.
-#'
-knitr_section <- function(knitr_title, knitr_type) {
 
-  # Check `knitr_type` against list of possible section names.
-  knitr_chunk_list <- list(section = "##", subsection = "###")
-  if (!TRUE %in% (knitr_type %in% names(knitr_chunk_list))) {
-    message("\nArgument `knitr_chunk_list` must match one of:\n\n")
-    message(paste(names(knitr_chunk_list), collapse = "\n"), "\n")
-    stop()
-  }
-
-  # Get knit conversion type and output respective section header.
-  knitr_chunk_type <- opts_knit$get("rmarkdown.pandoc.to")
-  if (knitr_chunk_type == "html") {
-    cat(paste(knitr_chunk_list[knitr_type], knitr_title))
-  } else if (knitr_chunk_type == "latex") {
-    # Check regular expression pattern in `knitr_title` string for italics.
-    if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
-        grepl("\\*{2}", knitr_title) == FALSE) {
-      split_title <- unlist(strsplit(knitr_title, ""))
-      split_index <- grep("\\*", split_title)
-      split_fix <- as.logical(seq_along(split_index) %% 2)
-      split_title[split_index][split_fix] <- "\\textit{"
-      split_title[split_index][which(split_fix == FALSE)] <- "}"
-      knitr_title <- paste(split_title, collapse = "")
-      }
-    cat(paste("\\", knitr_type, "{", knitr_title, "}", sep = ""))
-  }
-}
-
-#' Table 2 Bookdown
-#'
-#' Methods table reference for DNA specimens.
-knitr_table2 <- function() {
-  if (knitr_chunk == "latex") {
-    paste0("\\@ref(tab:methodsTable2DnaSpecimens)")
-  } else if (knitr_chunk == "html") {
-    paste0("\\@ref(tab:methodsTable2DnaSpecimensHtml)")
-  }
-}
 
 ```
