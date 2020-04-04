@@ -28,9 +28,9 @@ total_priors <- ThesisPackage::herbarium_specimens %>%
 
 # Build ggplot ----
 dna_ggplot <-
-  ThesisPackage::map_specimens(specimen_tbl = total_priors,
+  ThesisPackage::map_specimens(specimen_tbl = total_priors, f_adj = 0,
                              id_column = "prior_id", shape_opt = "prior_id") %>%
-  ThesisPackage::map_themes(gg_map_obj = .,
+  ThesisPackage::map_themes(gg_map_obj = ., legend_title = "Prior Annotations",
                             mapped_specimens = total_priors,
                             id_column = "prior_id")
 
@@ -51,7 +51,8 @@ map_labels <-
                 .init = rlang::expr(dna_ggplot))
 
 # Evaluate call object chain and save plot to file.
-rlang::eval_tidy(map_labels) %>%
-cowplot::ggsave2(filename = "data-raw/mapping/map-dna.pdf", plot = .,
+dna_ggplot <- rlang::eval_tidy(map_labels)
+cowplot::ggsave2(filename = "data-raw/mapping/map-dna.pdf", plot = dna_ggplot,
                  width = 13, height = 13)
 
+print(dna_ggplot)
