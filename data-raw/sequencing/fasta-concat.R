@@ -1,8 +1,5 @@
 ## FASTA Concatenation ----
 
-# The pipeline outlined above for subsetting FASTA files was used to read in the
-# aligned subset of specimens for concatenated analysis.
-
 # Assign list of DNAStringSet objects from FASTA files in input directory.
 ml_aligned <-
   list.files(path = "data-raw/sequencing/3.alignments-concatenated/",

@@ -6,9 +6,9 @@ library(ThesisPackage)
 
 # 1. Read in specimen data ----
 #
-# An .xlsx file located in the `data/1.specimens/` subdirectory contains
+# An .xlsx file located in the `data-raw/` subdirectory contains
 # specimen voucher information from project herbarium records, including
-# geographic coordinate data (decimal degrees), collectionn dates,
+# geographic coordinate data (decimal degrees), collection dates,
 # annotation information, trait measurements and observations.
 
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
@@ -58,7 +58,7 @@ specimens_raw %>%
   readr::write_excel_csv(x = ., path = "log/remaining_dates.csv")
 
 # 3. Parse prior identifications ----
-#
+
 # Function to recursively replace identification agreements marked by "!"
 prior_ids <- function(prior_vector) {
   # Detect first index of ID agreement and replace with previous ID.
@@ -113,7 +113,7 @@ specimens_parsed <- dplyr::bind_cols(specimens_raw %>%
 # Clean up workspace.
 rm(specimens_raw, specimens_split, specimens_recent, prior_ids)
 
-# 4. Cast coordinates and dates ----
+# 4. Parse elevation data ----
 
 # Convert geographic coordinate column classes from character to numeric.
 specimens_parsed <- specimens_parsed %>%
@@ -126,8 +126,6 @@ specimens_parsed <- specimens_parsed %>%
                   gsub("[A-Za-z].+", NA, x = .) %>% gsub(" +", "", x = .),
                 Elev_m = gsub(",|'|~", "", x = Elev_m) %>%
                   gsub("[A-Za-z].+", NA, x = .) %>% gsub(" +", "", x = .))
-
-# 5. Parse elevation data ----
 
 #  Map tibble data frame to merge ft / m elevation data.
 elev_parsed <-
@@ -164,7 +162,7 @@ herbarium_specimens <-
 
 rm(elev_parsed, specimens_parsed) # Clean up workspace
 
-# 6. Bind DNA Extraction Information ----
+# 5. Bind DNA Extraction Information ----
 
 # Combine herbarium specimen record information with sequence documentation.
 dna_metadata <-
