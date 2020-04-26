@@ -2,7 +2,7 @@
 
 # Assign list of DNAStringSet objects from FASTA files in input directory.
 ml_aligned <-
-  list.files(path = "data-raw/sequencing/3.alignments-concatenated/",
+  list.files(path = "data-raw/sequencing/3.alignments-subset",
              pattern = ".fasta$", full.names = TRUE) %>%
   lapply(X = ., Biostrings::readDNAStringSet)
 
