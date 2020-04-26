@@ -12,10 +12,11 @@ library(ThesisPackage)
 # annotation information, trait measurements and observations.
 
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
+specimen_excel_path <- "data-raw/specimens/Phys_species_totals.xlsx"
 specimens_raw <-
-  readxl::excel_sheets(path = "data-raw/Phys_species_totals.xlsx") %>%
+  readxl::excel_sheets(path = specimen_excel_path) %>%
   purrr::map(function(excel_sheet) {
-    readxl::read_xlsx(path = "data-raw/Phys_species_totals.xlsx",
+    readxl::read_xlsx(path = specimen_excel_path,
                       sheet = excel_sheet, na = c("", "NA", "s.n."),
                       col_types = c(rep("text", 16), rep("skip", 10),
                                     rep("text", 2), rep("skip", 1),
@@ -166,7 +167,7 @@ rm(elev_parsed, specimens_parsed) # Clean up workspace
 
 # Combine herbarium specimen record information with sequence documentation.
 dna_metadata <-
-  readr::read_csv(file = "data-raw/dna_specimens.csv",
+  readr::read_csv(file = "data-raw/specimens/dna_specimens.csv",
                   col_types = "ccdcccddcclcccc") %>%
   dplyr::rename(label = taxa_label)
 
