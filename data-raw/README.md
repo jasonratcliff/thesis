@@ -62,8 +62,8 @@ See data-raw/mapping/map-dna.pdf for higher resolution image.
 ## Fasta Subset
 
 Multi-FASTA files for sequenced loci were assembled from sequence
-chromatograms and deposited in the `data-raw/sequencing/1.raw-fastas/`
-project subdirectory. Here, FASTA headers are formatted with two fields
+chromatograms and deposited in the `inst/extdata/FASTA` package
+subdirectory. Here, FASTA headers are formatted with two fields
 `accession` and `locus` following “\>”. A single whitespace separates
 the sample accession from the name of the locus, for example: `>PACUT_48
 rITS` or `>PACUT_12821 rps`. A given FASTA file contains sequences
@@ -71,12 +71,15 @@ sampled from a single genetic locus and all FASTA headers in the file
 contain the same locus name in the second field.
 
 ``` r
-# Assign list of raw FASTA files from project subdirectory.
-list.files(path = "data-raw/1.raw-fastas",
-              pattern = ".fasta$", full.names = TRUE)
+# Assign list of raw FASTA files from installed external package data.
+list.files(system.file("extdata/FASTA", package = "ThesisPackage"),
+           full.names = TRUE) %>%
+  stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
-    ## character(0)
+    ## [1] "extdata/FASTA/rITS-combined_raw.fasta"
+    ## [2] "extdata/FASTA/rps-combined_raw.fasta" 
+    ## [3] "extdata/FASTA/ycf1-combined_raw.fasta"
 
 The Biostrings package (Pagès et al. 2019) was used to read in FASTA
 files as DNAStringSets, R S4 objects of the XString subclass. A list is
@@ -85,11 +88,10 @@ FASTA file. The intersecting set of sequence headers among the multiple
 FASTA files was identified using the extracted DNAStringSet names
 attributes. New subsets for each locus were indexed by the set of
 specimens sequenced for all loci. Untrimmed, single locus FASTA files
-from `data-raw/sequencing/1.raw-fastas` and FASTA files filtered to
-common specimens in `data-raw/sequencing/2.subset-fastas` were aligned
-using MAFFT. The G-INS-i alignment strategy with iterative refinement
-and 1PAM / k=2 nucleotide scoring matrix were set sat as the alignment
-parameters.
+from `inst/extdata/FASTA` and FASTA files filtered to common specimens
+in `data-raw/sequencing/2.subset-fastas` were aligned using MAFFT. The
+G-INS-i alignment strategy with iterative refinement and 1PAM / k=2
+nucleotide scoring matrix were set sat as the alignment parameters.
 
 ## FASTA Summaries
 
