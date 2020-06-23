@@ -2,8 +2,8 @@
 
 # Assign list of raw FASTA files from project subdirectory.
 fasta_files <-
-  list.files(path = "data-raw/sequencing/1.raw-fastas",
-             pattern = ".fasta$", full.names = TRUE)
+  list.files(system.file("extdata/FASTA", package = "ThesisPackage"),
+             full.names = TRUE)
 
 ## Read FASTA into R ----
 
