@@ -59,6 +59,10 @@ require(bookdown)
 # Load libraries
 library(ggplot2)
 library(knitr)
+
+# Fix xcolor warning from TEXshade causing segfault:
+# https://github.com/rstudio/rmarkdown/issues/1384#issuecomment-400092146
+options(kableExtra.latex.load_packages = FALSE)
 library(kableExtra)
 
 # Load specimen data and Thesis functions.

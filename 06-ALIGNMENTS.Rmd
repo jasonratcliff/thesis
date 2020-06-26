@@ -2,163 +2,94 @@
 ```{r msaAppendix}
 
 # Establish a directory to store alignment appendix msa figures:
-if (!dir.exists("output/alignments")) {
-  dir.create("output/alignments")
+alignment_dir <- "Appendix/alignments"
+if (!dir.exists(alignment_dir)) {
+  dir.create(alignment_dir)
 }
 
 # Remove old .aux and .tex files from Alignment-Figures subdirectory.
-if (dir.exists("output/alignments")) {
-  alignment_tex_files <- list.files(path = "output/alignments/",
-                                    pattern = ".aux|.tex|.fasta",
-                                    full.names = TRUE)
-  invisible(file.remove(alignment_tex_files))
+if (dir.exists(alignment_dir)) {
+  alignment_tex_files <-
+    list.files(path = alignment_dir, pattern = ".aux|.tex|.fasta",
+               full.names = TRUE)
+  fs::file_delete(alignment_tex_files)
 }
 
 ```
 
 \clearpage
 
-```{r msaITS}
+```{r msaITS, results = "asis"}
 
-cat("\\chapter*{APPENDIX C}
-\\addcontentsline{toc}{chapter}{APPENDIX C: ITS SEQUENCE ALIGNMENT}
-\\vspace*{12pt}
-\\centering
-ITS SEQUENCE ALIGNMENT\n",
-file = "output/alignments/msa_aligned_its.tex")
+# Write TEXshade files from multiple sequence alignments
+ThesisPackage::msa_wrapper(msa_fasta = "rITS-single.fasta", msa_output = "rITS")
+tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
+                        pattern = paste0("rITS_msa_[0-9]+\\.tex"))
 
-file_its <- "data/5.alignments-single/rITS-single.fasta"
+# Format TEXshade environments 
+purrr::iwalk(.x = tex_files, function(tex_file, index) {
+    orientation <- ifelse(index == 1, FALSE, TRUE)
+    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
+  })
 
-aligned_its <- readDNAMultipleAlignment(filepath = file_its, format = "fasta")
+cat("\\chapter*{APPENDIX C}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX C: ITS SEQUENCE ALIGNMENT}",
+    "\\vspace*{12pt}", "\\centering",
+    "ITS SEQUENCE ALIGNMENT\n", sep = "\n")
 
-msaPrettyPrint(aligned_its, y = c(1, 135), output = "tex",
-               alFile = "output/alignments/aligned_its.fasta",
-               file = "output/alignments/aligned_its.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
-
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_its.tex -m 7in -r ROTATE >> \\
-       output/alignments/msa_aligned_its.tex")
-
-```
-
-\include{output/alignments/msa_aligned_its}
-
-\begin{landscape}
-
-```{r msaITSLandscape}
-
-msaPrettyPrint(aligned_its, y = c(136, max(aligned_its@unmasked@ranges@width)),
-               output = "tex",
-               alFile = "output/alignments/aligned_its.fasta",
-               file = "output/alignments/aligned_its_end.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
-
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_its_end.tex -r LANDSCAPE > \\
-       output/alignments/msa_aligned_its_end.tex")
+# Walk .Tex files to output LaTeX oriented MSA
+purrr::walk(.x = tex_files, function(tex_file) {
+  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
+  })
 
 ```
 
-\include{output/alignments/msa_aligned_its_end}
+```{r msaRPS, results = "asis"}
 
-\end{landscape}
+# Write TEXshade files from multiple sequence alignments
+ThesisPackage::msa_wrapper(msa_fasta = "rps-single.fasta", msa_output = "rps")
+tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
+                        pattern = paste0("rps_msa_[0-9]+\\.tex"))
 
-```{r msaRPS}
+# Format TEXshade environments 
+purrr::iwalk(.x = tex_files, function(tex_file, index) {
+    orientation <- ifelse(index == 1, FALSE, TRUE)
+    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
+  })
 
-cat("\\chapter*{APPENDIX D}
-\\addcontentsline{toc}{chapter}{APPENDIX D: \\textit{rps} SEQUENCE ALIGNMENT}
-\\vspace*{12pt}
-\\centering
-\\textit{rps} SEQUENCE ALIGNMENT\n",
-file = "output/alignments/msa_aligned_rps.tex")
+cat("\\chapter*{APPENDIX D}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX D: \\textit{rps} SEQUENCE ALIGNMENT}",
+    "\\vspace*{12pt}", "\\centering",
+    "\\textit{rps} SEQUENCE ALIGNMENT\n", sep = "\n")
 
-file_rps <- "data/5.alignments-single/rps-single.fasta"
-
-aligned_rps <- readDNAMultipleAlignment(filepath = file_rps, format = "fasta")
-
-msaPrettyPrint(aligned_rps, y = c(1, 135), output = "tex",
-               alFile = "output/alignments/aligned_rps.fasta",
-               file = "output/alignments/aligned_rps.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
-
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_rps.tex -m 7in -r ROTATE >> \\
-       output/alignments/msa_aligned_rps.tex")
+# Walk .Tex files to output LaTeX oriented MSA
+purrr::walk(.x = tex_files, function(tex_file) {
+  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
+  })
 
 ```
 
-\include{output/alignments/msa_aligned_rps}
+```{r msaYCF1, results = "asis"}
 
-\begin{landscape}
+# Write TEXshade files from multiple sequence alignments
+ThesisPackage::msa_wrapper(msa_fasta = "ycf1-single.fasta", msa_output = "ycf1")
+tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
+                        pattern = paste0("ycf1_msa_[0-9]+\\.tex"))
 
-```{r msaRPSLandscape}
+# Format TEXshade environments 
+purrr::iwalk(.x = tex_files, function(tex_file, index) {
+    orientation <- ifelse(index == 1, FALSE, TRUE)
+    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
+  })
 
-msaPrettyPrint(aligned_rps, y = c(136, max(aligned_rps@unmasked@ranges@width)),
-               output = "tex",
-               alFile = "output/alignments/aligned_rps.fasta",
-               file = "output/alignments/aligned_rps_end.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
+cat("\\chapter*{APPENDIX E}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX E: \\textit{ycf1} SEQUENCE ALIGNMENT}",
+    "\\vspace*{12pt}", "\\centering",
+    "\\textit{ycf1} SEQUENCE ALIGNMENT\n", sep = "\n")
 
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_rps_end.tex -r LANDSCAPE > \\
-       output/alignments/msa_aligned_rps_end.tex")
-
-```
-
-\include{output/alignments/msa_aligned_rps_end}
-
-\end{landscape}
-
-```{r msaYCF1}
-
-cat("\\chapter*{APPENDIX E}
-\\addcontentsline{toc}{chapter}{APPENDIX E: \\textit{ycf1} SEQUENCE ALIGNMENT}
-\\vspace*{12pt}
-\\centering
-\\textit{ycf1} SEQUENCE ALIGNMENT\n",
-file = "output/alignments/msa_aligned_ycf1.tex")
-
-file_ycf1 <- "data/5.alignments-single/ycf1-single.fasta"
-
-aligned_ycf1 <- readDNAMultipleAlignment(filepath = file_ycf1, format = "fasta")
-
-msaPrettyPrint(aligned_ycf1, y = c(1, 135), output = "tex",
-               alFile = "output/alignments/aligned_ycf1.fasta",
-               file = "output/alignments/aligned_ycf1.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
-
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_ycf1.tex -m 7in -r ROTATE >> \\
-       output/alignments/msa_aligned_ycf1.tex")
+# Walk .Tex files to output LaTeX oriented MSA
+purrr::walk(.x = tex_files, function(tex_file) {
+  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
+  })
 
 ```
-
-\include{output/alignments/msa_aligned_ycf1}
-
-\begin{landscape}
-
-```{r msaYCF1Landscape}
-
-msaPrettyPrint(aligned_ycf1, y = c(136, max(aligned_ycf1@unmasked@ranges@width)),
-               output = "tex",
-               alFile = "output/alignments/aligned_ycf1.fasta",
-               file = "output/alignments/aligned_ycf1_end.tex",
-               showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
-               furtherCode = "\\showruler{1}{top}")
-
-system("./src/msa_format.sh \\
-       -F output/alignments/aligned_ycf1_end.tex -r LANDSCAPE > \\
-       output/alignments/msa_aligned_ycf1_end.tex")
-
-```
-
-\include{output/alignments/msa_aligned_ycf1_end}
-
-\end{landscape}
-
