@@ -1,16 +1,17 @@
 \usepackage[labelsep=period]{caption} % Caption separator set to a period
 \usepackage{texshade} % Beitz 2000
 \usepackage{rotating} % Fairbairns et al. 2016
+\usepackage{lscape}
+\usepackage{pdflscape}
 
 % Load American Mathematical Society fonts
 \usepackage{amsmath, amscd, amsthm, amssymb, mathrsfs,amsfonts}
-
-% Three part table call of kableExtra requires LaTeX package "makecell"
+\usepackage{longtable}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage{multirow}
 \usepackage{makecell}
-
 \usepackage{showframe}
-\usepackage{lscape}
-\usepackage{pdflscape}
 \usepackage{caption}
 
 % Set knitr chunks as float placements
@@ -109,34 +110,3 @@
 \newpagestyle{main}{ % Define page style for main body text
   \sethead{}{}{\thepage} 
 }
-
-% For code syntax highlighting, use package LISTINGS (Hoffman et al. 2015)
-\usepackage{listings}
-\usepackage{textcomp}
-\lstdefinelanguage{mybash}{ % Define keywords and respective coloring schemes
-  language=bash,
-  keywordstyle=\color{blue}\bfseries,
-  % Add more keywords for Bash / AWK / sed commands
-  morekeywords=[2]{mkdir,mv,ls,print,more,sort,sed,head,tail,sort,diff,
-                    rm,cp,split,wc},
-  keywordstyle=[2]\color{cyan},
-  % Define invisible [i] double [s] delimiters |< GREEN TEXT >| 
-  moredelim=[is][\color{green}]{|<}{>|},  
-  sensitive=true, % keywords set to not case sensitive
-  belowcaptionskip=2ex, % vertical space below caption
-  numberbychapter=false % Listing caption numbering
-}
-% Set caption label for listings
-\renewcommand{\lstlistingname}{Figure B\hspace*{-0.8ex}}
-\lstset{language=mybash, % Set language as my defined bash 
-  upquote=true,
-  frame=single, % box frame around code
-  framesep=12pt,  % margin separation
-  xleftmargin=28pt,
-  framexleftmargin=-4pt,
-  xrightmargin=12pt,
-  commentstyle=\textbf,  % style for comment text
-  basicstyle=\footnotesize
-}
-
-\usepackage{hyperref} % Necessary for \phantomsection{} call in ToC formatting
