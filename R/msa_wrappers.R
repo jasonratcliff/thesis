@@ -37,6 +37,7 @@ msa_intervals <- function(msa_alignment) {
 #' @param msa_fasta File name of `extdata/Alignments/` system file.
 #'   FASTA alignments available as installed external data files.
 #' @param msa_output Locus name to identify output *.tex* files.
+#' @param alignment_dir Directory path to write *.tex* MSA subset files.
 #'
 #' @export
 #'
@@ -56,12 +57,12 @@ msa_wrapper <- function(msa_fasta, msa_output,
                          ext = "tex")
 
     # Write subset .tex file based on alignment interval and list index.
-    msa::msaPrettyPrint(x = dna_align, y = interval,
-      alFile = fs::path("Appendix/alignments/", msa_output,
-                        ext = "fasta"), file = tex_file,
-      showLogo = "none", askForOverwrite = FALSE, showLegend = FALSE,
+    msa::msaPrettyPrint(
+      x = dna_align, y = interval,
+      alFile = fs::path(alignment_dir, msa_output, ext = "fasta"),
+      file = tex_file, showLogo = "none",
+      askForOverwrite = FALSE, showLegend = FALSE,
       furtherCode = "\\showruler{1}{top}", output = "tex")
-
   })
 
 }
@@ -76,6 +77,11 @@ msa_wrapper <- function(msa_fasta, msa_output,
 #' Given an *.tex* file output by \code{\link[msa]{msaPrettyPrint}}, the
 #' TEXshade environment text is subset and the contents overwritten to include
 #' sequence alignment character sizing and formatting.
+#'
+#' @param tex_path MSA subset *.tex* file path
+#' @param landscape Logical scalar to add LaTeX landscape page formatting.
+#'   Used for alignment intervals after first 165 residues to accomodate
+#'   chapter headings.
 #'
 #' @export
 #'
