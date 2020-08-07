@@ -149,11 +149,11 @@ bayes_ggtree <- function(bayes_tbl, id_column, scale_name,
         label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)),
       fontface = "bold", fill = "lightgoldenrod", size = 4, alpha = 0.35) +
 
-    # Adjust color and shape scales with spp_labels() markdown ggtext elements.
+    # Adjust color and shape scales with spl_labels() markdown ggtext elements.
     ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
-      labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
+      labels = spl_labels(specimen_tbl = bayes_tbl, id_column = id_column)) +
     ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
-      labels = spp_labels(specimen_tibble = bayes_tbl, id_column = id_column)) +
+      labels = spl_labels(specimen_tbl = bayes_tbl, id_column = id_column)) +
     ggplot2::theme(legend.text = ggtext::element_markdown(size = 8),
                    legend.background = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(hjust = 0.5, size = 14,
@@ -310,10 +310,10 @@ beast_ggtree <- function(beast_file, id_column, scale_name,
                         ggplot2::aes_string(color = id_column,
                                             shape = id_column)) +
     ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
-      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+      labels = ThesisPackage::spl_labels(specimen_tbl = tree_data,
                                          id_column = id_column)) +
     ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
-      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+      labels = ThesisPackage::spl_labels(specimen_tbl = tree_data,
                                          id_column = id_column)) +
 
     # Add tip labels and posterior probabilities node labels.
@@ -363,10 +363,10 @@ beast_legend <- function(tree_data, id_column, scale_name, ...) {
       ggplot2::aes_string(color = id_column, shape = id_column),
       size = 3, na.rm = TRUE) +
     ggplot2::scale_color_manual(scale_name, values = ThesisPackage::spp_color,
-      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+      labels = ThesisPackage::spl_labels(specimen_tbl = tree_data,
         id_column = id_column), na.translate = FALSE) +
     ggplot2::scale_shape_manual(scale_name, values = ThesisPackage::spp_shape,
-      labels = ThesisPackage::spp_labels(specimen_tibble = tree_data,
+      labels = ThesisPackage::spl_labels(specimen_tbl = tree_data,
         id_column = id_column),  na.translate = FALSE) +
     ggplot2::theme(legend.text = ggtext::element_markdown(size = 6),
           legend.title = ggplot2::element_text(hjust = 0.5, size = 11,
