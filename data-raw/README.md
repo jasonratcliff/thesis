@@ -5,20 +5,21 @@ data-raw README
 
 Records of voucher specimens on loan from lending herbaria (RM, NY, MO,
 F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled
-into the excel file `Phys_species_totals.xlsx`. Information recorded
-from the vouchers included the identification history, collector,
-collection number, date, institution, locality, geographic coordinates,
-elevation, ecological description, and measurements of continuous and
-discrete specimen traits. In total, this project considered 1635 unique
-collections dated as early as 1844 (Fremont’s 2nd Expedition).
+into an excel file, `specimens.xlsx`. Information recorded from the
+vouchers included the identification history, collector, collection
+number, date, institution, locality, geographic coordinates, elevation,
+ecological description, and measurements of continuous and
+discretespecimen traits. In total, 1710 unique collections dated as
+early as 1844 (Fremont’s 2nd Expedition) were
+    reviewed.
 
-    data-raw/Phys_species_totals.xlsx
+    [1] "/Library/Frameworks/R.framework/Versions/4.0/Resources/library/ThesisPackage/extdata/specimens.xlsx"
 
 The `herbarium_specimens.R` script creates an *.Rda* file from
-`data-raw/Phys_species_totals.xlsx`, formatting specimen data for
-downstream phylogenetic, distribution, and morphological analyses to
-define a tibble `herbarium_specimens` in the `ThesisPackage` namespace.
-Briefly, the script does the following:
+`specimens.xlsx`, formatting specimen data for downstream phylogenetic,
+distribution, and morphological analyses to define a tibble
+`herbarium_specimens` in the `ThesisPackage` namespace. Briefly, the
+script does the following:
 
   - Read data into R using `readxl` (Wickham and Bryan 2019)
       - Filter records with `dplyr` (Wickham et al. 2020) to annotations
@@ -29,8 +30,8 @@ Briefly, the script does the following:
       - Standardize dates and create a new vector with month and day
           - Log records mismatched with the date format `YYYY-MM-DD`
   - Split comma-separated prior annotations as separate variables
-      - Identification agreements denoted by “\!” are replaced with
-        corresponding text
+      - Identification agreements denoted by “\!” are substituted with
+        ID
       - Extract most recent annotations into a new column
           - Replace recent annotations by synonym according to O’Kane
             (2010)
@@ -38,20 +39,21 @@ Briefly, the script does the following:
       - Cast as numeric and remove special characters
       - Combine variables with m / ft. elevation data
       - Split minimum and maximum values and convert m to ft.
-  - Combine DNA specimen metadata from `data-raw/dna_specimens.csv`
-      - Create an *.Rda* file to define a tibble `dna_specimens` in the
-        `ThesisPackage`
-namespace
+  - Combine DNA specimen metadata from `specimens/dna_specimens.csv`
+      - Create *dna\_specimens.Rda* with tibble in the `ThesisPackage`
+        namespace
 
 # DNA Map
 
 <div class="figure">
 
-<img src="README_files/figure-gfm/dnaSpecimenMap-1.png" alt="See data-raw/mapping/map-dna.pdf for higher resolution image." width="750px" />
+<img src="mapping/map-dna.png" alt="See [mapping/map-dna.pdf](https://github.com/jasonratcliff/ThesisPackage/blob/master/data-raw/mapping/map-dna.pdf) for higher resolution image." width="750px" />
 
 <p class="caption">
 
-See data-raw/mapping/map-dna.pdf for higher resolution image.
+See
+[mapping/map-dna.pdf](https://github.com/jasonratcliff/ThesisPackage/blob/master/data-raw/mapping/map-dna.pdf)
+for higher resolution image.
 
 </p>
 

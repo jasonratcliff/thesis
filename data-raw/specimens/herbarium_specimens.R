@@ -1,7 +1,13 @@
-require(tidyverse)
-require(readxl)
-require(rlang)
-require(here)
+library(magrittr)
+library(here)
+library(readxl)
+library(readr)
+library(dplyr)
+library(plyr)
+library(purrr)
+library(lubridate)
+library(stringr)
+library(tibble)
 library(ThesisPackage)
 
 # 1. Read in specimen data ----
@@ -12,7 +18,8 @@ library(ThesisPackage)
 # annotation information, trait measurements and observations.
 
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
-specimen_excel_path <- "data-raw/specimens/Phys_species_totals.xlsx"
+specimen_excel_path <- system.file("extdata/specimens.xlsx",
+                                   package = "ThesisPackage")
 specimens_raw <-
   readxl::excel_sheets(path = specimen_excel_path) %>%
   purrr::map(function(excel_sheet) {
@@ -174,11 +181,6 @@ dna_metadata <-
 dna_specimens <- purrr::pmap_dfr(dna_metadata,
   function(label, Collector, Collection_Number, ...) {
 
-    # Tidy enquosures for column filtering.
-    Collector <- rlang::enquo(Collector)
-    Collection_Number <- rlang::enquo(Collection_Number)
-    label <- rlang::enquo(label)
-
     # Subset total herbarium record data frame by collector and collection.
     record_match <- herbarium_specimens %>%
       dplyr::filter(., Collector == !!Collector &
@@ -198,33 +200,6 @@ rm(dna_metadata) # Clean up workspace
 
 # 7. Create .Rdatfiles.
 
-usethis::use_data(herbarium_specimens)
+usethis::use_data(herbarium_specimens, overwrite = TRUE)
 usethis::use_data(dna_specimens)
-
-# # TODO ----
-# 2/4/20 Check if this stuff is still needed.
-
-# # Write continuous data to file for BEAST continuous trait model.
-# dplyr::select(dna_herbarium_spp, label, Latitude, Longitude,
-#               contains("ID_")) %>%
-#   dplyr::filter(label %in%
-#                   (Biostrings::readDNAStringSet(paste0("data/5.multi-locus/",
-#                                                        "ml_concatenated.fasta")) %>%
-#                      names())) %>% dplyr::distinct() %>%
-#   readr::write_tsv(., path = "data/1.specimens/BEAST-traits.tsv")
-#
-# # Write taxon / species for
-# readr::read_tsv(file = "data/1.specimens/BEAST-traits.tsv") %>%
-#   dplyr::select("label", "ID_prior") %>%
-#   dplyr::mutate(ID_prior = gsub(" ", "_", x = .[["ID_prior"]])) %>%
-#   dplyr::rename(taxon = label, species = ID_prior) %>%
-#   readr::write_tsv(., path = "data/1.specimens/BEAST-prior-spp.txt")
-#
-# # Select columns for mapping specimen subset and write to .csv file.
-# dplyr::select(dna_herbarium_spp, label, Collection_Number,
-#               contains("Collector"), contains("Physaria"),
-#               contains("Taxon"), contains("ID_"), multiLocus,
-#               contains("Herbarium"),  contains("State"), contains("County"),
-#               contains("Date"), App.A, Latitude, Longitude) %>%
-#   readr::write_csv(., path = "data/1.specimens/dna_map_spp.csv")
 

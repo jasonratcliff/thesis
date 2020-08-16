@@ -1,4 +1,5 @@
 library(ThesisPackage)
+library(ggplot2)
 
 #  Assign Specimen Data ----
 dna_specimens <- ThesisPackage::dna_specimens %>%
@@ -8,7 +9,7 @@ dna_specimens <- ThesisPackage::dna_specimens %>%
 
   # Join coordinate nudges by sample label ID.
   dplyr::left_join(x = .,
-                   y = readxl::read_excel("data-raw/mapping/map-labels.xlsx",
+                   y = readxl::read_excel("mapping/map-labels.xlsx",
     col_types = c("text", "numeric", "numeric"), na = c("", "NA")),
     by = "label") %>%
   dplyr::mutate(x_nudge = ifelse(is.na(x_nudge), 0.25, x_nudge),
@@ -27,12 +28,15 @@ total_priors <- ThesisPackage::herbarium_specimens %>%
                        x = prior_id) & !grepl("\\?|Brassicaceae", x = prior_id))
 
 # Build ggplot ----
-dna_ggplot <-
-  ThesisPackage::map_specimens(specimen_tbl = total_priors, f_adj = 0,
-                             id_column = "prior_id", shape_opt = "prior_id") %>%
-  ThesisPackage::map_themes(gg_map_obj = ., legend_title = "Prior Annotations",
-                            mapped_specimens = total_priors,
-                            id_column = "prior_id")
+dna_ggplot <- ggplot2::ggplot() +
+  layer_borders(spl_extent = spl_bbox(total_priors),
+                sf_county_color = "black") +
+  layer_specimens(specimen_tbl = total_priors,
+                  id_column = "prior_id", shape_aes = TRUE) +
+  layer_themes(specimen_tbl = total_priors,
+               id_column = "prior_id", legend_title = "prior_id") +
+  coord_sf(xlim = range(spl_bbox(total_priors)[["Longitude"]]),
+           ylim = range(spl_bbox(total_priors)[["Latitude"]]))
 
 # Construct Call Objects ----
 map_labels <-
@@ -52,7 +56,7 @@ map_labels <-
 
 # Evaluate call object chain and save plot to file.
 dna_ggplot <- rlang::eval_tidy(map_labels)
-cowplot::ggsave2(filename = "data-raw/mapping/map-dna.pdf", plot = dna_ggplot,
+cowplot::ggsave2(filename = "mapping/map-dna.pdf", plot = dna_ggplot,
                  width = 13, height = 13)
-
-print(dna_ggplot)
+cowplot::ggsave2(filename = "mapping/map-dna.png", plot = dna_ggplot,
+                 width = 6)

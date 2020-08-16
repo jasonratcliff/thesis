@@ -4,21 +4,31 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
-knitr::opts_knit$set(root.dir = here::here())  # Indexed to repository .git file
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(eval.after = 'fig.cap')
 library(magrittr)
+library(ThesisPackage)
 ```
 
 # Specimen Data
 
-Records of voucher specimens on loan from lending herbaria (RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled into the excel file `Phys_species_totals.xlsx`.  Information recorded from the vouchers included the identification history, collector, collection number, date, institution, locality, geographic coordinates, elevation, ecological description, and measurements of continuous and discrete specimen traits. In total, this project considered 1635 unique collections dated as early as 1844 (Fremont's 2nd Expedition).
+Records of voucher specimens on loan from lending herbaria
+(RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were
+compiled into an excel file, `specimens.xlsx`.  Information recorded from the
+vouchers included the identification history, collector, collection number,
+date, institution, locality, geographic coordinates, elevation,
+ecological description, and measurements of continuous and discretespecimen
+traits. In total, `r count_specimens(herbarium_specimens)` unique collections
+dated as early as 1844 (Fremont's 2nd Expedition) were reviewed.
 
 ```{r specimenData, echo=FALSE, comment=NA}
-list.files(path = "data-raw", pattern = "Phys_species_totals.xlsx",
-           full.names = TRUE) %>% cat(sep = "\n")
+system.file("extdata/specimens.xlsx", package = "ThesisPackage")
 ```
 
-The `herbarium_specimens.R` script creates an *.Rda* file from `data-raw/Phys_species_totals.xlsx`, formatting specimen data for downstream phylogenetic, distribution, and morphological analyses to define a tibble `herbarium_specimens` in the `ThesisPackage` namespace.  Briefly, the script does the following:
+The `herbarium_specimens.R` script creates an *.Rda* file from `specimens.xlsx`,
+formatting specimen data for downstream phylogenetic, distribution, and
+morphological analyses to define a tibble `herbarium_specimens` in the
+`ThesisPackage` namespace.  Briefly, the script does the following:
 
 - Read data into R using `readxl` (Wickham and Bryan 2019)
     - Filter records with `dplyr` (Wickham et al. 2020) to annotations with:
@@ -29,7 +39,7 @@ The `herbarium_specimens.R` script creates an *.Rda* file from `data-raw/Phys_sp
         - Log records mismatched with the date format `YYYY-MM-DD` 
 
 - Split comma-separated prior annotations as separate variables
-    - Identification agreements denoted by "!" are replaced with corresponding text
+    - Identification agreements denoted by "!" are substituted with ID
     - Extract most recent annotations into a new column
         - Replace recent annotations by synonym according to O'Kane (2010)
 
@@ -38,13 +48,22 @@ The `herbarium_specimens.R` script creates an *.Rda* file from `data-raw/Phys_sp
     - Combine variables with m / ft. elevation data
     - Split minimum and maximum values and convert m to ft.
 
-- Combine DNA specimen metadata from `data-raw/dna_specimens.csv`
-    - Create an *.Rda* file to define a tibble `dna_specimens` in the `ThesisPackage` namespace
+- Combine DNA specimen metadata from `specimens/dna_specimens.csv`
+    - Create *dna_specimens.Rda* with tibble in the `ThesisPackage` namespace
 
 # DNA Map
 
-```{r dnaSpecimenMap, out.width='750px', dpi=600, echo=FALSE, fig.cap="See data-raw/mapping/map-dna.pdf for higher resolution image."}
-source("data-raw/mapping/map-dna.R")
+```{r dnaSpecimenMapSource, echo=FALSE, message=FALSE}
+source("mapping/map-dna.R")
+```
+
+```{r dnaSpecimenMap, out.width='750px', dpi=300, echo=FALSE, fig.cap=cap_map}
+cap_map <- 
+  paste0("See [mapping/map-dna.pdf](https://github.com/jasonratcliff/",
+         "ThesisPackage/blob/master/data-raw/mapping/map-dna.pdf)",
+         " for higher resolution image.")
+
+knitr::include_graphics("mapping/map-dna.png")
 ```
 
 # DNA Sequences
