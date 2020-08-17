@@ -45,33 +45,28 @@ digi_search <- function(sheetname, specimens, digi_path) {
       surname = stringr::str_extract(string = Collector,
                                      pattern = "[A-Z][a-z]+"),
       search_pattern = ifelse(!is.na(Collection_Number),
-                              paste0(surname, "_", Collection_Number),
-                              paste0(surname, "_", "sn"))
+                              paste0(surname, "_", Collection_Number), NA)
       )
 
+  # Character vector to index recursive file paths from digiKam subdirectory.
   filepath_index <-
     list.files(path = path_home(digi_path),
                recursive = TRUE,  full.names = TRUE)
   
   # Recursive search of digKam photo subdirectory
   search_data <- collection_data$search_pattern %>%
-    purrr::keep(~ !is.na(.x)) %>%
+    purrr::keep(~ !is.na(.x)) %>% unique() %>%
     purrr::map_dfr(function(search_pattern) {
       search_results <-
         grep(pattern = search_pattern, x = filepath_index, value = TRUE) %>%
         gsub(pattern = path_dir(path_home(digi_path)),
              replacement = "", x = .)
-      pattern <- ifelse(length(search_results) == 0, search_pattern,
-                        rep(search_pattern, times = length(search_results)))
-      results <- ifelse(length(search_results) == 0, "", search_results)
-      tibble::tibble(pattern = pattern, path = results)
+      tibble::tibble(search_pattern = search_pattern, path = search_results)
       })
 
   # Join search results back to collection metadata by search pattern
-  joined_data <-
-    dplyr::left_join(collection_data, search_data,
-                     by = c("search_pattern" = "pattern"))
-
+  joined_data <- dplyr::distinct(collection_data) %>%
+    dplyr::full_join(., search_data, by = "search_pattern")
   return(joined_data)
 }
 
