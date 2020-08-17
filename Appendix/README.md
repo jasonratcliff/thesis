@@ -1,64 +1,17 @@
 # Appendix
 
-To facilitate formatting appendix files for specimens reviewed, a pipeline utilizing a `shell` wrapper script was established to call an `R` function for each tab in an excel file.  The *.tsv* files written by this function are processed with `AWK` to structure herbarium specimen data in a $\LaTeX$ appendix format.  These records were then reviewed and added to their respective *TeX/Thesis_A-specimen\*.tex* files. 
+To facilitate formatting appendix files for specimens reviewed, an Rscript
+was used to read in a column subset from each sheetname in the
+`specimens.xlsx` external data from
+[`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage).
+A *.tsv* file is written from entries without appendix completion
+(missing values in variable `App.A`). $\LaTeX$ formatting is substituted
+for collection and collection number values.
 
-## $\LaTeX$ Formatting Pipeline
+## digiKam Photo Organization
 
-```
-Jasons-MacBook:Thesis jason$ ./Appendix/appendix_script.sh
-
-P. Remaining  # Excel sheetname
-Writing new file Appendix/P.Remaining_appendix_formatted.tsv
-
-P. didymocarpa
-Writing new file Appendix/P.didymocarpa_appendix_formatted.tsv
-
-P. brassicoides
-Writing new file Appendix/P.brassicoides_appendix_formatted.tsv
-
-P. vitulifera_CO
-Writing new file Appendix/P.vitulifera_CO_appendix_formatted.tsv
-
-P. NC_WY
-Writing new file Appendix/P.NC_WY_appendix_formatted.tsv
-
-P. acutifolia
-Writing new file Appendix/P.acutifolia_appendix_formatted.tsv
-
-P. integrifolia
-Writing new file Appendix/P.integrifolia_appendix_formatted.tsv
-
-P. saximontana
-Writing new file Appendix/P.saximontana_appendix_formatted.tsv
-
-P. chambersii
-Writing new file Appendix/P.chambersii_appendix_formatted.tsv
-
-P. vitulifera_WY
-Writing new file Appendix/P.vitulifera_WY_appendix_formatted.tsv
-
-P. eburniflora
-Writing new file Appendix/P.eburniflora_appendix_formatted.tsv
-
-P. Idaho
-Writing new file Appendix/P.Idaho_appendix_formatted.tsv
-
-P. DNA
-Writing new file Appendix/P.DNA_appendix_formatted.tsv
-
-P. others
-Writing new file Appendix/P.others_appendix_formatted.tsv
-
-262 specimens remaining.  # specimens with NA value in App.A column
-```
-
-## digikam Photos
-
-Herbarium voucher specimens were photographed and cataloged by species and locality (i.e. State and County).  The *Phys_species_totals.xlsx* file was used to track which specimens had been imaged by marking an "x" in the **Imaged** column.  
-
-### File Naming Convention
-
-Digikam files are named as follows:
+Herbarium voucher specimens were photographed and cataloged by locality.
+The following name convention was used for Digikam files:
     
 `<Collector>_<Collection Number>_<Herbarium Code(-Accession Number)>`
 
