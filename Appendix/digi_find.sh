@@ -1,22 +1,17 @@
 #!/bin/bash
-# Script to search filenames of digikam photos in digikam directory: 
-digi_root=/Users/jason/jPhoto/  # set absolute path from root
+set -e
+set -u
+set -o pipefail
 
-# Designate specific directories to search for files.
-# Define an array with relative paths of directories to search.
-digi_paths=("Physaria 2018" "Physaria Unsorted" "Utah")
+# Script to search filenames of digikam photos in digikam directory.
 
-# Define string of filename to find by positional argument.
+digi_path=/Users/jasonratcliff/jPhoto/Physaria  # absolute path to photos
+
+# Filename string to find photos by positional argument.
 digi_photo=$1
-printf "\nSearching for filename string: '%s'\n" $digi_photo
 
-# Iterate through string array of paths to search digikam directory file names.
-IFS=""  # set interfield seperator for whitespace
-for digi_path in "${digi_paths[@]}"; do
-  digi_search=${digi_root}${digi_path}  # digikam search directory element
-  printf "\n   Digikam directory: %s\n\n" $digi_search
-  # Find files and remove prefix to clean up results.
-  find $digi_search -name "*${digi_photo}*" -print | while read photo; do
-    printf "\t%s\n" ${photo#*jPhoto/}
-  done
-done
+printf "  Searching for filename string: '%s'\n" "${digi_photo}"
+
+find "${digi_path}" -name "*${digi_photo}*" -print0 | xargs -0 -I{} \
+  sh -c 'path=$1 ; name=${path#*jPhoto}; echo "\t" $name' -- {}
+

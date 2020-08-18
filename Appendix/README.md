@@ -1,115 +1,129 @@
-# Appendix
+Appendix README
+================
 
-To facilitate formatting appendix files for specimens reviewed, a pipeline utilizing a `shell` wrapper script was established to call an `R` function for each tab in an excel file.  The *.tsv* files written by this function are processed with `AWK` to structure herbarium specimen data in a $\LaTeX$ appendix format.  These records were then reviewed and added to their respective *TeX/Thesis_A-specimen\*.tex* files. 
+To facilitate formatting appendix files for specimens reviewed, an
+Rscript was used to read in a column subset from each sheetname in the
+`specimens.xlsx` external data from
+[`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage). A
+*.tsv* file is written from entries without appendix completion (missing
+values in variable `App.A`). \(\LaTeX\) formatting is substituted for
+collection and collection number values.
 
-## $\LaTeX$ Formatting Pipeline
-
-```
-Jasons-MacBook:Thesis jason$ ./Appendix/appendix_script.sh
-
-P. Remaining  # Excel sheetname
-Writing new file Appendix/P.Remaining_appendix_formatted.tsv
-
-P. didymocarpa
-Writing new file Appendix/P.didymocarpa_appendix_formatted.tsv
-
-P. brassicoides
-Writing new file Appendix/P.brassicoides_appendix_formatted.tsv
-
-P. vitulifera_CO
-Writing new file Appendix/P.vitulifera_CO_appendix_formatted.tsv
-
-P. NC_WY
-Writing new file Appendix/P.NC_WY_appendix_formatted.tsv
-
-P. acutifolia
-Writing new file Appendix/P.acutifolia_appendix_formatted.tsv
-
-P. integrifolia
-Writing new file Appendix/P.integrifolia_appendix_formatted.tsv
-
-P. saximontana
-Writing new file Appendix/P.saximontana_appendix_formatted.tsv
-
-P. chambersii
-Writing new file Appendix/P.chambersii_appendix_formatted.tsv
-
-P. vitulifera_WY
-Writing new file Appendix/P.vitulifera_WY_appendix_formatted.tsv
-
-P. eburniflora
-Writing new file Appendix/P.eburniflora_appendix_formatted.tsv
-
-P. Idaho
-Writing new file Appendix/P.Idaho_appendix_formatted.tsv
-
-P. DNA
-Writing new file Appendix/P.DNA_appendix_formatted.tsv
-
-P. others
-Writing new file Appendix/P.others_appendix_formatted.tsv
-
-262 specimens remaining.  # specimens with NA value in App.A column
+``` bash
+Rscript appendix_script.R
 ```
 
-## digikam Photos
+``` r
+missing_appendixes <- purrr::map_dfr(
+  .x = list.files(pattern = "*_appendix.tsv"), function(appendix) {
+    readr::read_tsv(file = appendix,
+                    col_types = paste0(rep("c", times = 10), collapse = "")) %>%
+      dplyr::mutate(
+        sheetname = gsub(pattern = "_appendix.tsv", replacement = "",
+                         x = appendix)
+      )
+  })
 
-Herbarium voucher specimens were photographed and cataloged by species and locality (i.e. State and County).  The *Phys_species_totals.xlsx* file was used to track which specimens had been imaged by marking an "x" in the **Imaged** column.  
+ggplot(data = missing_appendixes) +
+  geom_bar(aes(x = sheetname, fill = sheetname)) +
+  scale_fill_brewer("Sheetname", type = "qual") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Sheetname", y = "Count")
+```
 
-### File Naming Convention
+![](README_files/figure-gfm/missingAppendixes-1.png)<!-- -->
 
-Digikam files are named as follows:
-    
+# Images
+
+Herbarium voucher specimens were photographed and cataloged by locality.
+The following name convention was used for Digikam files:
+
 `<Collector>_<Collection Number>_<Herbarium Code(-Accession Number)>`
 
 Where:
 
- - **Collector** is a character string of the botanist's last name
- - **Collection Number** is an integer for voucher specimen collection number
- - **Herbarium Code** is a two letter uppercase string denoting 
-    + **-Accession Number** is a possible voucher-specific herbarium accession
- 
-To search the designated subdirectories, a string passed from the command line is wrapped in **\*** wildcards to recursively find the expression from subdirectory file names.  If found, the file name including the relative path from the respective subdirectory is printed.
+  - **Collector** is a character string of the botanist’s last name
+  - **Collection Number** is an integer for voucher specimen collection
+    number
+  - **Herbarium Code** is a two letter uppercase string denoting
+      - **-Accession Number** is a possible voucher-specific herbarium
+        accession
 
-### Search by Collector
+To identify which specimens have been photographed, `digi_find.R` writes
+a *.xlsx* file with
 
-From the project directory, execute the `digi_find.sh` script that accepts a single positional argument (i.e. `$1`) to represent the string passed to the bash `find` utility.   
-
-```
-Jasons-MacBook:Thesis jason$ ./Appendix/digi_find.sh Hayden
-
-Searching for filename string: 'Hayden'
-
-   Digikam directory: /Users/jason/jPhoto/Physaria 2018
-
-	Physaria 2018/Uncertain Locality/P_didymocarpa/Hayden_sn_MO-3833625.tiff
-	Physaria 2018/Wyoming/Big Horn/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
-	Physaria 2018/Wyoming/Hot Springs/Unknown Locality/Hayden_sn_MO-137159.tiff
-	Physaria 2018/Wyoming/Hot Springs/Unknown Locality/Hayden_sn_MO-1923237.tiff
-
-   Digikam directory: /Users/jason/jPhoto/Physaria Unsorted
-
-	Physaria Unsorted/WY, Unknown/Hayden_sn_MO-3833631.tiff
-
-   Digikam directory: /Users/jason/jPhoto/Utah
-
+``` bash
+Rscript digi_find.R
 ```
 
-### Search by Herbarium Accession
+``` r
+digikam <- readxl::read_excel("digikam.xlsx") %>%
+  dplyr::mutate(
+    path_check = purrr::map_chr(
+      .data$path, function(x) ifelse(is.na(x), "Missing", "Match")) %>%
+      factor(., levels = c("Missing", "Match"))
+  )
 
+ggplot(data = digikam) +
+  geom_bar(aes(x = excel_sheet,
+               fill = path_check)) +
+  scale_fill_discrete("Matched Filepath") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Excel Sheetname", y = "Count")
 ```
-# Pass string for herbarium accession number
-Jasons-MacBook:Thesis jason$ ./Appendix/digi_find.sh MO-3093900
 
-Searching for filename string: 'MO-3093900'
+![](README_files/figure-gfm/missingImages-1.png)<!-- -->
 
-   Digikam directory: /Users/jason/jPhoto/Physaria 2018
+## digiKam Photo Organization
 
-	Physaria 2018/Wyoming/Big Horn/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
+To search subdirectories, a string passed from the command line is
+wrapped in **\*** wildcards to recursively find the expression from
+subdirectory file names. If found, the file name including the relative
+path from the respective subdirectory is printed. `digi_find.sh` accepts
+a single positional argument passed to the bash `find` utility for
+printing relative paths to specimens in the photo subdirectory. Search
+by:
 
-   Digikam directory: /Users/jason/jPhoto/Physaria Unsorted
+  - Collector
 
+<!-- end list -->
 
-   Digikam directory: /Users/jason/jPhoto/Utah
-
+``` bash
+./digi_find.sh "Hayden"
 ```
+
+    ##   Searching for filename string: 'Hayden'
+    ##   /Physaria/Wyoming/Big Horn, WY/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
+    ##   /Physaria/Wyoming/Hot Springs/Unknown Locality/Hayden_sn_MO-137159.tiff
+    ##   /Physaria/Wyoming/Hot Springs/Unknown Locality/Hayden_sn_MO-1923237.tiff
+    ##   /Physaria/Wyoming/Park, WY/Hayden_sn_MO-3833625.tiff
+    ##   /Physaria/Wyoming/Teton, WY/Hayden_sn_MO-3833631.tiff
+
+  - Collection Number
+
+<!-- end list -->
+
+``` bash
+./digi_find.sh "11931"
+```
+
+    ##   Searching for filename string: '11931'
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_NY.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_MONT.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_UTC.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_CAS.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_RM.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_MO.tiff
+    ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_UC.tiff
+
+  - Herbarium Accession
+
+<!-- end list -->
+
+``` bash
+./digi_find.sh MO-3093900
+```
+
+    ##   Searching for filename string: 'MO-3093900'
+    ##   /Physaria/Wyoming/Big Horn, WY/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
