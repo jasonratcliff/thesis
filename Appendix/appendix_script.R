@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 library(magrittr)
+library(ggplot2)
 
 #' Appendix R Script
 #'
@@ -30,7 +31,7 @@ species_appendix <- function(species_tab) {
   # Write .tsv file from ordered tibble for remaining appendix samples.
   readr::write_tsv(
     x = specimens,
-    path =  paste0("Appendix/", gsub(" +", "", species_tab), "_appendix.tsv")
+    path =  paste0(gsub(" +", "", species_tab), "_appendix.tsv")
   )
 
 }
@@ -42,8 +43,7 @@ readxl::excel_sheets(
 
 # Walk appendix files to cleanup formatting and write new .tsv files.
 purrr::walk(
-  .x = list.files(path = "Appendix", pattern = "_appendix.tsv",
-                  full.names = TRUE),
+  .x = list.files(pattern = "_appendix.tsv", full.names = TRUE),
   function(appendix_sheet) {
 
     appendix_entry <- readr::read_tsv(
@@ -95,9 +95,8 @@ purrr::walk(
         x = appendix_entry$Appendix, sep = "\n",
         fs::path(
           paste0(fs::path_ext_remove(appendix_sheet), "_formatted"),
-          ext = "tsv")
+          ext = "txt")
       )
     }
-    fs::file_delete(appendix_sheet)  # remove unformatted file
   })
 
