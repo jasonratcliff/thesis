@@ -27,6 +27,7 @@ missing_appendixes <- purrr::map_dfr(
 ggplot(data = missing_appendixes) +
   geom_bar(aes(x = sheetname, fill = sheetname)) +
   scale_fill_brewer("Sheetname", type = "qual") +
+  theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Sheetname", y = "Count")
 ```
