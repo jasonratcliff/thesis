@@ -60,7 +60,11 @@ server <- function(input, output, session) {
 
   # Plot Reset ----
   observeEvent(input$resetButton, {
-    specimens$data <- ThesisPackage::herbarium_specimens
+    specimens$data <- ThesisPackage::herbarium_specimens %>%
+      # Filter specimens without manual aesthetic value specification.
+      # TODO Report excluded specimens in `Specimens` tab
+      dplyr::filter(.data = ., .data[[input$map_color_aes]] %in%
+                      names(spp_color))
   })
 
   # Brush Subset ----
@@ -92,31 +96,41 @@ server <- function(input, output, session) {
     # ggplot tidy eval in aes_()
     legend_id <- input$map_color_aes
 
-    # Filter specimens without shape value specification
-    # TODO Report excluded specimens in `Specimens` tab
-    filtered_specimens <- specimens$data %>%
-      dplyr::filter(.data = ., .data[[legend_id]] %in% names(spp_color))
-
     ggplot2::ggplot() +
-      layer_borders(spl_extent = spl_bbox(filtered_specimens),
-                    sf_county_color = "black") +
-      layer_specimens(specimen_tbl = filtered_specimens,
-                      id_column = legend_id, shape_aes = TRUE) +
-      layer_themes(specimen_tbl = filtered_specimens,
-                   id_column = legend_id, legend_title = legend_id) +
-      coord_sf(xlim = range(spl_bbox(filtered_specimens)[["Longitude"]]),
-               ylim = range(spl_bbox(filtered_specimens)[["Latitude"]]))
-
+      layer_borders(
+        spl_extent = spl_bbox(specimens$data),
+        sf_county_color = "black") +
+      layer_specimens(
+        specimen_tbl = specimens$data,
+        id_column = legend_id, shape_aes = TRUE) +
+      layer_themes(
+        specimen_tbl = specimens$data,
+        id_column = legend_id, legend_title = legend_id) +
+      coord_sf(
+        xlim = range(spl_bbox(specimens$data)[["Longitude"]]),
+        ylim = range(spl_bbox(specimens$data)[["Latitude"]])
+        )
   })
 
   # Map Output ----
-  output$mapPlot <- renderPlot(
+  output$mapPlot <- renderPlot({
+    req(input$resetButton)
+    if (input$spp_find == TRUE) {
+      req(input$collector_id)
+      req(input$collection)
+      plot_map() +
+        spl_id(specimen_tbl = specimens$data,
+               id_column = input$map_color_aes, shape_aes = input$map_color_aes,
+               collector = isolate(input$collector_id),
+               collection = isolate(input$collection)) +
+            theme(legend.position = "none")
+    } else {
+      plot_map() +
+        theme(legend.position = "none")
+      }
+    },
     height = function() session$clientData$output_mapPlot_height,
-    res = 96,
-    {
-      req(input$resetButton)
-      plot_map() + theme(legend.position = "none")
-    }
+    res = 96
   )
 
   # Legend Output ----

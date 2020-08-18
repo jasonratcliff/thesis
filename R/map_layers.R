@@ -1,48 +1,3 @@
-# Specimen Layer ----
-
-#' Add specimen `LayerInstance`
-#'
-#' Build a ggplot2 layer instance with aesthetics determined by `id_column`
-#' matching a variable in `specimen_tbl`. Geom point positions are determined
-#' by longitude and latitude coordinates, with color and optional shape
-#' aesthetics determined by the values in `id_column`.
-#'
-#' @param specimen_tbl Tibble of herbarium specimens subset.
-#' @param id_column Character scalar matching specimen tibble ID variable.
-#'   Variable used for aesthetic (color and shape) mappings.
-#' @param legend_status Optional logical vector to show legend via `show.legend`
-#'   argument of \link[ggplot2]{geom_point}.
-#' @param shape_aes Logical to optionally add shape aesthetic to ggplot.
-#' @param geom_size Numeric scalar for size of jitter aesthetic.
-#' @importFrom ggplot2 ggplot geom_point aes_
-#' @export
-#'
-#' @return A ggplot2 `LayerInstance`` for specimen plotting.
-#'
-#' @examples
-#' ggplot2::ggplot(data = ThesisPackage::spp_co_front_range) +
-#'   layer_specimens(specimen_tbl = ThesisPackage::spp_co_front_range,
-#'                   id_column = "Taxon_a_posteriori", shape_aes = FALSE)
-#'
-#'
-layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
-                            shape_aes = FALSE,  geom_size = 3) {
-
-  shape_sym <- ifelse(test = shape_aes == FALSE, yes = list(NULL),
-                       no = as.name(id_column))  # optional shape aesthetic
-
-  # Arrange specimens for plotting order
-  specimen_tbl <- spl_order(specimen_tbl = specimen_tbl,
-                            id_column = id_column)
-  specimen_layer <-
-    list(geom_point(data = specimen_tbl, size = geom_size,
-                    show.legend = legend_status,
-                    aes_(x = quote(Longitude), y = quote(Latitude),
-                         color = as.name(id_column),
-                         shape = unlist(shape_sym)), na.rm = TRUE))
-  return(specimen_layer)
-}
-
 # Border Layer ----
 
 #' Add state and county borders `LayerInstance`
@@ -114,8 +69,53 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
             color = sf_county_color, fill = NA),
     geom_sf(data = state_sfs, inherit.aes = FALSE, size = 1.2,
             color = sf_state_color, fill = NA)
-    )
+  )
   return(border_layer)
+}
+
+# Specimen Layer ----
+
+#' Add specimen `LayerInstance`
+#'
+#' Build a ggplot2 layer instance with aesthetics determined by `id_column`
+#' matching a variable in `specimen_tbl`. Geom point positions are determined
+#' by longitude and latitude coordinates, with color and optional shape
+#' aesthetics determined by the values in `id_column`.
+#'
+#' @param specimen_tbl Tibble of herbarium specimens subset.
+#' @param id_column Character scalar matching specimen tibble ID variable.
+#'   Variable used for aesthetic (color and shape) mappings.
+#' @param legend_status Optional logical vector to show legend via `show.legend`
+#'   argument of \link[ggplot2]{geom_point}.
+#' @param shape_aes Logical to optionally add shape aesthetic to ggplot.
+#' @param geom_size Numeric scalar for size of jitter aesthetic.
+#' @importFrom ggplot2 ggplot geom_point aes_
+#' @export
+#'
+#' @return A ggplot2 `LayerInstance`` for specimen plotting.
+#'
+#' @examples
+#' ggplot2::ggplot(data = ThesisPackage::spp_co_front_range) +
+#'   layer_specimens(specimen_tbl = ThesisPackage::spp_co_front_range,
+#'                   id_column = "Taxon_a_posteriori", shape_aes = FALSE)
+#'
+#'
+layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
+                            shape_aes = FALSE,  geom_size = 3) {
+
+  shape_sym <- ifelse(test = shape_aes == FALSE, yes = list(NULL),
+                       no = as.name(id_column))  # optional shape aesthetic
+
+  # Arrange specimens for plotting order
+  specimen_tbl <- spl_order(specimen_tbl = specimen_tbl,
+                            id_column = id_column)
+  specimen_layer <-
+    list(geom_point(data = specimen_tbl, size = geom_size,
+                    show.legend = legend_status,
+                    aes_(x = quote(Longitude), y = quote(Latitude),
+                         color = as.name(id_column),
+                         shape = unlist(shape_sym)), na.rm = TRUE))
+  return(specimen_layer)
 }
 
 # Map Wrapper ----
