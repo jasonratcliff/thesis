@@ -13,6 +13,13 @@ collection and collection number values.
 Rscript appendix_script.R
 ```
 
+    ## 
+    ## Attaching package: ‘lubridate’
+    ## 
+    ## The following objects are masked from ‘package:base’:
+    ## 
+    ##     date, intersect, setdiff, union
+
 ``` r
 missing_appendixes <- purrr::map_dfr(
   .x = list.files(pattern = "*_appendix.tsv"), function(appendix) {
@@ -66,8 +73,7 @@ digikam <- readxl::read_excel("digikam.xlsx") %>%
   )
 
 ggplot(data = digikam) +
-  geom_bar(aes(x = excel_sheet,
-               fill = path_check)) +
+  geom_bar(aes(x = excel_sheet, fill = path_check)) +
   scale_fill_discrete("Matched Filepath") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +

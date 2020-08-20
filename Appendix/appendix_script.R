@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 library(magrittr)
 library(ggplot2)
+library(lubridate, quietly = TRUE)
+library(ThesisPackage)
 
 #' Appendix R Script
 #'
@@ -14,11 +16,12 @@ species_appendix <- function(species_tab) {
 
   # Read in specimen data by sheet name and order columns for appendix style.
   specimens <-
-    system.file("extdata/specimens.xlsx", package = "ThesisPackage") %>%
-    readxl::read_excel( path = ., sheet = species_tab) %>%
+    ThesisPackage::herbarium_specimens %>% 
+    dplyr::filter(excel_sheet == species_tab) %>%
     dplyr::select(
-      dplyr::one_of(c("Taxon", "Location", "Elev_(ft.)", "Elev_(m)",
-                      "TRS1", "TRS2", "Date", "Collector", "Collection_Number",
+      dplyr::one_of(c("Taxon", "Location", "Elev_ft", "Elev_m",
+                      "TRS1", "TRS2", "Date_parsed",
+                      "Collector", "Collection_Number",
                       "Herbarium", "App.A"))
     ) %>%
     dplyr::rename_with(., ~ gsub("\\(|\\)", "", .x) %>%
@@ -33,7 +36,6 @@ species_appendix <- function(species_tab) {
     x = specimens,
     path =  paste0(gsub(" +", "", species_tab), "_appendix.tsv")
   )
-
 }
 
 # Write .tsv files with selected appendix entry columns.
@@ -64,8 +66,13 @@ purrr::walk(
                              yes = NA, no = paste0(x, "m elevation;"))),
         Collector = purrr::map_chr(
           .x = .data$Collector,
-          function(x) ifelse(is.na(x),
-                             yes = NA, no = paste0("\\textit{", x))),
+          function(x) {
+            ifelse(is.na(x), yes = NA,
+                   no = stringr::str_extract_all(string = x,
+                                                 pattern = "[A-Z][a-z]+") %>%
+                     paste(., collapse = " ") %>%
+                     paste0("\\textit{", .))
+            }),
         Collection_Number = purrr::map_chr(
           .x = .data$Collection_Number,
           function(x) ifelse(is.na(x),
@@ -74,11 +81,21 @@ purrr::walk(
           .x = .data$TRS2,
           function(x) ifelse(is.na(x),
                              yes = NA, no = paste0(x, ";"))),
-        Date = purrr::map_chr(
-          .x = .data$Date,
+        Date_parsed = purrr::map_chr(
+          .x = .data$Date_parsed,
+          function(x) {
+            if (!is.na(x)) {
+              x <- lubridate::parse_date_time(x = x, orders = "Y-m-d")
+              x <- paste0(paste(day(x), month(x, label = TRUE), year(x)), ";")
+              }
+            return(x)
+            }),
+        Herbarium = purrr::map_chr(
+          .x = .data$Herbarium,
           function(x) ifelse(is.na(x),
-                             yes = NA, no = paste0(x, ";")))
+                             yes = NA, no = paste0("(", x, ").")))
         ) %>%
+      
       dplyr::select("count_id", dplyr::everything(), -c("App.A")) %>%
 
       # Unite character vector from tibble columns and clean NA / whitespace.
