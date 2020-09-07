@@ -25,19 +25,10 @@ if (knitr_chunk == "latex") {
   knitr::opts_chunk$set(dev='pdf')
 }
 
+
 ```
 
-\include{TeX/Thesis_1-copyright}
-
-\include{TeX/Thesis_2-abstract-title}
-
-\include{TeX/Thesis_3-abstract}
-
-\include{TeX/Thesis_4-thesis-title}
-
-\include{TeX/Thesis_5-approval}
-
-\include{TeX/Thesis_6-tables}
+\include{TeX/front-matter}
 
 ```{r globalSet, message = FALSE}
 
