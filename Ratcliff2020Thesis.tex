@@ -1,0 +1,120 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% UNIVERSITY OF NORTHERN IOWA THESIS TEMPLATE
+
+%%%%%% DRAFTING
+% Add margin frame - comment out line to remove.
+\usepackage{showframe}
+
+%%%%%% DOCUMENT SETUP
+% - https://guides.lib.uni.edu/thesis-and-dissertation-formatting/1-document
+
+%% MARGINS via LaTeX pacakge LaTeX GEOMETRY
+\usepackage{geometry}
+\geometry{top=1.25in, bottom=1.25in, left=1.5in, right=1in,
+  headsep=0.5in % Header 0.75" from edge https://tex.stackexchange.com/a/264246
+}
+
+%% PARAGRAPH SPACING via LaTeX TITLESEC (Bezos 2016) and SETSPACE
+\usepackage{titlesec}
+\renewcommand\theparagraph{}  % Remove paragraph section numbering
+\titlespacing*{\paragraph}{0pt}{0pt}{0.5in}  % Paragraph (tab) indendation
+\setlength{\parskip}{0pt}  % Equal spacing between paragraphs
+\usepackage{setspace}
+\doublespacing  % Double line spacing
+\raggedright  % Right margin ragged justification
+
+%% WIDOW / ORPHAN CONTROL via LaTeX  NOWIDOW
+% - Set penalty for hanging lines (Pinson 2011)
+\usepackage[defaultlines=2, all]{nowidow}
+
+%%%%%% FRONT MATTER
+% - https://guides.lib.uni.edu/thesis-and-dissertation-formatting/2-thesis
+
+%% PAGE STYLE formatting via LaTeX TITLEPS (Bezos 2016)
+% - Add page numbers to the top (header) right corner
+% - Start with approval page of roman numeral (ii).
+\usepackage{titleps}
+\renewpagestyle{plain}{
+  \sethead{}{}{\thepage}
+}
+\newpagestyle{contents}{ % Define page style for LOC, LOT, & LOF
+  \sethead{}{}{\thepage}
+}
+\newpagestyle{main}{ % Define page style for main body text
+  \sethead{}{}{\thepage} 
+}
+
+%% TABLE OF CONTENTS
+% - Modify the table and figure counters to not include chapter prefix.
+\usepackage{chngcntr}
+% \let\counterwithout\relax
+% \let\counterwithin\relax
+\counterwithout{table}{chapter}
+\counterwithout{figure}{chapter}
+
+%% LaTeX TITLETOC (Bezos 2016) for formatting table of contents.
+\usepackage{titletoc}
+\titlecontents{table}[1.5em]{}{\thecontentslabel\hspace{1em}}
+  {}{\titlerule*[0.2em]{.}\contentspage}
+\titlecontents{figure}[1.5em]{}{\thecontentslabel\hspace{1em}}
+  {}{\titlerule*[0.2em]{.}\contentspage}
+\titlecontents{chapter}[0em]{}{CHAPTER \thecontentslabel. }
+  {}{\titlerule*[0.2em]{.}\contentspage}
+\titlecontents{section}[2em]{}{\thesection}
+  {\thesection}{\titlerule*[0.2em]{.}\contentspage}
+\titlecontents{subsection}[4em]{}{\thesection}
+  {\thesection}{\titlerule*[0.2em]{.}\contentspage}
+
+%% Fix vertical spacing between per-chapter LoF / LoT
+% - https://tex.stackexchange.com/a/793
+\newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
+\addtocontents{lof}{\protect\noaddvspace}
+\addtocontents{lot}{\protect\noaddvspace}
+
+%% Remove ToC numbering from section / subsection headers
+\renewcommand\thesection{}
+\renewcommand\thesubsection{}
+
+%%%%%% BODY
+% - https://guides.lib.uni.edu/thesis-and-dissertation-formatting/3-body-document
+
+%% HEADINGS typesetting with TITLESEC (includes ToC, LoT, and LoF)
+\usepackage[normalem]{ulem}  % Add underline function \uline
+
+% - Modify section title formatting
+\titleformat{name=\chapter}[display] 
+  {\normalsize\filcenter}{CHAPTER \thechapter}{0pt}{}{}
+\titleformat{name=\section}[display]  
+  {\normalfont\filcenter}{}{0pt}{\uline}{}
+\titleformat{name=\subsection}[display]  
+  {\normalfont\filright}{}{0pt}{\uline}{}
+
+% - Set spacing for heading levels via TITLESEC
+\titlespacing*{name=\chapter}{0pt}{-24pt}{0pt}
+\titlespacing*{name=\section}{0pt}{-18pt}{0pt}
+\titlespacing*{name=\subsection}{0pt}{-18pt}{0pt}
+
+% - Account for numberless sections in specimen appendixes
+\titlespacing*{name=\section,numberless}{0pt}{0pt}{0pt}
+
+%%%%% TABLES
+% kableExtra kable formatting
+\usepackage{threeparttable}
+\usepackage{multirow}
+\usepackage{makecell}
+
+%%%%% FIGURES
+% Set knitr chunks as float placements
+\usepackage{float}
+\floatplacement{figure}{H}
+
+%% Caption separator set to a period
+\usepackage[labelsep=period]{caption}
+
+%%%% APPENDIXES
+\usepackage{texshade} % Beitz 2000
+\usepackage{rotating} % Fairbairns et al. 2016
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{url}
+

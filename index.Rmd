@@ -3,22 +3,11 @@ title: "Systematics of *Physaria* sensu stricto"
 author: "Jason Ratcliff"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
-maintfont: Palatino
-fontsize: 12
-output:
-  bookdown::gitbook: default
-  bookdown::pdf_book:
-    includes:
-      in_header: TeX/Thesis_0-header.tex
-    latex_engine: xelatex
-    citation_package: natbib
-    toc: false
-    keep_tex: yes
-subparagraph: true
 documentclass: report
-bibliography: [book.bib, packages.bib]
-biblio-style: apalike
+fontsize: 12
+maintfont: Palatino
 link-citations: yes
+subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
 ---
 
@@ -36,19 +25,10 @@ if (knitr_chunk == "latex") {
   knitr::opts_chunk$set(dev='pdf')
 }
 
+
 ```
 
-\include{TeX/Thesis_1-copyright}
-
-\include{TeX/Thesis_2-abstract-title}
-
-\include{TeX/Thesis_3-abstract}
-
-\include{TeX/Thesis_4-thesis-title}
-
-\include{TeX/Thesis_5-approval}
-
-\include{TeX/Thesis_6-tables}
+\include{TeX/front-matter}
 
 ```{r globalSet, message = FALSE}
 
