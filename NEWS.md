@@ -1,3 +1,22 @@
+# ThesisPackage 0.1.1
+
+* Add `count_specimens()` to define total unique voucher specimen number.
+
+* `data-raw/`
+  - Update `README`
+    - Replace DNA map *.pdf* file with *.png*
+    - Include SEINet specimens missing coordinate data in *.Rda*
+    - `range_split()` returns only min / max values (i.e. two column tibble)
+  - Begin migration to reference *.bib* and *.csl* files.
+
+* Add Shiny app for mapping specimen data.
+
+* Move *specimens.xlsx* file to `inst/extdata/` for external availability.
+
+* New `save_plot()` to facilitate `Makefile` *.pdf* / *.png* figure builds.
+
+* New `spl_id()` replaces `map_spp_id()` for specimen identification layering.
+
 # ThesisPackage 0.1.0
 
 * Added a `NEWS.md` file to track changes to the package.
