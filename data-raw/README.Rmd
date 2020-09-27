@@ -1,47 +1,123 @@
 ---
 title: "data-raw README"
 output: github_document
+bibliography: "references.bib"
+link-citations: true
+always_allow_html: true
 ---
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(eval.after = 'fig.cap')
 library(magrittr)
 library(ThesisPackage)
+
+# Note: phantomjs required for HTML rendering of of Diagrammer::mermaid()
+# - To install v2.1.1 via Homebrew:
+# $ brew tap homebrew/cask
+# $ brew cask install phantomjs
+```
+
+```{r linkSpecimens, echo=FALSE}
+link_spp_xlsx <- 
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "blob/master/inst/extdata/specimens.xlsx"
+  )
+link_spp_script <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "blob/master/data-raw/specimens/herbarium_specimens.R"
+  )
+link_fasta <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "blob/master/inst/extdata/FASTA"
+  )
+link_seq_subset <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/sequencing/2.subset-fastas"
+  )
+link_aln_single <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/sequencing/3.alignments-single"
+  )
+link_aln_concat <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/sequencing/3.alignments-subset"
+  )
+link_script_concat <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "blob/master/data-raw/sequencing/fasta-concat.R"
+  )
+link_multilocus <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/sequencing/3.multi-locus"
+  )
+link_bayes_mega <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/Bayes/MEGA"
+  )
+link_bayes_nexus <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/Bayes/Runs"
+  )
+link_beast_nexus <-
+  paste0(
+    "https://github.com/jasonratcliff/ThesisPackage/",
+    "tree/master/data-raw/BEAST/"
+  )
 ```
 
 # Specimen Data
 
 Records of voucher specimens on loan from lending herbaria
 (RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were
-compiled into an excel file, `specimens.xlsx`.  Information recorded from the
-vouchers included the identification history, collector, collection number,
-date, institution, locality, geographic coordinates, elevation,
-ecological description, and measurements of continuous and discretespecimen
-traits. In total, `r count_specimens(herbarium_specimens)` unique collections
-dated as early as 1844 (Fremont's 2nd Expedition) were reviewed.
+compiled into an excel file, [`specimens.xlsx`](`r link_spp_xlsx`).
+Data recorded from vouchers include locality, identification history,
+collector, collection number, date, institution, geographic coordinates,
+elevation, any ecological descriptions, and measurements of continuous and
+discrete specimen traits. In total, `r count_specimens(herbarium_specimens)`
+unique collections were reviewed.
 
-```{r specimenData, echo=FALSE, comment=NA}
-system.file("extdata/specimens.xlsx", package = "ThesisPackage")
+```{r specimenData}
+# Path to installed file with specimens annotations.
+system.file("extdata/specimens.xlsx", package = "ThesisPackage") %>%
+  stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
-The `herbarium_specimens.R` script creates an *.Rda* file from `specimens.xlsx`,
-formatting specimen data for downstream phylogenetic, distribution, and
-morphological analyses to define a tibble `herbarium_specimens` in the
-`ThesisPackage` namespace.  Briefly, the script does the following:
+The [`herbarium_specimens.R`](`r link_spp_script`) script creates an *.Rda* 
+from `specimens.xlsx`, formatting specimen data for downstream phylogenetic,
+distribution, and morphological analyses to define a tibble
+`herbarium_specimens` in the `ThesisPackage` namespace.
 
-- Read data into R using `readxl` (Wickham and Bryan 2019)
-    - Filter records with `dplyr` (Wickham et al. 2020) to annotations with:
+```{r}
+ThesisPackage::herbarium_specimens
+```
+
+Briefly, the script does the following:
+
+- Read data into R using `readxl` [@R-readxl]
+    - Filter records with `dplyr` [@R-dplyr] to annotations with:
         - *Physaria*
         - *Lesquerella*
         - Brassicaceae
-    - Standardize dates and create a new vector with month and day
+    - Standardize dates with `lubridate` [@R-lubridate]
+        - New variable `Date_md` with month and day for phenology
         - Log records mismatched with the date format `YYYY-MM-DD` 
 
 - Split comma-separated prior annotations as separate variables
     - Identification agreements denoted by "!" are substituted with ID
     - Extract most recent annotations into a new column
-        - Replace recent annotations by synonym according to O'Kane (2010)
+        - Replace recent annotations by synonym according to @OKane2010
 
 - Parse elevation data
     - Cast as numeric and remove special characters
@@ -53,35 +129,121 @@ morphological analyses to define a tibble `herbarium_specimens` in the
 
 # DNA Map
 
-```{r dnaSpecimenMapSource, echo=FALSE, message=FALSE}
-source("mapping/map-dna.R")
-```
-
 ```{r dnaSpecimenMap, out.width='750px', dpi=300, echo=FALSE, fig.cap=cap_map}
-cap_map <- 
-  paste0("See [mapping/map-dna.pdf](https://github.com/jasonratcliff/",
-         "ThesisPackage/blob/master/data-raw/mapping/map-dna.pdf)",
-         " for higher resolution image.")
-
-knitr::include_graphics("mapping/map-dna.png")
+cap_map <-
+  paste0("Sampled DNA Specimens. ",
+         "Distribution of specimens with prior identifications and ",
+         "locations of DNA samples.")
+dna_map <- "mapping/map-dna.png"
+if (!file.exists(dna_map)) {
+  source(dna_map)
+}
+knitr::include_graphics(dna_map)
 ```
 
-# DNA Sequences
+# DNA Sequence Analysis
 
-## Fasta Subset
+## Fasta Subsetting and Concatenation
 
-Multi-FASTA files for sequenced loci were assembled from sequence chromatograms and deposited in the `inst/extdata/FASTA` package subdirectory.  Here, FASTA headers are formatted with two fields `accession` and `locus` following ">". A single whitespace separates the sample accession from the name of the locus, for example: `>PACUT_48 rITS` or `>PACUT_12821 rps`. A given FASTA file contains sequences sampled from a single genetic locus and all FASTA headers in the file contain the same locus name in the second field.
+Multi-FASTA files for sequenced loci were assembled from sequence
+chromatograms and deposited in the [`inst/extdata/FASTA`](`r link_fasta`) 
+subdirectory. Here, `FASTA` headers are formatted with two fields `accession`
+and `locus` following ">". A single whitespace separates the sample accession
+from the name of the locus, for example: `>PACUT_48 rITS` or `>PACUT_12821 rps`.
+Each `FASTA` file contains sequences sampled from a single genetic locus,
+where the locus is indicated in the second field of the `FASTA` headers.
 
 ```{r fastaFiles}
 # Assign list of raw FASTA files from installed external package data.
-list.files(system.file("extdata/FASTA", package = "ThesisPackage"),
-           full.names = TRUE) %>%
+list.files(
+  path = system.file("extdata/FASTA", package = "ThesisPackage"),
+  full.names = TRUE
+  ) %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
-The Biostrings package (Pagès et al. 2019) was used to read in FASTA files as DNAStringSets, R S4 objects of the XString subclass.  A list is assigned from with elements containing DNAStringSets read from a given FASTA file.  The intersecting set of sequence headers among the multiple FASTA files was identified using the extracted DNAStringSet names attributes.  New subsets for each locus were indexed by the set of specimens sequenced for all loci.  Untrimmed, single locus FASTA files from `inst/extdata/FASTA` and FASTA files filtered to common specimens in `data-raw/sequencing/2.subset-fastas` were aligned using MAFFT. The G-INS-i alignment strategy with iterative refinement and 1PAM / k=2 nucleotide scoring matrix were set sat as the alignment parameters.
+The `Biostrings` package [@R-Biostrings] was used to read in `FASTA` files as
+`DNAStringSet` objects, an S4 class inheriting the `XString` subclass. Briefly,
+a list is assigned with elements containing a single `DNAStringSet` read from
+each `FASTA` file. The intersecting set of sequence headers among all `FASTA`
+files is identified from the extracted `DNAStringSet` names attributes.
+New subsets for each locus were indexed by the set of specimens sequenced
+for all loci. Untrimmed, single locus `FASTA` files from
+[`inst/extdata/FASTA`]()
+and `FASTA` files filtered to common specimens in
+[`data-raw/sequencing/sequencing/2.subset-fastas`](`r link_seq_subset`)
+were aligned using MAFFT version 7.306B [@Katoh2013].
+The G-INS-i alignment [@Katoh2005] with iterative refinement and
+1PAM / k=2 nucleotide scoring matrix were set as alignment
+parameters. Aligned `FASTA` files were deposited in the
+[`data-raw/sequencing/3.alignments-single/`](`r link_aln_single`) and
+[`data-raw/sequencing/3.alignments-subset/`](`r link_aln_concat`) subdirectories.
+For the subset of samples with DNA sequence data from all three sample loci,
+a concatenated multi-FASTA file was compiled using the
+[`data-raw/sequencing/fasta-concat.R`](`r link_script_concat`) Rscript, 
+written to [`data-raw/sequencing/3.multi-locus/`](`r link_multilocus`).
+
+```{r diagFASTA, echo=FALSE}
+# DiagrammeR::mermaid(diagram = "workflow.mmd")
+diag_fasta <- DiagrammeR::mermaid('
+graph TD
+  %% Sequencing Workflow
+  S1["inst/extdata/FASTA"]-->S2(fasta-subsets.R)
+  S2-->S3["sequencing/2.subset-fastas/"]
+  S1-->S4{MAAFT}
+  S3-->S4
+  S4-->S5["sequencing/3.alignments-single/"]
+  S4-->S6["sequencing/3.alignments-subset/"]
+  S6-->S7(fasta-concat.R)
+  S7-->S8["sequencing/3.multi-locus/"]
+')
+diag_fasta
+```
+
+## MEGA / MrBayes
+
+Distance matrices were calculated from the full single-locus and subset
+multi-locus alignment FASTA files to identify identical DNA sequences using
+MEGA version 10.1.8 [@Kumar2018; @Stecher2020]. Pairwise distances were
+calculated by p-distance treating gaps as pairwise deletions. Distance matrices
+and FASTA (*.fas*) files with combined headers for duplicate DNA sequences were
+deposited in [Bayes/MEGA/](`r link_bayes_mega`). Non-identical single locus
+(rITS, *rps*, *ycf1*) and concatenated multi-locus FASTA files were used as
+input for jModelTest [@Posada2008] to assess evolutionary model fit.
+Lastly, alignment gaps were coded using 2matrix [@Salinas2014], a Perl script
+that implements “simple indel coding” as described by @Simmons2000.
+Partitioned NEXUS (*.nex*) files with defined command blocks were deposited in
+[Bayes/Runs/](`r link_bayes_nexus`).
+
+```{r diagMEGA, echo=FALSE}
+diag_mega <- DiagrammeR::mermaid('
+graph TD
+  S1["sequencing/3.alignments-single/"]
+  S2["sequencing/3.multi-locus/"]
+  %% MEGA files
+  S1-->D1{MEGA}
+  S2-->D1
+  D1-->D2(Distance matrices)
+  D1-->D3(De-duplicated multi-FASTAs)
+  D2-->D4["Bayes/MEGA/"]
+  D3-->D4
+  %% jModelTest
+  D4-->J1{jModelTest}
+  J1-->J2["Bayes/jmodeltest/"]
+  %% 2Matrix / Bayes Nexus
+  D4-->M1{2Matrix}
+  M1-->M2["Bayes/Runs/"]
+  M2-->M4{MrBayes}
+  J2-->M4
+')
+diag_mega
+```
 
 ## FASTA Summaries
+
+Define a function to read *.fasta* extension files from a given file path as
+`DNAStringSet` objects, then calculate the number of unique sequence headers
+and minimum / maxium sequence lengths.
 
 ```{r fastaSummary, echo=FALSE}
 # Print aligned FASTA file, number of sequences, and range of alignments
@@ -120,45 +282,19 @@ fasta_summaries(system.file("extdata/FASTA", package = "ThesisPackage"))
 ### Subset FASTAs
 
 ```{r summarizeSubsets, echo=FALSE}
-fasta_summaries("data-raw/sequencing/2.subset-fastas/")
+fasta_summaries("sequencing/2.subset-fastas/")
 ```
 
 ### Aligned (untrimmed)
 
 ```{r summarizeUntrimmed, echo=FALSE}
-fasta_summaries("data-raw/sequencing/3.alignments-single/")
+fasta_summaries("sequencing/3.alignments-single/")
 ```
 
 ### Aligned (trimmed)
 
 ```{r summarizeTrimmed, echo=FALSE}
-fasta_summaries("data-raw/sequencing/3.alignments-concatenated/")
+fasta_summaries("sequencing/3.alignments-subset/")
 ```
 
 # References
-
-Bache SM, Wickham H. 2014. magrittr: A forward-pipe operator for R. R package version 1.5. https://CRAN.R-project.org/package=magrittr
-
-Grolemund G, Wickham H. 2011. Dates and times made easy with lubridate. Journal of Statistical Software. 40(3):1-25.
-
-Henry L, Wickham H. 2019. purrr: Functional programming tools. R package version 0.3.0. https://CRAN.R-project.org/package=purrr
-
-Müller K, Wickham H. 2019. tibble: Simple data frames. R package version 2.0.1. https://CRAN.R-project.org/package=tibble
-
-Müller K. 2017. here: A simpler way to find your files. R package version 0.1. https://CRAN.R-project.org/package=here
-
-O’Kane SL. 2010. *Physaria*. In: Flora of North America editorial committee. Flora of North America north of Mexico. Volume 7. Salicaceae to Brassicaceae. New York (NY): Oxford Univ. Press. p. 616-665.
-Payson EB. 1918. Notes on certain Cruciferae. Annals of the Missouri Botanical Garden. 5(2):143-147.
-
-Pagès H, Aboyoun P, Gentleman R, DebRoy S. 2019. Biostrings: Efficient manipulation of biological strings. R package version 2.50.2. https://www.bioconductor.org/packages/release/bioc/html/Biostrings.html
-
-Wickham H, Bryan J. 2019. readxl: Read excel files. R package version 1.3.1. https://CRAN.R-project.org/package=readxl
-
-Wickham H, Francois R, Henry L, Müller K. 2020. dplyr: a grammar of data manipulation. R package version 0.8.5. https://CRAN.R-project.org/package=dplyr
-
-Wickham H. 2019. stringr: Simple, consistent wrappers for common string operations. R package version 1.4.0. https://CRAN.R-project.org/package=stringr
-
-Xie Y. 2018. knitr: A general-purpose package for dynamic report generation in R. R package version 1.21. https://cran.r-project.org/package=knitr
-
-Wickham H. 2011. The split-apply-combine strategy for data analysis. Journal of Statistical Software. 40(1):1-29.
-

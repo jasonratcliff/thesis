@@ -20,3 +20,36 @@ save_plot <- function(gg_plot) {
   )
 }
 
+#' Count Specimens
+#'
+#' Tabulate the total number of distinct specimen collections by collector,
+#' colleciton number and date while accounting for herbarium duplicates.
+#'
+#' @param spp_tibble Specimen tibble to count unique specimen vouchers.
+#' @export
+#'
+#' @return Numeric scalar with the number of distinct specimen vouchers.
+#'
+#' @examples
+#' count_specimens(spp_tibble = herbarium_specimens)
+#'
+count_specimens <- function(spp_tibble) {
+
+  # Calculate total number of specimens accounting for duplicated records.
+  specimen_count <- spp_tibble %>%
+    dplyr::select(Collector, Collection_Number, Date, Herbarium) %>%
+    dplyr::mutate(
+      row_id = 1:nrow(.),
+      Herbarium = stringr::str_remove_all(Herbarium, pattern = "\\[|\\]")  %>%
+        stringr::str_split(., pattern = ", +") %>%
+        purrr::map_chr(., function(herbarium) {
+          herbarium_split <- unlist(herbarium) %>% sort() %>%
+            stringr::str_c(., collapse = " ")
+          ifelse(length(herbarium_split) == 1, herbarium_split, "NA")
+          })
+      ) %>%
+    dplyr::distinct(., Collector, Collection_Number, Date, Herbarium,
+                    .keep_all = TRUE) %>% nrow()
+  return(specimen_count)
+}
+

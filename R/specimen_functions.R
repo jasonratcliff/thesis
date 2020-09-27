@@ -44,7 +44,7 @@ range_split <- function(trait_tbl, split_var) {
     plyr::ldply(fun = rbind) %>%
     tibble::as_tibble(.name_repair = "minimal") %>%
     dplyr::mutate(!!split_var := dplyr::pull(trait_tbl, split_var)) %>%
-    dplyr::select(3, 1:2) %>%
+    dplyr::select(1:2) %>%
 
     # Rename tibble variables wth minimum and maximum range data.
     # https://dplyr.tidyverse.org/articles/programming.html#different-input-and-output-variable

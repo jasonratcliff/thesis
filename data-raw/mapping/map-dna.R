@@ -1,5 +1,6 @@
 library(ThesisPackage)
 library(ggplot2)
+if (fs::path_file(getwd()) != "data-raw") stop("Call from `data-raw/`")
 
 #  Assign Specimen Data ----
 dna_specimens <- ThesisPackage::dna_specimens %>%
@@ -56,7 +57,5 @@ map_labels <-
 
 # Evaluate call object chain and save plot to file.
 dna_ggplot <- rlang::eval_tidy(map_labels)
-cowplot::ggsave2(filename = "mapping/map-dna.pdf", plot = dna_ggplot,
-                 width = 13, height = 13)
 cowplot::ggsave2(filename = "mapping/map-dna.png", plot = dna_ggplot,
-                 width = 6)
+                 width = 13, height = 13)

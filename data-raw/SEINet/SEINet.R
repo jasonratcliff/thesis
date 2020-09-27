@@ -1,3 +1,5 @@
+library(magrittr)
+
 # Two SEINet searches were performed for "Taxonomic Criteria" of
 #   `Scientific Name` with Synonyms included in search.
 #
@@ -7,7 +9,7 @@
 # Data were read from occurrence .csv files in Darwin Core format.
 # These searches yielded 564 records, 355 with decimal degree coordinates.
 #
-seinet_records <-
+seinet_coords <-
   list.files("data-raw/SEINet", full.names = TRUE) %>%
   purrr::keep(dir.exists(.) == TRUE) %>%
   purrr::map_dfr(function(seinet_dir) {
@@ -22,26 +24,18 @@ seinet_records <-
                     "recordId", "references")
     }) %>% dplyr::bind_rows() %>%
   dplyr::rename(Latitude = "decimalLatitude",
-                Longitude = "decimalLongitude")
+                Longitude = "decimalLongitude") %>%
 
-# Filter records with decimal degree coordinate data for .Rda file.
-seinet_coords <- seinet_records %>%
-  dplyr::filter(!is.na(Latitude), !is.na(Longitude))
-
-# Distinct records missing coordinate data
-seinet_records %>%
-  dplyr::filter(is.na(Latitude) | is.na(Longitude)) %>%
-  dplyr::n_distinct()
-
-# Table of specimen IDs
-seinet_records %>%
-  dplyr::group_by(scientificName) %>%
-  dplyr::summarise(Count = dplyr::n())
-
-# ggmap plot of SEINet records
-ThesisPackage::map_ggmap(specimen_tbl = seinet_coords, size = 7,
-                         id_column = "scientificName",
-                         gg_map_type = "satellite")
+  # Consolidate varietal and subspecific nomenclature.
+  dplyr::mutate(
+    scientificName = purrr::map_chr(.data$scientificName, function(spp) {
+        gsub(pattern = "Physaria floribunda( floribunda)?$",
+             replacement = "Physaria floribunda ssp. floribunda", x = spp) %>%
+        gsub(pattern = "Physaria floribunda( osterhoutii)?$",
+             replacement = "Physaria floribunda var. osterhoutii", x = .) %>%
+        gsub(pattern = "subsp\\.|var\\.", replacement = "ssp\\.", x = .)
+    })
+  )
 
 # Write .Rda to data/ subdirectory
-usethis::use_data(seinet_coords)
+usethis::use_data(seinet_coords, overwrite = TRUE)

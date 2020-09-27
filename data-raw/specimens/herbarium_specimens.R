@@ -1,14 +1,17 @@
 library(magrittr)
-library(here)
 library(readxl)
 library(readr)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(purrr)
 library(lubridate)
 library(stringr)
 library(tibble)
 library(ThesisPackage)
+
+if (basename(getwd()) != "ThesisPackage") {
+  stop("Source from top level of `ThesisPackage`.")
+}
 
 # 1. Read in specimen data ----
 #
@@ -51,8 +54,8 @@ specimens_raw <-
 # and saved to a new column using 'paste special...' by value.
 #
 # Check for log directory, create if non-existent, and open log file.
-if (!dir.exists(paste0(here::here(), "/log"))) {
-  dir.create(paste0(here::here(), "/log"))
+if (!dir.exists("log")) {
+  dir.create("log")
 }
 
 # Select date columns, filter by format, and write mismatches to a .csv log.
@@ -82,7 +85,7 @@ prior_ids <- function(prior_vector) {
 # Assign list of prior specimens annotations accounting for "!" ID's.
 specimens_split <- specimens_raw %>% dplyr::pull(Taxon) %>%
   strsplit(x = ., split = ", ") %>%
-  purrr::map(function(split_ids) prior_ids(split_ids))
+  purrr::map(function(split_ids) prior_ids(prior_vector = split_ids))
 
 # Assign tibble column from character vector with most recent annotations.
 specimens_recent <- specimens_split %>%
@@ -146,12 +149,13 @@ elev_parsed <-
         }
     })
 
-# Map tibble data frame with split range data and conver meters to ft.
+# Map tibble data frame with split range data and convert meters to ft.
 elev_parsed <-
-  dplyr::bind_cols(dplyr::select(elev_parsed, Elev_var),
+  dplyr::bind_cols(elev_parsed,
     ThesisPackage::range_split(trait_tbl = elev_parsed,
                                split_var = "Elev_raw")) %>%
-  purrr::pmap_dfr(function(Elev_var, Elev_raw_min, Elev_raw_max, Elev_raw) {
+  purrr::pmap_dfr(.l = ., function(Elev_var, Elev_raw_min,
+                                   Elev_raw_max, Elev_raw) {
     if (Elev_var == "Elev_m") {
       elev_min <- as.numeric(Elev_raw_min) * 3.281
       elev_max <- as.numeric(Elev_raw_max) * 3.281
@@ -198,8 +202,6 @@ dna_specimens <- purrr::pmap_dfr(dna_metadata,
 
 rm(dna_metadata) # Clean up workspace
 
-# 7. Create .Rdatfiles.
-
+# 6. .Rda files ----
 usethis::use_data(herbarium_specimens, overwrite = TRUE)
-usethis::use_data(dna_specimens)
-
+usethis::use_data(dna_specimens, overwrite = TRUE)

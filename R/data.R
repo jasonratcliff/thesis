@@ -1,3 +1,5 @@
+# Specimen Data ----
+
 #' Extracted DNA Samples
 #'
 #' Collated by Jason Ratcliff
@@ -111,7 +113,7 @@
 #'   \item{references}{SEINet record site reference}
 #' }
 #'
-#' @source \url{http://swbiodiversity.org/seinet/index.php}
+#' @source \url{https://swbiodiversity.org/seinet/index.php}
 #'
 "seinet_coords"
 
