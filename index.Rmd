@@ -13,32 +13,38 @@ description: "R Bookdown build to compile MS Thesis."
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
 # Set Global knitr chunk options
-knitr::opts_chunk$set(echo=FALSE, results="asis", message=FALSE) 
-                      #cache=TRUE, autodep = TRUE)
+knitr::opts_chunk$set(echo=FALSE, results="asis", message=FALSE)
 
 # Allow caption assignment in chunk.
 knitr::opts_knit$set(eval.after = 'fig.cap')
 
 # Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
 knitr_chunk <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+
+# Graphics device for pandoc conversion.
 if (knitr_chunk == "latex") {
   knitr::opts_chunk$set(dev='pdf')
 }
+if (knitr_chunk == "html") {
+  knitr::opts_chunk$set(dev='png')
+}
 
+# File extension for knitr::include_graphics().
+knitr_ext <- list(html = "png", latex = "pdf")
 
 ```
 
-\include{TeX/front-matter}
-
-```{r globalSet, message = FALSE}
+```{r libraries}
 
 # For PDF compilation of Bookdown Doc, LaTeX install required.
-require(tinytex)
-require(bookdown)
+library(tinytex)
+library(bookdown)
+library(knitr)
 
 # Load libraries
 library(ggplot2)
-library(knitr)
+library(ggtree)
+library(cowplot)
 
 # Fix xcolor warning from TEXshade causing segfault:
 # https://github.com/rstudio/rmarkdown/issues/1384#issuecomment-400092146
@@ -48,12 +54,7 @@ library(kableExtra)
 # Load specimen data and Thesis functions.
 library(ThesisPackage)
 
-# Define map object for state and county boundaries.
-gg_borders <- map_borders(border_color = "black")
-
 ```
 
+\include{TeX/front-matter}
 
-
-
-```
