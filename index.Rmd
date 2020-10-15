@@ -21,34 +21,20 @@ knitr::opts_knit$set(eval.after = 'fig.cap')
 # Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
 knitr_chunk <- knitr::opts_knit$get("rmarkdown.pandoc.to")
 
-# Graphics device for pandoc conversion.
-if (knitr_chunk == "latex") {
-  knitr::opts_chunk$set(dev='pdf')
-}
-if (knitr_chunk == "html") {
-  knitr::opts_chunk$set(dev='png')
-}
-
 # File extension for knitr::include_graphics().
 knitr_ext <- list(html = "png", latex = "pdf")
+
+# Graphics device for pandoc conversion.
+knitr::opts_chunk$set(dev = knitr_ext[[knitr_chunk]])
 
 ```
 
 ```{r libraries}
 
 # For PDF compilation of Bookdown Doc, LaTeX install required.
-library(tinytex)
 library(bookdown)
+library(tinytex)
 library(knitr)
-
-# Load libraries
-library(ggplot2)
-library(ggtree)
-library(cowplot)
-
-# Fix xcolor warning from TEXshade causing segfault:
-# https://github.com/rstudio/rmarkdown/issues/1384#issuecomment-400092146
-options(kableExtra.latex.load_packages = FALSE)
 library(kableExtra)
 
 # Load specimen data and Thesis functions.
@@ -57,4 +43,3 @@ library(ThesisPackage)
 ```
 
 \include{TeX/front-matter}
-
