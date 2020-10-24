@@ -89,19 +89,22 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #'   argument of \link[ggplot2]{geom_point}.
 #' @param shape_aes Logical to optionally add shape aesthetic to ggplot.
 #' @param geom_size Numeric scalar for size of jitter aesthetic.
-#' @importFrom ggplot2 ggplot geom_point aes_
+#' @param jitter_width Numeric scalar for [geom_jitter()] width.
+#' @param jitter_height Numeric scalar for [geom_jitter()] height.
+#' @importFrom ggplot2 ggplot geom_jitter aes_
 #' @export
 #'
 #' @return A ggplot2 `LayerInstance`` for specimen plotting.
 #'
 #' @examples
-#' ggplot2::ggplot(data = ThesisPackage::spp_co_front_range) +
+#' ggplot2::ggplot() +
 #'   layer_specimens(specimen_tbl = ThesisPackage::spp_co_front_range,
-#'                   id_column = "Taxon_a_posteriori", shape_aes = FALSE)
-#'
+#'                   id_column = "Taxon_a_posteriori", shape_aes = FALSE,
+#'                   jitter_width = 0.033, jitter_height = 0.033)
 #'
 layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
-                            shape_aes = FALSE,  geom_size = 3) {
+                            shape_aes = FALSE,  geom_size = 3,
+                            jitter_width = NULL, jitter_height = NULL) {
 
   shape_sym <- ifelse(test = shape_aes == FALSE, yes = list(NULL),
                        no = as.name(id_column))  # optional shape aesthetic
@@ -110,11 +113,17 @@ layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
   specimen_tbl <- spl_order(specimen_tbl = specimen_tbl,
                             id_column = id_column)
   specimen_layer <-
-    list(geom_point(data = specimen_tbl, size = geom_size,
-                    show.legend = legend_status,
-                    aes_(x = quote(Longitude), y = quote(Latitude),
-                         color = as.name(id_column),
-                         shape = unlist(shape_sym)), na.rm = TRUE))
+    list(
+      geom_jitter(
+        data = specimen_tbl, size = geom_size,
+        show.legend = legend_status,
+        aes_(x = quote(Longitude), y = quote(Latitude),
+             color = as.name(id_column),
+             shape = unlist(shape_sym)), na.rm = TRUE,
+        width = jitter_width,
+        height = jitter_height
+      )
+    )
   return(specimen_layer)
 }
 

@@ -130,7 +130,7 @@ spl_states <- function(spl_extent, sf_states) {
 #' @param v_adjust Numeric vector of length one for vertical label adjustment.
 #' @param label_size Numeric vector of length one for label size.
 #' @inheritParams layer_specimens
-#' @inheritParams map_themes
+#' @inheritParams layer_themes
 #' @inheritParams find_spp
 #' @export
 #'

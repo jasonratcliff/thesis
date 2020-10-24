@@ -1,3 +1,8 @@
+# ThesisPackage 0.1.2
+
+* `layer_specimens()` now returns a jitter geom instead of points, gaining
+  parameters `jitter_width` and `jitter_height` to adjust position.
+
 # ThesisPackage 0.1.1
 
 * Add `count_specimens()` to define total unique voucher specimen number.
