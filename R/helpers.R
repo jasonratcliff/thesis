@@ -37,19 +37,22 @@ count_specimens <- function(spp_tibble) {
 
   # Calculate total number of specimens accounting for duplicated records.
   specimen_count <- spp_tibble %>%
-    dplyr::select(Collector, Collection_Number, Date, Herbarium) %>%
+    dplyr::select("Collector", "Collection_Number", "Date", "Herbarium") %>%
     dplyr::mutate(
       row_id = 1:nrow(.),
-      Herbarium = stringr::str_remove_all(Herbarium, pattern = "\\[|\\]")  %>%
-        stringr::str_split(., pattern = ", +") %>%
+      Herbarium = stringr::str_remove_all(
+        string = .data$Herbarium,
+        pattern = "\\[|\\]"
+      )  %>%
+        stringr::str_split(string = ., pattern = ", +") %>%
         purrr::map_chr(., function(herbarium) {
           herbarium_split <- unlist(herbarium) %>% sort() %>%
             stringr::str_c(., collapse = " ")
           ifelse(length(herbarium_split) == 1, herbarium_split, "NA")
           })
       ) %>%
-    dplyr::distinct(., Collector, Collection_Number, Date, Herbarium,
-                    .keep_all = TRUE) %>% nrow()
+    dplyr::distinct(., .data$Collector, .data$Collection_Number,
+                    .data$Date, .data$Herbarium, .keep_all = TRUE) %>% nrow()
   return(specimen_count)
 }
 
