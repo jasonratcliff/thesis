@@ -56,3 +56,21 @@ count_specimens <- function(spp_tibble) {
   return(specimen_count)
 }
 
+#' Capitalize String Character
+#'
+#' Given an input character vector, capitalize the first element character.
+#'
+#' @param character_vector Character vector to capitalize.
+#' @export
+#'
+#' @examples
+#' traits <- c("oblong", "elliptic", "linear")
+#' camel_case(character_vector = traits)
+#'
+capitalize <- function(character_vector) {
+  purrr::map_chr(.x = character_vector, function(string_element) {
+    split_string <- strsplit(x = string_element, split = "") %>% unlist()
+    paste0(c(toupper(split_string[1]), split_string[2:length(split_string)]),
+           collapse = "")
+  })
+}

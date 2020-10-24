@@ -3,6 +3,8 @@
 * `layer_specimens()` now returns a jitter geom instead of points, gaining
   parameters `jitter_width` and `jitter_height` to adjust position.
 
+* New `capitalize()` provides vectorized capitalization of character strings.
+
 # ThesisPackage 0.1.1
 
 * Add `count_specimens()` to define total unique voucher specimen number.
