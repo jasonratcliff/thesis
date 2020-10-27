@@ -1,4 +1,4 @@
-# Range Data ----
+# Continuous Traits ----
 
 #' Split Numeric Ranges
 #'
@@ -54,3 +54,88 @@ range_split <- function(trait_tbl, split_var) {
 
 }
 
+# Discrete Traits ----
+
+#' Separate Discrete Trait Observations
+#'
+#' Separate records of discrete trait observations from a variable where
+#' multiple values may be observed in a single voucher.
+#'
+#' @param trait_selection Tibble variable to split discrete observations from.
+#' @param filter_n Cutoff for filtering rarely observed traits by count.
+#' @inheritParams layer_specimens
+#' @export
+#'
+#' @return Tibble of specimen observations separated into rows by unique trait
+#'   observations.
+#'
+#' @examples
+#' separate_discrete_trait(
+#'   specimen_tbl = herbarium_specimens,
+#'   trait_selection = "Replum_shape"
+#' )
+#'
+separate_discrete_trait <- function(specimen_tbl, trait_selection,
+                                    filter_n = 20) {
+  tidy_trait <- specimen_tbl %>%
+    dplyr::select(
+      "prior_id", "Taxon_a_posteriori",
+      "Latitude", "Longitude", "Collector", "Collection_Number",
+      !!trait_selection
+    ) %>%
+    dplyr::filter(!is.na(.data[[!!trait_selection]])) %>%
+    dplyr::mutate(
+      Trait = purrr::map_chr(
+        .x = .data[[!!trait_selection]], function(observation) {
+          stringr::str_remove_all(
+            string = observation,
+            pattern = "[\\(\\)]"
+          ) %>%
+            stringr::str_to_lower(string = .)
+        })
+    ) %>%
+    tidyr::separate_rows(data = ., .data$Trait, sep = "[,; -]") %>%
+    dplyr::add_count(.data$Trait) %>%
+    dplyr::filter(nchar(.data$Trait) > 0, .data$n > filter_n) %>%
+    dplyr::select(-c(!!trait_selection))
+  return(tidy_trait)
+}
+
+# Trait Mapping ----
+
+#' Trait Distribution Map
+#'
+#' Given a trait subset (e.g., discrete or continuous morphological characters),
+#' build a `ggplot` over state and county border layers returned by
+#' [layer_borders()] and with standardized theme and coordinates.
+#'
+#' @param tidy_trait Tibble of specimen trait distributions.
+#' @param bb_xlim Numeric vctor to scale `sf` coordinates x-limits.
+#' @param bb_ylim Numeric vctor to scale `sf` coordinates y-limits.
+#' @export
+#'
+#' @return A `ggplot` with specimen trait distributin mapping.
+#'
+#' @examples
+#' map_trait_distribution(tidy_trait = trait_ovules) +
+#'   ggplot2::scale_color_viridis_d(option = "D") +
+#'   ggplot2::labs(color = "Max Ovule Count per Locule")
+#'
+map_trait_distribution <- function(tidy_trait,
+                                   bb_xlim = c(-114, -102.5),
+                                   bb_ylim = c(37.5, 48.75)) {
+  trait_map <- ggplot2::ggplot(data = tidy_trait) +
+    layer_borders(spl_extent = spl_bbox(tidy_trait),
+                  sf_county_color = "black") +
+    ggplot2::geom_jitter(
+      ggplot2::aes(x = .data$Longitude, y = .data$Latitude,
+                   color = .data$Trait),
+      na.rm = TRUE
+    ) +
+    ggplot2::coord_sf(xlim = bb_xlim, ylim = bb_ylim) +
+    ggplot2::theme(
+      panel.background = ggplot2::element_blank(),
+      panel.border = ggplot2::element_rect(fill = NA, color =  "black")
+    )
+  return(trait_map)
+}

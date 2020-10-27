@@ -41,7 +41,8 @@ Imports:
     treeio,
     fs,
     methods,
-    stats
+    stats,
+    tidyr
 Suggests:
     ape,
     DiagrammeR,
