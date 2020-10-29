@@ -11,6 +11,8 @@
 
 * New `capitalize()` provides vectorized capitalization of character strings.
 
+* A GNU Makefile provides useful automation checks for `.rda` data creation.
+
 # ThesisPackage 0.1.1
 
 * Add `count_specimens()` to define total unique voucher specimen number.
