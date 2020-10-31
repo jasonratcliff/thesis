@@ -205,3 +205,13 @@ rm(dna_metadata) # Clean up workspace
 # 6. .Rda files ----
 usethis::use_data(herbarium_specimens, overwrite = TRUE)
 usethis::use_data(dna_specimens, overwrite = TRUE)
+
+# Define subset from ThesisPackage::herbarium_specimens
+# TODO Move to herbarium_specimens.R and rename Roxygen examples and tests.
+
+# Roxygen Example Dataset
+spp_co_front_range <-
+  subset_coords(herbarium_specimens,
+                Longitude = c(-107.5, -104.5),
+                Latitude = c(38, 41))
+

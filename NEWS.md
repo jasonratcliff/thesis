@@ -6,6 +6,8 @@
 * New `map_trait_distribution()` provides a convenient wrapper for displaying
   trait distribution maps (e.g., from discrete or continuous variables).
 
+* Add specimen data subsets for continuous and discrete trait distributions.
+
 * `layer_specimens()` now returns a jitter geom instead of points, gaining
   parameters `jitter_width` and `jitter_height` to adjust position.
 
