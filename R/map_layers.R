@@ -162,15 +162,17 @@ build_map <- function(specimen_tbl, id_column, legend_title,
            stop("Invalid `map_base` value"))
 
   ggplot_extent <-  # Determine extent based on base layer
-    switch(map_base, base = spl_bbox(specimen_tbl),
-           ggmap = spl_bbox(ggplot_base), elevation = spl_bbox(ggplot_base))
+    switch(map_base,
+      base = spl_bbox(specimen_tbl),
+      ggmap = spl_bbox(ggplot_base),
+      elevation = spl_bbox(ggplot_base)
+    )
 
   # Build ggplot from border, specimen layer instances and themes
   ggplot_build <- ggplot_base +
     layer_borders(spl_extent = ggplot_extent, ...) +
     layer_specimens(specimen_tbl = specimen_tbl, id_column = id_column,
-                    legend_status = FALSE, shape_aes = TRUE,
-                    geom_size = 3) +
+                    legend_status = FALSE, shape_aes = TRUE, geom_size = 3) +
     layer_themes(specimen_tbl = specimen_tbl, id_column = id_column,
                  legend_title = legend_title) +
     coord_sf(xlim = range(ggplot_extent[["Longitude"]]),
