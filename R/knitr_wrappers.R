@@ -2,7 +2,7 @@
 #'
 #' Convert LaTeX italics to HTML markdown for firgure captions.
 #'
-#' @param chunk_type Knitr chunk type returned by 
+#' @param chunk_type Knitr chunk type returned by
 #'   `opts_knit$get("rmarkdown.pandoc.to")`
 #' @param caption Character scalar passed to `knitr::kable()` `caption` arg.
 #'
@@ -33,7 +33,7 @@ html_caption <- function(chunk_type, caption) {
 #' @export
 #'
 knitr_section <- function(knitr_title, knitr_type, chunk_type) {
-  
+
   # Check `knitr_type` against list of possible section names.
   knitr_chunk_list <- list(section = "##", subsection = "###")
   if (!TRUE %in% (knitr_type %in% names(knitr_chunk_list))) {
@@ -41,7 +41,7 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
     message(paste(names(knitr_chunk_list), collapse = "\n"), "\n")
     stop()
   }
-  
+
   # Get knit conversion type and output respective section header.
   if (chunk_type == "html") {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
@@ -66,14 +66,14 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
 #'
 #' @inheritParams html_caption
 #' @return Table 2 reference based on type of pandoc conversion.
-#' 
+#'
 #' @export
 #'
-knitr_table2 <- function(chunk_type) {
+knitr_table_dna <- function(chunk_type) {
   if (chunk_type == "latex") {
-    paste0("\\@ref(tab:methodsTable2DnaSpecimens)")
+    paste0("\\@ref(tab:TableDnaSpecimensLatex)")
   } else if (chunk_type == "html") {
-    paste0("\\@ref(tab:methodsTable2DnaSpecimensHtml)")
+    paste0("\\@ref(tab:TableDnaSpecimensHtml)")
   }
 }
 

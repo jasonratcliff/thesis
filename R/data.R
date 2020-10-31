@@ -117,4 +117,89 @@
 #'
 "seinet_coords"
 
+#' CO Front Range Subset
+#'
+#' Used for Roxygen @@examples and testthat unit test. \cr
+#' Bounding box:
+#' - Longitude: c(-107.5, -104.5)
+#' - Latitude: c(38, 41)
+#'
+"spp_co_front_range"
+
+# ggplot Scales ----
+
+#' Species Color Aesthetics
+#'
+#' \describe{
+#' \item{spp_color}{Vector with values for ggplot color aesthetics}
+#' }
+"spp_color"
+
+#' Species Shape Aesthetics
+#'
+#' \describe{
+#' \item{spp_shape}{Vector with values for ggplot shape aesthetics}
+#' }
+"spp_shape"
+
+# Trait Data ----
+
+#' Morphology: Mature Fruit Apices
+#'
+#' Trait observations from mature fruit apices.
+#' See [herbarium_specimens] for additional variable descriptions.
+#'
+#' \describe{
+#'   \item{Trait}{Unique observations of mature fruit apices}
+#'   \item{n}{Number of observations}
+#' }
+#'
+"trait_apices"
+
+#' Morphology: Basal Leaf Margins
+#'
+#' Trait observations from basal leaf margins.
+#' See [herbarium_specimens] for additional variable descriptions.
+#'
+#' \describe{
+#'   \item{Trait}{Unique observations of basal leaf margins}
+#'   \item{n}{Number of observations per trait}
+#' }
+"trait_margins"
+
+#' Morphology: Max Ovules per Locule
+#'
+#' Trait observations from mature fruit apices.
+#' See [herbarium_specimens] for additional variable descriptions.
+#'
+#' \describe{
+#'   \item{Trait}{Unique observations of mature fruit apices}
+#'   \item{n}{Number of observations per trait}
+#' }
+#'
+"trait_ovules"
+
+#' Morphology: Mature Fruit Replums
+#'
+#' Trait observations from mature fruit replums.
+#' See [herbarium_specimens] for additional variable descriptions.
+#'
+#' \describe{
+#'   \item{Trait}{Unique observations of mature fruit replums}
+#'   \item{n}{Number of observations per trait}
+#' }
+#'
+"trait_replums"
+
+#' Morphology: Mature Fruit Trichomes
+#'
+#' Trait observations from mature fruit trichomes.
+#' See [herbarium_specimens] for additional variable descriptions.
+#'
+#' \describe{
+#'   \item{Trait}{Unique observations of mature fruit trichomes}
+#'   \item{n}{Number of observations per trait}
+#' }
+#'
+"trait_trichomes"
 

@@ -16,34 +16,38 @@ ui <- fluidPage(
       tabPanel(title = "Distribution",
         fluidRow(column(width = 6, tableOutput(outputId = "mapRange"))),
         fluidRow(
-          plotOutput(
-            outputId = "mapPlot",
-            brush = brushOpts(
-              id = "mapBrush", delay = 500,
-              resetOnNew = TRUE)
+          column(12,
+            plotOutput(
+              outputId = "mapPlot",
+              brush = brushOpts(
+                id = "mapBrush", delay = 500,
+                resetOnNew = TRUE)
+            )
+          )
+        ),
+        fluidRow(
+          column(6,
+            fluidRow(
+              selectInput(
+                inputId = "map_color_aes", label = "Mapped Taxa ID",
+                choices = list("prior_id", "prior_1", "prior_2", "prior_3",
+                               "prior_4", "Taxon_a_posteriori"),
+                selected = "prior_id")),
+            hr(),
+            fluidRow(
+              checkboxInput(inputId = "spp_find", value = FALSE,
+                            label = "Find individual specimen?"),
+              textInput(inputId = "collector_id", value = NA,
+                        label = "Collector"),
+              textInput(inputId = "collection", value = NA,
+                        label = "Collection Number")
             )
           ),
-        fluidRow(plotOutput("mapLegend"))
+          column(6,
+            plotOutput("mapLegend")
+          )
+          )
         ),
-
-      # Select parameter for geom aesthetic layer.
-      tabPanel(title = "Parameters", br(),
-               fluidRow(
-                 selectInput(
-                   inputId = "map_color_aes", label = "Mapped Taxa ID",
-                   choices = list("prior_id", "prior_1", "prior_2", "prior_3",
-                                  "prior_4", "Taxon_a_posteriori"),
-                   selected = "prior_id")), hr(),
-               fluidRow(
-                 # TODO fix implementation for finding individual voucher.
-                 checkboxInput(inputId = "spp_find", value = FALSE,
-                               label = "Find individual specimen?"),
-                 textInput(inputId = "collector_id", value = NA,
-                           label = "Collector"),
-                 textInput(inputId = "collection", value = NA,
-                           label = "Collection Number")
-                 )
-               ),
 
       # Reactive table of brushed specimens.
       tabPanel("Specimens", tableOutput("specimens"))

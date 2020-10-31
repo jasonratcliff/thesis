@@ -1,3 +1,20 @@
+# ThesisPackage 0.1.2
+
+* New `separate_discrete_trait()` handles discrete trait variables where
+  multiple values have been observed from a single specimen voucher.
+
+* New `map_trait_distribution()` provides a convenient wrapper for displaying
+  trait distribution maps (e.g., from discrete or continuous variables).
+
+* Add specimen data subsets for continuous and discrete trait distributions.
+
+* `layer_specimens()` now returns a jitter geom instead of points, gaining
+  parameters `jitter_width` and `jitter_height` to adjust position.
+
+* New `capitalize()` provides vectorized capitalization of character strings.
+
+* A GNU Makefile provides useful automation checks for `.rda` data creation.
+
 # ThesisPackage 0.1.1
 
 * Add `count_specimens()` to define total unique voucher specimen number.
