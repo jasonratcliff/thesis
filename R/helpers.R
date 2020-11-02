@@ -6,17 +6,18 @@
 #' files from the input `ggplot` object name.
 #'
 #' @param gg_plot Input plot to save ggplot graphic *.png* and *.pdf* figures.
+#' @param ... Forwarding arguments to [ggplot::ggsave()].
 #' @export
 #'
-save_plot <- function(gg_plot) {
+save_plot <- function(gg_plot, ...) {
   gg_plot <- rlang::enquo(gg_plot)
   ggplot2::ggsave(
     filename = fs::path("Figs", rlang::as_label(gg_plot), ext = "png"),
-    plot = rlang::eval_tidy(gg_plot), device = "png"
+    plot = rlang::eval_tidy(gg_plot), device = "png", ...
   )
   ggplot2::ggsave(
     filename = fs::path("Figs", rlang::as_label(gg_plot), ext = "pdf"),
-    plot = rlang::eval_tidy(gg_plot), device = "pdf"
+    plot = rlang::eval_tidy(gg_plot), device = "pdf", ...
   )
 }
 
