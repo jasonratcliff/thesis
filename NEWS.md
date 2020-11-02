@@ -1,3 +1,29 @@
+# ThesisPackage 0.1.3
+
+* Refactor phylogeny functions:
+    - Tree Data
+        - read_tree()
+        - node_labels()
+        - node_geoms()
+        - join_bayes()
+        - conserved_vouchers()
+        - bayes_kable()
+    - MrBayes
+        - bayes_ggtree()
+        - bayes_themes()
+        - bayes_plot()
+    - BEAST
+        - beast_posterior()
+        - beast_labels()
+        - beast_theme()
+        - beast_plot()
+        - beast_legend_color()
+        - beast_legend_posterior()
+
+* Update ggplot theme manual scale specification for color and shape.
+
+* `save_plot()` gains `...` to forward arguments to `ggplot2::ggsave()`.
+
 # ThesisPackage 0.1.2
 
 * New `separate_discrete_trait()` handles discrete trait variables where
