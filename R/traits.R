@@ -136,7 +136,7 @@ map_trait_distribution <- function(tidy_trait,
     ggplot2::theme(
       panel.background = ggplot2::element_blank(),
       panel.border = ggplot2::element_rect(fill = NA, color =  "black"),
-      legend.key = "none"
+      legend.key = ggplot2::element_blank()
     )
   return(trait_map)
 }
