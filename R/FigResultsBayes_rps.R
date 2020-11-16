@@ -14,4 +14,7 @@ FigResultsBayes_rps <-
              id_column = "prior_id", scale_name = "Prior Annotation",
              x_expand = 0.015, plot_x = .15, plot_y = 0.55, plot_height = .425)
 
-ThesisPackage::save_plot(gg_plot = FigResultsBayes_rps)
+ThesisPackage::save_plot(
+  gg_plot = FigResultsBayes_rps,
+  height = 8, width = 6
+)

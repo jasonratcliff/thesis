@@ -9,9 +9,12 @@ FigResultsBayes_rITS <-
              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
   read_tree(tree_file = .) %>%
   join_bayes(tree_data = ., id_column = "prior_id",
-             scale_vector = c(4, 12)) %>%
+             scale_vector = c(5, 10)) %>%
   bayes_plot(joined_ggtree = .,
              id_column = "prior_id", scale_name = "Prior Annotation",
              x_expand = 0.025, plot_x = 0.125, plot_y = 0.425)
 
-ThesisPackage::save_plot(gg_plot = FigResultsBayes_rITS)
+ThesisPackage::save_plot(
+  gg_plot = FigResultsBayes_rITS,
+  height = 8, width = 6
+)

@@ -5,7 +5,7 @@ fig_html 	:= $(fig_outputs:%.R=%.png)
 
 .PHONY: all md pdf html Figs
 
-all: md pdf html Figs
+all: md Figs
 
 md: README.Rmd
 	Rscript -e 'rmarkdown::render(input = "README.Rmd", output_format = "github_document", output_file = "README.md")'

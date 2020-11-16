@@ -14,4 +14,7 @@ FigResultsBayes_ML <-
              id_column = "prior_id", scale_name = "Prior Annotation",
              x_expand = 0.022, plot_x = .15, plot_y = 0.45)
 
-ThesisPackage::save_plot(gg_plot = FigResultsBayes_ML)
+ThesisPackage::save_plot(
+  gg_plot = FigResultsBayes_ML,
+  height = 8, width = 6
+)
