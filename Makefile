@@ -1,22 +1,22 @@
-figs_R = $(wildcard R/Fig*.R)
-figs_path = $(figs_R:R%=Figs%)
-figs_pdf = $(figs_path:%.R=%.pdf)
-figs_html = $(figs_path:%.R=%.png)
+fig_scripts 	:= $(wildcard R/Fig*.R)
+fig_outputs 	:= $(fig_scripts:R%=Figs%)
+fig_pdf 	:= $(fig_outputs:%.R=%.pdf)
+fig_html 	:= $(fig_outputs:%.R=%.png)
 
 .PHONY: all md pdf html Figs
 
-all: md pdf html Figs
+all: md Figs
 
-md:
+md: README.Rmd
 	Rscript -e 'rmarkdown::render(input = "README.Rmd", output_format = "github_document", output_file = "README.md")'
 
-pdf: Figs $(figs_pdf)
+pdf: $(fig_pdf)
 	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::pdf_book")'
 
-html: Figs $(figs_html)
+html: $(fig_html)
 	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
 
-Figs:
+Figs: $(fig_pdf) $(fig_html)
 	if [ ! -d Figs ]; then\
 		mkdir -v Figs;\
 	fi
@@ -30,5 +30,5 @@ Figs/Fig%.png: R/Fig%.R
 clean:
 	rm -f README.html
 	rm -fvr *.aux
-	rm -fvr Figs/
+	rm -fvr Figs/*
 	Rscript -e "bookdown::clean_book(clean = TRUE)"

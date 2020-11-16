@@ -1,0 +1,142 @@
+
+\clearpage
+
+```{r sectionMorphology}
+
+knitr_section(
+  knitr_title = "Morphology",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} Two key morphological features for distinguishing *Physaria*
+sensu stricto include the membranous parition separating fruit locules
+(i.e., replum; Figure \@ref(fig:traitReplumShape)) and the number of ovules
+per locule (Figure \@ref(fig:traitOvules)). Replum shape differs in species
+with a constricted replum noted as a linear appearance, from those with a
+wider replum varying from oblong or elliptic to oblanceolate or obovate.
+Species in the former group include the widespread *P. acutifolia*,
+*P. vitulifera*, and *P. brassicoides*, while the latter group includes
+*P. didymocarpa* and *P. saximontana* subspecies, *P. eburniflora*,
+*P. integrifolia*, *P. dornii*, and *P. condensata*. The distininction of
+partition shape and the quantity of ovules as observed by funiculi per locule
+constitutes a primary feature in the dichotomous key of Wyoming *Physaria*
+provided by @Dorn2001.
+
+```{r traitReplumShape, fig.cap=caption$traitReplumShape, fig.scap="Distribution of fruit replums"}
+
+caption$traitReplumShape <-
+  "Distribution of discrete replum shapes by specimen location."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsTraitReplums.", knitr_ext[[knitr_chunk]])
+)
+
+```
+
+\clearpage
+
+\paragraph{} Species consistently showing 2 ovules per locule include those with
+linear partitions: *Physaria acutifolia*, *P. brassicoides*, and *P. vitulifera*.
+@Rollins1984 described *P. saximontana* subsp. *saximontana* as having 2 ovules
+per locule, differentiated from *P. s.* subsp. *dentata* with 2-4 ovules per
+locule; this distinction is followed by @Dorn2001, @Lesica2012, and @OKane2010.
+Material reviewed here indicates specimens from southeast of the Wind River
+Range northwest through the Absaroka Range and Rocky Mountains of Montana
+frequently have more than 2 locules per ovule. *P. eburniflora* of Natrona and
+Carbon counties in Wyoming also frequently have 2-4 ovules per locule,
+consistent with the description by @Rollins1981. Widespread *P. didymocarpa*
+subsp. *didymocarpa* joins the southwestern Wyoming endemics *P. integrifolia*,
+*P. dornii*, and *P. condensata* as consistently having more than 2 ovules per
+locule. Notably, *P. didymocarpa* subsp. *lanata* in Big Horn, Sheridan, and
+Johnson counties of Wyoming has a typically oblong replum with only 2 ovules
+per locule.
+
+```{r traitOvules, fig.cap=caption$traitOvules, fig.scap="Distribution of fruit ovules"}
+
+caption$traitOvules <-
+  "Maximum count of ovules per locule by specimen location."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsTraitOvules.", knitr_ext[[knitr_chunk]])
+)
+
+```
+
+\clearpage
+
+\paragraph{} The main charcter used by @Rollins1984 to differentiate
+*Physaria saximontana* from *P. didymocarpa* is the lack of a basal sinus in
+the mature siliques of the former. This traditional circumsription is followed
+by @Lesica2012 for Montana *Physaria* and @HeidelOkane2012 for Wyoming
+*Physaria*. While *P. didymocarpa* and *P. eburniflora* are described as having
+cordate basal sinuses [@Rollins1984; @Rollins1981], lack of a basal sinus
+is observed throughout Montana *P. didymocarpa* specimens and seen in some
+*P. eburniflora* individuals (Figure \@ref(fig:traitFruitApices)).
+In contrast, *P. integrifolia*, *P. dornii*, and *P. condensata* from Teton,
+Lincoln, Sublette, and Uinta counties of Wyoming typically have approximately
+equal sinuses similar to the widespread *P. acutifolia*.
+
+```{r traitFruitApices, fig.cap=caption$traitFruitApices, fig.scap="Distribution of mature silique sinuses"}
+
+caption$traitFruitApices <-
+  "Observations of mature silique sinuses by specimen location."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsTraitApices.", knitr_ext[[knitr_chunk]])
+)
+
+```
+
+\clearpage
+
+\paragraph{} @Rollins1939 noted of *Physaria didymocarpa* var. *integrifolia*
+Rollins (later, *Physaria integrifolia* (Rollins) @Lichvar1984) appressed
+stellate trichomes on the mature siliques and entire basal leaves as
+distinguishing characters from *P. d.* subsp. *didymocarpa*.
+These characters are shared by the southwestern endemics *P. dornii* and
+*P. condensata*, both of which are differentiated from *P. integrifolia*
+by their condensed rosette habit [@Lichvar1983]
+(Figure \@ref(fig:traitFruitTrichomes), Figure \@ref(fig:traitBasalLeafMargins)).
+In describing *P. saximontana*, @Rollins1984 noted the silique trichomes with
+rays spreading away from the valve, as similarly described for *P. didymocarpa*
+subsp. *didymocarpa* [@Rollins1939]. These observations are consistent with
+material reviewed here and in keeping with keys by @Dorn2001 and
+@HeidelOkane2012.
+
+```{r traitFruitTrichomes, fig.cap=caption$traitFruitTrichomes, fig.scap="Distribution of silique trichomes"}
+
+caption$traitFruitTrichomes <-
+  "Observations of mature silique trichomes by specimen location."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsTraitTrichomes.", knitr_ext[[knitr_chunk]])
+)
+
+```
+
+\clearpage
+
+\paragraph{} Of the two *P. saximontana* varieties (var. *saximontana* and
+var. *dentata*) described by @Rollins1984, the former was distinguished by
+entire radical leaves and a relatively shorter style length from the latter
+having broadly dentate margins and a longer style. While this traditional
+distinction was followed by @OKane2010 and @Lesica2012, dentate margins can be
+observed throughout *P. saximontana* of Wyoming and *P. didymocarpa* of Montana
+(Figure \@ref(fig:traitBasalLeafMargins)). Though common in occurrence, dentate
+margins are not supported as a fixed trait in *P. didymocarpa*. In contrast,
+*P. acutifolia* and the southwestern endemics *P. integrifolia*, *P. dornii*,
+and *P. condensata* generally have entire basal leaves with the former
+distinguished from the endemics by replum shape and ovule count.
+
+```{r traitBasalLeafMargins, fig.cap=caption$traitBasalLeafMargins, fig.scap="Distribution of basal leaf margins"}
+
+caption$traitBasalLeafMargins <-
+  "Observations of basal leaf margins by specimen location."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsTraitMargins.", knitr_ext[[knitr_chunk]])
+)
+
+```
