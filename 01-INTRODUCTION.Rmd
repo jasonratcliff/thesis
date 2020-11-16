@@ -3,7 +3,13 @@
 \pagestyle{main}
 \pagenumbering{arabic}
 
-\paragraph{} This project considers the systematics of *Physaria* (Nuttall ex Torrey \& A. Gray) A. Gray [Brassicaceae] sensu stricto with an emphasis on the regional and state endemics of Wyoming and surrounding areas.  Historically, these species of *Physaria* were circumscribed from close relatives on the basis of didymous fruits, in which two highly inflated valves are separated by a constricted replum (Gray 1848; Watson 1888).  Twelve such species have described distributions at least partially in Wyoming:
+\paragraph{} This project considers the systematics of *Physaria*
+(Nuttall ex Torrey \& A. Gray) A. Gray [Brassicaceae] sensu stricto with an
+emphasis on the regional and state endemics of Wyoming and surrounding areas.
+Historically, these species of *Physaria* were circumscribed from
+close relatives on the basis of didymous fruits, in which two highly inflated
+valves are separated by a constricted replum [@Gray1848; @Watson1888].
+Twelve such species have described distributions at least partially in Wyoming:
 
 * ***Physaria acutifolia*** Rydberg
 * ***Physaria brassicoides*** Rydberg
@@ -18,167 +24,402 @@
 * ***Physaria saximontana*** subsp. ***dentata*** Rollins
 * ***Physaria vitulifera*** Rydberg
 
-\paragraph{} Multiple authors have noted the difficulty in delineating between species traditionally recognized in *Physaria* and those of the closely related genus *Lesquerella* Watson.  As first described by Watson (1888), *Lesquerella* comprised 33 species previously recognized as the Old World *Vesicaria*.  Watson distinguished *Lesquerella* by the presence of a veined septum and the absence of teeth or appendages on the filaments.  Notably, he supported the recognition of *Physaria* as a distinct entity presumably on the basis of fruit morphology.  In a monograph of *Lesquerella*, Payson (1921) remarked of *L. utahensis* Rydberg, “… great similarity, in some of its forms particularly, to members of the genus *Physaria*.”  Rollins (1939) noted further similarity, stating that, “These two genera have almost exactly the same floral pattern, habit of growth, and trichome morphology.  The siliques too are very similar.”  Al-Shehbaz and O’Kane (2002) merged the genera on the basis of molecular, morphological, ecological and distributional data, encapsulating more than 150 years of botanical progress.
+\paragraph{} Multiple authors have noted the difficulty in delineating between
+species traditionally recognized in *Physaria* and those of the closely related
+genus *Lesquerella* Watson. As first described by @Watson1888, *Lesquerella*
+comprised 33 species previously recognized as the Old World *Vesicaria*.
+Watson distinguished *Lesquerella* by the presence of a veined septum and the
+absence of teeth or appendages on the filaments. Notably, he supported the
+recognition of *Physaria* as a distinct entity presumably on the basis of
+fruit morphology. In a monograph of *Lesquerella*, @Payson1921 remarked of
+*L. utahensis* Rydberg, “...great similarity, in some of its forms particularly,
+to members of the genus *Physaria*.” @Rollins1939 noted further similarity,
+stating that, “These two genera have almost exactly the same floral pattern,
+habit of growth, and trichome morphology. The siliques too are very similar.”
+@Al-Shehbaz2002 merged the genera on the basis of molecular, morphological,
+ecological and distributional data, encapsulating more than 150
+years of botanical progress.
 
-\paragraph{} Following the combination of *Lesquerella* with *Physaria* sensu stricto and the ensuing treatment by O’Kane (2010), a need for additional systematic work among the “traditional” *Physaria* of Wyoming was identified by Heidel and O’Kane (2012).  In particular, the contested status of specimens previously annotated as *P. vitulifera* from south-central Wyoming is of interest as the species is known primarily from the eastern slope of the Front Range in Colorado (Weber and Wittman 1996; Ackerfield 2015).  Furthermore, O’Kane (2010) previously noted the characters distinguishing *P. didymocarpa* and *P. saximontana* show some intergradation, suggesting the need for further work on these taxa and described subspecies.  Lastly, the state endemic *P. dornii* of southwestern Wyoming has a described distribution overlapping with the regional endemic *P. integrifolia* and a peripatric distribution with *P. condensata* (Lichvar 1983).  Here, an integrative taxonomic treatment of these species considers evidence from molecular, ecological and morphological data to address the phylogenetic status of these taxa.
+\paragraph{} Following the combination of *Lesquerella* with *Physaria*
+sensu stricto and the ensuing treatment by @OKane2010, a need for additional
+systematic work among the “traditional” *Physaria* of Wyoming was identified
+by @HeidelOKane2012. In particular, the contested status of specimens
+previously annotated as *P. vitulifera* from south-central Wyoming is of
+interest as the species is known primarily from the eastern slope of the
+Front Range in Colorado [@Weber1996; @Ackerfield2015].
+Furthermore, @OKane2010 previously noted the characters distinguishing
+*P. didymocarpa* and *P. saximontana* show some intergradation, suggesting the
+need for further work on these taxa and described subspecies.  Lastly, the state
+endemic *P. dornii* of southwestern Wyoming has a described distribution
+overlapping with the regional endemic *P. integrifolia* and a peripatric
+distribution with *P. condensata* [@Lichvar1983].
+Here, an integrative taxonomic treatment of these species considers evidence
+from molecular, ecological and morphological data to address the
+phylogenetic status of these taxa.
 
-```{r introSectionTaxaHistory}
-knitr_section(knitr_title = "Systematic and Taxonomic History",
-              knitr_type = "section")
+```{r sectionTaxaHistory}
+
+knitr_section(
+  knitr_title = "Systematic and Taxonomic History",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
-\paragraph{} The first mention of *Physaria* (Nutt.) A. Gray as a distinct taxon is credited to Thomas Nuttall in Torrey and Gray (1838) where he described it as a section of *Vesicaria* Adanson, an Old World genus.  At that time, only *V. didymocarpa* Hooker as recognized by William Hooker was included.  In his description, Hooker (1830) noted of *V. didymocarpa* fruit morphology, “ . . . a seed-vessel with its two valves separated by so deep a sinus, that, . . . it might almost form a generic character.”  However, due to the remarkable similarity of the overall habit to other *Vesicaria* species, Hooker (1830) chose to recognize *V. didymocarpa* at the specific rank.
+\paragraph{} The first mention of *Physaria* (Nutt.) A. Gray as a distinct taxon
+is credited to Thomas Nuttall in Torrey and Gray [-@Nuttal1838] where it is
+described as a section of *Vesicaria* Adanson, an Old World genus. At that time,
+only *V. didymocarpa* Hooker as recognized by William Hooker was included. In
+the description, @Hooker1830 noted of *V. didymocarpa* fruit morphology,
+“...a seed-vessel with its two valves separated by so deep a sinus, that, ...it
+might almost form a generic character.”  However, due to the remarkable
+similarity of the overall habit to other *Vesicaria* species, @Hooker1830
+chose to recognize *V. didymocarpa* at the specific rank.
 
-\paragraph{} Hooker (1847) later described *Vesicaria geyeri* Hooker stating it resembled *V. didymocarpa* in habit but could be differentiated by compressed, obcordate fruits of membranous texture.  Gray (1848) posited that these species be recognized at the generic rank on the basis of strongly didymous fruits with narrowed partitions, thereby recognizing *V. didymocarpa* and *V. geyeri* as the genus *Physaria* (Nutt.) A. Gray.  Gray (Ives et al. 1861) made the next addition to the genus with a description of *P. newberryi* A. Gray.  He distinguished this species from *P. didymocarpa* (Hook.) A. Gray by highly inflated silicles with inflexed, or v-shaped apical sinuses.
+\paragraph{} @Hooker1847 later described *Vesicaria geyeri* Hooker stating it
+resembled *V. didymocarpa* in habit but could be differentiated by compressed,
+obcordate fruits of membranous texture. @Gray1848 posited that these species
+be recognized at the generic rank on the basis of strongly didymous fruits with
+narrowed partitions, thereby recognizing *V. didymocarpa* and *V. geyeri* as the
+genus *Physaria* (Nutt.) A. Gray. Gray [@Ives1861] made the next
+addition to the genus with a description of *P. newberryi* A. Gray.
+He distinguished this species from *P. didymocarpa* (Hook.) A. Gray by
+highly inflated silicles with inflexed, or v-shaped apical sinuses.
 
-\paragraph{} Watson (1882) made the final addition to the genus before the turn of the century with a description of *Physaria oregona* S. Watson.  He noted the fruit valves as somewhat compressed and barely surpassing the replum, round–reniform, and larger than *P. geyeri* (Hook.) A. Gray.  A summary of *Physaria* by Robinson (1895) included the four species so far mentioned and noted them as similar in habit to *Lesquerella* S. Watson, but with distinguishable characters in the fruit.  Through the twentieth century, workers on these genera largely upheld the “traditional” distinction between *Lesquerella* and *Physaria* by the strongly didymous fruits of the latter.
+\paragraph{} @Watson1882 made the final addition to the genus before the turn
+of the century with a description of *Physaria oregona* S. Watson. He noted the
+fruit valves as somewhat compressed and barely surpassing the replum,
+round–reniform, and larger than *P. geyeri* (Hook.) A. Gray.  A summary of
+*Physaria* by @Robinson1895 included the four species so far mentioned and noted
+them as similar in habit to *Lesquerella* S. Watson, but with distinguishable
+characters in the fruit. Through the twentieth century, workers on these genera
+largely upheld the “traditional” distinction between *Lesquerella* and
+*Physaria* by the strongly didymous fruits of the latter.
 
-\paragraph{} Per Axel Rydberg (1901) made three additions to the genus when he described *Physaria vitulifera* Rydberg, *P. floribunda* Rydberg, and *P. acutifolia* Rydberg.  These three species were distinguished from *P. didymocarpa* as having smaller fruits.  The lack of a proximal (basal) sinus, curved pedicels, and pandurate basal leaves of 4–5 cm further differentiated *P. vitulifera* from *P. didymocarpa*.  *Physaria floribunda* was described as an intermediate species between *P. didymocarpa* and *P. vitulifera* distinguished by taller height, deeply sinuate to slightly fiddle-form leaves of 5–10 cm with sinuately toothed to acute terminal lobes, and a shallow basal sinus.  He separated *P. acutifolia* by the presence of deep apical and shallow basal sinuses, spherical valves, and acute basal leaves of 1.5–2.5 cm.  Rollins (1939) misapplied the name *P. acutifolia* to a population from Gunnison Co., Colorado later described as *P. rollinsii* G. A. Mulligan by Mulligan (1966).  This discrepancy was highlighted by Mulligan following cytological investigations of *P. acutifolia* (Mulligan 1966, 1967b).  Rollins (1981) later agreed his earlier treatment (Rollins 1939) of *P. australis* (Payson) Rollins actually pertained to *P. acutifolia* Rydberg.
+\paragraph{} Per Axel Rydberg [-@Rydberg1901] made three additions to the genus
+by describing *Physaria vitulifera* Rydberg, *P. floribunda* Rydberg, and
+*P. acutifolia* Rydberg. These species were distinguished from *P. didymocarpa*
+as having smaller fruits. The lack of a proximal (basal) sinus, curved pedicels, 
+and pandurate basal leaves of 4–5 cm further differentiated *P. vitulifera*
+from *P. didymocarpa*. *Physaria floribunda* was described as an intermediate
+species between *P. didymocarpa* and *P. vitulifera* distinguished by taller 
+height, deeply sinuate to slightly fiddle-form leaves of 5–10 cm with sinuately 
+toothed to acute terminal lobes, and a shallow basal sinus. *P. acutifolia* was
+separated by the presence of deep apical and shallow basal sinuses, spherical
+valves, and acute basal leaves of 1.5–2.5 cm. @Rollins1939 misapplied the name
+*P. acutifolia* to a population from Gunnison Co., Colorado later described as
+*P. rollinsii* G. A. Mulligan by @Mulligan1966. This discrepancy was highlighted 
+by Mulligan following cytological investigations of *P. acutifolia*
+[@Mulligan1966; @Mulligan1967b]. @Rollins1981 later agreed an earlier treatment
+[@Rollins1939] of *P. australis* (Payson) Rollins actually pertained to
+*P. acutifolia* Rydberg.
 
-\paragraph{} Rydberg (1902) made another addition to the genus with his description of *Physaria brassicoides* Rydberg.  He differentiated *P. brassicoides* from *P. didymocarpa* by smaller fruit with an acute base in addition to larger basal leaves forming a rosette of 7–10 cm in diameter.  Additionally, he noted the plants tend to grow in soils rich with magnesium.  Rollins (1939) highlighted the constricted replum, presence of two ovules per locule, entire basal leaves, and near lack of a basal sinus in this species.  Aven Nelson (1904) made the next addition to the genus when he described a new variety of *Physaria didymocarpa*.  Nelson distinguished *P. didymocarpa* (Hook.) A. Gray var. *lanata* A. Nelson by the often irregularly toothed basal leaves with marked pubescence of simple trichomes approaching a tomentose appearance.  The type specimen was collected in the Big Horn Mountains.  Rydberg (1912) recommended the species be recognized at the specific rank, a status rejected by both Edward Payson (1918) and Reed Rollins (1939).  O’Kane (2007) later changed the status of *P. didymocarpa* var. *lanata* to the subspecific rank recognized as *P. didymocarpa* (Hook.) A. Gray subsp. *lanata* (A. Nelson) O’Kane.
+\paragraph{} @Rydberg1902 made another addition to the genus with a
+description of *Physaria brassicoides* Rydberg. *P. brassicoides* was
+differentiated from *P. didymocarpa* by smaller fruit with an acute base in
+addition to larger basal leaves forming a rosette of 7–10 cm in diameter.
+Additionally, it was noted the plants tend to grow in soils rich with magnesium.  
+@Rollins1939 highlighted the constricted replum, presence of two ovules per
+locule, entire basal leaves, and near lack of a basal sinus in this species.
+Aven Nelson [-@Nelson1904] made the next addition to the genus by describing
+a new variety of *Physaria didymocarpa*. Nelson distinguished *P. didymocarpa*
+(Hook.) A. Gray var. *lanata* A. Nelson by the often irregularly toothed basal
+leaves with marked pubescence of simple trichomes approaching a tomentose
+appearance, with a type specimen collected from the Big Horn Mountains.
+@Rydberg1912 recommended the species be recognized at the specific rank, a
+status rejected by both @Payson1918 and @Rollins1939. @OKane2007 later changed
+the status of *P. didymocarpa* var. *lanata* to the subspecific rank recognized
+as *P. didymocarpa* (Hook.) A. Gray subsp. *lanata* (A. Nelson) O’Kane.
 
-\paragraph{} A species from south central Washington, *Physaria alpestris* Suksdorf, was recognized by Suksdorf (1906) and separated by compressed, terete to obcordate fruits with styles from 4–6 mm.  In a summary of Idaho threatened and endangered plants, Steele (1977) reports *P. alpestris* Suskdorf var. *lyrata* and *P. alpestris* Suksdorf var. *purpurea* as two varieties proposed for federal threatened status.  In the report, *Physaria geyeri* (Hook.) A. Gray var. *purpurea* Rollins is listed as a synonym for *P. alpestris* var. *purpurea*.  The synonym *P. didymocarpa* (Hook) A. Gray var. *lyrata* C. L. Hitchcock is listed for *P. alpestris* var. *lyrata*, but no reference for the varietal name is provided.  The author here cites a single collection from Lemhi county shown near Salmon, Idaho, stating variety *lyrata* shows intergradation with *P. didymocarpa* var. *didymocarpa* populations near Malad in Oenida County of south-central Idaho as well as populations in north-central Montana.
+\paragraph{} A species from south central Washington, *Physaria alpestris*
+Suksdorf was recognized by @Suksdorf1906 on the basis of compressed, terete to
+obcordate fruits with styles from 4–6 mm. In a summary of Idaho threatened and
+endangered plants, @Steele1977 reports *P. alpestris* Suskdorf var. *lyrata*
+and *P. alpestris* Suksdorf var. *purpurea* as two varieties proposed for
+federal threatened status. There, *Physaria geyeri* (Hook.) A. Gray var.
+*purpurea* Rollins was listed as a synonym for *P. alpestris* var. *purpurea*.
+The synonym *P. didymocarpa* (Hook) A. Gray var. *lyrata* C. L. Hitchcock is
+listed for *P. alpestris* var. *lyrata*, but no reference for the varietal name
+is provided. The author cites a single collection from Lemhi county shown near
+Salmon, Idaho, stating variety *lyrata* shows intergradation with
+*P. didymocarpa* var. *didymocarpa* populations near Malad in Oenida County
+of south-central Idaho as well as populations in north-central Montana. It is
+unclear where the name *Physaria alpestris* var. *lyrata* originated, though it
+is listed as a synonym in a later report on the status of *P. didymocarpa* var.
+*lyrata* in the Salmon National Forest [@Moseley1990]. *P. didymocarpa* var.
+*lyrata* was first described by @Hitchcock1964 as a separate variety due to the
+generally lyrate basal leaves and petioles in addition to the highly inflated,
+larger silicles of variety lyrata. @OKane2007 changed the status of this
+variety to the subspecific rank recognized as *P. didymocarpa* (Hook.) A. Gray
+subsp. *lyrata* (C. L. Hitchcock) O’Kane.
 
-\paragraph{} It is unclear where the name *Physaria alpestris* var. *lyrata* originated, but it is listed as a synonym in a later report on the status of *P. didymocarpa* var. *lyrata* in the Salmon National Forest (Moseley et al. 1990).  Hitchcock (1964) first recognized *P. didymocarpa* var. *lyrata* as a separate variety due to the generally lyrate basal leaves and petioles in addition to the highly inflated, larger silicles of variety lyrata.  O’Kane (2007) changed the status of this variety to the subspecific rank recognized as *P. didymocarpa* (Hook.) A. Gray subsp. *lyrata* (C. L. Hitchcock) O’Kane.
+\paragraph{} @Rollins1939 made notable contributions to *Physaria* with a
+monograph of the genus wherein a number of new species and varieties were
+described. Of note to the Wyoming flora are *P. condensata* Rollins,
+*P. australis* (Payson) Rollins, and varieties of *P. didymocarpa*.
+*Physaria condensata* was described from southwest Wyoming and separated on the
+basis of a highly reduced growth-form while sharing fruit characteristics with
+*P. didymocarpa*. The stems of *P. condensata* are described as less than a
+centimeter in length with the entire plant generally forming a tuft under 5cm
+in diameter. Additionally, @Rollins1939 mentions individuals of this species
+form either soboles or single caudexes, an example of intraspecific variation
+in caudex branching.
 
-\paragraph{} Rollins (1939) made notable contributions to *Physaria* with his monograph of the genus wherein he described a number of new species and varieties.  Of note to the Wyoming flora are descriptions of *P. condensata* Rollins, *P. australis* (Payson) Rollins, and varieties of *P. didymocarpa*.  *Physaria condensata* was described from southwest Wyoming and separated on the basis of a highly reduced growth-form while sharing fruit characteristics with *P. didymocarpa*.  The stems of *P. condensata* are described as less than a centimeter in length with the entire plant generally forming a tuft under 5 cm in diameter.  Additionally, Rollins mentions individuals of this species form either soboles or single caudexes, an example of intraspecific variation in caudex branching.
+\paragraph{} @Rollins1939 applied the name *Physaria australis* to
+*P. didymocarpa* (Hook.) A. Gray var. *australis* Payson, which had been
+previously described by @Payson1918. He argued the taxon deserved specific
+status on the basis of a reduction from four to two ovules per locule and a
+narrowly constricted linear replum. As mentioned previously, the name
+*P. australis* (Payson) Rollins pertains to *P. acutifolia* Rydberg as it is
+currently recognized [@Rollins1981]. @Rollins1939 also described
+*P. didymocarpa* (Hook.) A. Gray var. *integrifolia* Rollins as a new variety of
+*P. didymocarpa*, separated by appressed fruit trichomes. Individuals of this
+variety otherwise tend to show replum structure and ovule number similar to
+*P. didymocarpa* (Hook.) A. Gray var. *normalis* Kuntze. Variety *integrifolia*
+was observed as sharing transitional characters with its southern analogue,
+*P. acutifolia*, where  *P. acutifolia* was hypothesized to have diverged more 
+recently from *P. didymocarpa*.
 
-\paragraph{} Rollins (1939) applied the name *Physaria australis* to *P. didymocarpa* (Hook.) A. Gray var. *australis* Payson, which had been previously described by Payson (1918).  He argued the taxon deserved specific status on the basis of a reduction from four to two ovules per locule and a narrowly constricted linear replum.  As mentioned previously, the name *P. australis* (Payson) Rollins pertains to *P. acutifolia* Rydberg as it is currently recognized (Rollins 1981).
+\paragraph{} @Lichvar1984 elevated *Physaria didymocarpa* var. *integrifolia*
+to specific status on the basis of fruit, leaf, and trichome morphology. As
+noted by @Rollins1983, fruit valves of *P. didymocarpa* var. *integrifolia* are
+generally thin and highly inflated. In addition to fruit morphology differences,
+Lichvar separated *P. integrifolia* (Rollins) Lichvar from *P. didymocarpa*
+varieties *didymocarpa* and *lanata* on the basis of entire basal leaves and
+siliques with appressed trichomes in *P. integrifolia*. In contrast,
+*P. didymocarpa* var. *didymocarpa* and var. *lanata* both are described as
+having dentate basal leaves and siliques with spreading trichomes. Lichvar also
+highlighted differences in scanning electron micrograph images that show a
+central umbo in var. *integrifolia* that is lacking in both var. *didymocarpa*
+and var. *lanata* [@Rollins1979].
 
-\paragraph{} Rollins (1939) described *P. didymocarpa* (Hook.) A. Gray var. *integrifolia* Rollins as a new variety of *P. didymocarpa*, separated by appressed fruit trichomes.  Individuals of this variety otherwise tend to show replum structure and ovule number similar to *P. didymocarpa* (Hook.) A. Gray var. *normalis* Kuntze.  He also observed that variety *integrifolia* shared transitional characters with its southern analogue, P. acutifolia, and hypothesized *P. acutifolia* to have diverged more recently from *P. didymocarpa*.
+\paragraph{} @Lichvar1984 also described a new variety, *P. integrifolia*
+(Rollins) Lichvar var. *monticola* Lichvar, as differing from variety
+*integrifolia* by the presence of a highly branched caudex. The inflorescence
+of variety *monticola* was described as not exceeding the basal rosette to
+the same extent as variety *integrifolia*.  Additionally, both leaf and petiole
+length were described as reduced in variety *monticola* relative to variety 
+*integrifolia*. Specimens identified *a priori* as variety *monticola* are
+distributed throughout the range of variety *integrifolia*. @OKane2010 noted
+the trait of branched caudices is likely due to caudex elongating in response
+to shifting substrate conditions and does not constitute a taxonomic
+delineation. Branching caudices also occur in other species of *Physaria*,
+including *P. acutifolia*, *P. brassicoides*, and *P. didymocarpa*.
 
-\paragraph{} Lichvar (1984) elevated *Physaria didymocarpa* var. *integrifolia* to specific status on the basis of fruit, leaf, and trichome morphology.  As described by Rollins (1983), fruit valves of *P. didymocarpa* var. *integrifolia* are generally thin and highly inflated.  In addition to fruit morphology differences, Lichvar separated *P. integrifolia* (Rollins) Lichvar from *P. didymocarpa* varieties *didymocarpa* and *lanata* on the basis of entire basal leaves and siliques with appressed trichomes in *P. integrifolia*.  In contrast, *P. didymocarpa* var. *didymocarpa* and var. *lanata* both are described as having dentate basal leaves and siliques with spreading trichomes.  Lichvar also highlighted differences in scanning electron micrograph images that show a central umbo in var. *integrifolia* that is lacking in both var. *didymocarpa* and var. *lanata* (Rollins and Banerjee 1979b).
+\paragraph{} Nearly forty years after his first monograph, @Rollins1981
+described a whitish-flowered species as *Physaria eburniflora* Rollins based
+on specimens from central Wyoming. In addition to the petal color,
+*P. eburniflora* was distinguished by ascending trichomes similar to
+*P. didymocarpa* but with fruit valves less inflated and of a rougher texture.
+*Physaria eburniflora* was separated from both *P. acutifolia* and
+*P. didymocarpa* by the shallow, slightly cordate basal sinus of the former as
+opposed to the nearly equal, deep basal and apical sinuses of the latter two.
+The basal leaves of *P. eburniflora* were described as entire and nearly
+orbicular and the stems of the plant as prostrate. Lastly, Rollins described
+*P. eburniflora* by a somewhat reduced growth-form and habit more similar to
+*P. condensata* than *P. didymocarpa*.
 
-\paragraph{} Lichvar (1984) also described a new variety, *P. integrifolia* (Rollins) Lichvar var. *monticola* Lichvar, as differing from variety *integrifolia* by the presence of a highly branched caudex.  Furthermore, the inflorescence of variety *monticola* was described as not exceeding the basal rosette to the same extent as variety *integrifolia*.  Additionally, both leaf and petiole length were described as reduced in variety *monticola* relative to variety *integrifolia*.  Specimens identified a priori as variety *monticola* are distributed throughout the range of variety *integrifolia*.  O’Kane (2010) noted the trait of branched caudices is likely due to caudex elongating in response to shifting substrate conditions and does not constitute a taxonomic delineation.  Branching caudices also occur in other species of *Physaria*, including *P. acutifolia*, *P. brassicoides*, and *P. didymocarpa*.
+\paragraph{} Following fieldwork in Wyoming, @Lichvar1983 described
+*Physaria dornii* Lichvar as one of three *Physaria* populations with plants
+showing a condensed rosette habit. [@Rollins1939; @Rollins1981] described the
+other two populations as *P. condensata* and *P. eburniflora*. To distinguish
+*P. dornii* from its putative close relative *P. condensata*, Lichvar noted
+the basal leaves and fruits of *P. dornii* are consistently larger relative to
+*P. condensata*. Additionally, though the species are geographically separated
+by approximately 6 km, differences in the community composition of each taxon
+were also noted. @Lichvar1983 noted *P. dornii* tended to grow with shrubs and
+grasses, while *P. condensata* grew among cushion plants. *Atriplex gardneri*
+(Amaranthaceae), a halophilic shrub, was also observed growing near
+*P. condensata* while saline indicator species did not occur in *P. dornii*
+habitats. In an area of sympatry with *P. didymocarpa* var. *integrifolia*,
+Lichvar observed *P. dornii* grew in relatively looser, shaley soils as opposed
+to the tighter, calcareous soils surrounding *P. didymocarpa* var.
+*integrifolia*.
 
-\paragraph{} Nearly forty years after his first monograph, Rollins (1981) described a whitish-flowered species as *Physaria eburniflora* Rollins based on specimens from central Wyoming.  In addition to the petal color, *P. eburniflora* was distinguished by ascending trichomes similar to *P. didymocarpa* but with fruit valves less inflated and of a rougher texture.  *Physaria eburniflora* was separated from both *P. acutifolia* and *P. didymocarpa* by the shallow, slightly cordate basal sinus of the former as opposed to the nearly equal, deep basal and apical sinuses of the latter two.  The basal leaves of *P. eburniflora* were described as entire and nearly orbicular and the stems of the plant as prostrate.  Lastly, Rollins described *P. eburniflora* by a somewhat reduced growth-form and habit more similar to *P. condensata* than *P. didymocarpa*.
+\paragraph{} Lastly, @Rollins1984 recognized *Physaria saximontana* Rollins as
+a new species from Wyoming and Montana, distributed from southeast of the Wind
+River Mountains northward through the Rocky Mountains of central Montana. 
+*Physaria saximontana* was distinguished from *P. didymocarpa* largely on the
+basis of silique shape, where fruits of the former lack a basal sinus while the
+latter tend to show a cordate, shallow basal sinus with the pedicel entering
+the sinus. Additionally, the basal leaf trichomes were described as having 6-
+to 8-forked primary rays with some fusion in the center. In contrast, trichomes
+of the siliques show only 3- to 5-forked primary rays with no central fusion
+and they spread away from the fruit. Two varieties of *P. saximontana*,
+*dentata* and *saximontana*, were delineated, with *P. saximontana* var.
+*dentata* Rollins described from specimens collected in Park and Glacier
+Counties of Montana. The presence of broad teeth on the basal leaf margins
+and a style equal to or exceeding 3 times the length of the replum was used to
+separate variety *dentata* from variety *saximontana*. Additionally, the ovule
+count in variety *dentata* was described as ranging from 2 to 4 per locule
+while variety *saximontana* typically had 2 ovules per locule present.
 
-\paragraph{} Following fieldwork in Wyoming, Lichvar (1983) described *Physaria dornii* Lichvar as one of three *Physaria* populations with plants showing a condensed rosette habit.  Rollins (1939; 1981) described the other two populations as *P. condensata* and *P. eburniflora*.  To distinguish *P. dornii* from its putative close relative *P. condensata*, Lichvar noted the leaves and fruits of *P. dornii* are consistently larger relative to *P. condensata*.  Additionally, though the species are geographically separated by approximately 6 km, he noted differences in the community composition of each taxon.
+```{r sectionDistribution}
 
-\paragraph{} Lichvar (1983) noted *P. dornii* tended to grow with shrubs and grasses, while *P. condensata* grew among cushion plants.  *Atriplex gardneri* (Amaranthaceae), a halophilic shrub, was also observed growing near *P. condensata* while saline indicator species did not occur in *P. dornii* habitats (Lichvar 1983).  In an area of sympatry with *P. didymocarpa* var. *integrifolia*, Lichvar observed *P. dornii* grew in relatively looser, shaley soils as opposed to the tighter, calcareous soils surrounding *P. didymocarpa* var. *integrifolia*.
+knitr_section(
+  knitr_title = "Geographical Distribution and Ecology",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
 
-\paragraph{} Rollins (1984) recognized *Physaria saximontana* Rollins as a new species from Wyoming and Montana, distributed from southeast of the Wind River Mountains northward through the Rocky Mountains of central Montana.  Rollins distinguished *P. saximontana* from *P. didymocarpa* largely on the basis of silique shape, where fruits of the former lack a basal sinus while the latter tend to show a cordate, shallow basal sinus with the pedicel entering the sinus.  Additionally, the basal leaf trichomes were described as having 6- to 8-forked primary rays with some fusion in the center.  In contrast, the trichomes of the siliques show only 3- to 5-forked primary rays with no central fusion and they spread away from the fruit.
-
-\paragraph{} Rollins (1984) documented two varieties of *P. saximontana*, variety *dentata* and variety *saximontana*.  *Physaria saximontana* var. *dentata* Rollins was described from specimens collected in Park and Glacier Counties of Montana.  The presence of broad teeth on the basal leaf margins and a style equal to or exceeding 3 times the length of the replum was used to separate variety *dentata* from variety *saximontana*.  He also stated the ovule count in variety *dentata* ranged from 2 to 4 per locule while only 2 ovules per locule were present in variety *saximontana*.
-
-```{r introSectionDistribution}
-knitr_section(knitr_title = "Geographical Distribution and Ecology",
-              knitr_type = "section")
 ```
 
-\paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and montane habitats with often-arid climates and intense sunlight where they tend to occupy siliceous soils, granitic talus or limestone shale outcrops (Rollins 1939; Rollins 1993).  Of the *Physaria* species in this study, *P. acutifolia* (Figure \@ref(fig:introFigure1TotalSpecimens)) is widely distributed as a cline spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico (O’Kane 2010).  Infraspecific taxa not recognized by O’Kane (2010) include *P. acutifolia* var. *purpurea* Welsh and Reveal (1977) of Grand County, Utah and *P. acutifolia* var. *stylosa* Welsh (1986) of northeastern Utah, which was described as *P. stylosa* by Rollins (1993).
+\paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and
+montane habitats with often-arid climates and intense sunlight where they tend
+to occupy siliceous soils, granitic talus or limestone shale outcrops
+[@Rollins1939; @Rollins1993]. The most widespread *Physaria* species considered
+here, *P. acutifolia* (Figure \@ref(fig:FigureIntroPriors)) forms a cline
+spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona
+and New Mexico [@OKane2010]. Infraspecific taxa not recognized by @OKane2010
+include *P. acutifolia* var. *purpurea* @WelshReveal1977 of Grand County,
+Utah and var. *stylosa* @Welsh1986 of northeastern Utah, the latter previously
+described as *P. stylosa* by @Rollins1993.
 
-\paragraph{} Another relatively widespread species is *P. didymocarpa* (Figure \@ref(fig:introFigure1TotalSpecimens)), which includes three subspecies as traditionally circumscribed.  The distribution of *P. didymocarpa* ssp. *didymocarpa* extends from Alberta and British Columbia in Canada through Washington, Idaho, Montana and Wyoming in the western U.S. (O’kane 2010).  The two other subspecies include a regional endemic in Wyoming and Montana, and a state endemic in Idaho.  Known primarily from the Bighorn National Forest of north-central Wyoming and south-central Montana, *P. didymocarpa* ssp. *lanata* has a non-overlapping distribution to the southeast of the range of *P. didymocarpa* ssp. *didymocarpa* (Handley and Heidel 2011).  In Idaho, *P. didymocarpa* ssp. *lyrata* has a narrow distribution in the Salmon River drainage of Lehmi County (Rollins 1993; O’Kane 2010).
+\paragraph{} Another relatively widespread species is *P. didymocarpa*
+(Hooker) A. Gray (Figure \@ref(fig:FigureIntroPriors)), which includes three
+subspecies as traditionally circumscribed. The distribution of *P. didymocarpa*
+subsp. *didymocarpa* extends from Alberta and British Columbia in Canada through
+Washington, Idaho, Montana and Wyoming in the western U.S. [@OKane2010].
+The two other subspecies include a regional endemic of Wyoming and Montana,
+and a state endemic in Idaho. Known primarily from the Bighorn National Forest
+of north-central Wyoming and south-central Montana, *P. didymocarpa* subsp.
+*lanata* (A. Nelson) @OKane2007 has a non-overlapping distribution to the
+southeast of the range of *P. didymocarpa* subsp. *didymocarpa*
+[@HandleyHeidel2011]. In Idaho, *P. didymocarpa* subsp. *lyrata*
+(C. L. Hitchcock) O'Kane has a narrow distribution in the Salmon River drainage
+of Lehmi County [@Rollins1993; @OKane2010].
 
 \clearpage
 
-```{r introFigure1TotalSpecimens, fig.width=8, fig.cap="Prior distribution of \\textit{Physaria} sensu stricto herbarium specimens."}
+```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors}
 
-# Subset specimens for mapping prior annotations.
-total_priors <- herbarium_specimens%>%
-  dplyr::select(prior_id, Latitude, Longitude) %>%
-  subset_coords(specimen_tbl = .,
-                Latitude = c(37, 49.1),
-                Longitude = c(-115.2, -103)) %>%
-  # Filter out Lesquerella / Physaria sensu lato spp.
-  dplyr::filter(!grepl(paste("Lesquerella", "cnema", "alpina", "cordiformis",
-                              "macrantha", sep = "|", collapse = ""),
-                       x = prior_id) & !grepl("\\?|Brassicaceae", x = prior_id))
+caption$FigureIntroPriors <-
+  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
+        "by most recent annotations.")
 
-# Build ggplot map of subet by prior annotations.
-map_specimens(specimen_tbl = total_priors, borders = "black", f_adj = 0.01,
-              id_column = "prior_id", shape_opt = "prior_id") %>%
-  map_themes(gg_map_obj = ., mapped_specimens = total_priors,
-             id_column = "prior_id", legend_title = "Prior Annotations")
+knitr::include_graphics(
+  path = paste0("Figs/FigIntroPriors.", knitr_ext[[knitr_chunk]])
+)
 
 ```
 
-\vspace*{15pt}
+\paragraph{} Three species of *Physaria* sensu-stricto have been described from
+southwestern and west-central Wyoming (Figure \@ref(fig:FigureIntroPriors)).
+These include two state endemics, *P. condensata* Rollins and *P. dornii*
+Lichvar, with rangesnextending through the Overthrust Belt mountains of central
+Uinta county and southern Lincoln county [@Fertig1998; @Fertig2002]. Both
+species were formerly considered for the Endangered Species Act as C2
+candidates. Currently, they are recognized as state endemics of high
+conservation priority by the Wyoming National Diversity Database with
+*P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at
+the G2G3/S2S3 heritage ranking (@HeidelOKane2012). *Physaria integrifolia* is a
+regional endemic of western Wyoming and eastern Idaho.
 
-\paragraph{} Three species of *Physaria* sensu-stricto have been described from southwestern and west-central Wyoming (Figure \@ref(fig:introFigure1TotalSpecimens)).  These include two state endemics, *P. condensata* and *P. dornii*, with ranges extending through the Overthrust Belt mountains of central Uinta county and southern Lincoln county (Fertig 1998; Fertig 2002).  Both species were formerly considered for the Endangered Species Act as C2 candidates.  Currently, they are recognized as state endemics of high conservation priority by the Wyoming National Diversity Database with *P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at the G2G3/S2S3 heritage ranking (Heidel 2012).  *Physaria integrifolia* is a regional endemic of western Wyoming and eastern Idaho.
+\paragraph{} Three state and regional endemics have distributions through
+central to eastern Wyoming (Figure \@ref(fig:FigureIntroPriors)).
+Currently listed as a species of potential concern in Wyoming at the G3/S3
+rank [@Heidel2014], *P. saximontana* subsp. *saximontana* is distributed in west
+central Wyoming to the southeast of the Wind River Range [@Rollins1984]. The
+putatively related *P. saximontana* subsp. *dentata* extends north through the
+Rocky Mountains of Montana. These species occupy montane to alpine habitats
+ranging from 1500 – 2700 m [@Lesica2012; @OKane2010]. *P. eburniflora* is a
+species of potential concern in Wyoming given a G3/S3 heritage rank
+[@Heidel2012], and a state endemic of Carbon, Fremont and Natrona Counties.
+The distribution of *P. brassicoides* extends from Montana and North Dakota
+south to Colorado and Nebraska at generally lower elevations, ranging from
+900-1400 m [@OKane2010]. Often on bare hillsides, bluffs, riverbanks, badlands
+and clay soils, its distribution is primarily non-overlapping with other
+Wyoming *Physaria*.
 
-\paragraph{} Three state and regional endemics have distributions through central to eastern Wyoming (Figure \@ref(fig:introFigure1TotalSpecimens)).  Currently listed as a species of potential concern in Wyoming at the G3T3/S3 rank (Heidel 2012), *P. saximontana* ssp. *saximontana* is distributed in west central Wyoming to the southeast of the Wind River Range (Rollins 1984).  The putatively related *P. saximontana* ssp. *dentata* extends north through the Rocky Mountains of Montana.  These species occupy montane to alpine habitats ranging from 1500 – 2700 m (Lesica 2012; O’Kane 2010).  *P. eburniflora* is a species of potential concern in Wyoming given a G3/S3 heritage rank (Heidel 2012), and a state endemic of Carbon, Fremont and Natrona Counties.  The distribution of *P. brassicoides* extends from Montana and North Dakota south to Colorado and Nebraska at generally lower elevations, ranging from 900-1400 m (O’Kane 2010).  Often on bare hillsides, bluffs, riverbanks, badlands and clay soils, its distribution is primarily non-overlapping with other Wyoming *Physaria*.
+```{r subsectionCarbonVitulifera}
 
-```{r introSubsectionCarbonVitu}
-knitr_section(knitr_title = "Reported *Physaria vitulifera* of South Central Wyoming",
-              knitr_type = "subsection")
+knitr_section(
+  knitr_title = "Status of *Physaria vitulifera* in Wyoming",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
 ```
 
-\paragraph{} Rollin's (1993) treatment of *Physaria* described *P. vitulifera* as occurring in central Colorado.  Weber and Wittman (1996) reported the species with a distribution East of the Front Range, on gravelly slopes of the outer canyons in the foothills.  Ackerfield (2015) also reported the species as East of the Rocky Mountains, from the South in Fremont County to the North in Larimer County.  O'Kane's (2010) treatment of *Physaria* follows these circumsriptions, reporting *P. vitulifera* from only Colorado.  However, Heidel and O'Kane (2012) identified a need for taxonomic work based on *Physaria* collections with annotations as *P. vitulifera*, many of which were reannotated by Jennings (2004) as *P. acutifolia* (indicated by “*”, Table \@ref(tab:introTable1CarbonVituSpecs)).
+\paragraph{} Rollins' -@Rollins1993 treatment of *Physaria* described
+*P. vitulifera* as occurring in central Colorado. Weber and Wittman [-@Weber1996]
+reported the species with a distribution East of the Front Range, on gravelly
+slopes of the outer canyons in the foothills. @Ackerfield2015 also reported the
+species as East of the Rocky Mountains, from the South in Fremont County to the
+North in Larimer County. O'Kane's [-@OKane2010] treatment of *Physaria* follows
+the latter circumsriptions, reporting *P. vitulifera* from only Colorado.
+More recently, Heidel and O'Kane [-@HeidelOKane2012] identified a need for
+taxonomic work based on *Physaria* collections with annotations as
+*P. vitulifera*, many of which were reannotated by Jennings (2004) as
+*P. acutifolia* (indicated by “*”, Table \@ref(tab:TableIntroCarbon)).
 
-\vspace*{35pt}
+```{r TableIntroCarbon}
 
-```{r introTable1CarbonVituSpecs}
+# Table: Carbon county putative *P. vitulifera* annotations
+caption$TableIntroCarbon <-
+  ifelse(knitr_chunk == "latex",
+         paste0("Putative Carbon County, Wyoming ",
+                "\\textit{Physaria vitulifera} specimens."),
+         paste0("Putative Carbon County, Wyoming ",
+                "*Physaria vitulifera* specimens."))
 
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
-specimens$carbon_kable <- herbarium_specimens %>%
+spp_carbon_kable <- herbarium_specimens %>%
   dplyr:: select(prior_id, Taxon, Collector, Collection_Number, Date_parsed,
                  State, County, Herbarium, Latitude, Longitude) %>%
   dplyr::filter(grepl("vitulifera", x = Taxon) &
-                  grepl("Carbon", x = County)) %>% 
+                  grepl("Carbon", x = County)) %>%
   dplyr::arrange(Date_parsed, prior_id) %>%
 
-  # Clean up collector names to remove initials and punctuation.
-  dplyr::mutate(Collector = sapply(Collector, function(collector) {
-    gsub("[A-Z]\\. ?", "", collector) %>%
-      gsub("&", "and", x = .)
-  }))
+  dplyr::mutate(
 
-# Add asterisk to specimens reviewed by Jennings (2004).
-specimens$carbon_kable <-
-  dplyr::bind_cols(specimens$carbon_kable,
-    purrr::pmap_dfr(specimens$carbon_kable,
-      function(prior_id, Collection_Number, ...) {
-        if (Collection_Number %in%
-            c("411", "3695", "63", "54", "19075", "19078", "11363", "16699",
-              "19073", "16713", "19510", "6", "16475")) {
-          mra <- paste0("*", prior_id, "*\\*")
-          } else {
-            mra <- paste0("*", prior_id, "*")
-            }
-        dplyr::bind_cols(annotation = mra)
-        }))
+    # Clean up collector names to remove initials and punctuation.
+    Collector = purrr::map_chr(.x = Collector, function(collector) {
+      gsub("[A-Z]\\. ?", "", collector) %>% gsub("&", "and", x = .)
+      }),
 
-# Remove brackets from herbarium column of separate records.
-specimens$carbon_kable <-
-  dplyr::mutate(specimens$carbon_kable,
-    Herbarium = purrr::map_chr(Herbarium, function(herbarium) {
-      gsub("\\[|\\]", "", herbarium) %>%
-        gsub(" +", " ", x = .)
-    }))
+    # Add asterisk to specimens reviewed by Jennings (2004).
+    Annotation = purrr::map2_chr(.x = prior_id, .y = Collection_Number,
+      function(id, collection) {
+        ifelse(test = collection %in%
+                 c("411", "3695", "63", "54", "19075", "19078", "11363",
+                   "16699", "19073", "16713", "19510", "6", "16475"),
+               yes = paste0("*", id, "*\\*"), no = paste0("*", id, "*"))
+        }),
+
+    # Remove brackets from herbarium column of separate records.
+    Herbarium = purrr::map_chr(.x = Herbarium, function(herbarium) {
+      gsub("\\[|\\]", "", herbarium) %>% gsub(" +", " ", x = .)
+      })
+    ) %>%
+
+  # Group by collection / collector and filter to single specimen.
+  dplyr::group_by(Collection_Number, Collector) %>%
+  dplyr::filter(dplyr::row_number() == 1) %>%
+  dplyr::rename(`Collection Number` = .data$Collection_Number,
+                `Most Recent Annotation` = .data$Annotation) %>%
+  dplyr::select(., `Most Recent Annotation`, .data$Collector,
+                `Collection Number`, .data$Herbarium)
 
 # Parse asterisks for LaTeX italicization.
-specimens$carbon_kable <-
-  dplyr::mutate(specimens$carbon_kable,
-    annotation = purrr::map_chr(annotation, function(x) {
+dplyr::mutate(spp_carbon_kable,
+  "Most Recent Annotation" = purrr::map_chr(.data$`Most Recent Annotation`,
+    function(x) {
       if (knitr_chunk == "latex") {
-        if (stringr::str_detect(x, "\\*\\\\\\*$")) {
+        if (grepl(pattern = "\\*\\\\\\*$", x = x)) {
           gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
             gsub(pattern = "\\*\\\\\\*$", replacement = "}\\*", x = .)
           } else {
             gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
               gsub(pattern = "\\*$", replacement = "}", x = .)
-            }
-        }
-      }))
-
-# Group by collection / collector and filter to single specimen.
-specimens$carbon_kable <- specimens$carbon_kable %>%
-  dplyr::group_by(Collection_Number, Collector) %>%
-  dplyr::filter(dplyr::row_number() == 1) %>%
-  dplyr::rename(`Collection Number` = Collection_Number,
-                `Most Recent Annotation` = annotation) %>%
-  dplyr::select(., `Most Recent Annotation`, Collector,
-                `Collection Number`, Herbarium)
-
-# Kable of putative Wyoming P. vitulifera specimens.
-knitr::kable(x = specimens$carbon_kable,
-  format = knitr_chunk, escape = FALSE, row.names = FALSE,
-  caption = knitr_caption(
-    caption = paste0("Putative Carbon County, Wyoming ",
-                     "\\textit{Physaria vitulifera} specimens."))) %>%
+          }
+        } else { x }
+      })) %>%
+  
+  # Kable of putative Wyoming P. vitulifera specimens.
+  knitr::kable(x = .,
+               format = knitr_chunk, escape = FALSE, row.names = FALSE,
+               caption = caption$TableIntroCarbon) %>%
   kableExtra::kable_styling(full_width = FALSE,  latex_options= "HOLD_position",
-                position = "center") %>%
+                            position = "center") %>%
   kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
   kableExtra::column_spec(1, border_left = TRUE) %>%
   kableExtra::column_spec(3, width = "2.5cm") %>%
@@ -188,71 +429,132 @@ knitr::kable(x = specimens$carbon_kable,
 
 \clearpage
 
-```{r introFigure2MapCarbonWyoVitu, fig.height=6, fig.asp=1, fig.cap=knitr_cap}
+\paragraph{} Dorn's [-@Dorn2001] Wyoming Flora key to *Physaria* did report the
+species from southcentral Wyoming, distinguished by fruits with a somewhat
+rectangular outline and obtuse or truncate basal apices. It was noted the replum
+often attached nearly the full length of the fruit resulting in highly reduced
+apices, and that basal leaf petioles tended to be toothed. This entity was
+described as occurruing on rocky slopes in or nearby mountains [@Dorn2001].
+This treatment preceded a review of putative *P. vitulifera* specimens in the
+state [@Jennings2004]. As previously described, the taxonomic status of
+*P. vitulifera* in Wyoming is unclear
+[@Rollins1993; @Dorn2001; @Jennings2004; @OKane2010; @HeidelOKane2012].
+A number of specimens from Carbon county in Wyoming have previously been
+annotated as *P. vitulifera* ("*Physaria vitulifera* - Carbon")
+or fit the phenotype described by Dorn [-@Dorn2001]
+("*Physaria acutifolia - vitulifera*-like")
+appear geographically separated from the Colorado Front range *P. vitulifera*
+(Figure \@ref(fig:FigureIntroCarbon).
 
-set.seed(2018)
-knitr_cap <-
+```{r FigureIntroCarbon, fig.cap=caption$FigureIntroCarbon}
+
+caption$FigureIntroCarbon <-
   "Distribution of reported Carbon County, WY *Physaria vitulifera*."
 
-# Data frame for text annotation of Bears Ears Range area.
-carbon_bears_ear <- as.data.frame(matrix(nrow = 4, ncol = 3))
-names(carbon_bears_ear) <- c("map_ber", "map_x", "map_y")
-carbon_bears_ear$map_ber <- c("Bears Ears Range", "North",
-                              "Park", "Middle Park")
-carbon_bears_ear$map_x <- c(-106.05, -106.25, -106.1, -105.94)
-carbon_bears_ear$map_y <- c(40.275, 40.75, 40.6, 40.11)
-
-# Subset specimens to add map labels.
-specimens$carbon_wyo_labels <- specimens$carbon_wyo %>%
-  dplyr::filter(grepl("Kastning|Nelson", Collector)) %>%
-  dplyr::filter(grepl("1462|1725|49286|49478", Collection_Number))
-
-specimens$carbon_wyo_spp <- specimens$carbon_wyo %>%
-  dplyr::filter(!grepl("Kastning|Nelson", Collector) &
-                  !grepl("1462|1725|49286|49478", Collection_Number))
-
-# Satellite map of Carbon, WY specimens.
-(ThesisPackage::map_ggmap(specimen_tbl = specimens$carbon_wyo_spp,
-                          size = 8, gg_map_type = "satellite",
-                          jitter_pos = c(.05, .05),
-                          id_column = "Taxon_a_posteriori",
-                          shape_opt = "Taxon_a_posteriori") +
-  geom_text(data = carbon_bears_ear,
-            aes(map_x, map_y, label = map_ber, group = NULL),
-            color = "white", size = 3.5)) %>%
-  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
-             collector = "Kastning", collection = 1462,
-           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
-             h_adjust = -0.425, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
-             collector = "Kastning", collection = 1725,
-           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
-             h_adjust = -0.4, v_adjust = -0.15) %>%
-  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
-             collector = "Nelson", collection = 49286,
-           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
-             h_adjust = 0.275, v_adjust = -0.1) %>%
-  map_spp_id(gg_map_obj = ., specimen_tbl = specimens$carbon_wyo_labels,
-             collector = "Nelson", collection = 49478,
-           id_column = "Taxon_a_posteriori", shape_opt = "Taxon_a_posteriori",
-             h_adjust = -0.225, v_adjust = -0.12) %>%
-  map_themes(gg_map_obj = .,
-             mapped_specimens = dplyr::bind_rows(specimens$carbon_wyo_spp,
-                                                 specimens$carbon_wyo_labels),
-             id_column = "Taxon_a_posteriori",
-             legend_title = "Reviewed Identifications") +
-  
-  theme(legend.direction = "vertical", legend.position = "bottom") +
-  guides(colour = guide_legend(ncol = 2, byrow = TRUE))
-rm(carbon_bears_ear)
+knitr::include_graphics(
+  path = paste0("Figs/FigIntroCarbonWyo.", knitr_ext[[knitr_chunk]])
+)
 
 ```
 
-\vspace*{15pt}
+\paragraph{} The set of sympatric specimens with a concordant phenotype show
+reduced mature fruits on sigmoidal pedicels with often dentate basal leaves.
+To the South, two flowering specimens (*Kastning* 1462 and *Kastning* 1725)
+collected from Jackson County, Colorado show a general reduction in size with
+ascending pedicels ("Physaria"; Figure \@ref(fig:FigureIntroCarbon)).
+An additional record from Jackson County with mature fruits (*Nelson* 49286)
+shows similarly ascending sigmoidal pedicels with reduced fruits. In contrast,
+records further South in Middle Park of Grand County, Colorado display notably
+pendent fruiting pedicels (*Nelson* 49478, *Patterson* s.n. (F-980, F-208917)),
+with two having distinctly pinnatifid basal leaves
+(*Patterson* s.n. (F-980, F-208917)). The *Patterson* specimens were both
+collected in 1875 with location data limited to a description as from
+Middle Park, in proximity to the Muddy River. Notably, North Park is separated
+from Middle Park to the South by the Rabbit Ears Range which divides Grand
+and Jackson Counties.
 
-\paragraph{} Dorn's (2001) Wyoming Flora key to *Physaria* did report the species from southcentral Wyoming, distinguished by fruits with a somewhat rectangular outline and obtuse or truncate basal apices.  It was noted the replum often attached nearly the full length of the fruit resulting in highly reduced apices, and that basal leaf petioles tended to be toothed.  This entity was described as occurruing on rocky slopes in or nearby mountains (Dorn 2001).  Dorn's (2001) treatment preceded Jennings' (2004) review of putative *P. vitulifera* specimens in the state.  As previously described, the taxonomic status of *P. vitulifera* in Wyoming is unclear (Rollins 1993; Dorn 2001; Jennings 2004; O'Kane 2010; Heidel and O'Kane 2012).  A number of specimens from Carbon county in Wyoming have previously been annotated as *P. vitulifera* (Figure \@ref(fig:introFigure2MapCarbonWyoVitu), "*Physaria vitulifera* - Carbon") or fit the phenotype as described by Dorn (2001; Figure \@ref(fig:introFigure2MapCarbonWyoVitu), "*Physaria acutifolia - vitulifera*-like").
+```{r sectionMorphologicalTraits}
 
-\paragraph{} The set of sympatric specimens with a concordant phenotype show reduced mature fruits on sigmoidal pedicels with often dentate basal leaves (Figure \@ref(fig:introFigure2MapCarbonWyoVitu)).  To the South, two flowering specimens (*Kastning* 1462 and *Kastning* 1725) collected from Jackson County, Colorado show a general reduction in size with ascending pedicels. A different record in fruit (*Nelson* 49286) shows similarly ascending sigmoidal pedicels with reduced fruits.  In contrast, records further South in Middle Park of Grand County, Colorado display notably pendent fruiting pedicels (*Nelson* 49478, *Patterson* s.n. (F-980, F-208917)), with two having distinctly pinnatifid basal leaves (*Patterson* s.n. (F-980, F-208917)). The *Patterson* specimens were both collected in 1875 with location data limited to a description as from Middle Park, in proximity to the Muddy River, and therefore are not plotted.  Notably, North Park is separated from Middle Park to the South by the Rabbit Ears Range which divides Grand and Jackson Counties (Figure \@ref(fig:introFigure2MapCarbonWyoVitu)).
+knitr_section(
+  knitr_title = "Morphology and Phylogeny",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} Delineation of a species based on morphological characteristics
+alone may result in the description of a non-monophyletic group, as it is often
+not known whether the morphological characters considered are apomorphic or
+plesiomorphic [@Rieseberg1994].
+@Scotland2003 claim based on simulation studies that the number of
+characters (e.g., sequence or morphological) needed to accurately
+resolve a phylogeny exceeds by an order of magnitude those utilizable
+morphological characters with unproblematic homology assessment and character
+coding, noting on average relatively few characters per taxon are coded for
+matrices used in morphological phylogenies.
+Their suggested approach would utilize a limited number of unambiguous
+morphological characters with diagnostic potential to consider monophyletic
+groups in the context of molecular phylogenies.
+@Wiens2004a countered that addition of morphological characters does not
+necessarily increase homoplasy and can increase support and tree resolution
+in *morphological* phylogeny reconstruction. Noting the lack of an apparent
+null hypothesis or explicit statistical test of the scaffold approach proposed
+by @Scotland2003, @Wiens2004a outlined an approach to (1) perform
+separate analyses to identify incongruence between approaches; (2) complete a
+combined analysis; and (3) consider strongly contested topologies as unresolved
+until independent sources of evidence support a single hypothesis.
+
+\paragraph{} For molecular phylogenies, incongruence is a notable concern for
+single gene and concatenated analyses considering only a few loci, as different
+genes may strongly support conflicting topologies [@Rokas2003].
+While the number of possible characters available from sequence data now far
+exceeds those available from morphology, conflicting genomic signal arising
+from incomplete lineage sorting, horizontal gene transfer, mutation rate
+heterogeneity, and choice of evolutionary model might preclude molecular data
+as a sole source of evidence for phylogenetic inference [@Jenner2004].
+Empirical analysis of tree-to-tree distances indicates general incongruence
+between phylogenies built from only molecular or morphological data, though
+either source alone provides an approximation of the underlying unknown tree
+in comparison to a null hypothesis [@Pisani2007].
+More recently, the precipitous drop of sequencing cost has ushered an era of
+*phylogenomics* and the role of morphological phylogenetics *sensu stricto*
+has been questioned as the number of number of nucleotides has far outpaced the
+use of morphology in phylogenetic datasets [@LeePalci2015].
+With a greater proportion of sequence data constituting simulatenous analyses
+(i.e., co-estimation of phylogeny from genes and morphology; a "total evidence"
+or combined approach), genomic data will increasingly influence topology such
+that results approximate mapping morphology onto a molecular phylogeny (*ibid.*).
+Despite this marked increased in availability of sequence data, non-phylogenetic
+signal from incomplete lineage sorting remains a potential hurdle for recent
+divergences of species with large effective population sizes
+[@Philippe2011].
+
+\paragraph{} Given the assymetry between phylogenies built on molecular and
+morphological data, it seems the role of morphology has increasingly been
+limited to the interpretation or calibration of molecular phylogenies and
+total evidence approaches with combined data [@Wanninger2015; @Giribet2015].
+Morphology may also influence taxon sampling decisions and species
+descriptions more broadly. Two notable taxonomic possibilities include the
+recognition of infraspecific lineages as species (i.e., "splitting") or
+failure to delimit closely related species as separate (i.e., "lumping"; 
+@Faurby2016). In the case of the former, morphological variation may lead to
+recognition of taxonomic entities that are not supported by a molecular phylogeny
+[@Helsen2009]. For the latter, seemingly morphologically indistinguishable
+species may show strong evidence of speciation by genetic evidence when
+"cryptic taxa" arise from polyploid speciation [@Crowl2017]. 
+Congruence between multiple lines of evidence may provide stronger support for
+phylogenetic hypotheses and taxonomic decisions, where morphology is considered
+an operational criterion for lineage separation [@deQueiroz2007]
+To asses the status of *Physaria* species, observations of suspected
+parsimony-informative continuous and discrete characters previously utilized in
+published dichotomous keys were recorded: replum shape; ovule count; mature
+fruit size, apices and trichomes; basal leaf margins; and overall habit.
+Of particular interest are species previously delimited on the basis of
+diagnosible monophyly from morphological characters despite the lack of
+infomation about genetic history, cytology, or reproductive mechanisms 
+(e.g., *Physaria saximontana* subspecies, *Physaria eburniflora*,
+*P. dornii*, *P. condensata*).
+
 
 
 
