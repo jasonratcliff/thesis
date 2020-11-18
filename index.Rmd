@@ -4,8 +4,8 @@ author: "Jason Ratcliff"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: report
-fontsize: 12
 maintfont: Palatino
+bibliography: "Ratcliff2020Thesis.bib"
 link-citations: yes
 subparagraph: true
 description: "R Bookdown build to compile MS Thesis."

@@ -555,25 +555,32 @@ infomation about genetic history, cytology, or reproductive mechanisms
 (e.g., *Physaria saximontana* subspecies, *Physaria eburniflora*,
 *P. dornii*, *P. condensata*).
 
+```{r sectionSpeciation}
 
+knitr_section(
+  knitr_title = "Mechanisms of Speciation",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
 
-
-
-
-
-
-
-              knitr_type = "section")
 ```
 
 
 
 
 
-```{r introSubsectionTopography}
-knitr_section(knitr_title = "Topography Driven Isolation and Speciation",
-              knitr_type = "subsection")
+```{r subsectionTopography}
+
+knitr_section(
+  knitr_title = "The Role of Topography in Speciation",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
 ```
+
+
+
+
+
 
 
 
