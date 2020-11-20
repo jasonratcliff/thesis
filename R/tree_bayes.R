@@ -142,14 +142,16 @@ bayes_themes <- function(joined_ggtree, id_column) {
 #'
 #' # Build ggtree plot grid.
 #' bayes_plot(joined_ggtree, x_expand = 0.025, plot_y = 0.45,
-#'            id_column = "prior_id", scale_name = "Priors")
+#'            id_column = "prior_id", scale_name = "Priors",
+#'            ggtree_layout = "rectangular")
 #'
 bayes_plot <- function(joined_ggtree, id_column, scale_name,
                        x_expand = 0.02, plot_x = 0.1, plot_y = 0.5,
                        plot_width = 0.25, plot_height = 0.5, ...) {
   bayes_plot <-
-    bayes_ggtree(joined_ggtree, id_column = id_column) +
-    bayes_themes(joined_ggtree, id_column = id_column) +
+    bayes_ggtree(joined_ggtree = joined_ggtree, id_column = id_column,
+                 ggtree_layout = "rectangular") +
+    bayes_themes(joined_ggtree = joined_ggtree, id_column = id_column) +
     ggplot2::expand_limits(x = x_expand) +
     ggplot2::labs(colour = scale_name, shape = scale_name)
 
