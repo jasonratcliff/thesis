@@ -45,7 +45,8 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
   # Get knit conversion type and output respective section header.
   if (chunk_type == "html") {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
-  } else if (chunk_type == "latex") {
+  }
+  if (chunk_type == "latex") {
     # Check regular expression pattern in `knitr_title` string for italics.
     if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
         grepl("\\*{2}", knitr_title) == FALSE) {
