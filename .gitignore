@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Rproj.user
+*.trees
+# CIPRES output directories
+data-raw/BAYES/CIPRES
+data-raw/BEAST/CIPRES
