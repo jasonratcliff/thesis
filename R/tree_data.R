@@ -61,14 +61,14 @@ node_labels <- function(tree_data) {
     dplyr::select("node", "single_label", "label")
   multi_taxa_nodes <- ggtree_labels %>%
     dplyr::add_count(.data$node) %>% dplyr::filter(.data$n > 1) %>%
-    dplyr::arrange(.data$node) %>%
-    dplyr::group_by(.data$node, .data$n) %>%
+    dplyr::arrange(dplyr::desc(.data$n)) %>%
+    dplyr::group_by(dplyr::desc(.data$n), .data$node) %>%
     dplyr::mutate(
       node_group = dplyr::cur_group_id() %>%
         paste0("Genotype ", ., " (n=", .data$n, ")")
     ) %>% dplyr::ungroup()
   ggtree_labels <- multi_taxa_nodes %>%
-    dplyr::select(-c("n")) %>%
+    dplyr::select("node", "single_label", "label", "node_group") %>%
     dplyr::right_join(x = ., y = ggtree_labels,
                       by = c("node", "single_label", "label")) %>%
     dplyr::arrange(.data$node)
@@ -228,8 +228,7 @@ bayes_kable <- function(conserved_specimens, kable_caption, knitr_chunk) {
     ) %>%
     kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
     kableExtra::column_spec(1, border_left = TRUE) %>%
-    kableExtra::column_spec(2, width = "3.7cm") %>%
-    kableExtra::column_spec(5, border_right = TRUE, width = "2cm") %>%
+    kableExtra::column_spec(5, border_right = TRUE, width = "1.8cm") %>%
     kableExtra::collapse_rows(columns = 1:3)
   return(kable_build)
 }
