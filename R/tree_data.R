@@ -213,9 +213,9 @@ conserved_vouchers <- function(tree_file, id_column, id_name) {
 #' @examples
 #' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
-#'   kable_vouchers(tree_file = .,
-#'                  id_column = "prior_id", id_name = "Species") %>%
-#'   bayes_kable(kable_specimens = .,
+#'   conserved_vouchers(tree_file = .,
+#'                      id_column = "prior_id", id_name = "Species") %>%
+#'   bayes_kable(conserved_specimens = .,
 #'               kable_caption = "ggtree Specimens", knitr_chunk = "html")
 #'
 bayes_kable <- function(conserved_specimens, kable_caption, knitr_chunk) {

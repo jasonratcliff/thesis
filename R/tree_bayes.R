@@ -142,8 +142,7 @@ bayes_themes <- function(joined_ggtree, id_column) {
 #'
 #' # Build ggtree plot grid.
 #' bayes_plot(joined_ggtree, x_expand = 0.025, plot_y = 0.45,
-#'            id_column = "prior_id", scale_name = "Priors",
-#'            ggtree_layout = "rectangular")
+#'            id_column = "prior_id", scale_name = "Priors")
 #'
 bayes_plot <- function(joined_ggtree, id_column, scale_name,
                        x_expand = 0.02, plot_x = 0.1, plot_y = 0.5,

@@ -66,7 +66,7 @@ count_specimens <- function(spp_tibble) {
 #'
 #' @examples
 #' traits <- c("oblong", "elliptic", "linear")
-#' camel_case(character_vector = traits)
+#' capitalize(character_vector = traits)
 #'
 capitalize <- function(character_vector) {
   purrr::map_chr(.x = character_vector, function(string_element) {

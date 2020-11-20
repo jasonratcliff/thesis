@@ -6,11 +6,12 @@
 #' BEAST results.
 #'
 #' @return [ggtree::ggtree()] aesthetic layers for posterior probabilities.
+#' @export
 #'
 #' @examples
 #' list.files(
 #'   path = system.file("extdata/BEAST", package = "ThesisPackage"),
-#'   pattern = "ml-simple-relaxed.mcc", full.names = TRUE
+#'   pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'   ) %>%
 #'   read_tree(tree_file = .) %>%
 #'   ggtree::ggtree(tr = .) +
@@ -43,7 +44,7 @@ beast_posterior <- function() {
 #' tree_data <-
 #'   list.files(
 #'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
-#'     pattern = "ml-simple-relaxed.mcc", full.names = TRUE
+#'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'     ) %>%
 #'     read_tree(tree_file = .)
 #'
@@ -95,7 +96,7 @@ beast_labels <- function(tree_data) {
 #' tree_data <-
 #'   list.files(
 #'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
-#'     pattern = "ml-simple-relaxed.mcc", full.names = TRUE
+#'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'     ) %>%
 #'     read_tree(tree_file = .)
 #'
@@ -147,7 +148,7 @@ beast_theme <- function(tree_data) {
 #' tree_data <-
 #'   list.files(
 #'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
-#'     pattern = "ml-simple-relaxed.mcc", full.names = TRUE
+#'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'   ) %>%
 #'   read_tree(tree_file = .)
 #'
