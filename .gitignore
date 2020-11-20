@@ -2,3 +2,9 @@
 .Rhistory
 .RData
 .Rproj.user
+# Raw Data Directories
+## SEINet
+data-raw/SEINet/
+## CIPRES output directories
+data-raw/BAYES/CIPRES
+data-raw/BEAST/CIPRES

@@ -10,7 +10,7 @@ into an excel file,
 Data recorded from vouchers include locality, identification history,
 collector, collection number, date, institution, geographic coordinates,
 elevation, any ecological descriptions, and measurements of continuous
-and discrete specimen traits. In total, 1710 unique collections were
+and discrete specimen traits. In total, 1707 unique collections were
 reviewed.
 
 ``` r
@@ -31,7 +31,7 @@ define a tibble `herbarium_specimens` in the `ThesisPackage` namespace.
 ThesisPackage::herbarium_specimens
 ```
 
-    ## # A tibble: 1,749 x 66
+    ## # A tibble: 1,712 x 66
     ##    excel_sheet prior_id prior_1 prior_2 prior_3 prior_4 Taxon Taxon_a_posteri…
     ##    <chr>       <chr>    <chr>   <chr>   <chr>   <chr>   <chr> <chr>           
     ##  1 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
@@ -44,7 +44,7 @@ ThesisPackage::herbarium_specimens
     ##  8 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
     ##  9 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
     ## 10 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ## # … with 1,739 more rows, and 58 more variables: Collector <chr>,
+    ## # … with 1,702 more rows, and 58 more variables: Collector <chr>,
     ## #   Collection_Number <chr>, Date <chr>, Date_parsed <date>, Date_md <date>,
     ## #   Herbarium <chr>, State <chr>, County <chr>, Location <chr>, Latitude <dbl>,
     ## #   Longitude <dbl>, ID <chr>, App.A <chr>, Imaged <chr>, Elev_m <chr>,
@@ -107,7 +107,7 @@ identifications and locations of DNA samples.
 
 # DNA Sequence Analysis
 
-## Fasta Subsetting and Concatenation
+## Fasta Concatenation
 
 Multi-FASTA files for sequenced loci were assembled from sequence
 chromatograms and deposited in the
@@ -181,6 +181,37 @@ defined command blocks were deposited in
 [Bayes/Runs/](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/Bayes/Runs).
 
 ![](README_files/figure-gfm/diagMEGA-1.png)<!-- -->
+
+## BEAST
+
+The `Biostrings` and `ape` (Paradis and Schliep [2019](#ref-R-ape))
+packages were used to read in the subset of specimen alignments from the
+concatenated analysis and write `NEXUS` formatted alignment files. For
+all three loci (rITS, *rps*, *ycf1*), alignments were imported into
+`BEAUti` v2.6.3 (Bouckaert et al. [2019](#ref-Bouckaert2019)) to
+configure BEAST *.xml* files.
+
+![](README_files/figure-gfm/BEAUTi-1.png)<!-- -->
+
+BEAST v2.6.3 (Bouckaert et al. [2019](#ref-Bouckaert2019)) results from
+3 independed runs of 50M states were combined with `LogCombiner` v2.6.3
+(*ibid.*) with 10,000 resampled states. A maximum clade credibility tree
+was summarized using `TreeAnnotator` v2.6.3 (*ibid.*) and visualized
+using the `ggplot2` (Wickham [2020](#ref-R-ggplot2)) extension `ggtree`
+(Yu et al.
+[2017](#ref-R-ggtree)).
+
+![](README_files/figure-gfm/BEAST-1.png)<!-- -->
+
+## Evolutionary Models
+
+  - <https://github.com/ddarriba/modeltest/wiki/Models-of-Evolution>
+
+| Locus | Partition | jModelTest | MEGA | Par. Finder | MrBayes | BEAST |
+| :---- | :-------- | :--------- | :--- | :---------- | :------ | :---- |
+| rITS  | 1-659     | TrNef      | HKY  | K80         | nst=1   | TN93  |
+| rps   | 660-1605  | F81        | T92  | F81 + i     | nst=1   | JC69  |
+| ycf1  | 1606-2162 | F81        | T92  | F81 + i     | nst=1   | JC69  |
 
 ## FASTA Summaries
 
@@ -696,11 +727,13 @@ ycf1
 
 <div id="refs" class="references">
 
-<div id="ref-Drummond2012">
+<div id="ref-Bouckaert2019">
 
-Drummond, Alexei J, Marc A Suchard, Dong Xie, and Andrew Rambaut. 2012.
-“Bayesian Phylogenetics with BEAUti and the BEAST 1.7.” *Molecular
-Biology and Evolution* 29 (8): 1969–73.
+Bouckaert, Remco R, Timothy G Vaughan, Joëlle Barido-SottaniI, Sebastián
+Duchêne, Mathieu Fourment, Alexandra Gavryushkina, Joseph Heled, et al.
+2019. “BEAST 2.5: An Advanced Software Platform for Bayesian
+Evolutionary Analysis.” *PLoS Computational Biology* 15 (4): e1006650.
+<https://doi.org/10.1371/journal.pcbi.1006650>.
 
 </div>
 
@@ -791,6 +824,13 @@ Evolution*. <https://doi.org/10.1093/molbev/msz312>.
 
 </div>
 
+<div id="ref-R-ggplot2">
+
+Wickham, Hadley. 2020. *ggplot2: Elegant Graphics for Data Analysis*.
+3rd ed. New York, (NY): Springer-Verlag. <https://ggplot2-book.org/>.
+
+</div>
+
 <div id="ref-R-readxl">
 
 Wickham, Hadley, and Jennifer Bryan. 2019. *readxl: Read Excel Files*.
@@ -803,6 +843,16 @@ Manual. <https://CRAN.R-project.org/package=readxl>.
 Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2020.
 *dplyr: A Grammar of Data Manipulation*. Manual.
 <https://CRAN.R-project.org/package=dplyr>.
+
+</div>
+
+<div id="ref-R-ggtree">
+
+Yu, Guangchuang, David Smith, Huachen Zhu, Yi Guan, and Tommy Tsan-Yuk
+Lam. 2017. “ggtree: An R Package for Visualization and Annotation of
+Phylogenetic Trees with Their Covariates and Other Associated Data.”
+*Methods in Ecology and Evolution* 8 (1): 28–36.
+<https://doi.org/10.1111/2041-210X.12628>.
 
 </div>
 

@@ -1,3 +1,52 @@
+# ThesisPackage 0.1.4
+
+* BEAST Runs
+    * Update `data-raw/README` with analysis workflow.
+    * Add `BEAST/README` with installation and run info.
+    * Include script to write NEXUS files for ingroup taxa.
+    * Input *.nex* files and multi-locus partitioned BEAUTi *.xml* file.
+    * Combined analysis maximum clade credibility (*.mcc*) tree file.
+
+
+* New function `potentially_informative_sites()` wraps `ggmsa()` call from
+  `Biostrings` multiple sequence alignment sites with multiple character states.
+
+* Add Thesis methods / results *.csv* files for collections, primers, and *ycf1*.
+
+* `node_labels()` output to `bayes_kable()` genotypes ordered by group size.
+
+
+* `bayes_plot()` gains `ggtree_layout` argument
+    - Specifies `ggtree()` argument `layout` for shape of tree plot.
+
+# ThesisPackage 0.1.3
+
+* Refactor phylogeny functions:
+    - Tree Data
+        - read_tree()
+        - node_labels()
+        - node_geoms()
+        - join_bayes()
+        - conserved_vouchers()
+    - MrBayes
+        - bayes_ggtree()
+        - bayes_themes()
+        - bayes_plot()
+        - bayes_kable()
+    - BEAST
+        - beast_posterior()
+        - beast_labels()
+        - beast_theme()
+        - beast_plot()
+        - beast_legend_color()
+        - beast_legend_posterior()
+
+* Update ggplot theme manual scale specification for color and shape.
+
+* `save_plot()` gains `...` to forward arguments to `ggplot2::ggsave()`.
+
+* Base layer `geom_point()` call removed from `layer_elevation()`.
+
 # ThesisPackage 0.1.2
 
 * New `separate_discrete_trait()` handles discrete trait variables where

@@ -36,11 +36,16 @@ fasta_loci <- purrr::map(header_list, function(locus_headers) {
 names(header_list) <- fasta_loci
 
 # Write headers to locus-specific .txt files to log header extraction.
+header_directory <- "data-raw/sequencing/1.raw-fastas/"
+if (!dir.exists(header_directory)) {
+  dir.create(header_directory)
+}
 purrr::walk2(header_list, fasta_loci, function(headers, locus) {
-  writeLines(text = headers,
-             con = paste0("data-raw/sequencing/1.raw-fastas/",
-                          "headers-", locus, ".txt"))
-  })
+  writeLines(
+    text = headers,
+    con = paste0(header_directory, "headers-", locus, ".txt")
+  )
+})
 
 ## Reduce Header List ----
 

@@ -1,3 +1,56 @@
+#' Potentially Informative Site Alignment
+#'
+#' Create multiple sequence alignment ggplot with [ggmsa()] from [Biostrings]
+#' multiple sequence alignment subset to potentially informative sites.
+#'
+#' @param fasta_file FASTA file to read [DNAMultipleAlignment] from.
+#' @param ... Forwarding arguments to [ggmsa::ggmsa()]
+#' @export
+#'
+#' @return `ggmplot` object with multiple sequence alignment.
+#'
+#' @examples
+#' \dontrun{
+#' ml_fasta <-
+#'   list.files("data-raw/sequencing/3.alignments-subset",
+#'              full.names = TRUE)
+#' potentially_informative_sites(fasta_file = ml_fasta[[1]])
+#' }
+#'
+potentially_informative_sites <- function(fasta_file, ...) {
+
+  # Cast matrix from unmasked Biostrings DNAMultipleAlignment object.
+  dna_alignment <-
+    Biostrings::readDNAMultipleAlignment(filepath = fasta_file)
+
+  alignment_matrix <- as.matrix(Biostrings::unmasked(x = dna_alignment))
+
+  # Keep columns with more than one character and transpose list to matrix.
+  variant_sites <-
+    purrr::map(1:ncol(alignment_matrix), function(site) {
+      index <- alignment_matrix[, site]
+    }) %>%
+    purrr::keep(.x = ., ~ length(unique(.x)) > 1) %>%
+    plyr::ldply(.data = .) %>% t(x = .)
+
+  # Create DNAStringSet from vector of informative alignments.
+  aligned_variants <-
+    purrr::map_chr(1:nrow(variant_sites), function(index) {
+      paste(variant_sites[index, ], collapse = "")
+    }) %>% stats::setNames(rownames(variant_sites))
+
+  aligned_variants <-
+    Biostrings::DNAStringSet(
+      x = aligned_variants
+    )
+
+  # Build ggplot with multiple sequence alignment of variable sites.
+  aligned_msa <- ggmsa::ggmsa(msa = aligned_variants, ...)
+  return(aligned_msa)
+}
+
+# msa | TeXshade ----
+
 #' MSA *.tex* Subset Alignment Intervals
 #'
 #' Calculate a list of alignment intervals to subset a mutliple sequence

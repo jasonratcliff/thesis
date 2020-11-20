@@ -119,10 +119,7 @@ layer_elevation <- function(specimen_tbl, raster_zoom = 7,
     ggplot2::geom_tile(ggplot2::aes(fill = .data$layer)) +
     ggplot2::scale_fill_gradientn("Elevation (m)",
                                   colours = grDevices::terrain.colors(7),
-                                  guide = ggplot2::guide_colourbar(order = 1)) +
-    ggplot2::geom_point(data = specimen_tbl, size = 4, show.legend = FALSE,
-                        ggplot2::aes(x = .data$Longitude, y = .data$Latitude),
-                        colour = "black", alpha = 0.2)
+                                  guide = ggplot2::guide_colourbar(order = 1))
   return(elev_ggplot)
 }
 
