@@ -1,35 +1,181 @@
 # METHODS {#METHODS}
 
-\vspace*{-26pt}
+\vspace*{-18pt}
 
-```{r methodsSectionSpecimens}
-knitr_section(knitr_title = "Specimen Sampling and Tissue Sources",
-              knitr_type = "section")
+```{r inlineVariables, echo=FALSE}
+# Calculate SEINet records with non-missing geographic coordinates.
+seinet_geo <- dplyr::filter(seinet_coords, !is.na(Latitude), !is.na(Longitude))
+
+# Read in raw FASTA system files.
+fasta_paths <-
+  list.files(
+    path = system.file("extdata/FASTA", package = "ThesisPackage"),
+    full.names = TRUE
+  )
+
+# Create list of Biostrings objects from FASTA files.
+fasta_list_raw <-
+  purrr::map(.x = fasta_paths, function(fasta) {
+    Biostrings::readDNAStringSet(filepath = fasta)
+  })
+
+# Add names to raw fasta files
+names(fasta_list_raw) <-
+  gsub(pattern = "-combined_raw.fasta", replacement = "",
+       x = fs::path_file(fasta_paths))
+
 ```
 
-\paragraph{} Specimens of *Physaria* sensu stricto were requested from the following herbaria: RM, NY, GH, MONT, MONTU, IDS, F, UC, RSA-POM, MO, UTC, and US.  In total, 1635 unique collections were considered.  For each herbarium voucher, the identification history, collector, collection number and date, institution, locality, geographic coordinates, elevation, and ecological description were recorded.  Measurements and observations of continuous and discrete character traits were collected for morphological analyses and phenotypic descriptions.  A script was used to read data into R using the openxlsx package (Walker 2018), filter records by annotation as *Physaria* or *Lesquerella* using the dplyr package (Wickham et al. 2019), check collection dates against a regular expression as "MM/DD/YYYY", and to parse prior annotations accounting for identification agreement (denoted by "!") and synonym replacement following O'Kane (2010).  Additionally, collection dates were parsed using the lubridate package (Grolemund and Wickham 2011), and geographic data were formatted as numeric vectors.
+```{r sectionSpecimens}
 
-\paragraph{} Species distribution maps were established using geographic data collected from herbarium specimen labels as coordinate data converted into decimal degree format.  Montana State University’s Graphical Locator for Township, Range, and Section (TRS) data (Wefald 2003) was used to approximate collection locations to the center of a section.  When coordinate data were not provided, Google Earth (Google Inc. 2019) was used to estimate coordinates to half-minute precision based on the description of collection location.  Specimens with ambiguous locations (e.g. a river or canyon) were omitted from mapping.  For distribution mapping, R functions were written to plot specimen subsets over county and state boundaries using spatial polygons derived from US census data provided through ggplot2 (Wickham 2016) from the maps package (Becker et al. 2018), satellite image data provided by the Google Maps API through the ggmap package (Kahle and Wickham 2013), and digital elevation models using the elevatr package (Hollister and Shaw 2017).
+knitr_section(
+  knitr_title = "Herbarium Specimens",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
 
-\paragraph{} There has been debate in the literature regarding the extent to which density of taxon sampling versus gene number effect the accuracy of phylogenetic inference.  Simulation studies by Maddison and Knowles (2006) found for recent divergences, sampling more individuals increased the accuracy of species tree inference.  In such cases, increased taxon sampling may improve the number of detectable gene coalescence events between sister taxa. In contrast, simulations by Rokas and Carroll (2005) found increasing the number of genetic loci analyzed improved the accuracy of analysis while taxon sampling had either no statistically significant effect or a slight negative correlation.  Therefore, samples were chosen from across each species’ range to broadly represent populations within their distribution and multiple loci were sampled for each individual.
+```
 
-\paragraph{} Taxon sampling was determined by species distribution patterns, with broader sampling from more widespread species (Table `r knitr_table2()`).  For the narrowly distributed Wyoming state endemics *P. dornii* and *P. condensata*, four individuals were sampled from each taxa.  For Wyoming state endemics *P. eburniflora* and *P. saximontana* ssp. *saximontana*, five individuals from each taxa were included.  Four individuals of *P. saximontana* ssp. *dentata* were sampled broadly from Montana.  Five specimens identified as *P. didymocarpa* ssp. *lanata* in Wyoming and three identified as *P. didymocarpa* ssp. *lyrata* in Idaho were included.  These two *P. didymocarpa* subspecies have narrow distributions and are thought to be state endemics of Wyoming and Idaho, respectively.  Five individuals were sampled from *P. didymocarpa* ssp. *didymocarpa* in Wyoming and Montana.
+\paragraph{} Specimens of *Physaria* sensu stricto were requested from the
+following herbaria:
+RM, NY, GH, MONT, MONTU, IDS, F, UC, RSA-POM, MO, UTC, and US. In total,
+`r count_specimens(spp_tibble = herbarium_specimens)` unique collections were
+reviewed. For each specimen voucher, the identification history, collector,
+collection number and date, institution, locality, geographic coordinates,
+elevation, and ecological description were recorded.
+Measurements and observations of continuous and discrete character traits were
+collected for morphological analyses and phenotypic descriptions.
+Montana State University’s Graphical Locator for Township, Range, and Section
+(TRS) data [@Wefald2003] was used to approximate collection locations to the
+center of a section. When coordinate data were not provided, Google Earth
+[@GoogleEarth] was used to estimate coordinates to half-minute precision
+based on the description of collection location. Specimens with ambiguous
+locations (e.g. a river or canyon) were omitted from distribution mapping.
+`r R.version$version.string` [@R-base] was used to read data from an *.xlsx*
+file with the `readxl` package [@R-readxl], filter annotation records to those
+containing either  *Physaria* or *Lesquerella* with the `dplyr` package
+[@R-dplyr], and standardize collection dates into the date format "MM/DD/YYYY"
+using the `lubridate` package [@R-lubridate; @R-lubridate2011].
+Prior annotations were parsed using the `purrr` [@R-purrr] and `stringr`
+packages [@R-stringr] to subsitute the species name for identification
+agreements and replace identification synonyms following @OKane2010.
+Elevation data were converted from meters to feet for unit consistency.
 
-\paragraph{} For the regional endemics *P. brassicoides* and *P. integrifolia*, six and five individuals were sampled, respectively.  For *P. vitulifera*, three individuals from Colorado and four putative specimens with annotations as *P. vitulifera* from Carbon County, Wyoming were included.  The Carbon County population is of interest due to the questionable status of this species’ distribution in the state of Wyoming (Heidel & O’Kane 2012).  Finally, twelve individuals of the widespread *P. acutifolia* from Utah, Colorado, and Wyoming were included.  Sequence data were obtained from 72 specimens for the rITS locus, 66 for the *rps* intron, and 51 for *ycf1*.  Analyses of concatenated multi-locus or partitioned data were limited to specimens for which sequencing of all three loci was completed.
+\paragraph{} Specimen distribution maps were established using location data
+collected from herbarium voucher labels as geographic coordinates converted
+into decimal degree format. Administrative boundaries (state and county
+borders) were obtained from the United States Census Bureau TIGER/Line
+shapefile database through the `tigris` package [@R-tigris].
+Raster images for satellite maps and digital elevation model data were obtatined
+by the `ggmap` [@R-ggmap] and `elevatr` [@R-elevatr] packages, respectively.
+Specimen data were mapped using `ggplot2` [@R-ggplot2], with coordinate data
+treated as simple features by the `sf` package [@R-sf].
+Additional specimen occurence data were obtained from the
+Southwest Environmental Information Network (SEINet) data portal [@SEINet].
+Two specimen searches of all available herbaria were performed using the
+scientific name as taxonomic criteria with synonyms included for
+"Physaria floribunda" and "Physaria bellii" as search terms.
+Occurrence records were downloaded as *.csv* files in the Darwin Core structure
+[@Wieczorek2012]. Searches returned a total of `r nrow(seinet_coords)` records,
+`r nrow(seinet_geo)` with specimen occurrence decimal degree coordinates.
 
-```{r methodsTable2DnaSpecimens}
+\paragraph{} This mapping framework was used to investigate the biogeographic
+distribution of continuous and discrete taxonomically-informative morphological
+traits of all considered *Physaria* species for replum shape, ovules per locule,
+mature fruit apices and trichomes, and basal leaf margins.
+Additional assessment of morphological differences included maximum fruit size
+for the putative Carbon County, Wyoming taxon, and basal leaf and stem lengths
+for the three condensed growth habit species *P. dornii*, *P. condensata*, and
+*P. eburniflora* in the context of their suspected sister taxa. For the putative
+Carbon County taxon, elevation differences were assessed by one-way ANOVA with
+species as the independent variable, and fruit length by analysis of covariance
+treating collection date and species as independent variables. Functions for
+handling specimen trait data and plotting distribution maps, morphology, and
+phylogenetic trees made use of additional R Tidyverse packages:
+`tibble` [@R-tibble], `plyr` [@R-plyr], `tidyr` [@R-tidyr], `readr` [@R-readr],
+`magrittr` [@R-magrittr], `rlang` [@R-rlang], `fs` [@R-fs], and
+`broom` [@R-broom]. Tables were generated using `knitr` [@R-knitr]
+and formatted with `kableExtra` [@R-kableExtra]. Plot figures were formatted
+using `cowplot` [@R-cowplot], `ggtext` [@R-ggtext], `scales` [@R-scales], and
+`ggnewscale` [@R-ggnewscale].
 
-# LaTeX specimen table
-if (knitr_chunk == "latex") {
-  read.csv("data/methods/DNA-specimens.csv",
-           header = TRUE, row.names = NULL, as.is = TRUE,
-           check.names = FALSE, stringsAsFactors = FALSE,
-           colClasses = "character") %>% dplyr::slice(1:39) %>%
-    dplyr::mutate(`Voucher Information` = sapply(
+```{r sectionTissue}
+
+knitr_section(
+  knitr_title = "Tissue Sources",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} In the context of molecular phylogenies, there has been debate
+regarding the extent to which density of taxon sampling versus gene number
+effect the accuracy of phylogenetic inference. Simulation studies by
+@MaddisonKnowles2006 found for recent divergences, sampling more individuals
+increased the accuracy of species tree inference. In such cases, increased taxon
+sampling may improve the number of detectable gene coalescence events between
+sister taxa. In contrast, simulations by @RokasCarroll2005 found increasing the
+number of genetic loci analyzed improved the accuracy of analysis while taxon
+sampling had either no statistically significant effect or a slight negative
+correlation. Therefore, samples were chosen from across each species’ range to
+broadly represent populations within their distribution and multiple loci were
+sampled for each individual.
+
+\paragraph{} Taxon sampling was determined by species distribution patterns,
+with broader sampling from more widespread species (Table
+`r knitr_table_dna(knitr_chunk)`). For the narrowly distributed Wyoming state
+endemics *P. dornii* and *P. condensata*, four individuals were sampled from
+each taxa. For Wyoming state endemics *P. eburniflora* and *P. saximontana*
+ssp. *saximontana*, five individuals from each taxa were included. Four
+individuals of *P. saximontana* ssp. *dentata* were sampled broadly from
+Montana. Five specimens identified as *P. didymocarpa* ssp. *lanata* in Wyoming
+and three identified as *P. didymocarpa* ssp. *lyrata* in Idaho were included.
+These two *P. didymocarpa* subspecies have narrow distributions and are thought
+to be state endemics of Wyoming and Idaho, respectively. Five individuals were
+sampled from *P. didymocarpa* ssp. *didymocarpa* in Wyoming and Montana.
+
+\paragraph{} For the regional endemics *P. brassicoides* and *P. integrifolia*,
+six and five individuals were sampled, respectively. For *P. vitulifera*, three
+individuals from Colorado and four putative specimens with annotations as
+*P. vitulifera* from Carbon County, Wyoming were included. The Carbon County
+population is of interest due to the questionable status of this species’
+distribution in the state of Wyoming [@HeidelOKane2012]. Finally, twelve
+individuals of the widespread *P. acutifolia* from Utah, Colorado, and Wyoming
+were included. Sequence data were obtained from `r length(fasta_list_raw$rITS)`
+specimens for the rITS locus, `r length(fasta_list_raw$rps)` for the *rps*
+intron, and `r length(fasta_list_raw$ycf1)` for *ycf1*. Analyses of concatenated multi-locus
+or partitioned data were limited to specimens for which sequencing of all three
+loci was completed.
+
+```{r TableDnaSpecimens}
+
+# Read in DNA collection localities for methods table.
+dna_collections <-
+  list.files(system.file("extdata/Methods", package = "ThesisPackage"),
+             pattern = "DNA-collections", full.names = TRUE) %>%
+  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
+
+  # Isolate surnames for collectors.
+  dplyr::mutate(`Voucher Information` = sapply(
       `Voucher Information`, function(voucher) {
         gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
-        })) %>%
-    kable(format = knitr_chunk, escape = FALSE,
+        }))
+
+# Table footnote caption
+dna_footnote <-
+  paste0("Requested herbarium specimens used for extraction of ",
+         "genomic DNA.  Voucher information includes record ",
+         "collector and collection number while locality reports ",
+         "the county and state for the collection.  Specimens ",
+         "with a single * represent vouchers with DNA sequence ",
+         "data obtained by K. Rethwisch (2014) while a double ** ",
+         "indicate specimens with sequence data obtained by Dr. O'Kane.")
+```
+
+```{r TableDnaSpecimensLatex}
+# LaTeX specimen table part 1
+if (knitr_chunk == "latex") {
+  dna_collections %>% dplyr::slice(1:39) %>%
+    kable(x =., format = knitr_chunk, escape = FALSE,
           caption = "DNA Extraction Herbarium Specimens.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
@@ -37,15 +183,7 @@ if (knitr_chunk == "latex") {
     column_spec(1, border_left = TRUE, width = "3cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    footnote(general =
-               paste0("Requested herbarium specimens used for extraction of ",
-                      "genomic DNA.  Voucher information includes record ",
-                      "collector and collection number while locality reports ",
-                      "the county and state for the collection.  Specimens ",
-                      "with a single * represent vouchers with DNA sequence ",
-                      "data obtained by K. Rethwisch (2014) while a double ** ",
-                      "indicate specimens with sequence data obtained by Dr. ",
-                      "O'Kane."), general_title = "",
+    footnote(general = dna_footnote, general_title = "",
              threeparttable = TRUE, escape = FALSE)
 }
 ```
@@ -54,27 +192,16 @@ if (knitr_chunk == "latex") {
 
 <!--- Clear caption formatting to prevent automatic labelling -->
 \captionsetup[table]{labelformat=empty}
+
 <!--- Prevent automatic indexing of table entry in List of Tables -->
 \captionsetup[table]{list=no}
 
-```{r methodsTable2DnaSpecimensContd, tab.cap = NULL}
+```{r TableDnaSpecimensLatexCont, tab.cap = NULL}
 
-# For supressing the latex caption above, reference here:
-# https://stackoverflow.com/questions/31182147/suppress-automatic-table-name-and-number-in-an-rmd-file-using-xtable-or-knitr?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-
-# For suppressing the list of tables entry, reference here:
-# https://texblog.org/2010/05/02/excluding-items-from-list-of-figures-list-of-tables/
-
+# LaTeX specimen table part 2
 if (knitr_chunk == "latex") {
-  read.csv("data/methods/DNA-specimens.csv",
-           header = TRUE, row.names = NULL, as.is = TRUE,
-           check.names = FALSE, stringsAsFactors = FALSE,
-           colClasses = "character") %>% dplyr::slice(40:68) %>%
-    dplyr::mutate(`Voucher Information` = sapply(
-      `Voucher Information`, function(voucher) {
-        gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
-        })) %>%
-    kable(format = knitr_chunk, escape = FALSE,
+  dna_collections %>% dplyr::slice(40:68) %>%
+    kable(x = ., format = knitr_chunk, escape = FALSE,
           caption = "Table 2. Continued.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
@@ -83,25 +210,25 @@ if (knitr_chunk == "latex") {
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1)
 }
+
 ```
 
 <!--- Reset caption options and table counter -->
 \captionsetup[table]{labelformat=default}
 \captionsetup[table]{list=yes}
-\setcounter{table}{2}
+\setcounterref{newcount}{tab:TableDnaSpecimensLatex}
 
-```{r methodsTable2DnaSpecimensHtml}
+```{r TableDnaSpecimensHtml}
+
 # HTML specimen table
 if (knitr_chunk == "html") {
-  read.csv("data/methods/DNA-specimens.csv",
-           header = TRUE, row.names = NULL, as.is = TRUE, check.names = FALSE,
-           stringsAsFactors = FALSE, colClasses = "character") %>%
+  dna_collections %>%
     dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
       gsub("\\\\textit\\{", "\\*", taxon) %>%
         gsub("\\}$", "\\*", x = .) %>%
         gsub("\\} ssp.", "\\*  ssp.", x = .)
-  })) %>%
-    select(c(taxa, `Voucher Information`, Locality)) %>%
+    })) %>%
+    dplyr::select(c(taxa, `Voucher Information`, Locality)) %>%
     dplyr::rename(Taxon = taxa) %>%
     kable(longtable = TRUE, format = knitr_chunk, escape = FALSE,
           caption = "DNA Extraction Herbarium Specimens") %>%
@@ -111,50 +238,108 @@ if (knitr_chunk == "html") {
     column_spec(2, width = "8cm") %>%
     column_spec(3, width = "4cm", border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    footnote(general =
-               paste0("Requested herbarium specimens used for extraction of ",
-                      "genomic DNA.  Voucher information includes record ",
-                      "collector and collection number while locality reports ",
-                      "the county and state for the collection.  Specimens ",
-                      "with a single * represent vouchers with DNA sequence ",
-                      "data obtained by K. Rethwisch (2014) while a double ** ",
-                      "indicate specimens with sequence data obtained by Dr. ",
-                      "O'Kane."), general_title = "",
+    footnote(general = dna_footnote, general_title = "",
              threeparttable = TRUE, escape = FALSE)
 }
+
 ```
 
-\vspace*{12pt}
+```{r sectionExtractions}
 
-```{r methodsSectionExtractions}
-knitr_section(knitr_title = "DNA Extraction",
-              knitr_type = "section")
+knitr_section(
+  knitr_title = "DNA Extraction",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
-\paragraph{} Genomic DNA was extracted from one of two sources: basal leaf tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried leaf tissue from specimens collected in June and August of 2014 from Wyoming, Idaho, and Montana with Dr. S. L. O’Kane Jr. and Mr. M. Horsch.  Dried leaf tissues were stored at -20 $^{\circ}$C prior to extraction.  DNA was extracted from only a single individual specimen to minimize noise in the sequence data.  Sequence data from a preliminary systematic analysis of Physaria sensu stricto by Kayla Rethwisch (2014) in addition to data previously obtained by Dr. O'Kane were also included in this study.
+\paragraph{} Genomic DNA was extracted from one of two sources: basal leaf
+tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
+leaf tissue from specimens collected in June and August of 2014 from Wyoming,
+Idaho, and Montana with Dr. S. L. O’Kane Jr. Dried leaf tissues were stored at
+-20 $^{\circ}$C prior to extraction. DNA was extracted from only a single
+individual specimen to minimize noise in the sequence data. Sequence data from
+a preliminary systematic analysis of *Physaria* sensu stricto by
+@Rethwisch2014 in addition to data previously obtained by Dr. O'Kane were
+also included in this study.
 
-\paragraph{} Genomic DNA was purified using a Qiagen DNeasy Plant Mini Kit.  Prior to the extraction protocol, leaf tissue was prepared using one of three methods.  Firstly, approximately 20 mg dried plant tissue was combined with ca. 250 mg washed sea sand and ground to a fine powder using a mortar and pestle.  Secondly, a modified approach of Alexander et al. (2007) was used where ca. 20 mg of plant tissue was combined in a 2.0 mL microcentrifuge tube with three 4.5 mm zinc plate BBs and two 2.3 mm stainless steel beads.  Samples were attached to a reciprocating saw and the saw was operated for 90s at medium until leave tissue was pulverized.  Finally, a Retsch MM400 Bead Mill was used in place of the reciprocating saw with the same bead, BB and tissue combination.  Plant tissue was disrupted for 45s at 20 hertz resulting in a fine ground powder.
+\paragraph{} Genomic DNA was purified using a Qiagen DNeasy Plant Mini Kit.
+Prior to the extraction protocol, leaf tissue was prepared using one of three
+methods. Firstly, approximately 20 mg dried plant tissue was combined with ca.
+250 mg washed sea sand and ground to a fine powder using a mortar and pestle.
+Secondly, a modified approach of @Alexander2007 was used where ca.
+20 mg of plant tissue was combined in a 2.0 mL microcentrifuge tube with three
+4.5 mm zinc plate BBs and two 2.3 mm stainless steel beads. Samples were
+attached to a reciprocating saw and the saw was operated for 90s at medium until
+leave tissue was pulverized. Finally, a Retsch MM400 Bead Mill was used in place
+of the reciprocating saw with the same bead, BB and tissue combination. Plant
+tissue was disrupted for 45s at 20 hertz resulting in a fine ground powder.
 
-\paragraph{} Once the plant tissue was prepared, Buffer AP1 (400 $\mu$L) and RNase A (4 $\mu$L) were added.  Samples were vortexed and incubated for 30 minutes at 65 $^{\circ}$C.  Sample microcentrifuge tubes were inverted after five, 15, and 25 minutes during incubation.  Following incubation, Buffer P3 (130 $\mu$L) was added.  Samples were then hand mixed and incubated on ice for five minutes.  The resultant lysate was centrifuged for five minutes at 14,000 rpm.  Lysate supernatant was transferred to a QIAshredder spin column and centrifuged for two minutes at 14,000 rpm.  Flow-through was then transferred to a new 1.5 mL microcentrifuge tube and mixed by pipette with 1.5x volume Buffer AW1.  650 $\mu$L of the resulting mixture was transferred to a DNeasy mini spin column and centrifuged for one minute at 9,000 rpm.  Flow-through was discarded before adding the remaining mixture to the column, and centrifuging again for one minute at 9,000 rpm.
+\paragraph{} Once the plant tissue was prepared, Buffer AP1 (400 $\mu$L) and
+RNase A (4 $\mu$L) were added. Samples were vortexed and incubated for 30
+minutes at 65 $^{\circ}$C. Sample microcentrifuge tubes were inverted after
+five, 15, and 25 minutes during incubation. Following incubation, Buffer P3
+(130 $\mu$L) was added. Samples were then hand mixed and incubated on ice for
+five minutes. The resultant lysate was centrifuged for five minutes at 14,000
+rpm. Lysate supernatant was transferred to a QIAshredder spin column and
+centrifuged for two minutes at 14,000 rpm. Flow-through was then transferred
+to a new 1.5 mL microcentrifuge tube and mixed by pipette with 1.5x volume
+Buffer AW1. 650 $\mu$L of the resulting mixture was transferred to a DNeasy
+mini spin column and centrifuged for one minute at 9,000 rpm. Flow-through was
+discarded before adding the remaining mixture to the column, and centrifuging
+again for one minute at 9,000 rpm.
 
-\paragraph{} Spin columns were then placed in new 2.0 mL collection tubes.  Buffer AW2 (500 $\mu$L) was added and the tubes were centrifuged for one minute at 10,000 rpm.  Flow-through was discarded before adding additional Buffer AW2 (500 $\mu$L) to each column.  Spin columns were centrifuged for two minutes at 14,000 rpm before transfer to new 1.5 mL centrifuge tubes. Preheated Buffer AE (75 $\mu$L at 65 $^{\circ}$C) was added to elute DNA from the columns.  Samples were incubated for 10 minutes at room temperature before centrifuging for one minute at 9,000 rpm.  Additional preheated Buffer AE (75 $\mu$L at 65 $^{\circ}$C) was added to each column.  Samples were incubated at room temperature for ten minutes before centrifuging an additional minute at 9,000 rpm.  Modifications to the standard Qiagen DNA extraction protocol followed recommendations made by Drabkova et al. (2002).  Time for the initial incubation period was extended from 10 to 30 minutes to ensure complete cellular lysis.  Additionally, the volume of AE buffer used to elute DNA from the spin column was reduced to 75 $\mu$L from 100 $\mu$L.  The incubation time for column elution was also extended from five minutes to 10 minutes.
+\paragraph{} Spin columns were then placed in new 2.0 mL collection tubes.
+Buffer AW2 (500 $\mu$L) was added and the tubes were centrifuged for one minute
+at 10,000 rpm. Flow-through was discarded before adding additional Buffer AW2
+(500 $\mu$L) to each column. Spin columns were centrifuged for two minutes at
+14,000 rpm before transfer to new 1.5 mL centrifuge tubes. Preheated Buffer AE
+(75 $\mu$L at 65 $^{\circ}$C) was added to elute DNA from the columns. Samples
+were incubated for 10 minutes at room temperature before centrifuging for one
+minute at 9,000 rpm. Additional preheated Buffer AE (75 $\mu$L at 65
+$^{\circ}$C) was added to each column. Samples were incubated at room
+temperature for ten minutes before centrifuging an additional minute at 9,000
+rpm. Modifications to the standard Qiagen DNA extraction protocol followed
+recommendations made by @Drabkova2002. Time for the initial incubation
+period was extended from 10 to 30 minutes to ensure complete cellular lysis.
+Additionally, the volume of AE buffer used to elute DNA from the spin column was
+reduced to 75 $\mu$L from 100 $\mu$L. The incubation time for column elution was
+also extended from five minutes to 10 minutes.
 
-```{r methodsSectionPcrIts}
-knitr_section(knitr_title = "rITS PCR",
-              knitr_type = "section")
+```{r sectionPCRrITS}
+
+knitr_section(
+  knitr_title = "rITS PCR",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
-\paragraph{} All Polymerase Chain Reaction (PCR) was completed using a Biometra TProfessional Basic Thermocycler Gradient with individual or 8-tube strip 0.25 mL PCR microcentrifuge tubes.  Individual reactions for the rITS region had a total volume of 25 $\mu$L consisting of 13.85 $\mu$L distilled H2O (ddH2O), 2.5 $\mu$L 10X Reaction Buffer (500 mM KCl; 100 mM Tris-HCl, pH 8.8; 17.5 mM MgCl2; 0.5% v/v Triton-X; 5% v/v DMSO), 2.5 $\mu$L rITS-F primer (2 $\mu$M, Table \@ref(tab:methodsTable3DnaPrimers)), 2.5 $\mu$L rITS-R primer (2 $\mu$M, Table \@ref(tab:methodsTable3DnaPrimers)), 2.5 $\mu$L 8 mM dNTP mix (10 $\mu$L 100 mM dATP; 10 $\mu$L 100 mM dGTP; 10 $\mu$L 100 mM dCTP; 10 $\mu$L 100 mM dTTP; 5 $\mu$L 1 M Tris-HCl, pH 7.9; 455 $\mu$L ddH2O), 0.15 $\mu$L Taq DNA Polymerase (5 U/$\mu$L) and 1.0 $\mu$L sample DNA.  Lid temperature for thermocycling was set to 99 $^{\circ}$C.  An initial DNA denaturation period of two minutes at 94 $^{\circ}$C was followed by 30 cycles of denaturation, primer annealing, and DNA extension.  Each cycle consisted of denaturation for 45s at 94 $^{\circ}$C, primer annealing for one minute at 60 $^{\circ}$C, and extension for one minute at 72 $^{\circ}$C.  After 30 cycles, a final extension of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
+\paragraph{} All Polymerase Chain Reaction (PCR) was completed using a Biometra
+TProfessional Basic Thermocycler Gradient with individual or 8-tube strip 0.25
+mL PCR microcentrifuge tubes. Individual reactions for the rITS region had a
+total volume of 25 $\mu$L consisting of 13.85 $\mu$L distilled H2O (ddH2O),
+2.5 $\mu$L 10X Reaction Buffer (500 mM KCl; 100 mM Tris-HCl, pH 8.8;
+17.5 mM MgCl2; 0.5% v/v Triton-X; 5% v/v DMSO), 2.5 $\mu$L rITS-F primer
+(2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), 2.5 $\mu$L rITS-R primer
+(2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), 2.5 $\mu$L 8 mM dNTP mix
+(10 $\mu$L 100 mM dATP; 10 $\mu$L 100 mM dGTP; 10 $\mu$L 100 mM dCTP; 10 $\mu$L
+100 mM dTTP; 5 $\mu$L 1 M Tris-HCl, pH 7.9; 455 $\mu$L ddH2O), 0.15 $\mu$L Taq
+DNA Polymerase (5 U/$\mu$L) and 1.0 $\mu$L sample DNA. Lid temperature for
+thermocycling was set to 99 $^{\circ}$C. An initial DNA denaturation period of
+two minutes at 94 $^{\circ}$C was followed by 30 cycles of denaturation, primer
+annealing, and DNA extension. Each cycle consisted of denaturation for 45s at
+94 $^{\circ}$C, primer annealing for one minute at 60 $^{\circ}$C, and
+extension for one minute at 72 $^{\circ}$C. After 30 cycles, a final extension
+of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
-\vspace*{24pt}
+```{r TablePCRPrimers}
 
-```{r methodsTable3DnaPrimers}
-# Sequence primer table
-read.csv("data/methods/DNA-primers.csv",
-         header = TRUE, row.names = NULL, as.is = TRUE,
-         check.names = FALSE, stringsAsFactors = FALSE,
-         colClasses = "character") %>%
-  kable(format = knitr_chunk, align = "l", escape = FALSE,
+# Table: PCR Primers
+list.files(system.file("extdata/Methods", package = "ThesisPackage"),
+             pattern = "DNA-primers", full.names = TRUE) %>%
+  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
+  kable(x = ., format = knitr_chunk, align = "l", escape = FALSE,
         caption = "Primer Sequences for PCR Reactions.") %>%
   kable_styling(full_width = FALSE, font_size = 10,
                 latex_options= "hold_position") %>%
@@ -164,53 +349,258 @@ read.csv("data/methods/DNA-primers.csv",
   footnote(general = "DNA primers for PCR reactions.",
            footnote_as_chunk = TRUE, general_title = "",
            escape = TRUE, threeparttable = TRUE)
+
 ```
 
-\vspace*{12pt}
+```{r sectionPCRrps}
 
-```{r methodsSectionPcrRps}
-knitr_section(knitr_title = "*rps* Intron PCR",
-              knitr_type = "section")
+knitr_section(
+  knitr_title = "*rps* Intron PCR",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
-\paragraph{} For the *rps* intron, individual reactions had a total volume of 25 $\mu$L consisting of 11.25 $\mu$L ddH2O, 5.0 $\mu$L 5x Phusion HF Buffer (proprietary, Thermo Fisher Scientific), 2.5 $\mu$L *rps*-F (2 $\mu$M, Table (Table \@ref(tab:methodsTable3DnaPrimers))), 2.5 $\mu$L *rps*-R2 (2 $\mu$M, Table (Table \@ref(tab:methodsTable3DnaPrimers))), 2.5 $\mu$L dNTPs, 0.25 $\mu$L Phusion Hot Start II High-Fidelity DNA Polymerase (Thermo Fisher Scientific), and 1.0 $\mu$L sample DNA.  Lid temperature for thermocycling was set to 99 $^{\circ}$C.  An initial 1 minute denaturation period at 98 $^{\circ}$C was followed by 30 cycles.  Each cycle consisted of denaturation for 10s at 98 $^{\circ}$C, annealing for 25s at 66.8 $^{\circ}$C, and extension for 30s at 72 $^{\circ}$C.  A final extension for seven minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
+\paragraph{} For the *rps* intron, individual reactions had a total volume of
+25 $\mu$L consisting of 11.25 $\mu$L ddH2O, 5.0 $\mu$L 5x Phusion HF Buffer
+(proprietary, Thermo Fisher Scientific), 2.5 $\mu$L *rps*-F (2 $\mu$M, Table
+(Table \@ref(tab:TablePCRPrimers))), 2.5 $\mu$L *rps*-R2 (2 $\mu$M,
+Table (Table \@ref(tab:TablePCRPrimers))), 2.5 $\mu$L dNTPs, 0.25
+$\mu$L Phusion Hot Start II High-Fidelity DNA Polymerase (Thermo Fisher
+Scientific), and 1.0 $\mu$L sample DNA. Lid temperature for thermocycling was
+set to 99 $^{\circ}$C. An initial 1 minute denaturation period at
+98 $^{\circ}$C was followed by 30 cycles. Each cycle consisted of denaturation
+for 10s at 98 $^{\circ}$C, annealing for 25s at 66.8 $^{\circ}$C, and extension
+for 30s at 72 $^{\circ}$C. A final extension for seven minutes at 72
+$^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
-```{r methodsSectionPcrYcf1}
+```{r sectionPCRYcf1}
 knitr_section(knitr_title = "*ycf1* PCR",
-              knitr_type = "section")
+              knitr_type = "section", chunk_type = knitr_chunk)
 ```
 
-\paragraph{} The total volume for *ycf1* reactions was 20 $\mu$L.  Due to inconsistencies in the success of PCR amplification, the volume of sample DNA in the PCR reactions ranged from 1.0 $\mu$L to 2.0 $\mu$L.  An equivalent decrease in the volume of ddH2O, from 8.8 $\mu$L to 7.8 $\mu$L was used to maintain a total 20 $\mu$L volume.  In addition, the reaction mixture included 4.0 $\mu$L Phusion HF 5x buffer, 2.0 $\mu$L dNTPs, 2.0 $\mu$L *ycf1*-F (2 $\mu$M, Table (Table \@ref(tab:methodsTable3DnaPrimers))), 2.0 $\mu$L *ycf1*-R (2 $\mu$M, Table (Table \@ref(tab:methodsTable3DnaPrimers))), and 0.2 $\mu$L Phusion DNA polymerase.  Lid temperature for thermocycling was set to 99 $^{\circ}$C.  An initial denaturation period for one minute at 98 $^{\circ}$C was followed by 35 cycles.  Each cycle consisted of denaturation for 15s at 98 $^{\circ}$C, annealing for 20s at 55 $^{\circ}$C, and extension for 25s at 72$^{\circ}$C.  A final extension for five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
+\paragraph{} The total volume for *ycf1* reactions was 20 $\mu$L. Due to
+inconsistencies in the success of PCR amplification, the volume of sample DNA
+in the PCR reactions ranged from 1.0 $\mu$L to 2.0 $\mu$L. An equivalent
+decrease in the volume of ddH2O, from 8.8 $\mu$L to 7.8 $\mu$L was used to
+maintain a total 20 $\mu$L volume. In addition, the reaction mixture included
+4.0 $\mu$L Phusion HF 5x buffer, 2.0 $\mu$L dNTPs, 2.0 $\mu$L *ycf1*-F
+(2 $\mu$M, Table (Table \@ref(tab:TablePCRPrimers))), 2.0 $\mu$L
+*ycf1*-R (2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), and
+0.2 $\mu$L Phusion DNA polymerase. Lid temperature for thermocycling was set
+to 99 $^{\circ}$C. An initial denaturation period for one minute at 98
+$^{\circ}$C was followed by 35 cycles. Each cycle consisted of denaturation
+for 15s at 98 $^{\circ}$C, annealing for 20s at 55 $^{\circ}$C, and extension
+for 25s at 72$^{\circ}$C. A final extension for five minutes at 72 $^{\circ}$C
+was followed by a 16 $^{\circ}$C hold.
 
-\paragraph{} Twelve samples for which the initial PCR reaction produced limited amplification were subjected to a second PCR reaction.  Instead of genomic DNA, the initial PCR products were used at a reaction volume of 2.0 $\mu$L (See lab notebook pp. 70-76).  For two *ycf1* samples (PVITU 9196 and PVITU 9837), the PCR yielded two DNA fragments revealed by double banding following gel electrophoresis.  A Thermo Scientific Ultra Agarose Spin Kit was used to isolate the target DNA following the standard PCR reaction and gel electrophoresis protocols.  The band containing DNA molecules of size equal to those where PCR resulted in a single band was excised from the gel.
+\paragraph{} Twelve samples for which the initial PCR reaction produced limited
+amplification were subjected to a second PCR reaction. Instead of genomic DNA,
+the initial PCR products were used at a reaction volume of 2.0 $\mu$L
+(See lab notebook pp. 70-76). For two *ycf1* samples (PVITU 9196 and
+PVITU 9837), the PCR yielded two DNA fragments revealed by double banding
+following gel electrophoresis. A Thermo Scientific Ultra Agarose Spin Kit was
+used to isolate the target DNA following the standard PCR reaction and gel
+electrophoresis protocols. The band containing DNA molecules of size equal
+to those where PCR resulted in a single band was excised from the gel.
 
-\paragraph{} To isolate DNA from the agarose gel, the excised bands were measured for mass then placed into spin columns.  A volume of gel binding solution (NaClO4) equal to three times the sample mass was pipetted directly onto the spin column filters.  The samples were incubated for two minutes at 65 $^{\circ}$C, after which the samples were mixed by inverting the spin columns.  An additional incubation of two minutes and sample mixing ensured complete melting of the gel.  The spin columns were centrifuged for 10s at 10,000 rpm to separate the gel product from DNA.  Spin columns were vortexed for 5s to mix the flow-through.  The solution in the collection tube was reloaded to the spin filters and centrifuged again for 10s at 10,000 rpm.  Flow-through was then discarded and 300 $\mu$L of gel wash solution (Tris, Ethanol) was added to each spin column.  Sample tubes were centrifuged for 10s at 10,000 rpm before discarding the flow-through and centrifuging for an additional 30s at 10,000 rpm.  Spin columns were transferred to clean 1.5 mL collection tubes and 50 $\mu$L ddH2O was added to each spin column.  Sample tubes were centrifuged for 30s at 10,000 rpm to elute DNA.
+\paragraph{} To isolate DNA from the agarose gel, the excised bands were
+measured for mass then placed into spin columns. A volume of gel binding
+solution (NaClO4) equal to three times the sample mass was pipetted directly
+onto the spin column filters. The samples were incubated for two minutes at 65
+$^{\circ}$C, after which the samples were mixed by inverting the spin columns.
+An additional incubation of two minutes and sample mixing ensured complete
+melting of the gel. The spin columns were centrifuged for 10s at 10,000 rpm
+to separate the gel product from DNA. Spin columns were vortexed for 5s to
+mix the flow-through. The solution in the collection tube was reloaded to the
+spin filters and centrifuged again for 10s at 10,000 rpm. Flow-through was then
+discarded and 300 $\mu$L of gel wash solution (Tris, Ethanol) was added to each
+spin column. Sample tubes were centrifuged for 10s at 10,000 rpm before
+discarding the flow-through and centrifuging for an additional 30s at 10,000
+rpm. Spin columns were transferred to clean 1.5 mL collection tubes and 50
+$\mu$L ddH2O was added to each spin column. Sample tubes were centrifuged for
+30s at 10,000 rpm to elute DNA.
 
-\paragraph{} After DNA isolation from agarose, the following protocol was used to concentrate the DNA prior to sequencing.  2 $\mu$L 5 M NaCl was added to 49 $\mu$L DNA of each sample.  122.5 $\mu$L ice cold 100% EtOH was then added before mixing the samples and freezing for 1 hour.  The samples were centrifuged for 10 minutes at 14,000 rpm.  Each sample tube was decanted gently to prevent disrupting the pellet.  Samples were then washed with 1 mL of 70% EtOH and gently mixed.  Sample tubes were spun for five minutes at 14,000 rpm before decanting again.  Any remaining ethanol was let to evaporate before re-suspending in 18 mL ddH2O.
+\paragraph{} After DNA isolation from agarose, the following protocol was used
+to concentrate the DNA prior to sequencing. 2 $\mu$L 5 M NaCl was added to 49
+$\mu$L DNA of each sample. 122.5 $\mu$L ice cold 100% EtOH was then added
+before mixing the samples and freezing for 1 hour. The samples were centrifuged
+for 10 minutes at 14,000 rpm. Each sample tube was decanted gently to prevent
+disrupting the pellet. Samples were then washed with 1 mL of 70% EtOH and
+gently mixed. Sample tubes were spun for five minutes at 14,000 rpm before
+decanting again. Any remaining ethanol was let to evaporate before
+re-suspending in 18 mL ddH2O.
 
-```{r methodsSectionPcrGel}
+```{r sectionGel}
 knitr_section(knitr_title = "Gel Electrophoresis",
-              knitr_type = "section")
+              knitr_type = "section", chunk_type = knitr_chunk)
 ```
 
-\paragraph{} Success of PCR amplification was verified using a 1.1% agarose mini gel.  A solution of 285 mL 20x SB buffer (boric acid and 10mM sodium hydroxide, pH 8.5) and 15 $\mu$L ethidium bromide (10 mg/mL) was used as a gel running buffer. For the gel, 35 mL 20x SB buffer was added to 0.315g agarose.  This mixture was brought to a boil three times, mixing between boils, before pouring the agar onto a gel tray and refrigerating.  Wells were loaded with a 12 $\mu$L mixture of 2.4 $\mu$L SB loading dye (20mM EDTA, 6x SB buffer, 13.5% Ficoll-400, and 0.5% Orange-G), 8.6 $\mu$L ddH2O, and 1 $\mu$L sample DNA.  Gels were run for 30 to 60 minutes at 130 volts, then washed with de-ionized H2O for 5 minutes.  A UV illuminator connected to a Kodak EDAS 290 Electrophoresis Documentation and Analysis System was used to document digital images of the gels.
+\paragraph{} Success of PCR amplification was verified using a 1.1% agarose
+mini gel. A solution of 285 mL 20x SB buffer (boric acid and 10mM sodium
+hydroxide, pH 8.5) and 15 $\mu$L ethidium bromide (10 mg/mL) was used as a gel
+running buffer. For the gel, 35 mL 20x SB buffer was added to 0.315g agarose.
+This mixture was brought to a boil three times, mixing between boils, before
+pouring the agar onto a gel tray and refrigerating. Wells were loaded with a
+12 $\mu$L mixture of 2.4 $\mu$L SB loading dye (20mM EDTA, 6x SB buffer, 13.5%
+Ficoll-400, and 0.5% Orange-G), 8.6 $\mu$L ddH2O, and 1 $\mu$L sample DNA.
+Gels were run for 30 to 60 minutes at 130 volts, then washed with de-ionized
+H2O for 5 minutes. A UV illuminator connected to a Kodak EDAS 290
+Electrophoresis Documentation and Analysis System was used to document digital
+images of the gels.
 
-```{r methodsSectionSeq}
+```{r sectionSeqDNA}
 knitr_section(knitr_title = "DNA Sequencing",
-              knitr_type = "section")
+              knitr_type = "section", chunk_type = knitr_chunk)
 ```
 
-\paragraph{} Prior to sequencing, the PCR reaction products were treated with a mixture consisting of Shrimp Alkaline Phosphatase and Exonuclease I (78 $\mu$L ddH2O; 2.0 $\mu$L Exonuclease I, 10 U/ $\mu$L; 20 $\mu$L Shrimp Alkaline Phosphatase, 1 U/$\mu$L) to degrade remnant primers and dNTPs.  A volume of the enzyme mixture equivalent to 1/5 volume of the PCR reaction (3.8 $\mu$L for *ycf1*, 4.8 $\mu$L for rps and ITS) was added into each PCR reaction tube.  The tubes were then incubated on a thermocycler for 15 min at 37$^{\circ}$C followed by a 15 min incubation at 80$^{\circ}$C.
+\paragraph{} Prior to sequencing, the PCR reaction products were treated with
+a mixture consisting of Shrimp Alkaline Phosphatase and Exonuclease I
+(78 $\mu$L ddH2O; 2.0 $\mu$L Exonuclease I, 10 U/ $\mu$L; 20 $\mu$L Shrimp
+Alkaline Phosphatase, 1 U/$\mu$L) to degrade remnant primers and dNTPs.
+A volume of the enzyme mixture equivalent to 1/5 volume of the PCR reaction
+(3.8 $\mu$L for *ycf1*, 4.8 $\mu$L for rps and ITS) was added into each PCR
+reaction tube. The tubes were then incubated on a thermocycler for 15 min at
+37$^{\circ}$C followed by a 15 min incubation at 80$^{\circ}$C.
 
-\paragraph{} PCR products were sent to Iowa State’s DNA facility for sequencing.  Samples were processed via Sanger sequencing on an Applied Biosystems 3730xl DNA Analyzer.  Amplification primers (5 mM; rITS-F, rITS-R, *rps*-F, *rps*-R2, *ycf1*-F, *ycf1*-R) were sent at a volume of seven $\mu$L (15 ng/$\mu$L) for each reaction.  Sequence data were returned as chromatograms from which DNA sequences were extracted using the software program 4Peaks (Greikspoor and Groothuis 2015).  Forward and reverse reads for each sample were aligned with Clustal X (Larkin et al. 2007) to verify consistency between sequence reads.  Polymorphic sites were labeled using IUPAC ambiguity codes (Cornish-Bowden 1985).  The sequences were assembled from chromatograms into multi-FASTA format for downstream analysis.
+\paragraph{} PCR products were sent to the Iowa State University DNA facility
+for sequencing. Samples were processed via Sanger sequencing on an Applied
+Biosystems 3730xl DNA Analyzer. Amplification primers (5 mM; rITS-F, rITS-R,
+*rps*-F, *rps*-R2, *ycf1*-F, *ycf1*-R; Table \@ref(tab:TablePCRPrimers))
+were sent at a volume of seven $\mu$L (15 ng/$\mu$L) for each reaction.
+Sequence data were returned as chromatograms from which DNA sequences were
+extracted using the software program 4Peaks v1.7.2 [@4Peaks].
+Forward and reverse reads for each sample were aligned with Clustal X v2.0
+[@Clustal] to verify consistency between sequence reads. Polymorphic sites were
+labeled using IUPAC ambiguity codes [@Cornish-Bowden1985]. The sequences were
+assembled from chromatograms into multi-FASTA format for downstream analysis.
 
-```{r methodsSectionPhylo}
+```{r sectionPhylogenetics}
 knitr_section(knitr_title = "Phylogenetic Analysis",
-              knitr_type = "section")
+              knitr_type = "section", chunk_type = knitr_chunk)
 ```
 
-\paragraph{} Multiple sequence alignments were calculated from multi-FASTA files by online MAFFT version 7.306B (Katoh and Standley 2013) with the G-INS-i alignment strategy (Katoh et al. 2005).  This algorithm implements a global alignment (Needleman and Wunsch 1970), in which flanking sequences are truncated to set the alignment array domain.  Iterative refinement occurs by optimizing the alignment based on weighted sum-of-pairs scores (Gotoh 1995). The 1PAM / k = 2 model, where "1PAM" indicates an assumption of an average one substitution per 100 sites, was chosen due to the expected low sequence divergence between closely related *Physaria* species.  After aligning loci separately, sequences were exported into a wrapped multi-FASTA format from the MAFFT server.  These files were then processed with a series of Unix shell scripts (Wünschiers 2013) before concatenating loci for multi-locus Bayesian inference (Appendix C).  Extra sequences were removed from the multi-fasta files such that only specimens with data for all three loci were included for multiple sequence alignments of individual loci for concatenated analysis.  Local analyses were run with Mac OS X version 10.11.6, Unix OS Darwin version 13.4.0, and Terminal version 2.6.1 on an x86_64 processor.
+\paragraph{} Phylogenetic relationships were estimated by bayesian inference
+using two programs, MrBayes v3.2.6 [@Ronquist2012; @Huelsenbeck2001] and
+BEAST v2.6.3 [@Bouckaert2019] on the high performance computing platform
+CIPRES Science Gateway version 3.3 [@CIPRES]. The Bioconductor package
+`Biostrings` [@R-Biostrings] was used to write FASTA subset files from raw
+multi-FASTA sequences to account for unequal sequence sampling between targeted
+loci. Alignments were calculated individually for each locus from both the total
+multi-FASTA sequences (rITS: n=`r length(fasta_list_raw$rITS)`,
+*rps*: n=`r length(fasta_list_raw$rps)`,
+*ycf1*: n=`r length(fasta_list_raw$ycf1)`) and the subset of
+specimens with equal sequencing effort (n=51 for rITS, *rps*, and *ycf1*).
+Individual gene trees were estimated by MrBayes for the rITS and *rps* loci
+using the full set of aligned sequences (n=72 and n=66, respectively).
+A concatenated FASTA file for partitioned multi-locus analysis with MrBayes
+was also built from the subset alignments using Biostrings. Alignments were
+performed separarately for each locus with the full multi-FASTA files
+and the multi-FASTA files with the subset of 51 specimens.
 
-\paragraph{} MEGA 7.0.18 (Kumar et al. 2016; Tamura et al. 2013; Tamura et al. 2011) was used to test individual loci alignments for the evolutionary model with the highest likelihood using an automatic neighbor-joining tree with gaps treated as partial deletions with a 95% site coverage cutoff.  To detect identical sequences, MEGA was used to measure the number of differences between sequences.  Sequences with distances of 0.0 were verified as identical using a custom R function (Appendix - Source Code), as the pairwise number of distance calculation exludes indices with heterozygous ambiguity codes and alignment gaps.  Sequence alignment gaps were coded using 2matrix (Salinas and Little 2014), a Perl script that implements “simple indel coding” as described by Simmons and Ochoterena (2000).
+\paragraph{} Multiple sequence alignments were calculated from multi-FASTA
+files by online MAFFT version 7.306B [@Katoh2013] with the G-INS-i
+alignment strategy [@Katoh2005]. This algorithm implements a global alignment
+[@Needleman1970], in which flanking sequences are truncated to set the alignment
+array domain. Iterative refinement occurs by alignment optimization based on
+weighted sum-of-pairs scores [@Gotoh1995]. The 1PAM / k = 2 model, where "1PAM"
+indicates an assumption of an average one substitution per 100 sites, was chosen
+due to the expected low sequence divergence between closely related species.
+For gene tree analyses with MrBayes, pairwise distances were calculated by
+p-distance with gaps treated as pairwise deletions using MEGA version 10.1.8
+[@Kumar2018, @Stecher2020] to remove identical sequences. Evolutionary model
+fits were estimated by jModelTest [@Posada2008] using Bayesian information
+criterion to determine the best model for each locus. Sequence alignment gaps
+were coded using 2matrix [@Salinas2014], a Perl script that implements
+“simple indel coding” as described by @Simmons2000.
 
-\paragraph{} Bayesian analyses were executed using Mr. Bayes version 3.2.6 (Ronquist et al. 2012; Huelsenbeck and Ronquist 2001) on the CIPRES Science Gateway version 3.3 (Miller et al. 2010).  Data were partitioned to differentiate sequence data and coded gaps.  The sequence partitions were assigned a model allowing different rates for transitions and transversions based on the results of the model test (ITS = HKY; *rps* and *ycf1* = T92), while the coded gaps were treating as standard binary data.  The parameters for the distribution shape of among-site rate variation (shape), nucleotide state frequency (statefreq), and proportion of invariant sites (pinvar) were unlinked to allow separate estimation.  All data were analyzed for 20,000,000 generations with a sample frequency of 1,000 generations.  Two parallel analyses were run, each with 4 chains and a temp parameter of 0.04.  A third of the trees were discarded as the burn-in fraction (0.33), and the stop value was set to 0.002.
+<!-- https://www.megasoftware.net/mega1_manual/Distance.html -->
+\paragraph{} Nexus files output by 2Matrix were were partitioned to
+differentiate sequence data and coded gaps. The sequence partitions were
+assigned a model allowing different rates for transitions and transversions
+based on the results of the model test (MrBayes equivalents: ITS = HKY;
+*rps* and *ycf1* = T92), while the coded gaps were treated as standard binary
+data. The parameters for the distribution shape of among-site rate variation
+(shape), nucleotide state frequency (statefreq), and proportion of invariant
+sites (pinvar) were unlinked to allow separate estimation. All data were
+analyzed for 20,000,000 generations with a sample frequency of 10,000
+generations. Two parallel analyses were run, each with 4 chains and a temp
+parameter of 0.04. A third of the trees were discarded as the burn-in fraction
+(0.33), and the stop value was set to 0.001.
+
+\paragraph{} Additional NEXUS (*.nex*) files were written from the subset
+sequence alignments with the Bioconductor package `ape` [@R-ape]. BEAST analysis
+*.xml* files for were configured using BEAUti v2.6.3 [@Drummond2012].
+A multi-locus partitioned analysis with linked trees included rITS, *rps*, and
+*ycf1* sequences from all ingroup taxa (n=49). *Physaria* sensu lato specimens
+treated as outgroup taxa in the MrBayes inferences were exluded from BEAST
+analyses as inconsistent sampling intensity relative to the ingroup may violate
+assumptions of standard time-tree priors [@Drummond2015 p. 98]. Recombinant
+sites were checked by 3Seq (build 170612, [@3SEQ]) with none identified.
+Identical intra-locus sequences were retained for all taxa and ambiguous sites
+were allowed for the nuclear rITS locus. Site models were unlinked and set as
+TN93 [@Tamura1993] with empirical frequencies for rITS and JC69 [@Jukes1969]
+for both plastid loci *rps* and *ycf1*; substitution rates were estimated for
+each locus. A strict clock model was applied to rITS and a linked plastid loci
+with a uniform prior. Given the suspected recent divergence of ingroup taxa,
+a coalesescent constant population tree prior was set with a 1/X population
+size parameter. Chain length was set to 50M, logging every 5K trace.
+Runs were submitted to CIPRES running BEAST v2.6.3 [@Drummond2007; @Suchard2009].
+Output log files were inspected using Tracer v1.7.1 [@Tracer] to verify
+parameter convergence by an effective sample size (ESS) over 200.
+Three independent runs of 50M states were combined using LogCombiner v2.6.3
+[@Bouckaert2019] with 10,000 resampled states.
+A maximum clade credibility (mcc) tree was calculated from the run output trees
+using TreeAnnotator v2.6.3 (*ibid.*) with 20% of the trees discarded as
+burn-in and a posterior probability limit of 0.5.
+
+\paragraph{} To account for potential gene tree incongruence arising from
+recent lineage divergence, an additional method that explicitly models
+incomplete lineage sorting was use to estimate a species tree
+[@Heled2010; @Knowles2007]. Included alignments were limited to the rITS
+and *rps* intron (n=60 samples each) given the absence of potentially
+informative sites (defined as synapomorphic characters) in *ycf1*.
+Site and clock model paramaters were retained from the partitioned
+multi-locus analysis and a yule model was set for the species tree prior.
+The multi species coalescent model was set as a linear population function with
+autosomal nuclear ploidy for rITS and non-recombining ploidy for plastid *rps*.
+A *BEAST template was used to assign taxon sets based on the following
+successive species hypotheses: 
+  (1) *a priori* subspecies and a novel species from the Medicine Range,
+  (2) lumped *P. saximontanta* subspecies *saximontana* and *dentata*,
+  (3) combined *P. saximontana* subsp. as *P. didymocarpa* subsp. *didymocarpa*,
+  (4) combined *P. d.* subsp. *lyrata* with *P. d.* subsp. *didymocarpa*
+MCMC chains were run for 100M generations, sampling every 10,000.
+Maximum clade credibility trees were summarized using TreeAnnotator
+from the output species trees discarding 10% of trees as burn-in with a
+posterior probability limit of 0.5.
+
+\paragraph{} To plot phylogenetic tree results, the `treeio` R pacakge
+[@R-treeio2020] was used to read in the MrBayes consensus and BEAST maximum
+clade credibility trees. Inferred phylogenies were plotted with the `ggplot2`
+extension `ggtree` [@R-ggtree; @R-ggtree2020], with annotations for duplicate
+sequences from MrBayes included using `dplyr` and `purrr`. Sequence alignment
+matrices were visualized using `msa` [@R-msa], an R package that provides
+wrapper functions to print sequences alignments with the $LaTeX$ package
+$TeX$shade [@TeXshade].
+Additional $LaTeX$ packages utilized for document typesetting include
+`titletoc` [@titletoc] for table of contents, `titlesec` [@titlesec] for
+section titles, and `titleps` [@titleps] for page styling.
+
+\paragraph{} For project reproducilibilty, source code and data were maintained
+as an R package [@R-packages] utilizing the `usethis` [@R-usethis]
+and `devtools` [@R-devtools] packages.
+A project library with specific package versioning was maintained using
+the R package `renv` [@R-renv].
+A PDF document and figures from built from source using `bookdown`
+[@R-bookdown; @R-bookdown2016], `rmarkdown` [@R-rmarkdown; @R-rmarkdown2018],
+and `knitr` [@R-knitr; @R-knitr2015] with a `tinytex` [@R-tinytex] $LaTeX$
+distribution for typesetting. The GNU `make` utility v3.81 [@GNUmake] was used
+to automate figure generation and document compilation.
+References were maintained using Zotero v5.0.93 [@Zotero] with the
+Better BibTeX v5.2.86 [@BetterBibTeX] add-on.
+The R package source code is available from
+https://github.com/jasonratcliff/ThesisPackage
+and the manuscript source code is available from
+https://github.com/jasonratcliff/Thesis as GitHub repositories.
+
