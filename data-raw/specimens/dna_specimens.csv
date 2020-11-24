@@ -52,16 +52,16 @@ PINTE_43,"J. Ratcliff & S. L. O'Kane, Jr.",43,ISTC,Wyoming,Lincoln,42.7258,-110.
 PINTE_44,"J. Ratcliff & S. L. O'Kane, Jr.",44,ISTC,Wyoming,Lincoln,43.1972,-110.8897,Physaria integrifolia,Physaria integrifolia,TRUE,PINTE_44 rITS,PINTE_44 rps,PINTE_44 ycf1
 PINTE_68918,B. E. Nelson with D. Scott,68918,NY,Wyoming,Teton,43.7914,-110.533,Physaria integrifolia,Physaria integrifolia,FALSE,PINTE_68918 rITS,FRAMESHIFT,MISSING
 POBCO_3762,Missing,3762,NA,Unknown,NA,NA,NA,Physaria obcordata,,FALSE,POBCO_3762 rITS,POBCO_3762 rps,MISSING
-PSAXI_DE_4481,P. Lesica,4481,GH,Montana,Stillwater,45.4724,-110.0253,Physaria saximontana ssp. dentata,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_DE_4481 rITS,PSAXI_DE_4481 rps,PSAXI_DE_4481 ycf1
-PSAXI_DE_56,J. Ratcliff & M. Horsch,56,ISTC,Montana,Glacier,48.735,-113.3939,Physaria saximontana ssp. dentata,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_DE_56 rITS,PSAXI_DE_56 rps,PSAXI_DE_56 ycf1
-PSAXI_DE_79,R.S. Wirt,79,ISTC,Montana,Pondera,48.1384,-113.0299,Physaria saximontana ssp. dentata,Physaria didymocarpa ssp. didymocarpa,FALSE,PSAXI_DE_79 rITS,PSAXI_DE_79 rps,MISSING
-PSAXI_DE_89,R.S. Wirt,89,ISTC,Montana,Flathead,47.6906,-113.256,Physaria saximontana ssp. dentata,Physaria didymocarpa ssp. didymocarpa,FALSE,PSAXI_DE_89 rITS,PSAXI_DE_89 rps,MISSING
-PSAXI_DE_9833,P. Lesica & D. Hanna,9833,MONTU,Montana,Fergus,46.7711,-109.3573,Physaria saximontana ssp. dentata,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_DE_9833 rITS,PSAXI_DE_9833 rps,PSAXI_DE_9833 ycf1
-PSAXI_SA_3153,A. Salywon & D. Dierig,3153,ISTC,Wyoming,Fremont,42.6131,-108.6056,Physaria saximontana ssp. saximontana,Physaria didymocarpa ssp. didymocarpa,FALSE,PSAXI_SA_3153 rITS,FRAMESHIFT,MISSING
-PSAXI_SA_39,"J. Ratcliff & S. L. O'Kane, Jr.",39,ISTC,Wyoming,Fremont,42.6917,-108.1794,Physaria saximontana ssp. saximontana,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_SA_39 rITS,PSAXI_SA_39 rps,PSAXI_SA_39 ycf1
-PSAXI_SA_50,"J. Ratcliff & S. L. O'Kane, Jr.",50,ISTC,Wyoming,Fremont,43.6986,-108.8783,Physaria saximontana ssp. saximontana,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_SA_50 rITS,PSAXI_SA_50 rps,PSAXI_SA_50 ycf1
-PSAXI_SA_74315,B.E. Nelson,74315,ISTC,Montana,Carbon,45.0145,-108.2925,Physaria saximontana ssp. saximontana,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_SA_74315 rITS,PSAXI_SA_74315 rps,PSAXI_SA_74315 ycf1
-PSAXI_SA_9636,P. Lesica with P. Kittelson,9636,MONTU,Montana,Madison,45.1967,-111.9552,Physaria saximontana ssp. saximontana,Physaria didymocarpa ssp. didymocarpa,TRUE,PSAXI_SA_9636 rITS,PSAXI_SA_9636 rps,PSAXI_SA_9636 ycf1 
+PSAXI_DE_4481,P. Lesica,4481,GH,Montana,Stillwater,45.4724,-110.0253,Physaria saximontana ssp. dentata,Physaria saximontana ssp. dentata,TRUE,PSAXI_DE_4481 rITS,PSAXI_DE_4481 rps,PSAXI_DE_4481 ycf1
+PSAXI_DE_56,J. Ratcliff & M. Horsch,56,ISTC,Montana,Glacier,48.735,-113.3939,Physaria saximontana ssp. dentata,Physaria saximontana ssp. dentata,TRUE,PSAXI_DE_56 rITS,PSAXI_DE_56 rps,PSAXI_DE_56 ycf1
+PSAXI_DE_79,R.S. Wirt,79,ISTC,Montana,Pondera,48.1384,-113.0299,Physaria saximontana ssp. dentata,Physaria saximontana ssp. dentata,FALSE,PSAXI_DE_79 rITS,PSAXI_DE_79 rps,MISSING
+PSAXI_DE_89,R.S. Wirt,89,ISTC,Montana,Flathead,47.6906,-113.256,Physaria saximontana ssp. dentata,Physaria saximontana ssp. dentata,FALSE,PSAXI_DE_89 rITS,PSAXI_DE_89 rps,MISSING
+PSAXI_DE_9833,P. Lesica & D. Hanna,9833,MONTU,Montana,Fergus,46.7711,-109.3573,Physaria saximontana ssp. dentata,Physaria saximontana ssp. dentata,TRUE,PSAXI_DE_9833 rITS,PSAXI_DE_9833 rps,PSAXI_DE_9833 ycf1
+PSAXI_SA_3153,A. Salywon & D. Dierig,3153,ISTC,Wyoming,Fremont,42.6131,-108.6056,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,FALSE,PSAXI_SA_3153 rITS,FRAMESHIFT,MISSING
+PSAXI_SA_39,"J. Ratcliff & S. L. O'Kane, Jr.",39,ISTC,Wyoming,Fremont,42.6917,-108.1794,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,TRUE,PSAXI_SA_39 rITS,PSAXI_SA_39 rps,PSAXI_SA_39 ycf1
+PSAXI_SA_50,"J. Ratcliff & S. L. O'Kane, Jr.",50,ISTC,Wyoming,Fremont,43.6986,-108.8783,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,TRUE,PSAXI_SA_50 rITS,PSAXI_SA_50 rps,PSAXI_SA_50 ycf1
+PSAXI_SA_74315,B.E. Nelson,74315,ISTC,Montana,Carbon,45.0145,-108.2925,Physaria saximontana ssp. saximontana,Physaria acutifolia,TRUE,PSAXI_SA_74315 rITS,PSAXI_SA_74315 rps,PSAXI_SA_74315 ycf1
+PSAXI_SA_9636,P. Lesica with P. Kittelson,9636,MONTU,Montana,Madison,45.1967,-111.9552,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,TRUE,PSAXI_SA_9636 rITS,PSAXI_SA_9636 rps,PSAXI_SA_9636 ycf1 
 PVITU_10105,R. Dorn,10105,RM,Wyoming,Carbon,41.0172,-106.8503,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_10105 rITS,PVITU_10105 rps,PVITU_10105 ycf1
 PVITU_16713,W. Fertig,16713,RM,Wyoming,Carbon,41.2144,-107.1844,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_16713 rITS,PVITU_16713 rps,PVITU_16713 ycf1
 PVITU_19075,W. Fertig & L. Welp,19075,RM,Wyoming,Carbon,41.3397,-106.5584,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_19075 rITS,PVITU_19075 rps,PVITU_19075 ycf1

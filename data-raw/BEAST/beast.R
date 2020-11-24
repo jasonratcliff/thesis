@@ -31,112 +31,64 @@ list.files("data-raw/sequencing/3.alignments-subset",
 
 # *BEAST ----
 
-# Exclude outgroup taxa from FASTA alignment and write NEXUS output.
-list.files("data-raw/sequencing/3.alignments-single",
-           full.names = TRUE) %>%
-
-  purrr::walk(.x = ., function(fasta_file) {
-    locus_fasta <- Biostrings::readDNAStringSet(filepath = fasta_file)
-    names(locus_fasta) <- gsub(" .+$", "", names(locus_fasta))
-    locus_fasta <-
-      locus_fasta[!grepl("^(LFEND|LARGY|POBCO)", x = names(locus_fasta))]
-
-    tree_file <-
-      fs::path(
-        "data-raw/BEAST/NEXUS/",
-        paste0(
-          gsub("-single", "", fs::path_ext_remove(basename(fasta_file))),
-          "-species"
-        ),
-        ext = "nex"
-      )
-
-    char_wrap <- lapply(locus_fasta, length) %>% unique() %>% unlist()
-    ape::write.nexus.data(
-      x = locus_fasta,
-      file = tree_file,
-      charsperline = char_wrap,
-      interleaved = FALSE
-    )
-  })
-
 # Write subset of specimen IDs for species tree taxa labels.
-spp_tree_taxa <- ThesisPackage::dna_specimens %>%
+spp_combined <- ThesisPackage::dna_specimens %>%
   dplyr::select(1:11, dplyr::matches("header_")) %>%
+
+  # Exclude outgroup and duplicated sample localities.
   dplyr::filter(
-    !grepl("^L(FEND|ARGY)|POBCO", x = .data$label)
+    !grepl(
+      pattern = paste(
+        "^L(FEND|ARGY)|POBCO",
+        "PDIDY_DI_46|PDIDY_LY_2689|PDIDY_LA_3138|PEBUR_3121",
+        sep = "|"
+      ),
+      x = .data$label)
   ) %>%
+
   # Replace unsampled / frameshift taxa headers as missing.
   dplyr::mutate_at(
     .vars = dplyr::vars(dplyr::matches("header_")),
     .funs = ~ gsub("MISSING|FRAMESHIFT", NA, x = .x)
   ) %>%
+  dplyr::filter(!is.na(header_rps) & !is.na(header_rITS)) %>%
+
+  # Remove spaces from specimen identifications.
   dplyr::mutate(
     ID_final = gsub(
       x = .data$ID_final,
       pattern = " ",
       replacement = "_"
-      ) %>%
+    ) %>%
       gsub(pattern = "\\.", replacement = "", x = .)
   ) %>%
   dplyr::rename(
     "traits" = "label",
-    "species" = "ID_final"
-  )
-
-# Phylogeography ----
-
-# Subset specimens to complete rITS and rps loci.
-spp_phylogeography <- spp_tree_taxa %>%
-  dplyr::select("traits", "species",
-                dplyr::matches("header_(rps|rITS)"),
-                "Longitude.x", "Latitude.x") %>%
-  dplyr::rename(
+    "species" = "ID_final",
     "lat" = "Latitude.x",
     "long" = "Longitude.x"
-  ) %>%
-  # Replace unsampled / frameshift taxa headers as missing.
-  dplyr::mutate_at(
-    .vars = dplyr::vars(dplyr::matches("header_")),
-    .funs = ~ gsub("MISSING|FRAMESHIFT", NA, x = .x)
-  ) %>%
-  dplyr::filter(!is.na(header_rps) & !is.na(header_rITS))
-
-# Write specimens with geographic coordinates to import traits in BEAST v1.10.4.
-spp_phylogeography %>%
-  dplyr::select(-c("species", dplyr::matches("header"))) %>%
-  readr::write_delim(
-    x = .,
-    file = "data-raw/BEAST/Phylogeography/complete-phylogeography.txt",
-    delim = "\t"
   )
 
-# Write rITS / rps FASTA subsets for continuous phylogeography.
 list.files(
   path = "data-raw/sequencing/3.alignments-single",
   full.names = TRUE,
-  pattern = "rps|rITS"
+  pattern = "rITS|rps"
 ) %>%
   purrr::walk(.x = ., function(fasta_file) {
-
     locus_fasta <- Biostrings::readDNAStringSet(filepath = fasta_file)
     names(locus_fasta) <- gsub(" .+$", "", names(locus_fasta))
     locus_fasta <-
-      locus_fasta[!grepl("^(LFEND|LARGY|POBCO)", x = names(locus_fasta))]
-    locus_fasta <-
-      locus_fasta[names(locus_fasta) %in% spp_phylogeography$traits]
-
+      locus_fasta[which(names(locus_fasta) %in% spp_combined$traits)]
     tree_file <-
       fs::path(
         "data-raw/BEAST/NEXUS/",
         paste0(
           gsub("-single", "", fs::path_ext_remove(basename(fasta_file))),
-          "-geography"
+          "-combined"
         ),
         ext = "nex"
       )
-
-    char_wrap <- lapply(locus_fasta, length) %>% unique() %>% unlist()
+    char_wrap <- unique(vapply(locus_fasta, length, integer(1)))
     ape::write.nexus.data(
       x = locus_fasta,
       file = tree_file,
@@ -145,9 +97,20 @@ list.files(
     )
   })
 
+# Phylogeography ----
+
+# Write specimens with geographic coordinates to import traits in BEAST v1.10.4.
+spp_combined %>%
+  dplyr::select(traits, lat, long) %>%
+  readr::write_delim(
+    x = .,
+    file = "data-raw/BEAST/Phylogeography/phylogeography.txt",
+    delim = "\t"
+  )
+
 # Species Tree Hypotheses ----
 
-spp_hypotheses <- spp_tree_taxa %>%
+spp_hypothesis1 <- spp_combined %>%
   dplyr::select("traits", "species")
 
 # Hypothesis 1:
@@ -155,61 +118,61 @@ spp_hypotheses <- spp_tree_taxa %>%
 #   - P. d. subsp. didymocarpa
 #   - P. d. subsp. lanata
 #   - P. d. subsp. lyrata
-# - Lump P. saximontana subsp.
-spp_hypotheses %>%
+# - Split P. saximontana subsp.
+#   - P. s. subsp. saximontana
+#   - P. s. subsp. dentata
 readr::write_delim(
-    x = .,
+    x = spp_hypothesis1,
     file = "data-raw/BEAST/Species-Tree/species-hypothesis-1.txt",
     delim = "\t"
   )
 
 # Hypothesis 2:
-# - Lump P. d. subsp. didymocarpa to include:
-#   - P. d. subsp. lyrata
-#   - P. saximontana
-# - Elevate P. d. subsp. lanata to specific rank
-spp_hypotheses %>%
+# - Lumped P. saximontana subsp.
+spp_hypothesis2 <- spp_hypothesis1 %>%
   dplyr::mutate(
-    species = gsub(
-      pattern = "ssp_lyrata",
-      replacement = "ssp_didymocarpa",
-      x = .data$species),
-    species = gsub(
-      pattern = "Physaria_saximontana",
-      replacement = "Physaria_didymocarpa_ssp_didymocarpa",
-      x = .data$species),
-    species = gsub(
-      pattern = "_didymocarpa_ssp",
-      replacement = "",
-      x = .data$species)
-  ) %>%
-  readr::write_delim(
-    x = .,
-    file = "data-raw/BEAST/Species-Tree/species-hypothesis-2.txt",
-    delim = "\t"
+    species = stringr::str_replace(
+      string = .data$species,
+      pattern = "Physaria_saximontana.+",
+      replacement = "Physaria_saximontana"
+    )
   )
+readr::write_delim(
+  x = spp_hypothesis2,
+  file = "data-raw/BEAST/Species-Tree/species-hypothesis-2.txt",
+  delim = "\t"
+)
 
 # Hypothesis 3:
-# - Lump P. d. subsp. didymocarpa to include P. saximontana
-# - Lump P. d. subsp. lyrata with P. integrifolia
-# - Lump P. d. subsp. lanata with P. acutifolia
-spp_hypotheses %>%
+# - Lumped P. didymocarpa and P. saximontana
+spp_hypothesis3 <- spp_hypothesis2 %>%
   dplyr::mutate(
-    species = gsub(
-      pattern = "Physaria_didymocarpa_ssp_lyrata",
-      replacement = "Physaria_integrifolia",
-      x = .data$species),
-    species = gsub(
-      pattern = "Physaria_didymocarpa_ssp_lanata",
-      replacement = "Physaria_acutifolia",
-      x = .data$species),
-    species = gsub(
+    species = stringr::str_replace(
+      string = .data$species,
       pattern = "Physaria_saximontana",
-      replacement = "Physaria_didymocarpa",
-      x = .data$species)
-  ) %>%
-  readr::write_delim(
-    x = .,
-    file = "data-raw/BEAST/Species-Tree/species-hypothesis-3.txt",
-    delim = "\t"
+      replacement = "Physaria_didymocarpa_ssp_didymocarpa"
+    )
   )
+readr::write_delim(
+  x = spp_hypothesis3,
+  file = "data-raw/BEAST/Species-Tree/species-hypothesis-3.txt",
+  delim = "\t"
+)
+
+# Hypothesis 4:
+# - Lumped P. didymocarpa subsp. lyrata
+spp_hypothesis4 <- spp_hypothesis3 %>%
+  dplyr::mutate(
+    species = stringr::str_replace(
+      string = .data$species,
+      pattern = "ssp_lyrata",
+      replacement = "ssp_didymocarpa"
+    )
+  )
+readr::write_delim(
+  x = spp_hypothesis4,
+  file = "data-raw/BEAST/Species-Tree/species-hypothesis-4.txt",
+  delim = "\t"
+)
+
+
