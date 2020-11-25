@@ -1,0 +1,38 @@
+# REFERENCES {-}
+
+```{r pdfReferences, results="asis"}
+if (knitr_chunk == "latex") {
+  cat(
+    "\\vspace*{-36pt}",
+    "\\setlength{\\parindent}{-0.5in}",
+    "\\setlength{\\leftskip}{0.5in}",
+    "\\setlength{\\parskip}{12pt}",
+    "\\singlespacing",
+    "\\hspace*{-0.5in}"
+  )
+}
+```
+
+<div id="refs"></div>
+
+```{r LaTeXspecimens, results="asis"}
+if (knitr_chunk == "latex") {
+  cat(
+    "\\setlength{\\parindent}{0.5in}",
+    "\\setlength{\\leftskip}{0in}",
+    "\\setlength{\\parskip}{12pt}",
+    "\\doublespacing",
+    "\\hspace*{-0.5in}",
+    "# (APPENDIX) Appendix {-}",
+    "<!-- Specimen appendix TeX files -->",
+    "\\input{TeX/specimens-P-medicinae}",
+    "\\input{TeX/specimens-P-vitulifera}",
+    "\\input{TeX/specimens-P-integrifolia}",
+    "\\input{TeX/specimens-P-didymocarpa}",
+    "\\input{TeX/specimens-P-brassicoides}",
+    "\\input{TeX/specimens-P-acutifolia}",
+    sep = "\n"
+    )
+  }
+```
+
