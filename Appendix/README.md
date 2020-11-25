@@ -13,16 +13,11 @@ collection and collection number values.
 Rscript appendix_script.R
 ```
 
-    ## 
-    ## Attaching package: ‘lubridate’
-    ## 
-    ## The following objects are masked from ‘package:base’:
-    ## 
-    ##     date, intersect, setdiff, union
-
 ``` r
+appendix_files <- list.files(pattern = "*_appendix.tsv")
+
 missing_appendixes <- purrr::map_dfr(
-  .x = list.files(pattern = "*_appendix.tsv"), function(appendix) {
+  .x = appendix_files, function(appendix) {
     readr::read_tsv(file = appendix,
                     col_types = paste0(rep("c", times = 10), collapse = "")) %>%
       dplyr::mutate(
@@ -40,6 +35,10 @@ ggplot(data = missing_appendixes) +
 ```
 
 ![](README_files/figure-gfm/missingAppendixes-1.png)<!-- -->
+
+``` r
+fs::file_delete(path = appendix_files)
+```
 
 # Images
 

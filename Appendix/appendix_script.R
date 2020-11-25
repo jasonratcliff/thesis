@@ -1,8 +1,10 @@
 #!/usr/bin/env Rscript
-library(magrittr)
-library(ggplot2)
-library(lubridate, quietly = TRUE)
-library(ThesisPackage)
+suppressMessages({
+  library(ThesisPackage)
+  library(magrittr)
+  library(ggplot2)
+  library(lubridate)
+})
 
 #' Appendix R Script
 #'
@@ -34,7 +36,7 @@ species_appendix <- function(species_tab) {
   # Write .tsv file from ordered tibble for remaining appendix samples.
   readr::write_tsv(
     x = specimens,
-    path =  paste0(gsub(" +", "", species_tab), "_appendix.tsv")
+    file =  paste0(gsub(" +", "", species_tab), "_appendix.tsv")
   )
 }
 
