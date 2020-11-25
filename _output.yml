@@ -11,6 +11,8 @@ bookdown::pdf_book:
   includes:
     in_header: Ratcliff2020Thesis.tex
   latex_engine: xelatex
+  citation_package: default
+  pandoc_args: [ "--csl", "council-of-science-editors-author-date.csl"]
   toc: false
   keep_tex: yes
 

@@ -6,6 +6,7 @@ site: bookdown::bookdown_site
 documentclass: report
 maintfont: Palatino
 bibliography: "Ratcliff2020Thesis.bib"
+csl: council-of-science-editors-author-date.csl
 link-citations: yes
 subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
