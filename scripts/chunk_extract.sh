@@ -1,4 +1,9 @@
 #!/bin/bash
+set -e
+set -u
+# set -x pipefail
+## pipefail triggered by: elif [[ ! "$1" =~ ".Rmd" ]] 
+
 # Extract R chunks from bookdown .Rmd files.
 
 # Set empty file, null previous contents, and establish temp file.
