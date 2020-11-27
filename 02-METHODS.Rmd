@@ -591,10 +591,9 @@ posterior probability limit of 0.5.
 [@R-treeio2020] was used to read in the MrBayes consensus and BEAST maximum
 clade credibility trees. Inferred phylogenies were plotted with the `ggplot2`
 extension `ggtree` [@R-ggtree; @R-ggtree2020], with annotations for duplicate
-sequences from MrBayes included using `dplyr` and `purrr`. Sequence alignment
-matrices were visualized using `msa` [@R-msa], an R package that provides
-wrapper functions to print sequences alignments with the $LaTeX$ package
-$TeX$shade [@TeXshade].
+sequences from MrBayes included using `dplyr` and `purrr`.
+Multiple sequence alignment were subset to potentially informative sites and
+visualized using `ggmsa` [@R-ggmsa].
 Additional $LaTeX$ packages utilized for document typesetting include
 `titletoc` [@titletoc] for table of contents, `titlesec` [@titlesec] for
 section titles, and `titleps` [@titleps] for page styling.

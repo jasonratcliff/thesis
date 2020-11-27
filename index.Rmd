@@ -10,22 +10,19 @@ csl: council-of-science-editors-author-date.csl
 link-citations: yes
 subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
+nocite: |
+  @R-ggmsa
 ---
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
-# Set Global knitr chunk options
-knitr::opts_chunk$set(echo=FALSE, results="asis", message=FALSE)
 
-# Allow caption assignment in chunk.
+# Set Global knitr chunk and knit options.
+knitr::opts_chunk$set(echo=FALSE, results="asis", message=FALSE)
 knitr::opts_knit$set(eval.after = 'fig.cap')
 
-# Assign global variable for type of knitr chunk (i.e. 'latex' | 'html').
+# Assign chunk type for knitr graphics and chunk sections.
 knitr_chunk <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-
-# File extension for knitr::include_graphics().
 knitr_ext <- list(html = "png", latex = "pdf")
-
-# Graphics device for pandoc conversion.
 knitr::opts_chunk$set(dev = knitr_ext[[knitr_chunk]])
 
 ```
@@ -33,13 +30,24 @@ knitr::opts_chunk$set(dev = knitr_ext[[knitr_chunk]])
 ```{r libraries}
 
 # For PDF compilation of Bookdown Doc, LaTeX install required.
-library(bookdown)
 library(tinytex)
+library(bookdown)
 library(knitr)
 library(kableExtra)
 
 # Load specimen data and Thesis functions.
 library(ThesisPackage)
+
+# Initialize list for figure captions.
+caption <- list()
+
+# Function to return italized genus name.
+physaria <- function(knitr_chunk) {
+  paste(
+    ifelse(knitr_chunk == "latex",
+           "\\textit{Physaria}", "*Physaria*")
+  )
+}
 
 ```
 
