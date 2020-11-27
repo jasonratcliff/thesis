@@ -1,95 +1,83 @@
 
-```{r msaAppendix}
+```{r alignmentAppendix, results = "asis"}
 
-# Establish a directory to store alignment appendix msa figures:
-alignment_dir <- "Appendix/alignments"
-if (!dir.exists(alignment_dir)) {
-  dir.create(alignment_dir)
+if (knitr_chunk == "latex") {
+  cat(
+    "\\chapter*{APPENDIX B}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX B: MULTIPLE SEQUENCE ALIGNMENTS}",
+    # "\\centering",
+    "\\vspace*{-18pt}",
+    sep = "\n"
+  )
 }
 
-# Remove old .aux and .tex files from Alignment-Figures subdirectory.
-if (dir.exists(alignment_dir)) {
-  alignment_tex_files <-
-    list.files(path = alignment_dir, pattern = ".aux|.tex|.fasta",
-               full.names = TRUE)
-  fs::file_delete(alignment_tex_files)
+```
+
+```{r ggMSArITS, out.extra="angle=90"}
+
+if (knitr_chunk == "latex") {
+  cat(
+    "\\vspace*{-18pt}"
+  )
 }
+
+ThesisPackage::knitr_section(
+  knitr_title = "Nuclear rITS",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+knitr::include_graphics(
+    path = paste0("Figs/FigAppendixMSArITS.", knitr_ext[[knitr_chunk]])
+)
 
 ```
 
 \clearpage
 
-```{r msaITS, results = "asis"}
+```{r ggMSArpsIntron, out.extra="angle=90"}
 
-# Write TEXshade files from multiple sequence alignments
-ThesisPackage::msa_wrapper(msa_fasta = "rITS-single.fasta", msa_output = "rITS")
-tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
-                        pattern = paste0("rITS_msa_[0-9]+\\.tex"))
+if (knitr_chunk == "latex") {
+  cat(
+    "\\vspace*{-18pt}"
+  )
+}
 
-# Format TEXshade environments 
-purrr::iwalk(.x = tex_files, function(tex_file, index) {
-    orientation <- ifelse(index == 1, FALSE, TRUE)
-    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
-  })
+ThesisPackage::knitr_section(
+  knitr_title = "Plastid *rps* Intron",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
 
-cat("\\chapter*{APPENDIX C}",
-    "\\addcontentsline{toc}{chapter}{APPENDIX C: ITS SEQUENCE ALIGNMENT}",
-    "\\vspace*{12pt}", "\\centering",
-    "ITS SEQUENCE ALIGNMENT\n", sep = "\n")
-
-# Walk .Tex files to output LaTeX oriented MSA
-purrr::walk(.x = tex_files, function(tex_file) {
-  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
-  })
+knitr::include_graphics(
+    path = paste0("Figs/FigAppendixMSArpsIntron.", knitr_ext[[knitr_chunk]])
+)
 
 ```
 
-```{r msaRPS, results = "asis"}
+\clearpage
 
-# Write TEXshade files from multiple sequence alignments
-ThesisPackage::msa_wrapper(msa_fasta = "rps-single.fasta", msa_output = "rps")
-tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
-                        pattern = paste0("rps_msa_[0-9]+\\.tex"))
+```{r ggMSAycf1, out.extra="angle=90"}
 
-# Format TEXshade environments 
-purrr::iwalk(.x = tex_files, function(tex_file, index) {
-    orientation <- ifelse(index == 1, FALSE, TRUE)
-    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
-  })
+if (knitr_chunk == "latex") {
+  cat(
+    "\\vspace*{-18pt}"
+  )
+}
 
-cat("\\chapter*{APPENDIX D}",
-    "\\addcontentsline{toc}{chapter}{APPENDIX D: \\textit{rps} SEQUENCE ALIGNMENT}",
-    "\\vspace*{12pt}", "\\centering",
-    "\\textit{rps} SEQUENCE ALIGNMENT\n", sep = "\n")
+ThesisPackage::knitr_section(
+  knitr_title = "Plastid *ycf1* ",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
 
-# Walk .Tex files to output LaTeX oriented MSA
-purrr::walk(.x = tex_files, function(tex_file) {
-  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
-  })
+knitr::include_graphics(
+    path = paste0("Figs/FigAppendixMSAycf1.", knitr_ext[[knitr_chunk]])
+)
 
 ```
 
-```{r msaYCF1, results = "asis"}
+\clearpage
 
-# Write TEXshade files from multiple sequence alignments
-ThesisPackage::msa_wrapper(msa_fasta = "ycf1-single.fasta", msa_output = "ycf1")
-tex_files <- list.files(path = fs::path(alignment_dir), full.names = TRUE, 
-                        pattern = paste0("ycf1_msa_[0-9]+\\.tex"))
+# R SESSION INFO {-}
 
-# Format TEXshade environments 
-purrr::iwalk(.x = tex_files, function(tex_file, index) {
-    orientation <- ifelse(index == 1, FALSE, TRUE)
-    ThesisPackage::msa_texshade(tex_path = tex_file, landscape = orientation)
-  })
-
-cat("\\chapter*{APPENDIX E}",
-    "\\addcontentsline{toc}{chapter}{APPENDIX E: \\textit{ycf1} SEQUENCE ALIGNMENT}",
-    "\\vspace*{12pt}", "\\centering",
-    "\\textit{ycf1} SEQUENCE ALIGNMENT\n", sep = "\n")
-
-# Walk .Tex files to output LaTeX oriented MSA
-purrr::walk(.x = tex_files, function(tex_file) {
-  cat(readr::read_lines(file = tex_file), "\\clearpage", sep = "\n")
-  })
-
+```{r sessionInfo}
+sessionInfo()
 ```
