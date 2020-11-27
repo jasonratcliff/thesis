@@ -432,8 +432,12 @@ decanting again. Any remaining ethanol was let to evaporate before
 re-suspending in 18 mL ddH2O.
 
 ```{r sectionGel}
-knitr_section(knitr_title = "Gel Electrophoresis",
-              knitr_type = "section", chunk_type = knitr_chunk)
+
+knitr_section(
+  knitr_title = "Gel Electrophoresis",
+  knitr_type = "section", chunk_type = knitr_chunk
+  )
+
 ```
 
 \paragraph{} Success of PCR amplification was verified using a 1.1% agarose
@@ -450,8 +454,12 @@ Electrophoresis Documentation and Analysis System was used to document digital
 images of the gels.
 
 ```{r sectionSeqDNA}
-knitr_section(knitr_title = "DNA Sequencing",
-              knitr_type = "section", chunk_type = knitr_chunk)
+
+knitr_section(
+  knitr_title = "DNA Sequencing",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
 \paragraph{} Prior to sequencing, the PCR reaction products were treated with
@@ -476,8 +484,12 @@ labeled using IUPAC ambiguity codes [@Cornish-Bowden1985]. The sequences were
 assembled from chromatograms into multi-FASTA format for downstream analysis.
 
 ```{r sectionPhylogenetics}
-knitr_section(knitr_title = "Phylogenetic Analysis",
-              knitr_type = "section", chunk_type = knitr_chunk)
+
+knitr_section(
+  knitr_title = "Phylogenetic Analysis",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
 \paragraph{} Phylogenetic relationships were estimated by bayesian inference
