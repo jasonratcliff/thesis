@@ -1,7 +1,7 @@
 Package: ThesisPackage
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.1.4.9002
+Version: 0.1.5.0
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling Thesis Bookdown document. Includes
@@ -30,6 +30,7 @@ Imports:
     ggnewscale,
     cowplot,
     ggtext,
+    ggrepel,
     sf,
     raster,
     ggmap (>= 3.0.0.9),

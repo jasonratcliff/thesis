@@ -199,3 +199,67 @@ beast_legend_probability <- function(tree_data) {
     )
   return(posterior_legend)
 }
+
+# *BEAST Species Tree ----
+
+#' Plot *BEAST Species Tree
+#'
+#' Build [ggtree] plot from *BEAST maximum credibility clade (_.mcc_) tree file.
+#' Species tip labels are parsed to abbreviate genus and italicize using
+#' base expressions.
+#'
+#' @inheritParams node_labels
+#' @export
+#'
+#' @return `ggtree` built from *BEAST species tree
+#'
+#' @examples
+#' treeio::read.beast(
+#'   file = system.file("extdata/BEAST/spp-hypothesis-4.mcc",
+#'                      package = "ThesisPackage")
+#'   ) %>%
+#'   ggtree::fortify() %>%
+#'   species_plot(tree_data = .)
+#'
+species_plot <- function(tree_data) {
+
+  # Parse tip label expressions for species italicization.
+  tree_data <- tree_data %>%
+    dplyr::mutate(
+      label = purrr::map_chr(.data$label, function(label) {
+        if (!is.na(label)) {
+          label <- gsub("_", " ", x = label) %>% gsub("Physaria", "P.", x = .)
+          species <- stringr::str_extract(string = label, "P\\. [a-z]+")
+          ifelse(grepl(" ssp ", label),
+                 paste0("italic(", species, ")", " ssp. ",
+                        stringr::str_extract(
+                          string = label,
+                          pattern = "(?<=ssp )[a-z]+$"
+                        ) %>%
+                          paste0("italic(", ., ")")),
+                 paste0("italic(", species, ")"))
+        } else {
+          NA
+        }
+      }) %>% gsub(" ", "~", x = .)
+    )
+
+  # Build ggtree from species tree.
+  spp_ggtree <-
+    ggtree::ggtree(tr = tree_data, ggplot2::aes(color = posterior)) +
+    # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
+    ggtree::geom_tiplab(size = 2, parse = T) +
+    ggrepel::geom_label_repel(
+      data = dplyr::filter(tree_data, !is.na(.data$posterior)),
+      ggplot2::aes(x, y, label = round(posterior, 2)), nudge_x = -0.00001,
+      size = 2
+    ) +
+    ggplot2::scale_color_gradientn(
+      colors = c("red", "orange", "green", "cyan", "blue")
+    ) +
+    ggtree::xlim_expand(xlim = 0.001275, panel = "Tree") +
+    ggtree::geom_treescale() +
+    ggtree::theme_tree()
+  return(spp_ggtree)
+}
+
