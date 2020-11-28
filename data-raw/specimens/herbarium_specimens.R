@@ -66,7 +66,7 @@ specimens_raw %>%
     !grepl(pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
            x = as.character(Date_parsed)) & !is.na(Date) |
       !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)) %>%
-  readr::write_excel_csv(x = ., path = "log/remaining_dates.csv")
+  readr::write_excel_csv(x = ., file = "log/remaining_dates.csv")
 
 # 3. Parse prior identifications ----
 
@@ -179,7 +179,7 @@ rm(elev_parsed, specimens_parsed) # Clean up workspace
 # Combine herbarium specimen record information with sequence documentation.
 dna_metadata <-
   readr::read_csv(file = "data-raw/specimens/dna_specimens.csv",
-                  col_types = "ccdcccddcclcccc") %>%
+                  col_types = "ccdcccddcclccc") %>%
   dplyr::rename(label = taxa_label)
 
 dna_specimens <- purrr::pmap_dfr(dna_metadata,
