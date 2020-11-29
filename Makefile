@@ -10,12 +10,6 @@ all: md Figs
 md: README.Rmd
 	Rscript -e 'rmarkdown::render(input = "README.Rmd", output_format = "github_document", output_file = "README.md")'
 
-pdf: $(fig_pdf)
-	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::pdf_book")'
-
-html: $(fig_html)
-	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
-
 Figs: $(fig_pdf) $(fig_html)
 	if [ ! -d Figs ]; then\
 		mkdir -v Figs;\
@@ -27,8 +21,17 @@ Figs/Fig%.pdf: R/Fig%.R
 Figs/Fig%.png: R/Fig%.R
 	Rscript $(<D)/$(<F)
 
-clean:
-	rm -f README.html
+pdf: $(fig_pdf)
+	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::pdf_book")'
+
+html: $(fig_html)
+	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
+
+clean_aux:
 	rm -fvr *.aux
-	rm -fvr Figs/*
+	rm -fvr TeX/*.aux
+
+clean: clean_aux
+	rm -f README.html
+	rm -ifvr Figs/*
 	Rscript -e "bookdown::clean_book(clean = TRUE)"
