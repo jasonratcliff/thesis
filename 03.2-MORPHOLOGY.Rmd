@@ -69,7 +69,7 @@ knitr::include_graphics(
 \paragraph{} The main charcter used by @Rollins1984 to differentiate
 *Physaria saximontana* from *P. didymocarpa* is the lack of a basal sinus in
 the mature siliques of the former. This traditional circumsription is followed
-by @Lesica2012 for Montana *Physaria* and @HeidelOkane2012 for Wyoming
+by @Lesica2012 for Montana *Physaria* and @HeidelOKane2012 for Wyoming
 *Physaria*. While *P. didymocarpa* and *P. eburniflora* are described as having
 cordate basal sinuses [@Rollins1984; @Rollins1981], lack of a basal sinus
 is observed throughout Montana *P. didymocarpa* specimens and seen in some
@@ -103,7 +103,7 @@ In describing *P. saximontana*, @Rollins1984 noted the silique trichomes with
 rays spreading away from the valve, as similarly described for *P. didymocarpa*
 subsp. *didymocarpa* [@Rollins1939]. These observations are consistent with
 material reviewed here and in keeping with keys by @Dorn2001 and
-@HeidelOkane2012.
+@HeidelOKane2012.
 
 ```{r traitFruitTrichomes, fig.cap=caption$traitFruitTrichomes, fig.scap="Distribution of silique trichomes"}
 
