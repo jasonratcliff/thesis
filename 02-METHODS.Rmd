@@ -374,9 +374,13 @@ for 10s at 98 $^{\circ}$C, annealing for 25s at 66.8 $^{\circ}$C, and extension
 for 30s at 72 $^{\circ}$C. A final extension for seven minutes at 72
 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
-```{r sectionPCRYcf1}
-knitr_section(knitr_title = "*ycf1* PCR",
-              knitr_type = "section", chunk_type = knitr_chunk)
+```{r sectionPCRycf1}
+
+knitr_section(
+  knitr_title = "*ycf1* PCR",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
 ```
 
 \paragraph{} The total volume for *ycf1* reactions was 20 $\mu$L. Due to
@@ -436,7 +440,7 @@ re-suspending in 18 mL ddH2O.
 knitr_section(
   knitr_title = "Gel Electrophoresis",
   knitr_type = "section", chunk_type = knitr_chunk
-  )
+)
 
 ```
 
