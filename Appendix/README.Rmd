@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 if (Sys.getenv("USER") != "jasonratcliff") {
   stop("Adjust local script paths in `digi_find.sh`")
 }
+```
 
+```{r packages}
 library(magrittr)
 library(ggplot2)
 ```
@@ -18,15 +20,18 @@ To facilitate formatting appendix files for specimens reviewed, an Rscript
 was used to read in a column subset from each sheetname in the
 `specimens.xlsx` external data from
 [`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage).
-A *.tsv* file is written from entries without appendix completion
-(missing values in variable `App.A`). $\LaTeX$ formatting is substituted
-for collection and collection number values.
+A *.tsv* file for each sheetnem in `specimens.xlsx` is written from entries
+without appendix completion (missing values in variable `App.A`).
 
 ```{r appendixRscript, engine='bash'}
 Rscript appendix_script.R
 ```
 
-```{r missingAppendixes}
+<details>
+  <summary>Missing Appendix Entries</summary>
+  <p>
+
+```{r missingAppendixEntries}
 appendix_files <- list.files(pattern = "*_appendix.tsv")
 
 missing_appendixes <- purrr::map_dfr(
@@ -39,7 +44,7 @@ missing_appendixes <- purrr::map_dfr(
       )
   })
 
-ggplot(data = missing_appendixes) +
+appendix_counts <- ggplot(data = missing_appendixes) +
   geom_bar(aes(x = sheetname, fill = sheetname)) +
   scale_fill_brewer("Sheetname", type = "qual") +
   theme_classic() +
@@ -47,9 +52,56 @@ ggplot(data = missing_appendixes) +
   labs(x = "Sheetname", y = "Count")
 
 fs::file_delete(path = appendix_files)
+rm(appendix_files, missing_appendixes)
+
 ```
 
-# Images
+  </p>
+</details>
+  
+```{r plotAppendix, echo=FALSE}
+print(appendix_counts)
+```
+
+## Identifications
+
+<details>
+  <summary>Summarized Dates</summary>
+  <p>
+
+```{r countIdentifications, fig.cap="Dates of Identification Review"}
+library(dplyr)
+library(ggplot2)
+library(ThesisPackage)
+
+id_dates <- herbarium_specimens %>%
+  select(ID) %>%
+  mutate(
+    Date = stringr::str_extract(
+      string = .data$ID,
+      pattern = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{2}"
+    ) %>% as.Date(x = ., format = "%m/%d/%y")
+  ) %>%
+  filter(!is.na(Date)) %>%
+  group_by(Date) %>%
+  add_count(name = "Count") %>%
+  
+  ggplot(data = .) +
+  geom_count(aes(x = Date, y = Count, color = Date)) +
+  scale_x_date() +
+  scale_color_viridis_c(trans = "date") +
+  theme_classic()
+```
+
+  </p>
+</details>
+  
+```{r plotIdentifications, echo=FALSE}
+print(id_dates)
+rm(id_dates)
+```
+
+## Images
 
 Herbarium voucher specimens were photographed and cataloged by locality.
 The following name convention was used for Digikam files:
@@ -67,24 +119,36 @@ To identify which specimens have been photographed, `digi_find.R` writes a
 *.xlsx* file with 
 
 ```{r digiFindRscript, engine='bash'}
-Rscript digi_find.R
+Rscript digikam/digi_find.R
 ```
 
+<details>
+  <summary>Unimaged Specimens</summary>
+  <p>
+
 ```{r missingImages}
-digikam <- readxl::read_excel("digikam.xlsx") %>%
+digikam <- readxl::read_excel("digikam/digikam.xlsx") %>%
   dplyr::mutate(
     path_check = purrr::map_chr(
       .data$path, function(x) ifelse(is.na(x), "Missing", "Match")) %>%
       factor(., levels = c("Missing", "Match"))
   )
 
-ggplot(data = digikam) +
+digikam_plot <- ggplot(data = digikam) +
   geom_bar(aes(x = excel_sheet, fill = path_check)) +
   scale_fill_discrete("Matched Filepath") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Excel Sheetname", y = "Count")
   
+```
+
+  </p>
+</details>
+
+```{r plotImages, echo=FALSE}
+print(digikam_plot)
+rm(digikam, digikam_plot)
 ```
 
 ## digiKam Photo Organization
@@ -96,26 +160,27 @@ respective subdirectory is printed. `digi_find.sh` accepts a single
 positional argument passed to the bash `find` utility for printing
 relative paths to specimens in the photo subdirectory. Search by: 
 
-- Collector
+### Collector
 
 ```{r collector, engine='bash'}
-./digi_find.sh "Hayden"
+./digikam/digi_find.sh "Hayden"
 ```
 
-- Collection Number
+### Collection Number
 
 ```{r collection, engine='bash'}
-./digi_find.sh "11931"
+./digikam/digi_find.sh "11931"
 ```
 
-- Herbarium Accession
+### Herbarium Accession
 
 ```{r herbarium, engine='bash'}
-./digi_find.sh MO-3093900
+./digikam/digi_find.sh MO-3093900
 ```
 
 ```{r cleanup, echo=FALSE}
 list.files(pattern = "*_appendix.tsv") %>%
   fs::file_delete()  # remove unformatted file
+ls()
 ```
 

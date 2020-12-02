@@ -1,17 +1,28 @@
 Appendix README
 ================
 
+``` r
+library(magrittr)
+library(ggplot2)
+```
+
 To facilitate formatting appendix files for specimens reviewed, an
 Rscript was used to read in a column subset from each sheetname in the
 `specimens.xlsx` external data from
 [`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage). A
-*.tsv* file is written from entries without appendix completion (missing
-values in variable `App.A`). \(\LaTeX\) formatting is substituted for
-collection and collection number values.
+*.tsv* file for each sheetnem in `specimens.xlsx` is written from
+entries without appendix completion (missing values in variable
+`App.A`).
 
 ``` bash
 Rscript appendix_script.R
 ```
+
+<details>
+
+<summary>Missing Appendix Entries</summary>
+
+<p>
 
 ``` r
 appendix_files <- list.files(pattern = "*_appendix.tsv")
@@ -26,21 +37,76 @@ missing_appendixes <- purrr::map_dfr(
       )
   })
 
-ggplot(data = missing_appendixes) +
+appendix_counts <- ggplot(data = missing_appendixes) +
   geom_bar(aes(x = sheetname, fill = sheetname)) +
   scale_fill_brewer("Sheetname", type = "qual") +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x = "Sheetname", y = "Count")
+
+fs::file_delete(path = appendix_files)
+rm(appendix_files, missing_appendixes)
 ```
 
-![](README_files/figure-gfm/missingAppendixes-1.png)<!-- -->
+</p>
+
+</details>
+
+![](README_files/figure-gfm/plotAppendix-1.png)<!-- -->
+
+## Identifications
+
+<details>
+
+<summary>Summarized Dates</summary>
+
+<p>
 
 ``` r
-fs::file_delete(path = appendix_files)
+library(dplyr)
 ```
 
-# Images
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(ggplot2)
+library(ThesisPackage)
+
+id_dates <- herbarium_specimens %>%
+  select(ID) %>%
+  mutate(
+    Date = stringr::str_extract(
+      string = .data$ID,
+      pattern = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{2}"
+    ) %>% as.Date(x = ., format = "%m/%d/%y")
+  ) %>%
+  filter(!is.na(Date)) %>%
+  group_by(Date) %>%
+  add_count(name = "Count") %>%
+  
+  ggplot(data = .) +
+  geom_count(aes(x = Date, y = Count, color = Date)) +
+  scale_x_date() +
+  scale_color_viridis_c(trans = "date") +
+  theme_classic()
+```
+
+</p>
+
+</details>
+
+![](README_files/figure-gfm/plotIdentifications-1.png)<!-- -->
+
+## Images
 
 Herbarium voucher specimens were photographed and cataloged by locality.
 The following name convention was used for Digikam files:
@@ -60,18 +126,24 @@ To identify which specimens have been photographed, `digi_find.R` writes
 a *.xlsx* file with
 
 ``` bash
-Rscript digi_find.R
+Rscript digikam/digi_find.R
 ```
 
+<details>
+
+<summary>Unimaged Specimens</summary>
+
+<p>
+
 ``` r
-digikam <- readxl::read_excel("digikam.xlsx") %>%
+digikam <- readxl::read_excel("digikam/digikam.xlsx") %>%
   dplyr::mutate(
     path_check = purrr::map_chr(
       .data$path, function(x) ifelse(is.na(x), "Missing", "Match")) %>%
       factor(., levels = c("Missing", "Match"))
   )
 
-ggplot(data = digikam) +
+digikam_plot <- ggplot(data = digikam) +
   geom_bar(aes(x = excel_sheet, fill = path_check)) +
   scale_fill_discrete("Matched Filepath") +
   theme_classic() +
@@ -79,7 +151,11 @@ ggplot(data = digikam) +
   labs(x = "Excel Sheetname", y = "Count")
 ```
 
-![](README_files/figure-gfm/missingImages-1.png)<!-- -->
+</p>
+
+</details>
+
+![](README_files/figure-gfm/plotImages-1.png)<!-- -->
 
 ## digiKam Photo Organization
 
@@ -91,12 +167,10 @@ a single positional argument passed to the bash `find` utility for
 printing relative paths to specimens in the photo subdirectory. Search
 by:
 
-  - Collector
-
-<!-- end list -->
+### Collector
 
 ``` bash
-./digi_find.sh "Hayden"
+./digikam/digi_find.sh "Hayden"
 ```
 
     ##   Searching for filename string: 'Hayden'
@@ -106,12 +180,10 @@ by:
     ##   /Physaria/Wyoming/Park, WY/Hayden_sn_MO-3833625.tiff
     ##   /Physaria/Wyoming/Teton, WY/Hayden_sn_MO-3833631.tiff
 
-  - Collection Number
-
-<!-- end list -->
+### Collection Number
 
 ``` bash
-./digi_find.sh "11931"
+./digikam/digi_find.sh "11931"
 ```
 
     ##   Searching for filename string: '11931'
@@ -123,13 +195,13 @@ by:
     ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_MO.tiff
     ##   /Physaria/Montana/Fergus/P_saximontana/Hitchcock_11931_UC.tiff
 
-  - Herbarium Accession
-
-<!-- end list -->
+### Herbarium Accession
 
 ``` bash
-./digi_find.sh MO-3093900
+./digikam/digi_find.sh MO-3093900
 ```
 
     ##   Searching for filename string: 'MO-3093900'
     ##   /Physaria/Wyoming/Big Horn, WY/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
+
+    ## [1] "appendix_counts"

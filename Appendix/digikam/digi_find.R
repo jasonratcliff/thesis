@@ -81,5 +81,5 @@ purrr::map_dfr(., function(sheet) {
                    digi_paths)
 }) %>%
   # setNames(object = ., nm = sheets) %>%
-  writexl::write_xlsx(x = ., path = "digikam.xlsx")
+  writexl::write_xlsx(x = ., path = "digikam/digikam.xlsx")
 
