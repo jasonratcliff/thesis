@@ -3,28 +3,25 @@
 
 if (knitr_chunk == "latex") {
   cat(
+    "\\vspace*{-12pt}",
     "\\chapter*{APPENDIX B}",
     "\\addcontentsline{toc}{chapter}{APPENDIX B: MULTIPLE SEQUENCE ALIGNMENTS}",
-    # "\\centering",
-    "\\vspace*{-18pt}",
+    "\\vspace*{-36pt}",
     sep = "\n"
   )
 }
 
 ```
 
-```{r ggMSArITS, out.extra="angle=90"}
-
-if (knitr_chunk == "latex") {
-  cat(
-    "\\vspace*{-18pt}"
-  )
-}
+```{r ggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS}
 
 ThesisPackage::knitr_section(
   knitr_title = "Nuclear rITS",
   knitr_type = "section", chunk_type = knitr_chunk
 )
+
+caption$msa_rITS <-
+  "Mulitple sequence alignment of unique Nuclear rITS sites."
 
 knitr::include_graphics(
     path = paste0("Figs/FigAppendixMSArITS.", knitr_ext[[knitr_chunk]])
@@ -34,11 +31,11 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r ggMSArpsIntron, out.extra="angle=90"}
+```{r ggMSArpsIntron, out.extra="angle=90", fig.cap=caption$msa_rps}
 
 if (knitr_chunk == "latex") {
   cat(
-    "\\vspace*{-18pt}"
+    "\\vspace*{-48pt}"
   )
 }
 
@@ -46,6 +43,13 @@ ThesisPackage::knitr_section(
   knitr_title = "Plastid *rps* Intron",
   knitr_type = "section", chunk_type = knitr_chunk
 )
+
+caption$msa_rps <-
+  paste0(
+    "Mulitple sequence alignment of unique plastid ",
+    ifelse(knitr_chunk == "html", "*rps*", "\\textit{rps}"),
+    " sites."
+  )
 
 knitr::include_graphics(
     path = paste0("Figs/FigAppendixMSArpsIntron.", knitr_ext[[knitr_chunk]])
@@ -55,11 +59,11 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r ggMSAycf1, out.extra="angle=90"}
+```{r ggMSAycf1, out.extra="angle=90", fig.cap=caption$msa_ycf1}
 
 if (knitr_chunk == "latex") {
   cat(
-    "\\vspace*{-18pt}"
+    "\\vspace*{-48pt}"
   )
 }
 
@@ -67,6 +71,13 @@ ThesisPackage::knitr_section(
   knitr_title = "Plastid *ycf1* ",
   knitr_type = "section", chunk_type = knitr_chunk
 )
+
+caption$msa_ycf1 <-
+  paste0(
+    "Mulitple sequence alignment of unique plastid ",
+    ifelse(knitr_chunk == "html", "*ycf1*", "\\textit{ycf1}"),
+    " sites."
+  )
 
 knitr::include_graphics(
     path = paste0("Figs/FigAppendixMSAycf1.", knitr_ext[[knitr_chunk]])
