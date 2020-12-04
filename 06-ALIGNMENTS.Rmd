@@ -90,5 +90,27 @@ knitr::include_graphics(
 # R SESSION INFO {-}
 
 ```{r sessionInfo}
-sessionInfo()
+
+pkg_session <-
+  devtools::session_info(pkgs = "ThesisPackage")[2] %>%
+  plyr::ldply(.data = .) %>%
+  dplyr::select(package, ondiskversion, date, source) %>%
+  setNames(object = ., nm = c("Package", "Version", "Date", "Source"))
+
+if (knitr_chunk == "latex") {
+  knitr::kable(
+    x = pkg_session, format = knitr_chunk, longtable = TRUE, escape = TRUE,
+    caption = "\\texttt{ThesisPackage} R session info."
+  ) %>%
+    kableExtra::column_spec(column = 1, border_left = TRUE) %>%
+    kableExtra::column_spec(column = 4, border_right = TRUE) %>%
+    kableExtra::kable_styling(
+      latex_options = c("hold_position", "repeat_header"),
+      repeat_header_text = "Continued.",
+      repeat_header_method = "replace",
+      font_size = 8
+    )
+}
+
 ```
+
