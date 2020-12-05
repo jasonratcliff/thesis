@@ -19,6 +19,15 @@ species concept, secondary species concepts provide mutually applicable and
 equally valid operational support for recognizing species entities
 [@Mayden1997].
 
+```{r sectionSpeciesConcept}
+
+knitr_section(
+  knitr_title = "The Species Concept",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
 \paragraph{} Attempting to reconcile differences among the various proposed
 species concepts, @deQueiroz1998 described a general lineage concept of
 species as population-level segments of evolutionary lineages to denote the
@@ -33,6 +42,18 @@ From this perspective, there is agreement about the fundamental entity
 described by the term "species" despite differences in the mechanistic
 hypotheses (i.e. secondary criteria) pertaining to the separation and
 maintenance of the population-level evolutionary lineage segments.
+
+```{r FigureDiscussionPosteriori, fig.cap=caption$FigureDiscussionPosteriori}
+
+caption$FigureDiscussionPosteriori <-
+  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
+        "by reviewed annotations.")
+
+knitr::include_graphics(
+  path = paste0("Figs/FigDiscussionPosteriori.", knitr_ext[[knitr_chunk]])
+)
+
+```
 
 \paragraph{} Notwithstanding progress toward a universal species concept, a
 complementary problem exists in species delimitation. Within the framework of
