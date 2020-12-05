@@ -146,6 +146,25 @@ intron, and `r length(fasta_list_raw$ycf1)` for *ycf1*. Analyses of concatenated
 or partitioned data were limited to specimens for which sequencing of all three
 loci was completed.
 
+```{r sectionExtractions}
+
+knitr_section(
+  knitr_title = "DNA Extraction",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} Genomic DNA was extracted from one of two sources: basal leaf
+tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
+leaf tissue from specimens collected in June and August of 2014 from Wyoming,
+Idaho, and Montana with Dr. S. L. O’Kane Jr. Dried leaf tissues were stored at
+-20 $^{\circ}$C prior to extraction. DNA was extracted from only a single
+individual specimen to minimize noise in the sequence data. Sequence data from
+a preliminary systematic analysis of *Physaria* sensu stricto by
+@Rethwisch2014 in addition to data previously obtained by Dr. O'Kane were
+also included in this study.
+
 ```{r TableDnaSpecimens}
 
 # Read in DNA collection localities for methods table.
@@ -243,25 +262,6 @@ if (knitr_chunk == "html") {
 }
 
 ```
-
-```{r sectionExtractions}
-
-knitr_section(
-  knitr_title = "DNA Extraction",
-  knitr_type = "section", chunk_type = knitr_chunk
-)
-
-```
-
-\paragraph{} Genomic DNA was extracted from one of two sources: basal leaf
-tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
-leaf tissue from specimens collected in June and August of 2014 from Wyoming,
-Idaho, and Montana with Dr. S. L. O’Kane Jr. Dried leaf tissues were stored at
--20 $^{\circ}$C prior to extraction. DNA was extracted from only a single
-individual specimen to minimize noise in the sequence data. Sequence data from
-a preliminary systematic analysis of *Physaria* sensu stricto by
-@Rethwisch2014 in addition to data previously obtained by Dr. O'Kane were
-also included in this study.
 
 \paragraph{} Genomic DNA was purified using a Qiagen DNeasy Plant Mini Kit.
 Prior to the extraction protocol, leaf tissue was prepared using one of three
@@ -435,6 +435,10 @@ gently mixed. Sample tubes were spun for five minutes at 14,000 rpm before
 decanting again. Any remaining ethanol was let to evaporate before
 re-suspending in 18 mL ddH2O.
 
+\clearpage
+
+\vspace*{-24pt}
+
 ```{r sectionGel}
 
 knitr_section(
@@ -591,31 +595,37 @@ Maximum clade credibility trees were summarized using TreeAnnotator
 from the output species trees discarding 10% of trees as burn-in with a
 posterior probability limit of 0.5.
 
-\paragraph{} To plot phylogenetic tree results, the `treeio` R pacakge
-[@R-treeio2020] was used to read in the MrBayes consensus and BEAST maximum
-clade credibility trees. Inferred phylogenies were plotted with the `ggplot2`
-extension `ggtree` [@R-ggtree; @R-ggtree2020], with annotations for duplicate
-sequences from MrBayes included using `dplyr` and `purrr`.
+```{r sectionSource}
+
+knitr_section(
+  knitr_title = "Source Code",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} To plot phylogenetic results, MrBayes consensus and BEAST
+maximum clade credibility tree data were read into R by the `treeio` package
+[@R-treeio2020]. Inferred phylogenies were plotted with the `ggplot2`
+extension `ggtree` [@R-ggtree; @R-ggtree2020], where annotations for duplicate
+sequences in the MrBayes analyses were included using `dplyr` and `purrr`.
 Multiple sequence alignment were subset to potentially informative sites and
 visualized using `ggmsa` [@R-ggmsa].
-Additional $LaTeX$ packages utilized for document typesetting include
-`titletoc` [@titletoc] for table of contents, `titlesec` [@titlesec] for
-section titles, and `titleps` [@titleps] for page styling.
-
-\paragraph{} For project reproducilibilty, source code and data were maintained
+For project reproducilibilty, source code and data were maintained
 as an R package [@R-packages] utilizing the `usethis` [@R-usethis]
-and `devtools` [@R-devtools] packages.
-A project library with specific package versioning was maintained using
-the R package `renv` [@R-renv].
-A PDF document and figures from built from source using `bookdown`
+and `devtools` [@R-devtools] packages. A project library with specific package
+versioning was maintained using the R package `renv` [@R-renv].
+A PDF document and figures from built from source with `bookdown`
 [@R-bookdown; @R-bookdown2016], `rmarkdown` [@R-rmarkdown; @R-rmarkdown2018],
-and `knitr` [@R-knitr; @R-knitr2015] with a `tinytex` [@R-tinytex] $LaTeX$
-distribution for typesetting. The GNU `make` utility v3.81 [@GNUmake] was used
+`knitr` [@R-knitr; @R-knitr2015], and `tinytex` [@R-tinytex], a $LaTeX$
+distribution for typesetting.  Style guide requirements were set with additional
+$LaTeX$ packages `titletoc` [@titletoc] for table of contents, `titlesec`
+[@titlesec] for section titles, and `titleps` [@titleps] for page style.
+The GNU `make` utility v3.81 [@GNUmake] was used
 to automate figure generation and document compilation.
 References were maintained using Zotero v5.0.93 [@Zotero] with the
-Better BibTeX v5.2.86 [@BetterBibTeX] add-on.
-The R package source code is available from
-https://github.com/jasonratcliff/ThesisPackage
-and the manuscript source code is available from
-https://github.com/jasonratcliff/Thesis as GitHub repositories.
+Better BibTeX v5.2.86 [@BetterBibTeX] add-on. GitHub repositories were
+maintained for the R package source code
+(https://github.com/jasonratcliff/ThesisPackage)
+and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
 
