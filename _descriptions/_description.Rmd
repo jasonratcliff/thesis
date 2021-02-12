@@ -1,0 +1,298 @@
+# {{ taxon }}
+
+<!-- params: -->
+  <!-- species: "" -->
+
+```{r}
+# print(params$species)
+taxon <- "{{ taxon }}"
+```
+
+
+```{r}
+specimens <- herbarium_specimens %>%
+  dplyr::filter(
+    grepl(
+      pattern = taxon,
+      x = .data$Taxon_a_posteriori
+    )
+  )
+paste(nrow(specimens), "specimens")
+```
+
+## Habit
+
+```{r caudex{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Caudex") %>%
+  pander()
+```
+
+<br>
+
+```{r habit{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Rosulate") %>%
+  kable()
+```
+
+<br>
+
+```{r pubescence{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Pubescence") %>%
+  pander()
+```
+
+<br>
+
+```{r basalLeafTrichomes{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Basal_leaf_trichomes") %>%
+  pander()
+```
+
+## Stems
+
+```{r stemCount{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Stem_count") %>%
+  pander()
+```
+
+<br>
+
+```{r stemLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Stem_length_dm")
+```
+
+<br>
+
+```{r stemShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Stem_shape") %>%
+  pander()
+```
+
+## Leaves
+
+```{r basalLeafShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Basal_leaf_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r basalLeafLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Basal_leaf_length_cm")
+```
+
+<br>
+
+```{r basalLeafMargins{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Basal_leaf_margins") %>%
+  pander()
+```
+
+<br>
+
+```{r petiole{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Petiole") %>%
+  pander()
+```
+
+## Inflorescence
+
+```{r caulineLeafShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Cauline_leaf_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r caulineLeafLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Cauline_leaf_length_mm")
+```
+
+<br>
+
+```{r caulineLeafMargins{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Cauline_leaf_margins") %>%
+  pander()
+```
+
+### Racemes
+
+```{r racemes{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Racemes") %>%
+  pander()
+```
+
+### Fruiting pedicels
+
+```{r pedicelShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Pedicel_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r pedicelSecund{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Pedicels_secund") %>%
+  pander()
+```
+
+### Flowers
+
+```{r petalColor{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Petal_color") %>%
+  pander()
+```
+
+<br>
+
+```{r petalShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Petal_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r petalLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Petal_length_mm")
+```
+
+<br>
+
+```{r sepalShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Sepal_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r sepalLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Sepal_length_mm")
+```
+
+<br>
+
+```{r styleLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Style_length_mm")
+```
+
+## Fruits
+
+```{r fruitShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Fruit") %>%
+  pander()
+```
+
+<br>
+
+```{r fruitLength{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Mature_fruit_length_mm")
+```
+
+<br>
+
+```{r fruitWidth{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Mature_fruit_width_mm")
+```
+
+<br>
+
+```{r fruitApices{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Mature_fruit_apices") %>%
+  pander()
+```
+
+<br>
+
+```{r fruitTrichomes{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Fruit_trichomes") %>%
+  pander()
+```
+
+<br>
+
+```{r replumTrichomes{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Replum_pubescence") %>%
+  pander()
+```
+
+<br>
+
+```{r valveTrichomes{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Inner_valve_pubescence") %>%
+  pander()
+```
+
+<br>
+
+```{r replumShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Replum_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r ovuleCount{{ chunk }} }
+specimens %>%
+  summarize_continuous(specimen_tbl = ., trait = "Ovule_number")
+```
+
+### Seeds
+
+```{r seedColor{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Seed_color") %>%
+  pander()
+```
+
+<br>
+
+```{r seedShape{{ chunk }} }
+specimens %>%
+  summarize_discrete(specimen_tbl = ., trait = "Seed_shape") %>%
+  pander()
+```
+
+<br>
+
+```{r seedLength{{ chunk }} }
+specimens %>%
+    summarize_continuous(specimen_tbl = ., trait = "Mature_seed_length_mm")
+```
+
+### Elevation
+
+```{r maxElevation{{ chunk }}, eval=FALSE}
+# specimens %>%
+#   summarize_continuous(specimen_tbl = ., trait = "Elev_raw_max")
+```

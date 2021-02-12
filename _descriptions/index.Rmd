@@ -1,0 +1,88 @@
+---
+title: "Species Descriptions"
+author: "Jason Ratcliff"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook:
+    number_sections: false
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+suppressMessages({
+  library(ThesisPackage)
+  library(ggplot2)
+  library(cowplot)
+  library(dplyr)
+  library(purrr)
+  library(tidyr)
+  library(knitr)
+  library(pander)
+})
+
+# Summarize discrete trait observations
+summarize_discrete <- function(specimen_tbl, trait, separator = "[,;] ") {
+  specimen_tbl %>%
+    select(all_of(trait)) %>%
+    filter(!is.na(.data[[trait]])) %>%
+    tidyr::separate_rows(trait, sep = separator) %>%
+    mutate(
+      !!trait := tolower(.data[[trait]])
+    ) %>%
+    add_count(.data[[trait]]) %>%
+    distinct() %>%
+    arrange(desc(n))
+}
+
+# Plot continuous trait observations
+summarize_continuous <- function(specimen_tbl, trait) {
+  
+  # Split continuous trait into minimum and maximum range values.
+  split_ranges <- specimen_tbl %>%
+    select(all_of(trait)) %>%
+    filter(!is.na(.data[[trait]])) %>%
+    ThesisPackage::range_split(trait_tbl = ., split_var = trait) %>%
+    rename_at(.tbl = ., .vars = vars(matches("_min")), ~ paste("Minimum")) %>%
+    rename_at(.tbl = ., .vars = vars(matches("_max")), ~ paste("Maximum"))
+  
+  # Create table with summary statistics for range of min / max observations.
+  table_summary <-
+    bind_rows(
+      summary(split_ranges$Minimum),
+      summary(split_ranges$Maximum)
+    ) %>%
+    bind_cols(
+      tibble("Range" = c("Minimum", "Maximum")), .
+    )
+  
+  # Pivot into tidy data and build ggplot object with boxplots.
+  tidy_boxplots <-
+    tidyr::pivot_longer(
+      data = split_ranges,
+      cols = c("Minimum", "Maximum"),
+      names_to = c("limit")
+    ) %>% ggplot(data = .) +
+    geom_violin(aes(x = limit, y = value)) +
+    scale_x_discrete(limits = c("Minimum", "Maximum")) +
+    labs(x = "Range", y = trait) +
+    theme_classic()
+  
+  # Built cowplot grid with ggplot and summary table.
+  plot_grid(
+    tidy_boxplots, gridExtra::tableGrob(d = table_summary),
+    nrow = 2, rel_heights = c(4, 1)
+  )
+}
+
+```
+
+# Aggregates {-}
+
+```{r}
+pander::pander(specimen_counts)  # Pandoc markdown data table
+```
+

@@ -10,7 +10,7 @@ if (!"ThesisPackage" %in% installed.packages()) {
   library(usethis)
   library(whisker)
   library(bookdown)
-} 
+}
 
 setwd(proj_get())  # Verify working directory set to ~/Thesis/
 
@@ -34,7 +34,7 @@ spp_file <- function(taxon) {
 specimen_counts %>%
   filter(
     !is.na(Taxon_a_posteriori),
-    n > 20, 
+    n > 20,
     grepl(pattern = "Physaria [a-z]+", x = Taxon_a_posteriori)
   ) %>%
   pull("Taxon_a_posteriori") %>%
@@ -44,15 +44,19 @@ specimen_counts %>%
         n = -1L, encoding = "UTF-8", warn = FALSE
       )
 
+    chunk <- gsub(pattern = "Physaria", replacement = "P", x = taxon) %>%
+      gsub(pattern = " ", replacement = "", x = .)
+
     # Whisker {{Mustache}} implementation in R for logicless templating.
     # - https://github.com/edwindj/whisker
     # Inspired by usethis::use_template()
     template_whisker <-
       strsplit(whisker::whisker.render(
         template = template_description,
-        data = list(taxon = taxon)
+        data = list(taxon = taxon, chunk = chunk)
       ), split = "\n")[[1]]
 
+    # print(fs::path("_descriptions", spp_file(taxon), ext = "Rmd"))
     write_over(
       path = fs::path("_descriptions", spp_file(taxon), ext = "Rmd"),
       lines = template_whisker
@@ -64,12 +68,10 @@ owd <- proj_get()
 setwd("_descriptions/")
 
 if (file_exists("_main.Rmd")) file_delete("_main.Rmd")
+clean_book(clean = TRUE)
 render_book(
   input = "index.Rmd",
-  output_format = "bookdown::gitbook",
-  params = list(
-    species_data = specimen_counts
-  )
+  output_format = "bookdown::gitbook"
 )
 
 # Clean .Rmd files
@@ -81,5 +83,3 @@ if (path_file(path_wd()) == "_descriptions") {
     file_delete()
   setwd(owd)
 }
-
-
