@@ -119,3 +119,234 @@ Considerations against a generalized lineage concept (GLC)
 - Freudenstein 2017
 - Carstens 2013 (Box 3)
 
+\clearpage
+
+\vspace*{-24pt}
+
+```{r sectionDescriptions}
+
+knitr_section(
+  knitr_title = "Species Descriptions",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\vspace*{-18pt}
+
+```{r subsectionDescriptionPmedicinae}
+
+knitr_section(
+  knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
+**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
+ margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
+**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
+**Racemes** elongated, (subumbellate).
+**Fruiting pedicels** erect to ascending, sigmoidal.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-7) mm.
+**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
+ sinuses more or less equal; valves pubescent with trichomes appressed,
+ rays furcate to less often bifurcate; replum linear, (constricted),
+ (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
+**Seeds** brown, flattened, 2(-3) mm.
+
+```{r subsectionDescriptionPacutifolia}
+
+knitr_section(
+  knitr_title = "*Physaria acutifolia* Rydberg",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched, (tufted or condensed);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
+**Stems** several, 0.4-1.2(-2) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-lenticular, less often suborbicular or obovate,
+ 2-5(-9) cm, margins entire, occasionally toothed, (apex acute),
+ petioles slender, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, (spatulate), 1-3(-4) cm,
+ margins entire, apex acute.
+**Racemes** elongated, less often congested to subumbellate.
+**Fruiting pedicels** erect or ascending, often sigmoidal, 6-12 mm.
+**Flowers**: petals yellow, spatulate, 7-10(-12) mm;
+ sepals lanceolate, 5-7(-8) mm.
+**Fruits** didymous, inflated, reniform to suborbicular, 5-10(-15) x 6-12(-20) mm,
+ apices more or less equal; valves pubescent with trichomes appressed;
+ replum linear, constricted, (oblong), rarely oblong or slightly oblanceolate;
+ ovules 2(-4) per locule, restricted to apex of the replum; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPdidymocarpaSspDidymocarpa}
+
+knitr_section(
+  knitr_title = "*Physaria didymocarpa* subsp. *didymocarpa* (Hooker) A. Gray",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched;
+ densely pubescent, with appressed stellate trichomes, rays furcate or bifurcate.
+**Stems** several to numerous, (few), 0.3-1.0(-2) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: obovate, rhombic to suborbicular, 1.5-4(-8) cm,
+ margins more often dentate than entire, (apex acute),
+ petioles slender, tapering from blade, (abruptly narrowing), (lyrate).
+**Cauline leaves**: oblanceolate, (spatulate), 1-2(-3) cm,
+ margins entire, (dentate).
+**Racemes** elongated or congested to subumbellate.
+**Fruiting pedicels** erect or ascending, curved to sigmoidal, 8-12 mm.
+**Flowers**: petals yellow, spatulate, 7-11(-15) mm;
+ sepals lanceolate, 5-7(-10) mm.
+**Fruits** didymous, inflated, reniform to suborbicular,
+ 5-10(-20) x 5-15(-25) mm, basal sinus shallow or absent, apical sinus deep;
+ valves pubescent with spreading trichomes, rays simple or branched, furcate; 
+ replum elliptic (oblong) to oblanceolate or obovate;
+ ovules (2-)4(-6) per locule; style 5-7(-10) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPbrassicoides}
+
+knitr_section(
+  knitr_title = "*Physaria brassicoides* Rydberg",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
+**Stems** several, 0.6-1.3(-3) dm, exceeding a basal rosette,
+ decumbent to ascending or erect.
+**Basal leaves**: rhombic to obovate, 3-7(-10) cm,
+ margins often dentate, otherwise entire,
+ petioles slender, tapering from basal leaf.
+**Cauline leaves**: oblanceolate to spatulate, 1-3(-5) cm,
+ margins entire, apex acute.
+**Racemes** elongated, less often congested.
+**Fruiting pedicels** ascending, generally sigmoidal, 5-12 mm.
+**Flowers**: petals yellow, spatulate, 7-9(-11) mm;
+ sepals lanceolate, 5-7 mm.
+**Fruits** didymous, distinctly cordate, 5-9(-13) x 7-14(-22) mm,
+ lacking a basal sinus with a broad apical sinus;
+ valves pubescent with trichomes spreading, generally furcate;
+ replum linear, often with an obtuse apex;
+ ovules 2 per locule, restricted to apex of the replum; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPcondensata}
+
+knitr_section(
+  knitr_title = "*Physaria condensata* Rollins",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched); plants compact, rosulate;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.1-0.4(-0.6) dm, often equal to basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-lenticular to obovate, 0.5-2.5 cm,
+ margins entire, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, 0.5-1.0(-1.5) cm, margins entire.
+**Racemes** subumbellate to congested.
+**Fruiting pedicels** erect to ascending, 5-10 mm.
+**Flowers**: petals yellow, spatulate, 6-8(-9) mm;
+ sepals lanceolate, 4-5(-6) mm.
+**Fruits** didymous, 4-7(-10) x 4-8(-12) mm, sinuses equal above and below;
+ valves pubescent with trichomes appressed, bifurcate, (umbonate);
+ replum obovate to oblanceolate, apex obtuse;
+ ovules 3-4(-5) per locule; style 3-5(-6) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPdornii}
+
+knitr_section(
+  knitr_title = "*Physaria dornii* Lichvar",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple; plants compact, rosulate;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.2-0.6(-1.0) dm, barely exceeding a basal rosette, erect.
+**Basal leaves**: rhombic-lenticular to suborbicular, 2-5(-7.5) cm,
+ margins entire, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, 0.8-2.0(-2.5) cm, margins entire.
+**Racemes** subumbellate to congested.
+**Fruiting pedicels** erect to ascending, 7-18 mm.
+**Flowers**: petals yellow, spatulate, 7-9(-10) mm;
+ sepals lanceolate, 5-6 mm.
+**Fruits** didymous, 6-12(-16) x 8-16(-18) mm, sinuses equal above and below;
+ valves pubescent with trichomes appressed, more often furcate, (umbonate);
+ replum oblanceolate to obovate or elliptic; ovules 2-4(-6) per locule;
+ style 3-5(-7) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPintegrifolia}
+
+knitr_section(
+  knitr_title = "*Physaria integrifolia* (Rollins) Lichvar",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple or often branched;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.5-1.5(-2) dm, exceeding the basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-orbicular to obovate, 2-5(-10) cm,
+ margins entire, (toothed), petiole slender, tapering from blade.
+**Cauline leaves**: oblanceolate, 1.0-2.5(-5) cm, margins entire.
+**Racemes** elongated, less often congested or subumbellate.
+**Fruiting pedicels** erect to ascending, less often sigmoidal, 7-11 mm.
+**Flowers**: petals yellow, spatulate, 8-11(-13) mm;
+ sepals lanceolate, 5-8(-10) mm.
+**Fruits** didymous, inflated, 6-13(-20) x 8-17(-30) mm,
+ sinuses equal above and below, (shallow basal sinus);
+ valves pubescent with trichomes appressed, furcate or bifurcate, (umbonate);
+ replum oblanceolate to obovate, elliptic or oblong; ovules 2-4(-6) per locule;
+ style 5-7(-9) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPvitulifera}
+
+knitr_section(
+  knitr_title = "*Physaria vitulifera* Rydberg",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple; densely pubescent,
+ with appressed stellate trichomes, rays bifurcating.
+**Stems** several, 0.5-1.7(-2.5) dm, exceeding the basal rosette,
+ decumbent to ascending.
+**Basal leaves**: often pandurate, rhombic or elliptic, 2-6(-10) cm,
+ margins dentate, (entire), petiole slender, tapering from blade,
+ (abruptly narrowing), often lyrate.
+**Cauline leaves**: oblanceolate to spatulate, 1-2.5(-3.5) cm, margins entire.
+**Racemes** generally elongated, less often subumbellate.
+**Fruiting pedicels** sigmoidal or otherwise ascending, 6–10 mm.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-8) mm.
+**Fruits** didymous, angular, (wrinkled); 4-6(-8) x 5-10(-15) mm,
+ basal sinus truncate, apical deeper;
+ valves pubescent with trichomes appressed to spreading, furcate, (bifurcate);
+ replum linear; ovules 2 per locule; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+

@@ -11,7 +11,7 @@ link-citations: yes
 subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
 nocite: |
-  @R-ggmsa
+  @R-whisker
 ---
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
