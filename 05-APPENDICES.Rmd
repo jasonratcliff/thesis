@@ -1,19 +1,18 @@
 # REFERENCES {-}
 
-```{r pdfReferences, results="asis"}
-if (knitr_chunk == "latex") {
-  cat(
-    "\\vspace*{-36pt}",
-    "\\setlength{\\parindent}{-0.5in}",
-    "\\setlength{\\leftskip}{0.5in}",
-    "\\setlength{\\parskip}{12pt}",
-    "\\singlespacing",
-    "\\hspace*{-0.5in}"
-  )
-}
+```{=latex}
+\vspace*{-18pt}
+\singlespacing
+\setlength{\parskip}{12pt}
+\begin{hangparas}{0.5in}{1}
 ```
 
 <div id="refs"></div>
+
+```{=latex}
+\end{hangparas}
+\doublespacing
+```
 
 ```{r LaTeXspecimens, results="asis"}
 if (knitr_chunk == "latex") {
@@ -21,7 +20,6 @@ if (knitr_chunk == "latex") {
     "\\setlength{\\parindent}{0.5in}",
     "\\setlength{\\leftskip}{0in}",
     "\\setlength{\\parskip}{12pt}",
-    "\\doublespacing",
     "\\hspace*{-0.5in}",
     "# (APPENDIX) Appendix {-}",
     "<!-- Specimen appendix TeX files -->",

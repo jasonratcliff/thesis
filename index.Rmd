@@ -12,6 +12,7 @@ subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
 nocite: |
   @R-whisker
+  @hanging
 ---
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
