@@ -175,4 +175,24 @@ readr::write_delim(
   delim = "\t"
 )
 
+# Write specimen hypothesis identifications to file.
+tibble::tibble(
+  spp_combined$traits,
+  spp_hypothesis1$species,
+  spp_hypothesis2$species,
+  spp_hypothesis3$species,
+  spp_hypothesis4$species
+) %>%
+  dplyr::rename_at(
+    .vars = dplyr::vars(dplyr::everything()),
+    ~ gsub(pattern = "\\$.+$", replacement = "", x = .x)
+  ) %>%
+  dplyr::mutate_at(
+    .tbl = .,
+    .vars = dplyr::vars(dplyr::matches("spp_hypothesis")),
+    ~ gsub("_", " ", x = .x) %>% gsub("Physaria", "P.", x = .)
+  ) %>%
+  readr::write_csv(x = .,
+    file = "inst/extdata/BEAST/spp_hypotheses.csv"
+  )
 

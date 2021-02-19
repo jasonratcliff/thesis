@@ -6,10 +6,11 @@ link-citations: true
 always_allow_html: true
 ---
 
-
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(eval.after = 'fig.cap')
+
 library(magrittr)
 library(ThesisPackage)
 
@@ -17,6 +18,7 @@ library(ThesisPackage)
 # - To install v2.1.1 via Homebrew:
 # $ brew tap homebrew/cask
 # $ brew cask install phantomjs
+
 ```
 
 ```{r linkSpecimens, echo=FALSE}

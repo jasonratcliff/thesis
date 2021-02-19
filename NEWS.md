@@ -1,8 +1,12 @@
+# ThesisPackage 0.1.5.9
+
+* Add *.csv* for species tree \*BEAST hypotheses
+
 # ThesisPackage 0.1.5
 
 * New `species_plot()` builds `ggtree` objects from *BEAST MCC tree data.
 
-* Species Tree *BEAST runs
+* Species Tree *BEAST
     * `beast.R` script to write taxa assignments for species hypotheses.
     * Update final `dna_specimens.csv` annotations.
     * Include `.mcc`, `.xml`, and `.txt` files for BEAST2 runs.
