@@ -585,7 +585,7 @@ multi-locus analysis and a yule model was set for the species tree prior.
 The multi species coalescent model was set as a linear population function with
 autosomal nuclear ploidy for rITS and non-recombining ploidy for plastid *rps*.
 A *BEAST template was used to assign taxon sets based on the following
-successive species hypotheses: 
+successive species hypotheses:
   (1) *a priori* subspecies and a novel species from the Medicine Range,
   (2) lumped *P. saximontanta* subspecies *saximontana* and *dentata*,
   (3) combined *P. saximontana* subsp. as *P. didymocarpa* subsp. *didymocarpa*,
@@ -628,4 +628,39 @@ Better BibTeX v5.2.86 [@BetterBibTeX] add-on. GitHub repositories were
 maintained for the R package source code
 (https://github.com/jasonratcliff/ThesisPackage)
 and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
+
+```{r TableSpeciesTreeHypotheses}
+spp_tree_hypotheses <-
+  system.file("extdata/BEAST", package = "ThesisPackage") %>%
+  list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
+  readr::read_csv(file = ., col_types = 'ccccc') %>%
+  setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
+  arrange(`Hypothesis 1`, Sample)
+
+if (knitr_chunk == "latex") {
+  spp_tree_hypotheses <- spp_tree_hypotheses %>%
+    mutate(
+      Sample = gsub("_", "\\\\_", .data$Sample)
+    ) %>%
+    mutate_at(
+      vars(matches("^Hypothesis")),
+      ~ paste0("\\textit{", .x, "}") %>%
+        gsub(" ssp ", "} \n \\\\hspace{0.8em} ssp. \\\\textit{", x = ., ) %>%
+        kableExtra::linebreak(x = .) %>%  # Fix latex linebreak cell alignment
+        gsub("makecell\\[[rc]\\]", "makecell\\[l\\]", x = .)
+    )
+  }
+
+spp_tree_hypotheses %>%
+  kable(x = ., format = knitr_chunk, align = "l", escape = FALSE,
+        caption = "Species tree hypotheses taxa assignments by sample ID."
+        ) %>%
+  kable_styling(full_width = FALSE, font_size = 8,
+                latex_options= "hold_position") %>%
+  row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+  column_spec(1, border_left = TRUE) %>%
+  column_spec(5, border_right = TRUE) %>%
+  collapse_rows(columns = 2:5)
+
+```
 
