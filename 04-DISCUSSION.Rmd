@@ -134,6 +134,122 @@ knitr_section(
 
 \singlespacing
 
+\begin{enumerate}
+
+  \item[1. ]
+  Fruits didymous; replum constricted, linear; ovules 2 per locule,
+  restricted to replum apex.
+
+    \begin{enumerate}
+
+  \item[2. ] Sinuses of mature fruits equal; from northern Wind River and
+  Green River Basins in Wyoming south through the Colorado River Basin
+  \dotfill \textit{Physaria acutifolia} Rydberg
+
+  \item[2. ] Sinuses of mature fruits unequal in size.
+
+        \begin{enumerate}
+
+  \item[3. ] Fruits cordate; eastern Wyoming north to Montana and western
+  North and South Dakota \dotfill \textit{Physaria brassicoides} Rydberg
+
+  \item[3. ] Fruits angular, often wrinkled, with truncate basal sinuses.
+
+            \begin{enumerate}
+
+  \item[4. ] Mature fruits > 8 mm; pedicels recurved, basal leaves
+  pinnatifid; north from Middle Park Colorado \dotfill
+  \textit{Physaria floribunda} Rydberg
+
+  \item[4. ] Mature fruits < 8 mm; pedicels ascending or sigmoidal.
+
+                \begin{enumerate}
+
+  \item[5. ] Mature fruits 4-8 mm; basal leaves pandurate, often with
+  dentate margins; Eastern Front Range, Colorado
+  \dotfill \textit{Physaria vitulifera} Rydberg
+
+  \item[5. ] Mature fruits < 5 mm; plants alpine; Medicine Bow Mountains
+  and Sierra Madre Range of Wyoming, NC Colorado
+  \dotfill \textit{Physaria medicinaea} Ratcliff
+
+                \end{enumerate}
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+    \end{enumerate}
+
+\end{enumerate}
+
+\begin{enumerate}
+
+  \item[1. ] Fruits didymous; replum wider, oblong or elliptic to oblanceolate
+  or obovate; ovules (2-)4(-6) per locule, not restricted to apex of replum.
+
+    \begin{enumerate}
+
+  \item[6. ] Racemes equal to or barely exceeding the rosette.
+
+        \begin{enumerate}
+
+  \item[7. ] Petals whitish, pale yellow; basal sinuses of mature fruits
+  shallow or absent with spreading trichomes; Wyoming state endemic of
+  Fremont, Natrona and Carbon counties
+  \dotfill \textit{Physaria eburniflora} Rollins
+
+  \item[7. ] Petals yellow; basal sinuses of mature fruits equally incised
+  above and below with appressed trichomes.
+
+            \begin{enumerate}
+
+  \item[8. ] Basal leaves $\geq$ 2cm; mature fruits generally $\geq$ 1 x 1 cm;
+  Wyoming state endemic of Lincoln and Uinta counties
+  \dotfill \textit{Physaria dornii} Lichvar
+
+  \item[8. ] Basal leaves more often $\leq$ 2cm; mature fruits $\leq$ 1 x 1 cm;
+  Wyoming state endemic of Sublette, Lincoln and Uinta counties
+  \dotfill \textit{Physaria condensata} Rollins
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+  \item[6. ] Racemes exceeding the basal rosette.
+
+        \begin{enumerate}
+
+  \item[9. ] Basal sinuses of fruits absent or less often shallow, apical
+  sinuses deeper; > 2 ovules per locule   %%% \newline \hspace*{0pt} %%%
+  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
+  subsp. \textit{didymocarpa}
+
+  \item[9. ]  Fruit sinuses generally equal, less often basally shallow;
+
+            \begin{enumerate}
+
+  \item[10. ] Basal leaf margins generally dentate or toothed;
+  mature fruit trichomes spreading; 2 ovules per locule;
+  regional endemic of the Big Horn Mountains in Wyoming and Montana
+  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
+  subsp. \textit{lanata} (A. Nelson) O'Kane
+
+  \item[10. ] Basal leaf margins more often entire, occasionally toothed;
+  mature fruit trichomes appressed; > 2 ovules per locule;
+  regional endemic of SW Wyoming and eastern Idaho
+  \dotfill \textit{Physaria integrifolia} (Rollins) Lichvar
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+    \end{enumerate}
+
+\end{enumerate}
+
+\doublespacing
+
 \clearpage
 
 \vspace*{-24pt}
