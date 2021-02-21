@@ -7,15 +7,15 @@ satisfied all naturalists; yet every naturalist knows vaguely what he means when
 he speaks of a species." Over the years, much consideration has been given to
 this question as evidenced by the numerous species concepts described in the
 literature (Reviewed by @Zachos2016). @Simpson1951 noted the importance of the
-temporal dimension for the species concept debate, asserting an evolutionary 
+temporal dimension for the species concept debate, asserting an evolutionary
 criterion for species as, "...a phyletic lineage (ancestral-descendent sequence
 of interbreeding populations) evolving independently of others, with its own
 separate and unitary evolutionary role and tendencies is a basic unit of
 evolution" [@Simpson1951 p. 289].  @Mayden1997 argued that while the
-evolutionary species concept (ESC) described by @Simpson1951 was 
-non-operational, it provided a robust theoretical framework and general 
-applicability for use as a primary species concept.  With the ESC as a primary 
-species concept, secondary species concepts provide mutually applicable and 
+evolutionary species concept (ESC) described by @Simpson1951 was
+non-operational, it provided a robust theoretical framework and general
+applicability for use as a primary species concept.  With the ESC as a primary
+species concept, secondary species concepts provide mutually applicable and
 equally valid operational support for recognizing species entities
 [@Mayden1997].
 
@@ -58,8 +58,8 @@ knitr::include_graphics(
 \paragraph{} Notwithstanding progress toward a universal species concept, a
 complementary problem exists in species delimitation. Within the framework of
 the general lineage concept, a demarcation exists between the conceptual
-definition of species as evolutionary lineages and the operational criteria 
-providing evidence for their existence - each of which is based on notable 
+definition of species as evolutionary lineages and the operational criteria
+providing evidence for their existence - each of which is based on notable
 biological properties [@deQueiroz2007]. However, @Garnett2017 recently noted an
 apparent lack of agreement regarding how to define lineages. The authors also
 assert that international agreements, environmental legislation, and a variety
@@ -69,29 +69,29 @@ represent falsifiable hypotheses with varying degrees of support
 [@Thiele2002; @Hey2003; @Dayrat2005; @Raposo2017].
 
 \paragraph{} Taxonomic nomenclature provides a necessary framework for
-delineating species by discontinuous natural boundaries with utility across a 
-variety of disciplines. Contending arbitrariness in the species delimitation 
+delineating species by discontinuous natural boundaries with utility across a
+variety of disciplines. Contending arbitrariness in the species delimitation
 process, @Garnett2017 called for global oversight and the restriction of
 freedom of taxonomic action given the apparent consequences for research
 programs and policy decisions dependent on accurate species estimates. However,
-there may be inherent limitations in utilizing a discrete binary system to 
-characterize species as entities arising from a continuous evolutionary process, 
-particularly in the grey area of recent divergence following lineage splitting 
-[@Zachos2018]. A degree of uncertainty is an inherent component of empirical 
+there may be inherent limitations in utilizing a discrete binary system to
+characterize species as entities arising from a continuous evolutionary process,
+particularly in the grey area of recent divergence following lineage splitting
+[@Zachos2018]. A degree of uncertainty is an inherent component of empirical
 scientific research, and in the case of species taxa hypotheses can result from
 the dynamic demographic and evolutionary fluctuations species entities are
 subject to [@Hey2003]. A recent suggestion for reducing ambiguity from species
-delimitation is to explicitly cite the working species concept and include 
-information concerning distribution, ecology, conservation status, and potential 
-threats facing the species [@Thomson2018]. 
+delimitation is to explicitly cite the working species concept and include
+information concerning distribution, ecology, conservation status, and potential
+threats facing the species [@Thomson2018].
 
 \paragraph{} Which species concept is applied by an investigator has
-consequences for taxonomic treatments and alpha diversity [@Isaac2004]. 
+consequences for taxonomic treatments and alpha diversity [@Isaac2004].
 Accurate species assignment and determination of species boundaries has
 implications for downstream analyses. When different data support contradicting
 species boundaries, a single line of evidence may fail to recover a species.
 For species defined *a priori* by qualitatively combining genetic,
-morphological, geographical, and ecological data, individual species assignment 
+morphological, geographical, and ecological data, individual species assignment
 using clustering and multivariate techniques recovered species more accurately
 when multiple types of data sets were included [@Edwards2014].
 An "integrative taxonomy" considers naming species when supported by broad
@@ -103,9 +103,9 @@ from additional lines of evidence given the possibility of homoplasy (*ibid.*).
 \paragraph{} Utilizing multiple lines of evidence (e.g genealogical,
 morphological, and reproductive barriers) for delimitation may recover species
 that would otherwise be missed from only a single line of evidence
-[@Padial2009]. Broadly, two frameworks for an integrative taxonomy are possible: 
-integration by congruence where a concordant pattern among several taxonomic 
-characters indicates lineage separation, and integration by cumulation where a 
+[@Padial2009]. Broadly, two frameworks for an integrative taxonomy are possible:
+integration by congruence where a concordant pattern among several taxonomic
+characters indicates lineage separation, and integration by cumulation where a
 single character set may provide a good indication of lineage divergence
 [@Padial2010]. The former may result in higher confidence at the cost of
 decreased taxonomic resolving power, while uncritical application of the latter
@@ -123,6 +123,21 @@ Considerations against a generalized lineage concept (GLC)
 
 \vspace*{-24pt}
 
+```{r sectionDichotomousKey}
+
+knitr_section(
+  knitr_title = "Dichotomous Key",
+  knitr_type = "section", chunk_type = knitr_chunk
+)
+
+```
+
+\singlespacing
+
+\clearpage
+
+\vspace*{-24pt}
+
 ```{r sectionDescriptions}
 
 knitr_section(
@@ -133,31 +148,6 @@ knitr_section(
 ```
 
 \vspace*{-18pt}
-
-```{r subsectionDescriptionPmedicinae}
-
-knitr_section(
-  knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
-  knitr_type = "subsection", chunk_type = knitr_chunk
-)
-
-```
-
-\paragraph{} **Perennials**; caudex simple, (branched);
- densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
-**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
-**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
- margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
-**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
-**Racemes** elongated, (subumbellate).
-**Fruiting pedicels** erect to ascending, sigmoidal.
-**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
- sepals lanceolate, 4-6(-7) mm.
-**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
- sinuses more or less equal; valves pubescent with trichomes appressed,
- rays furcate to less often bifurcate; replum linear, (constricted),
- (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
-**Seeds** brown, flattened, 2(-3) mm.
 
 ```{r subsectionDescriptionPacutifolia}
 
@@ -185,35 +175,6 @@ knitr_section(
  apices more or less equal; valves pubescent with trichomes appressed;
  replum linear, constricted, (oblong), rarely oblong or slightly oblanceolate;
  ovules 2(-4) per locule, restricted to apex of the replum; style 4-6(-8) mm.
-**Seeds** brown, flattened; 2-3(-4) mm.
-
-```{r subsectionDescriptionPdidymocarpaSspDidymocarpa}
-
-knitr_section(
-  knitr_title = "*Physaria didymocarpa* subsp. *didymocarpa* (Hooker) A. Gray",
-  knitr_type = "subsection", chunk_type = knitr_chunk
-)
-
-```
-
-\paragraph{} **Perennials**; caudex simple, less often branched;
- densely pubescent, with appressed stellate trichomes, rays furcate or bifurcate.
-**Stems** several to numerous, (few), 0.3-1.0(-2) dm, exceeding a basal rosette,
- decumbent to ascending.
-**Basal leaves**: obovate, rhombic to suborbicular, 1.5-4(-8) cm,
- margins more often dentate than entire, (apex acute),
- petioles slender, tapering from blade, (abruptly narrowing), (lyrate).
-**Cauline leaves**: oblanceolate, (spatulate), 1-2(-3) cm,
- margins entire, (dentate).
-**Racemes** elongated or congested to subumbellate.
-**Fruiting pedicels** erect or ascending, curved to sigmoidal, 8-12 mm.
-**Flowers**: petals yellow, spatulate, 7-11(-15) mm;
- sepals lanceolate, 5-7(-10) mm.
-**Fruits** didymous, inflated, reniform to suborbicular,
- 5-10(-20) x 5-15(-25) mm, basal sinus shallow or absent, apical sinus deep;
- valves pubescent with spreading trichomes, rays simple or branched, furcate; 
- replum elliptic (oblong) to oblanceolate or obovate;
- ovules (2-)4(-6) per locule; style 5-7(-10) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
 ```{r subsectionDescriptionPbrassicoides}
@@ -271,6 +232,35 @@ knitr_section(
  ovules 3-4(-5) per locule; style 3-5(-6) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
+```{r subsectionDescriptionPdidymocarpaSspDidymocarpa}
+
+knitr_section(
+  knitr_title = "*Physaria didymocarpa* (Hooker) A. Gray subsp. *didymocarpa*",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched;
+ densely pubescent, with appressed stellate trichomes, rays furcate or bifurcate.
+**Stems** several to numerous, (few), 0.3-1.0(-2) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: obovate, rhombic to suborbicular, 1.5-4(-8) cm,
+ margins more often dentate than entire, (apex acute),
+ petioles slender, tapering from blade, (abruptly narrowing), (lyrate).
+**Cauline leaves**: oblanceolate, (spatulate), 1-2(-3) cm,
+ margins entire, (dentate).
+**Racemes** elongated or congested to subumbellate.
+**Fruiting pedicels** erect or ascending, curved to sigmoidal, 8-12 mm.
+**Flowers**: petals yellow, spatulate, 7-11(-15) mm;
+ sepals lanceolate, 5-7(-10) mm.
+**Fruits** didymous, inflated, reniform to suborbicular,
+ 5-10(-20) x 5-15(-25) mm, basal sinus shallow or absent, apical sinus deep;
+ valves pubescent with spreading trichomes, rays simple or branched, furcate;
+ replum elliptic (oblong) to oblanceolate or obovate;
+ ovules (2-)4(-6) per locule; style 5-7(-10) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
 ```{r subsectionDescriptionPdornii}
 
 knitr_section(
@@ -295,6 +285,7 @@ knitr_section(
  replum oblanceolate to obovate or elliptic; ovules 2-4(-6) per locule;
  style 3-5(-7) mm.
 **Seeds** brown, flattened; 2-3 mm.
+
 
 ```{r subsectionDescriptionPintegrifolia}
 
@@ -322,6 +313,32 @@ knitr_section(
  replum oblanceolate to obovate, elliptic or oblong; ovules 2-4(-6) per locule;
  style 5-7(-9) mm.
 **Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPmedicinae}
+
+knitr_section(
+  knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
+  knitr_type = "subsection", chunk_type = knitr_chunk
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
+**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
+ margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
+**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
+**Racemes** elongated, (subumbellate).
+**Fruiting pedicels** erect to ascending, sigmoidal.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-7) mm.
+**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
+ sinuses more or less equal; valves pubescent with trichomes appressed,
+ rays furcate to less often bifurcate; replum linear, (constricted),
+ (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
+**Seeds** brown, flattened, 2(-3) mm.
+
 
 ```{r subsectionDescriptionPvitulifera}
 
