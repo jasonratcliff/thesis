@@ -3,9 +3,9 @@ fig_outputs 	:= $(fig_scripts:R%=Figs%)
 fig_pdf 	:= $(fig_outputs:%.R=%.pdf)
 fig_html 	:= $(fig_outputs:%.R=%.png)
 
-.PHONY: all md pdf html Figs
+.PHONY: all
 
-all: md Figs
+all: md Figs pdf html
 
 md: README.Rmd
 	Rscript -e 'rmarkdown::render(input = "README.Rmd", output_format = "github_document", output_file = "README.md")'
@@ -26,6 +26,9 @@ pdf: $(fig_pdf)
 
 html: $(fig_html)
 	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
+
+descriptions:
+	Rscript -e 'source("_descriptions/descriptions.R")'
 
 clean_aux:
 	rm -fvr *.aux
