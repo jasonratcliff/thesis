@@ -120,4 +120,16 @@
 \usepackage{url}
 \usepackage{hanging}
 
+% Enumerated list for dichotomous key.
+\usepackage{enumitem}
+% Allow deeper nesting 
+% - https://stackoverflow.com/a/57952517
+\renewlist{enumerate}{enumerate}{5}
+% Eliminate list item separation, 
+% - https://tex.stackexchange.com/a/174810
+\setlist{
+  noitemsep,
+  listparindent=\parindent,
+  parsep=0pt
+}
 
