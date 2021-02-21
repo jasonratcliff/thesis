@@ -19,9 +19,9 @@ Rscript appendix_script.R
 ```
 
 <details>
-
-<summary>Missing Appendix Entries</summary>
-
+<summary>
+Missing Appendix Entries
+</summary>
 <p>
 
 ``` r
@@ -49,7 +49,6 @@ rm(appendix_files, missing_appendixes)
 ```
 
 </p>
-
 </details>
 
 ![](README_files/figure-gfm/plotAppendix-1.png)<!-- -->
@@ -57,9 +56,9 @@ rm(appendix_files, missing_appendixes)
 ## Identifications
 
 <details>
-
-<summary>Summarized Dates</summary>
-
+<summary>
+Summarized Dates
+</summary>
 <p>
 
 ``` r
@@ -91,9 +90,9 @@ id_dates <- herbarium_specimens %>%
   ) %>%
   filter(!is.na(Date)) %>%
   group_by(Date) %>%
-  add_count(name = "Count") %>%
-  
-  ggplot(data = .) +
+  add_count(name = "Count")
+
+id_plot <- ggplot(data = id_dates) +
   geom_count(aes(x = Date, y = Count, color = Date)) +
   scale_x_date() +
   scale_color_viridis_c(trans = "date") +
@@ -101,7 +100,6 @@ id_dates <- herbarium_specimens %>%
 ```
 
 </p>
-
 </details>
 
 ![](README_files/figure-gfm/plotIdentifications-1.png)<!-- -->
@@ -115,11 +113,11 @@ The following name convention was used for Digikam files:
 
 Where:
 
-  - **Collector** is a character string of the botanist’s last name
-  - **Collection Number** is an integer for voucher specimen collection
+-   **Collector** is a character string of the botanist’s last name
+-   **Collection Number** is an integer for voucher specimen collection
     number
-  - **Herbarium Code** is a two letter uppercase string denoting
-      - **-Accession Number** is a possible voucher-specific herbarium
+-   **Herbarium Code** is a two letter uppercase string denoting
+    -   **-Accession Number** is a possible voucher-specific herbarium
         accession
 
 To identify which specimens have been photographed, `digi_find.R` writes
@@ -130,9 +128,9 @@ Rscript digikam/digi_find.R
 ```
 
 <details>
-
-<summary>Unimaged Specimens</summary>
-
+<summary>
+Unimaged Specimens
+</summary>
 <p>
 
 ``` r
@@ -152,7 +150,6 @@ digikam_plot <- ggplot(data = digikam) +
 ```
 
 </p>
-
 </details>
 
 ![](README_files/figure-gfm/plotImages-1.png)<!-- -->

@@ -60,7 +60,7 @@ rm(appendix_files, missing_appendixes)
 </details>
   
 ```{r plotAppendix, echo=FALSE}
-print(appendix_counts)
+appendix_counts
 ```
 
 ## Identifications
@@ -84,21 +84,22 @@ id_dates <- herbarium_specimens %>%
   ) %>%
   filter(!is.na(Date)) %>%
   group_by(Date) %>%
-  add_count(name = "Count") %>%
-  
-  ggplot(data = .) +
+  add_count(name = "Count")
+
+id_plot <- ggplot(data = id_dates) +
   geom_count(aes(x = Date, y = Count, color = Date)) +
   scale_x_date() +
   scale_color_viridis_c(trans = "date") +
   theme_classic()
+
 ```
 
   </p>
 </details>
   
 ```{r plotIdentifications, echo=FALSE}
-print(id_dates)
-rm(id_dates)
+id_plot
+rm(id_dates, id_plot)
 ```
 
 ## Images
@@ -147,7 +148,7 @@ digikam_plot <- ggplot(data = digikam) +
 </details>
 
 ```{r plotImages, echo=FALSE}
-print(digikam_plot)
+digikam_plot
 rm(digikam, digikam_plot)
 ```
 
