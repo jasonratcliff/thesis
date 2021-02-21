@@ -13,6 +13,7 @@ description: "R Bookdown build to compile MS Thesis."
 nocite: |
   @R-whisker
   @hanging
+  @enumerate
 ---
 
 ```{r knitrOptSet, message=FALSE, echo=FALSE, warning=FALSE}
