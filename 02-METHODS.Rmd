@@ -1,28 +1,44 @@
+---
+bibliography: "Ratcliff2020Thesis.bib"
+csl: council-of-science-editors-author-date.csl
+---
+
+```{r, include=FALSE}
+WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
+```
+
+```{r, child=if (WORD_DOC) '_setup.Rmd'}
+```
+
 # METHODS {#METHODS}
 
 \vspace*{-18pt}
 
-```{r inlineVariables, echo=FALSE}
+```{r methodsVariables, echo=FALSE}
+
+methods_variables <- list()  # Initialize list for assigned variables
+
 # Calculate SEINet records with non-missing geographic coordinates.
-seinet_geo <- dplyr::filter(seinet_coords, !is.na(Latitude), !is.na(Longitude))
+methods_variables$seinet <-
+  dplyr::filter(seinet_coords, !is.na(Latitude), !is.na(Longitude))
 
 # Read in raw FASTA system files.
-fasta_paths <-
+methods_variables$fasta_paths <-
   list.files(
     path = system.file("extdata/FASTA", package = "ThesisPackage"),
     full.names = TRUE
   )
 
 # Create list of Biostrings objects from FASTA files.
-fasta_list_raw <-
-  purrr::map(.x = fasta_paths, function(fasta) {
+methods_variables$fasta_msa <-
+  purrr::map(.x = methods_variables$fasta_paths, function(fasta) {
     Biostrings::readDNAStringSet(filepath = fasta)
   })
 
 # Add names to raw fasta files
-names(fasta_list_raw) <-
+names(methods_variables$fasta_msa) <-
   gsub(pattern = "-combined_raw.fasta", replacement = "",
-       x = fs::path_file(fasta_paths))
+       x = fs::path_file(methods_variables$fasta_paths))
 
 ```
 
@@ -30,7 +46,7 @@ names(fasta_list_raw) <-
 
 knitr_section(
   knitr_title = "Herbarium Specimens",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -76,7 +92,8 @@ scientific name as taxonomic criteria with synonyms included for
 "Physaria floribunda" and "Physaria bellii" as search terms.
 Occurrence records were downloaded as *.csv* files in the Darwin Core structure
 [@Wieczorek2012]. Searches returned a total of `r nrow(seinet_coords)` records,
-`r nrow(seinet_geo)` with specimen occurrence decimal degree coordinates.
+`r nrow(methods_variables$seinet)` with specimen occurrence
+decimal degree coordinates.
 
 \paragraph{} This mapping framework was used to investigate the biogeographic
 distribution of continuous and discrete taxonomically-informative morphological
@@ -102,7 +119,7 @@ using `cowplot` [@R-cowplot], `ggtext` [@R-ggtext], `scales` [@R-scales], and
 
 knitr_section(
   knitr_title = "Tissue Sources",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -122,7 +139,7 @@ sampled for each individual.
 
 \paragraph{} Taxon sampling was determined by species distribution patterns,
 with broader sampling from more widespread species (Table
-`r knitr_table_dna(knitr_chunk)`). For the narrowly distributed Wyoming state
+`r knitr_table_dna(knit_variables$pandoc)`). For the narrowly distributed Wyoming state
 endemics *P. dornii* and *P. condensata*, four individuals were sampled from
 each taxa. For Wyoming state endemics *P. eburniflora* and *P. saximontana*
 ssp. *saximontana*, five individuals from each taxa were included. Four
@@ -140,17 +157,18 @@ individuals from Colorado and four putative specimens with annotations as
 population is of interest due to the questionable status of this species’
 distribution in the state of Wyoming [@HeidelOKane2012]. Finally, twelve
 individuals of the widespread *P. acutifolia* from Utah, Colorado, and Wyoming
-were included. Sequence data were obtained from `r length(fasta_list_raw$rITS)`
-specimens for the rITS locus, `r length(fasta_list_raw$rps)` for the *rps*
-intron, and `r length(fasta_list_raw$ycf1)` for *ycf1*. Analyses of concatenated multi-locus
-or partitioned data were limited to specimens for which sequencing of all three
-loci was completed.
+were included. Sequence data were obtained from
+`r length(methods_variables$fasta_msa$rITS)` specimens for the rITS locus,
+`r length(methods_variables$fasta_msa$rps)` for the *rps*
+intron, and `r length(methods_variables$fasta_msa$ycf1)` for *ycf1*.
+Analyses of concatenated multi-locus or partitioned data were limited to
+specimens for which sequencing of all three loci was completed.
 
 ```{r sectionExtractions}
 
 knitr_section(
   knitr_title = "DNA Extraction",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -168,7 +186,7 @@ also included in this study.
 ```{r TableDnaSpecimens}
 
 # Read in DNA collection localities for methods table.
-dna_collections <-
+methods_variables$collections <-
   list.files(system.file("extdata/Methods", package = "ThesisPackage"),
              pattern = "DNA-collections", full.names = TRUE) %>%
   readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
@@ -180,7 +198,7 @@ dna_collections <-
         }))
 
 # Table footnote caption
-dna_footnote <-
+methods_variables$dna_footnote <-
   paste0("Requested herbarium specimens used for extraction of ",
          "genomic DNA.  Voucher information includes record ",
          "collector and collection number while locality reports ",
@@ -188,13 +206,14 @@ dna_footnote <-
          "with a single * represent vouchers with DNA sequence ",
          "data obtained by K. Rethwisch (2014) while a double ** ",
          "indicate specimens with sequence data obtained by Dr. O'Kane.")
+
 ```
 
 ```{r TableDnaSpecimensLatex}
 # LaTeX specimen table part 1
-if (knitr_chunk == "latex") {
-  dna_collections %>% dplyr::slice(1:39) %>%
-    kable(x =., format = knitr_chunk, escape = FALSE,
+if (knit_variables$pandoc == "latex") {
+  methods_variables$collections %>% dplyr::slice(1:39) %>%
+    kable(x =., format = knit_variables$pandoc, escape = FALSE,
           caption = "DNA Extraction Herbarium Specimens.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
@@ -202,7 +221,7 @@ if (knitr_chunk == "latex") {
     column_spec(1, border_left = TRUE, width = "3cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    footnote(general = dna_footnote, general_title = "",
+    footnote(general = methods_variables$dna_footnote, general_title = "",
              threeparttable = TRUE, escape = FALSE)
 }
 ```
@@ -218,9 +237,9 @@ if (knitr_chunk == "latex") {
 ```{r TableDnaSpecimensLatexCont, tab.cap = NULL}
 
 # LaTeX specimen table part 2
-if (knitr_chunk == "latex") {
-  dna_collections %>% dplyr::slice(40:68) %>%
-    kable(x = ., format = knitr_chunk, escape = FALSE,
+if (knit_variables$pandoc == "latex") {
+  methods_variables$collections %>% dplyr::slice(40:68) %>%
+    kable(x = ., format = knit_variables$pandoc, escape = FALSE,
           caption = "Table 2. Continued.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
@@ -240,8 +259,8 @@ if (knitr_chunk == "latex") {
 ```{r TableDnaSpecimensHtml}
 
 # HTML specimen table
-if (knitr_chunk == "html") {
-  dna_collections %>%
+if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
+  methods_variables$collections <- methods_variables$collections %>%
     dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
       gsub("\\\\textit\\{", "\\*", taxon) %>%
         gsub("\\}$", "\\*", x = .) %>%
@@ -249,16 +268,29 @@ if (knitr_chunk == "html") {
     })) %>%
     dplyr::select(c(taxa, `Voucher Information`, Locality)) %>%
     dplyr::rename(Taxon = taxa) %>%
-    kable(longtable = TRUE, format = knitr_chunk, escape = FALSE,
-          caption = "DNA Extraction Herbarium Specimens") %>%
+    kable(
+      longtable = TRUE, escape = FALSE,
+      format = knit_variables$kable_format,
+      caption = "DNA Extraction Herbarium Specimens"
+    )
+}
+
+if (knit_variables$pandoc == "html") {
+    methods_variables$collections %>%
     kable_styling(full_width = TRUE, font_size = 10) %>%
     row_spec(row = 0, bold = TRUE, font_size = 12) %>%
     column_spec(1, border_left = TRUE, bold = TRUE) %>%
     column_spec(2, width = "8cm") %>%
     column_spec(3, width = "4cm", border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    footnote(general = dna_footnote, general_title = "",
-             threeparttable = TRUE, escape = FALSE)
+    footnote(
+      general = methods_variables$dna_footnote,
+      general_title = "", threeparttable = TRUE, escape = FALSE
+    )
+} 
+
+if (knit_variables$pandoc == "docx") {
+  methods_variables$collections
 }
 
 ```
@@ -310,7 +342,7 @@ also extended from five minutes to 10 minutes.
 
 knitr_section(
   knitr_title = "rITS PCR",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -336,19 +368,36 @@ of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 ```{r TablePCRPrimers}
 
 # Table: PCR Primers
-list.files(system.file("extdata/Methods", package = "ThesisPackage"),
+methods_variables$primers <-
+  list.files(system.file("extdata/Methods", package = "ThesisPackage"),
              pattern = "DNA-primers", full.names = TRUE) %>%
-  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
-  kable(x = ., format = knitr_chunk, align = "l", escape = FALSE,
-        caption = "Primer Sequences for PCR Reactions.") %>%
-  kable_styling(full_width = FALSE, font_size = 10,
-                latex_options= "hold_position") %>%
-  row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-  column_spec(1, border_left = TRUE) %>%
-  column_spec(3, border_right = TRUE) %>%
-  footnote(general = "DNA primers for PCR reactions.",
-           footnote_as_chunk = TRUE, general_title = "",
-           escape = TRUE, threeparttable = TRUE)
+  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc")
+
+if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
+  methods_variables$primers <- methods_variables$primers %>%
+    dplyr::mutate(
+      Primer = stringr::str_replace_all(
+        string = .data$Primer,
+        pattern = "^\\\\textit\\{|\\}",
+        replacement = "*"
+      )
+    )
+}
+
+methods_variables$primers <- methods_variables$primers %>%
+  kable(x = ., format = knit_variables$kable_format,
+        align = "l", escape = FALSE,
+        caption = "Primer Sequences for PCR Reactions.")
+
+if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
+  methods_variables$primers %>%
+    kable_styling(full_width = FALSE, font_size = 10) %>%
+    row_spec(row = 0, bold = TRUE, font_size = 12) %>%
+    column_spec(1, border_left = TRUE) %>%
+    column_spec(3, border_right = TRUE)
+} else {
+  methods_variables$primers
+}
 
 ```
 
@@ -356,7 +405,7 @@ list.files(system.file("extdata/Methods", package = "ThesisPackage"),
 
 knitr_section(
   knitr_title = "*rps* Intron PCR",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -378,7 +427,7 @@ $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
 knitr_section(
   knitr_title = "*ycf1* PCR",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -443,7 +492,7 @@ re-suspending in 18 mL ddH2O.
 
 knitr_section(
   knitr_title = "Gel Electrophoresis",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -465,7 +514,7 @@ images of the gels.
 
 knitr_section(
   knitr_title = "DNA Sequencing",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -495,7 +544,7 @@ assembled from chromatograms into multi-FASTA format for downstream analysis.
 
 knitr_section(
   knitr_title = "Phylogenetic Analysis",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -507,9 +556,9 @@ CIPRES Science Gateway version 3.3 [@CIPRES]. The Bioconductor package
 `Biostrings` [@R-Biostrings] was used to write FASTA subset files from raw
 multi-FASTA sequences to account for unequal sequence sampling between targeted
 loci. Alignments were calculated individually for each locus from both the total
-multi-FASTA sequences (rITS: n=`r length(fasta_list_raw$rITS)`,
-*rps*: n=`r length(fasta_list_raw$rps)`,
-*ycf1*: n=`r length(fasta_list_raw$ycf1)`) and the subset of
+multi-FASTA sequences (rITS: n=`r length(methods_variables$fasta_msa$rITS)`,
+*rps*: n=`r length(methods_variables$fasta_msa$rps)`,
+*ycf1*: n=`r length(methods_variables$fasta_msa$ycf1)`) and the subset of
 specimens with equal sequencing effort (n=51 for rITS, *rps*, and *ycf1*).
 Individual gene trees were estimated by MrBayes for the rITS and *rps* loci
 using the full set of aligned sequences (n=72 and n=66, respectively).
@@ -599,7 +648,7 @@ posterior probability limit of 0.5.
 
 knitr_section(
   knitr_title = "Source Code",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -630,15 +679,15 @@ maintained for the R package source code
 and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
 
 ```{r TableSpeciesTreeHypotheses}
-spp_tree_hypotheses <-
+methods_variables$star_beast <-
   system.file("extdata/BEAST", package = "ThesisPackage") %>%
   list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
   readr::read_csv(file = ., col_types = 'ccccc') %>%
   setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
   arrange(`Hypothesis 1`, Sample)
 
-if (knitr_chunk == "latex") {
-  spp_tree_hypotheses <- spp_tree_hypotheses %>%
+if (knit_variables$pandoc == "latex") {
+  methods_variables$star_beast <- methods_variables$star_beast %>%
     mutate(
       Sample = gsub("_", "\\\\_", .data$Sample)
     ) %>%
@@ -651,16 +700,27 @@ if (knitr_chunk == "latex") {
     )
   }
 
-spp_tree_hypotheses %>%
-  kable(x = ., format = knitr_chunk, align = "l", escape = FALSE,
-        caption = "Species tree hypotheses taxa assignments by sample ID."
-        ) %>%
-  kable_styling(full_width = FALSE, font_size = 8,
-                latex_options= "hold_position") %>%
-  row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-  column_spec(1, border_left = TRUE) %>%
-  column_spec(5, border_right = TRUE) %>%
-  collapse_rows(columns = 2:5)
+methods_variables$star_beast <- methods_variables$star_beast %>%
+  kable(
+    x = ., format = knit_variables$kable_format,
+    align = "l", escape = FALSE,
+    caption = "Species tree hypotheses taxa assignments by sample ID."
+  )
 
+if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
+  methods_variables$star_beast %>%
+    kable_styling(full_width = FALSE, font_size = 8,
+                  latex_options= "hold_position") %>%
+    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    column_spec(1, border_left = TRUE) %>%
+    column_spec(5, border_right = TRUE) %>%
+    collapse_rows(columns = 2:5)
+} else {
+  methods_variables$star_beast
+}
+
+```
+
+```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
 
