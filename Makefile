@@ -27,8 +27,11 @@ pdf: $(fig_pdf)
 html: $(fig_html)
 	Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
 
+word:
+	Rscript scripts/render_word.R
+
 descriptions:
-	Rscript -e 'source("_descriptions/descriptions.R")'
+	Rscript _descriptions/descriptions.R
 
 clean_aux:
 	rm -fvr *.aux
