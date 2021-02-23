@@ -33,7 +33,7 @@ server <- function(input, output, session) {
   output$morphologyTable <- function() {
      search() %>%
       dplyr::select(.data = ., Collector, Collection_Number,
-                    prior_id, Taxon_a_posteriori,
+                    prior_id, Taxon_a_posteriori, ID, Herbarium, App.A, Imaged,
                     Fruit_trichomes, Ovule_number, Replum_shape,
                     Basal_leaf_margins, Mature_fruit_apices) %>%
       kable(x = .) %>%
