@@ -4,9 +4,8 @@
 ```{r sectionNovelPhysaria}
 
 knitr_section(
-  # knitr_title = paste("Novel Wyoming", physaria(knitr_chunk)),
-  knitr_title = paste("Novel Wyoming", physaria(knitr_chunk)),
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_title = paste("Novel Wyoming", physaria(knit_variables$pandoc)),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -35,11 +34,12 @@ species (Figure \@ref(fig:speciesPmedicinae)).
 # Plot of fruit dimensions by reviewed species ID and collection date.
 caption$FigResultsSEINet <-
   paste(
-    "Distribution of regional", physaria(knitr_chunk), "species from SEINet."
+    "Distribution of regional", physaria(knit_variables$pandoc),
+    "species from SEINet."
   )
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsSEINet.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsSEINet.", knit_variables$graphics)
 )
 
 ```
@@ -50,12 +50,12 @@ knitr::include_graphics(
 
 caption$FigResultsPmedicinae <-
   paste("Elevation and mature fruit length differences between questioned",
-        "Carbon County, WY specimens and nearby", physaria(knitr_chunk),
-        "species.")
+        "Carbon County, WY specimens and nearby",
+        physaria(knit_variables$pandoc), "species.")
 
 # Plot of elevation and fruit dimensions by reviewed species ID.
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPmedicinae.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsPmedicinae.", knit_variables$graphics)
 )
 
 ```
@@ -86,7 +86,7 @@ ancovaCarbonFruits <-
 
 knitr_section(
   knitr_title = "Southwest Wyoming Endemics",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -98,7 +98,7 @@ caption$FigResultsSouthwestEndemics <-
   "Distribution of southwestern Wyoming endemic *Physaria* species."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsSouthwestEndemics.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsSouthwestEndemics.", knit_variables$graphics)
 )
 
 ```
@@ -112,7 +112,7 @@ caption$FigResultsPintegrifolia <-
   "Growth habit of southwestern Wyoming endemics."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPintegrifolia.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsPintegrifolia.", knit_variables$graphics)
 )
 
 ```
@@ -123,7 +123,7 @@ knitr::include_graphics(
 
 knitr_section(
   knitr_title = "*Physaria didymocarpa* Complex",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -135,7 +135,7 @@ caption$FigResultsPdidymocarpaMap <-
   "Distribution of *P. didymocarpa* complex species."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPdidymocarpaMap.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsPdidymocarpaMap.", knit_variables$graphics)
 )
 
 ```
@@ -149,7 +149,7 @@ caption$FigResultsPdidymocarpa <-
   "Growth habit of *P. didymocarpa* complex species."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPdidymocarpa.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsPdidymocarpa.", knit_variables$graphics)
 )
 
 ```

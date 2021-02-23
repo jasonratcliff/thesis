@@ -1,3 +1,15 @@
+---
+bibliography: "Ratcliff2020Thesis.bib"
+csl: council-of-science-editors-author-date.csl
+---
+
+```{r, include=FALSE}
+WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
+```
+
+```{r, child=if (WORD_DOC) '_setup.Rmd'}
+```
+
 # DISCUSSION {#DISCUSSION}
 
 \paragraph{} How species are defined is a key issue in biology, the aptly named
@@ -23,7 +35,7 @@ equally valid operational support for recognizing species entities
 
 knitr_section(
   knitr_title = "The Species Concept",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -50,7 +62,7 @@ caption$FigureDiscussionPosteriori <-
         "by reviewed annotations.")
 
 knitr::include_graphics(
-  path = paste0("Figs/FigDiscussionPosteriori.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigDiscussionPosteriori.", knit_variables$graphics)
 )
 
 ```
@@ -127,7 +139,7 @@ Considerations against a generalized lineage concept (GLC)
 
 knitr_section(
   knitr_title = "Dichotomous Key",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -258,7 +270,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "Species Descriptions",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -269,7 +281,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria acutifolia* Rydberg",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -297,7 +309,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria brassicoides* Rydberg",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -326,7 +338,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria condensata* Rollins",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -352,7 +364,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria didymocarpa* (Hooker) A. Gray subsp. *didymocarpa*",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -381,7 +393,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria dornii* Lichvar",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -407,7 +419,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria integrifolia* (Rollins) Lichvar",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -434,7 +446,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -460,7 +472,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "*Physaria vitulifera* Rydberg",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -482,4 +494,7 @@ knitr_section(
  valves pubescent with trichomes appressed to spreading, furcate, (bifurcate);
  replum linear; ovules 2 per locule; style 4-6(-8) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
+```
 

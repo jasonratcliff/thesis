@@ -1,4 +1,22 @@
+---
+bibliography: "Ratcliff2020Thesis.bib"
+csl: council-of-science-editors-author-date.csl
+---
+
+```{r, include=FALSE}
+WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
+```
+
+```{r, child=if (WORD_DOC) '_setup.Rmd'}
+```
+
 # INTRODUCTION {#INTRODUCTION}
+
+```{r introductionVariables, echo=FALSE}
+
+introduction_variables <- list()  # Initialize list for assigned variables
+
+```
 
 \pagestyle{main}
 \pagenumbering{arabic}
@@ -61,7 +79,7 @@ phylogenetic status of these taxa.
 
 knitr_section(
   knitr_title = "Systematic and Taxonomic History",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -89,7 +107,7 @@ highly inflated silicles with inflexed, or v-shaped apical sinuses.
 \paragraph{} @Watson1882 made the final addition to the genus before the turn
 of the century with a description of *Physaria oregona* S. Watson. He noted the
 fruit valves as somewhat compressed and barely surpassing the replum,
-round–reniform, and larger than *P. geyeri* (Hook.) A. Gray.  A summary of
+round–reniform, and larger than *P. geyeri* (Hook.) A. Gray. A summary of
 *Physaria* by @Robinson1895 included the four species so far mentioned and noted
 them as similar in habit to *Lesquerella* S. Watson, but with distinguishable
 characters in the fruit. Through the twentieth century, workers on these genera
@@ -99,16 +117,16 @@ largely upheld the “traditional” distinction between *Lesquerella* and
 \paragraph{} Per Axel Rydberg [-@Rydberg1901] made three additions to the genus
 by describing *Physaria vitulifera* Rydberg, *P. floribunda* Rydberg, and
 *P. acutifolia* Rydberg. These species were distinguished from *P. didymocarpa*
-as having smaller fruits. The lack of a proximal (basal) sinus, curved pedicels, 
+as having smaller fruits. The lack of a proximal (basal) sinus, curved pedicels,
 and pandurate basal leaves of 4–5 cm further differentiated *P. vitulifera*
 from *P. didymocarpa*. *Physaria floribunda* was described as an intermediate
-species between *P. didymocarpa* and *P. vitulifera* distinguished by taller 
-height, deeply sinuate to slightly fiddle-form leaves of 5–10 cm with sinuately 
+species between *P. didymocarpa* and *P. vitulifera* distinguished by taller
+height, deeply sinuate to slightly fiddle-form leaves of 5–10 cm with sinuately
 toothed to acute terminal lobes, and a shallow basal sinus. *P. acutifolia* was
 separated by the presence of deep apical and shallow basal sinuses, spherical
 valves, and acute basal leaves of 1.5–2.5 cm. @Rollins1939 misapplied the name
 *P. acutifolia* to a population from Gunnison Co., Colorado later described as
-*P. rollinsii* G. A. Mulligan by @Mulligan1966. This discrepancy was highlighted 
+*P. rollinsii* G. A. Mulligan by @Mulligan1966. This discrepancy was highlighted
 by Mulligan following cytological investigations of *P. acutifolia*
 [@Mulligan1966; @Mulligan1967b]. @Rollins1981 later agreed an earlier treatment
 [@Rollins1939] of *P. australis* (Payson) Rollins actually pertained to
@@ -118,7 +136,7 @@ by Mulligan following cytological investigations of *P. acutifolia*
 description of *Physaria brassicoides* Rydberg. *P. brassicoides* was
 differentiated from *P. didymocarpa* by smaller fruit with an acute base in
 addition to larger basal leaves forming a rosette of 7–10 cm in diameter.
-Additionally, it was noted the plants tend to grow in soils rich with magnesium.  
+Additionally, it was noted the plants tend to grow in soils rich with magnesium.
 @Rollins1939 highlighted the constricted replum, presence of two ovules per
 locule, entire basal leaves, and near lack of a basal sinus in this species.
 Aven Nelson [-@Nelson1904] made the next addition to the genus by describing
@@ -177,7 +195,7 @@ currently recognized [@Rollins1981]. @Rollins1939 also described
 variety otherwise tend to show replum structure and ovule number similar to
 *P. didymocarpa* (Hook.) A. Gray var. *normalis* Kuntze. Variety *integrifolia*
 was observed as sharing transitional characters with its southern analogue,
-*P. acutifolia*, where  *P. acutifolia* was hypothesized to have diverged more 
+*P. acutifolia*, where  *P. acutifolia* was hypothesized to have diverged more
 recently from *P. didymocarpa*.
 
 \paragraph{} @Lichvar1984 elevated *Physaria didymocarpa* var. *integrifolia*
@@ -198,7 +216,7 @@ and var. *lanata* [@Rollins1979].
 *integrifolia* by the presence of a highly branched caudex. The inflorescence
 of variety *monticola* was described as not exceeding the basal rosette to
 the same extent as variety *integrifolia*.  Additionally, both leaf and petiole
-length were described as reduced in variety *monticola* relative to variety 
+length were described as reduced in variety *monticola* relative to variety
 *integrifolia*. Specimens identified *a priori* as variety *monticola* are
 distributed throughout the range of variety *integrifolia*. @OKane2010 noted
 the trait of branched caudices is likely due to caudex elongating in response
@@ -238,7 +256,7 @@ to the tighter, calcareous soils surrounding *P. didymocarpa* var.
 
 \paragraph{} Lastly, @Rollins1984 recognized *Physaria saximontana* Rollins as
 a new species from Wyoming and Montana, distributed from southeast of the Wind
-River Mountains northward through the Rocky Mountains of central Montana. 
+River Mountains northward through the Rocky Mountains of central Montana.
 *Physaria saximontana* was distinguished from *P. didymocarpa* largely on the
 basis of silique shape, where fruits of the former lack a basal sinus while the
 latter tend to show a cordate, shallow basal sinus with the pedicel entering
@@ -258,7 +276,7 @@ while variety *saximontana* typically had 2 ovules per locule present.
 
 knitr_section(
   knitr_title = "Geographical Distribution and Ecology",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -288,20 +306,6 @@ southeast of the range of *P. didymocarpa* subsp. *didymocarpa*
 (C. L. Hitchcock) O'Kane has a narrow distribution in the Salmon River drainage
 of Lehmi County [@Rollins1993; @OKane2010].
 
-\clearpage
-
-```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors}
-
-caption$FigureIntroPriors <-
-  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
-        "by most recent annotations.")
-
-knitr::include_graphics(
-  path = paste0("Figs/FigIntroPriors.", knitr_ext[[knitr_chunk]])
-)
-
-```
-
 \paragraph{} Three species of *Physaria* sensu-stricto have been described from
 southwestern and west-central Wyoming (Figure \@ref(fig:FigureIntroPriors)).
 These include two state endemics, *P. condensata* Rollins and *P. dornii*
@@ -330,11 +334,23 @@ south to Colorado and Nebraska at generally lower elevations, ranging from
 and clay soils, its distribution is primarily non-overlapping with other
 Wyoming *Physaria*.
 
+```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors}
+
+caption$FigureIntroPriors <-
+  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
+        "by most recent annotations.")
+
+knitr::include_graphics(
+  path = paste0("Figs/FigIntroPriors.", knit_variables$graphics)
+)
+
+```
+
 ```{r subsectionCarbonVitulifera}
 
 knitr_section(
   knitr_title = "Status of *Physaria vitulifera* in Wyoming",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -345,24 +361,24 @@ reported the species with a distribution East of the Front Range, on gravelly
 slopes of the outer canyons in the foothills. @Ackerfield2015 also reported the
 species as East of the Rocky Mountains, from the South in Fremont County to the
 North in Larimer County. O'Kane's [-@OKane2010] treatment of *Physaria* follows
-the latter circumsriptions, reporting *P. vitulifera* from only Colorado.
+the latter circumscriptions, reporting *P. vitulifera* from only Colorado.
 More recently, Heidel and O'Kane [-@HeidelOKane2012] identified a need for
 taxonomic work based on *Physaria* collections with annotations as
-*P. vitulifera*, many of which were reannotated by Jennings (2004) as
+*P. vitulifera*, many of which were re-annotated by Jennings (2004) as
 *P. acutifolia* (indicated by “*”, Table \@ref(tab:TableIntroCarbon)).
 
 ```{r TableIntroCarbon}
 
 # Table: Carbon county putative *P. vitulifera* annotations
 caption$TableIntroCarbon <-
-  ifelse(knitr_chunk == "latex",
+  ifelse(knit_variables$pandoc == "latex",
          paste0("Putative Carbon County, Wyoming ",
                 "\\textit{Physaria vitulifera} specimens."),
          paste0("Putative Carbon County, Wyoming ",
                 "*Physaria vitulifera* specimens."))
 
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
-spp_carbon_kable <- herbarium_specimens %>%
+introduction_variables$carbon_specimens <- herbarium_specimens %>%
   dplyr:: select(prior_id, Taxon, Collector, Collection_Number, Date_parsed,
                  State, County, Herbarium, Latitude, Longitude) %>%
   dplyr::filter(grepl("vitulifera", x = Taxon) &
@@ -400,34 +416,42 @@ spp_carbon_kable <- herbarium_specimens %>%
                 `Collection Number`, .data$Herbarium)
 
 # Parse asterisks for LaTeX italicization.
-dplyr::mutate(spp_carbon_kable,
-  "Most Recent Annotation" = purrr::map_chr(.data$`Most Recent Annotation`,
-    function(x) {
-      if (knitr_chunk == "latex") {
-        if (grepl(pattern = "\\*\\\\\\*$", x = x)) {
-          gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
-            gsub(pattern = "\\*\\\\\\*$", replacement = "}\\*", x = .)
-          } else {
-            gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
-              gsub(pattern = "\\*$", replacement = "}", x = .)
-          }
-        } else { x }
-      })) %>%
-  
-  # Kable of putative Wyoming P. vitulifera specimens.
-  knitr::kable(x = .,
-               format = knitr_chunk, escape = FALSE, row.names = FALSE,
-               caption = caption$TableIntroCarbon) %>%
-  kableExtra::kable_styling(full_width = FALSE,  latex_options= "HOLD_position",
-                            position = "center") %>%
-  kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
-  kableExtra::column_spec(1, border_left = TRUE) %>%
-  kableExtra::column_spec(3, width = "2.5cm") %>%
-  kableExtra::column_spec(4, border_right = TRUE)
+introduction_variables$carbon_kable <-
+  introduction_variables$carbon_specimens %>%
+  dplyr::mutate(.data = .,
+    "Most Recent Annotation" = purrr::map_chr(.data$`Most Recent Annotation`,
+       function(x) {
+         if (knit_variables$pandoc == "latex") {
+           if (grepl(pattern = "\\*\\\\\\*$", x = x)) {
+             gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
+               gsub(pattern = "\\*\\\\\\*$", replacement = "}\\*", x = .)
+             } else {
+               gsub(pattern = "^\\*", replacement = "\\\\textit{", x = x) %>%
+                 gsub(pattern = "\\*$", replacement = "}", x = .)
+             }
+           } else { x }
+         })) %>%
+  knitr::kable(x = ., format = knit_variables$kable_format,
+             escape = FALSE, row.names = FALSE,
+             caption = caption$TableIntroCarbon)
+
+# Kable of putative Wyoming P. vitulifera specimens.
+if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
+  introduction_variables$carbon_kable  %>%
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      latex_options= "HOLD_position",
+      position = "center"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 11) %>%
+    kableExtra::column_spec(1, border_left = TRUE) %>%
+    kableExtra::column_spec(3, width = "2.5cm") %>%
+    kableExtra::column_spec(4, border_right = TRUE)
+} else {
+  introduction_variables$carbon_kable   # Simple Pandoc tibble
+}
 
 ```
-
-\clearpage
 
 \paragraph{} Dorn's [-@Dorn2001] Wyoming Flora key to *Physaria* did report the
 species from southcentral Wyoming, distinguished by fruits with a somewhat
@@ -444,7 +468,7 @@ annotated as *P. vitulifera* ("*Physaria vitulifera* - Carbon")
 or fit the phenotype described by Dorn [-@Dorn2001]
 ("*Physaria acutifolia - vitulifera*-like")
 appear geographically separated from the Colorado Front range *P. vitulifera*
-(Figure \@ref(fig:FigureIntroCarbon).
+(Figure \@ref(fig:FigureIntroCarbon)).
 
 ```{r FigureIntroCarbon, fig.cap=caption$FigureIntroCarbon}
 
@@ -452,7 +476,7 @@ caption$FigureIntroCarbon <-
   "Distribution of reported Carbon County, WY *Physaria vitulifera*."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigIntroCarbonWyo.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigIntroCarbonWyo.", knit_variables$graphics)
 )
 
 ```
@@ -477,7 +501,7 @@ and Jackson Counties.
 
 knitr_section(
   knitr_title = "Morphology and Phylogeny",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -520,7 +544,7 @@ More recently, the precipitous drop of sequencing cost has ushered an era of
 *phylogenomics* and the role of morphological phylogenetics *sensu stricto*
 has been questioned as the number of number of nucleotides has far outpaced the
 use of morphology in phylogenetic datasets [@LeePalci2015].
-With a greater proportion of sequence data constituting simulatenous analyses
+With a greater proportion of sequence data constituting simultaneous analyses
 (i.e., co-estimation of phylogeny from genes and morphology; a "total evidence"
 or combined approach), genomic data will increasingly influence topology such
 that results approximate mapping morphology onto a molecular phylogeny (*ibid.*).
@@ -529,19 +553,19 @@ signal from incomplete lineage sorting remains a potential hurdle for recent
 divergences of species with large effective population sizes
 [@Philippe2011].
 
-\paragraph{} Given the assymetry between phylogenies built on molecular and
+\paragraph{} Given the asymmetry between phylogenies built on molecular and
 morphological data, it seems the role of morphology has increasingly been
 limited to the interpretation or calibration of molecular phylogenies and
 total evidence approaches with combined data [@Wanninger2015; @Giribet2015].
 Morphology may also influence taxon sampling decisions and species
 descriptions more broadly. Two notable taxonomic possibilities include the
 recognition of infraspecific lineages as species (i.e., "splitting") or
-failure to delimit closely related species as separate (i.e., "lumping"; 
+failure to delimit closely related species as separate (i.e., "lumping";
 @Faurby2016). In the case of the former, morphological variation may lead to
 recognition of taxonomic entities that are not supported by a molecular phylogeny
 [@Helsen2009]. For the latter, seemingly morphologically indistinguishable
 species may show strong evidence of speciation by genetic evidence when
-"cryptic taxa" arise from polyploid speciation [@Crowl2017]. 
+"cryptic taxa" arise from polyploid speciation [@Crowl2017].
 Congruence between multiple lines of evidence may provide stronger support for
 phylogenetic hypotheses and taxonomic decisions, where morphology is considered
 an operational criterion for lineage separation [@deQueiroz2007]
@@ -551,7 +575,7 @@ published dichotomous keys were recorded: replum shape; ovule count; mature
 fruit size, apices and trichomes; basal leaf margins; and overall habit.
 Of particular interest are species previously delimited on the basis of
 diagnosible monophyly from morphological characters despite the lack of
-infomation about genetic history, cytology, or reproductive mechanisms 
+information about genetic history, cytology, or reproductive mechanisms
 (e.g., *Physaria saximontana* subspecies, *Physaria eburniflora*,
 *P. dornii*, *P. condensata*).
 
@@ -559,7 +583,7 @@ infomation about genetic history, cytology, or reproductive mechanisms
 
 knitr_section(
   knitr_title = "Mechanisms of Speciation",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -572,7 +596,7 @@ knitr_section(
 
 knitr_section(
   knitr_title = "The Role of Topography in Speciation",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```

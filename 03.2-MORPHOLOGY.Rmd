@@ -5,7 +5,7 @@
 
 knitr_section(
   knitr_title = "Morphology",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$kable_format
 )
 
 ```
@@ -30,7 +30,7 @@ caption$traitReplumShape <-
   "Distribution of discrete replum shapes by specimen location."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsTraitReplums.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsTraitReplums.", knit_variables$graphics)
 )
 
 ```
@@ -59,7 +59,7 @@ caption$traitOvules <-
   "Maximum count of ovules per locule by specimen location."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsTraitOvules.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsTraitOvules.", knit_variables$graphics)
 )
 
 ```
@@ -84,7 +84,7 @@ caption$traitFruitApices <-
   "Observations of mature silique sinuses by specimen location."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsTraitApices.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsTraitApices.", knit_variables$graphics)
 )
 
 ```
@@ -111,7 +111,7 @@ caption$traitFruitTrichomes <-
   "Observations of mature silique trichomes by specimen location."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsTraitTrichomes.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsTraitTrichomes.", knit_variables$graphics)
 )
 
 ```
@@ -136,7 +136,7 @@ caption$traitBasalLeafMargins <-
   "Observations of basal leaf margins by specimen location."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsTraitMargins.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsTraitMargins.", knit_variables$graphics)
 )
 
 ```

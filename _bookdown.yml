@@ -6,5 +6,5 @@ language:
     chapter_name: "Chapter "
 rmd_files:
 
-  latex: ["index.Rmd", "01-INTRODUCTION.Rmd", "02-METHODS.Rmd", "03.1-RESULTS.Rmd", "03.2-MORPHOLOGY.Rmd", "03.3-SPECIES.Rmd", "04-DISCUSSION.Rmd", "05-APPENDICES.Rmd"]
-  html: ["index.Rmd", "01-INTRODUCTION.Rmd", "02-METHODS.Rmd", "03.1-RESULTS.Rmd", "03.2-MORPHOLOGY.Rmd", "03.3-SPECIES.Rmd", "04-DISCUSSION.Rmd", "05-APPENDICES.Rmd"]
+  latex: ["index.Rmd", "01-INTRODUCTION.Rmd", "02-METHODS.Rmd", "03-RESULTS.Rmd", "04-DISCUSSION.Rmd", "05-APPENDICES.Rmd", "06-ALIGNMENTS.Rmd"]
+  html: ["index.Rmd", "01-INTRODUCTION.Rmd", "02-METHODS.Rmd", "03-RESULTS.Rmd", "04-DISCUSSION.Rmd", "05-APPENDICES.Rmd", "06-ALIGNMENTS.Rmd"]
