@@ -6,7 +6,7 @@
 
 knitr_section(
   knitr_title = "Phylogenetic Analysis",
-  knitr_type = "section", chunk_type = knitr_chunk
+  knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -14,7 +14,7 @@ knitr_section(
 ```{r phylogeneticsData}
 
 # Function to abbreviate specimen annotations.
-abbreviate_spp <- function(label_vector, knitr_chunk) {
+abbreviate_spp <- function(label_vector, pandoc_conversion) {
 
   paste_html <- function(label) {
     paste0("*", label, "*")
@@ -30,7 +30,7 @@ abbreviate_spp <- function(label_vector, knitr_chunk) {
     if (length(split_label) %in% c(1, 2)) {
       collapsed_label <- paste(split_label, collapse = " ")
       ifelse(
-        knitr_chunk == "html",
+        pandoc_conversion != "latex",
         paste_html(collapsed_label),
         paste_latex(collapsed_label)
       )
@@ -39,17 +39,17 @@ abbreviate_spp <- function(label_vector, knitr_chunk) {
       collapsed_label <-
         paste(
           ifelse(
-            knitr_chunk == "html",
+            pandoc_conversion != "latex",
             paste_html(collapsed_label),
             paste_latex(collapsed_label)
           ), "\n", split_label[3],
           ifelse(
-            knitr_chunk == "html",
+            pandoc_conversion != "latex",
             paste_html(split_label[4]),
             paste_latex(split_label[4])
           ), collapse = " "
         )
-      ifelse(knitr_chunk == "latex",
+      ifelse(pandoc_conversion == "latex",
              kableExtra::linebreak(collapsed_label),
              collapsed_label)
     }
@@ -65,7 +65,10 @@ conserved_rITS <-
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
   dplyr::mutate(
-    Priors = abbreviate_spp(label_vector = .data$Priors, knitr_chunk)
+    Priors = abbreviate_spp(
+      label_vector = .data$Priors,
+      pandoc_conversion = knit_variables$pandoc
+    )
   ) %>%
   dplyr::arrange(`Node Group`, Priors, State)
 
@@ -76,7 +79,10 @@ conserved_rps <-
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
   dplyr::mutate(
-    Priors = abbreviate_spp(label_vector = .data$Priors, knitr_chunk)
+    Priors = abbreviate_spp(
+      label_vector = .data$Priors,
+      pandoc_conversion = knit_variables$pandoc
+    )
   ) %>%
   dplyr::arrange(`Node Group`, Priors, State)
 
@@ -87,7 +93,10 @@ conserved_multiLocus <-
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
   dplyr::mutate(
-    Priors = abbreviate_spp(label_vector = .data$Priors, knitr_chunk)
+    Priors = abbreviate_spp(
+      label_vector = .data$Priors,
+      pandoc_conversion = knit_variables$pandoc
+    )
   ) %>%
   dplyr::arrange(`Node Group`, Priors, State)
 
@@ -108,7 +117,7 @@ the southwestern Wyoming endemics and a *Physaria didymocarpa* species complex.
 
 knitr_section(
   knitr_title = "ITS Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -148,15 +157,23 @@ The polytomy include specimens previously annotated as *P. vitulifera*,
 
 caption$TableIdenticalSeqrITS <-
   paste(
-    physaria(knitr_chunk),
+    physaria(knit_variables$pandoc),
     "DNA specimens with identical genotypes for the rITS locus."
   )
 
-bayes_kable(
-  conserved_specimens = conserved_rITS,
-  knitr_chunk = knitr_chunk,
-  kable_caption = caption$TableIdenticalSeqrITS
-)
+if (knit_variables$pandoc != "docx") {
+  bayes_kable(
+    conserved_specimens = conserved_rITS,
+    knitr_chunk = knit_variables$kable_format,
+    kable_caption = caption$TableIdenticalSeqrITS
+  )
+} else {
+  kable(
+    x = conserved_rITS,
+    format = knit_variables$kable_format,
+    caption = caption$TableIdenticalSeqrITS
+  )
+}
 
 ```
 
@@ -168,7 +185,7 @@ caption$FigureBayesrITS <-
   "Consensus tree from Baysian inference of the rITS gene tree."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_rITS.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBayes_rITS.", knit_variables$graphics)
 )
 
 ```
@@ -196,7 +213,7 @@ with high support included *P. saximontana* subsp. *saximontana* and
 
 knitr_section(
   knitr_title = "*rps* Intron Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -241,22 +258,32 @@ Colorado (**Genotype 9**) constitute two additional identical genotypes.
 
 caption$TableIdenticalSeqrps <-
   paste(
-    physaria(knitr_chunk), "DNA specimens with identical genotypes for the",
-    ifelse(knitr_chunk == "html", "*rps*", "\\textit{rps}"), "intron locus."
+    physaria(knit_variables$pandoc),
+    "DNA specimens with identical genotypes for the",
+    ifelse(knit_variables$pandoc != "latex",
+           "*rps*", "\\textit{rps}"), "intron locus."
   )
 
-if (knitr_chunk == "html") {
+if (knit_variables$pandoc == "html") {
   bayes_kable(
     conserved_specimens = conserved_rps,
-    knitr_chunk = knitr_chunk,
+    knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqrps
   )
 }
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "docx") {
+  kable(
+    x = conserved_rps,
+    format = knit_variables$kable_format,
+    caption = caption$TableIdenticalSeqrps
+  )
+}
+
+if (knit_variables$pandoc == "latex") {
   bayes_kable(
     conserved_specimens = conserved_rps[1:27, ],
-    knitr_chunk = knitr_chunk,
+    knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqrps
   )
 }
@@ -270,15 +297,15 @@ if (knitr_chunk == "latex") {
 
 ```{r TableIdenticalSeqrps2}
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "latex") {
   bayes_kable(
     conserved_specimens = conserved_rps[28:nrow(conserved_rps), ],
-    knitr_chunk = knitr_chunk,
+    knitr_chunk = knit_variables$kable_format,
     kable_caption = "Table 5. Continued."
   )
 }
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "latex") {
   cat("\\captionsetup[table]{labelformat=default}")
   cat("\\captionsetup[table]{list=yes}")
   cat("\\setcounter{table}{5}")
@@ -314,7 +341,7 @@ caption$FigureBayesrpsIntron <-
   "Consensus tree from Bayesian inference of *rps* intron gene tree."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_rps.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBayes_rps.", knit_variables$graphics)
 )
 
 ```
@@ -327,7 +354,7 @@ knitr::include_graphics(
 
 knitr_section(
   knitr_title = "*ycf1* Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -354,28 +381,37 @@ conserved_ycf1 <-
       gsub("[A-Z]\\. ?", "", collector) %>%
         gsub("&|with", "and", x = .)
       }),
-    Species = abbreviate_spp(label_vector = .data$Species, knitr_chunk)
+    Species = abbreviate_spp(label_vector = .data$Species, knit_variables$pandoc)
   ) %>%
   dplyr::select(., Genotype, Species, State, Collector, `Collection Number`)
 
 caption$TableIdenticalSeqycf1 <-
   paste(
-    physaria(knitr_chunk), 
+    physaria(knit_variables$pandoc), 
     "DNA specimens with identical genotypes for the",
-    ifelse(knitr_chunk == "html", "*ycf1*", "\\textit{ycf1}"), "loci.")
+    ifelse(knit_variables$pandoc != "latex",
+           "*ycf1*", "\\textit{ycf1}"), "loci.")
 
-if (knitr_chunk == "html") {
+if (knit_variables$pandoc == "html") {
   bayes_kable(
     conserved_specimens = conserved_ycf1,
-    knitr_chunk = knitr_chunk,
+    knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqycf1
   )
 }
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "docx") {
+  kable(
+    x = conserved_ycf1,
+    format = knit_variables$kable_format,
+    caption = caption$TableIdenticalSeqycf1
+  )
+}
+
+if (knit_variables$pandoc == "latex") {
     bayes_kable(
       conserved_specimens = conserved_ycf1[1:28, ],
-      knitr_chunk = knitr_chunk,
+      knitr_chunk = knit_variables$kable_format,
       kable_caption = caption$TableIdenticalSeqycf1
     )
 }
@@ -391,15 +427,15 @@ if (knitr_chunk == "latex") {
 
 ```{r TableIdenticalSeqycf12}
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "latex") {
   bayes_kable(
     conserved_specimens = conserved_ycf1[29:nrow(conserved_ycf1), ],
-    knitr_chunk = knitr_chunk,
+    knitr_chunk = knit_variables$kable_format,
     kable_caption = "Table 6. Continued."
   )
 }
 
-if (knitr_chunk == "latex") {
+if (knit_variables$pandoc == "latex") {
   cat("\\captionsetup[table]{labelformat=default}")
   cat("\\captionsetup[table]{list=yes}")
   cat("\\setcounter{table}{6}")
@@ -411,7 +447,7 @@ if (knitr_chunk == "latex") {
 
 knitr_section(
   knitr_title = "Concatenated Multi-locus Analysis",
-  knitr_type = "subsection", chunk_type = knitr_chunk
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
 ```
@@ -430,14 +466,25 @@ Wyoming endemics, and a third with two Medicine Bow Range specimens
 
 ```{r TableIdenticalSeqMultiLocus}
 
-bayes_kable(
-  conserved_specimens = conserved_multiLocus,
-  knitr_chunk = knitr_chunk,
-  kable_caption = paste(
-    physaria(knitr_chunk),
-    "DNA specimens with identical sequences after concatenation."
+if (knit_variables$pandoc != "docx") {
+  bayes_kable(
+    conserved_specimens = conserved_multiLocus,
+    knitr_chunk = knit_variables$kable_format,
+    kable_caption = paste(
+      physaria(knit_variables$pandoc),
+      "DNA specimens with identical sequences after concatenation."
+    )
   )
-)
+} else {
+  kable(
+    x = conserved_multiLocus,
+    format = knit_variables$kable_format,
+    caption = paste(
+      physaria(knit_variables$pandoc),
+      "DNA specimens with identical sequences after concatenation."
+    )
+  )
+}
 
 ```
 
@@ -468,7 +515,7 @@ caption$FigureBayesMultiLocus <-
   "Consensus tree from Bayesian inference of concatenated multi-locus data."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_ML.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBayes_ML.", knit_variables$graphics)
 )
 
 ```
@@ -481,7 +528,7 @@ caption$FigureResultsBeastMultiLocus <-
   "BEAST multi-locus partitioned phylogeny."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastMultiLocus.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBeastMultiLocus.", knit_variables$graphics)
 )
 
 ```
@@ -494,7 +541,7 @@ caption$FigureResultsBeastGeography <-
   "BEAST multi-locus with phylogeography modelling."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastGeography.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBeastGeography.", knit_variables$graphics)
 )
 
 ```
@@ -507,7 +554,7 @@ caption$FigureResultsBeastSpecies <-
   "*BEAST species tree hypotheses."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastSpecies.", knitr_ext[[knitr_chunk]])
+  path = paste0("Figs/FigResultsBeastSpecies.", knit_variables$graphics)
 )
 
 ```
