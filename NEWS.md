@@ -1,6 +1,8 @@
-# ThesisPackage 0.1.5.9
+# ThesisPackage 0.1.6
 
-* Add *.csv* for species tree \*BEAST hypotheses
+* Include phylogeography *.xml*, *.mcc*, and coordinate *.txt* files.
+
+* Add *.csv* for species tree \*BEAST hypotheses.
 
 # ThesisPackage 0.1.5
 
