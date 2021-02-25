@@ -4,6 +4,8 @@
 
 * Add *.csv* for species tree \*BEAST hypotheses.
 
+* Modify `knitr_section()` to accommodate *.docx* output rendering.
+
 # ThesisPackage 0.1.5
 
 * New `species_plot()` builds `ggtree` objects from *BEAST MCC tree data.

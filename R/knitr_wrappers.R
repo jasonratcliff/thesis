@@ -43,9 +43,6 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
   }
 
   # Get knit conversion type and output respective section header.
-  if (chunk_type == "html") {
-    cat(paste(knitr_chunk_list[knitr_type], knitr_title))
-  }
   if (chunk_type == "latex") {
     # Check regular expression pattern in `knitr_title` string for italics.
     if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
@@ -58,7 +55,10 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
       knitr_title <- paste(split_title, collapse = "")
     }
     cat(paste("\\", knitr_type, "{", knitr_title, "}", sep = ""))
+  } else {
+    cat(paste(knitr_chunk_list[knitr_type], knitr_title))
   }
+
 }
 
 #' Table 2 Bookdown
