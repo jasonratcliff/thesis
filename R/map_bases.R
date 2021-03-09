@@ -116,7 +116,7 @@ layer_elevation <- function(specimen_tbl, raster_zoom = 7,
   elev_df <- as.data.frame(methods::as(elev_raster, "SpatialPixelsDataFrame"))
   elev_ggplot <-
     ggplot2::ggplot(elev_df, ggplot2::aes(x = .data$x, y = .data$y)) +
-    ggplot2::geom_tile(ggplot2::aes(fill = .data$layer)) +
+    ggplot2::geom_tile(ggplot2::aes(fill = elev_df[, 1])) +
     ggplot2::scale_fill_gradientn("Elevation (m)",
                                   colours = grDevices::terrain.colors(7),
                                   guide = ggplot2::guide_colourbar(order = 1))
