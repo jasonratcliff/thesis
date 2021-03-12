@@ -104,7 +104,8 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #'
 layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
                             shape_aes = FALSE,  geom_size = 3,
-                            jitter_width = NULL, jitter_height = NULL) {
+                            jitter_width = NULL, jitter_height = NULL,
+                            jitter_alpha = 1) {
 
   shape_sym <- ifelse(test = shape_aes == FALSE, yes = list(NULL),
                        no = as.name(id_column))  # optional shape aesthetic
@@ -121,7 +122,8 @@ layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
              color = as.name(id_column),
              shape = unlist(shape_sym)), na.rm = TRUE,
         width = jitter_width,
-        height = jitter_height
+        height = jitter_height,
+        alpha = jitter_alpha
       )
     )
   return(specimen_layer)
