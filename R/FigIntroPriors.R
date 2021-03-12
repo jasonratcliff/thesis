@@ -1,38 +1,43 @@
 library(ThesisPackage)
+library(dplyr)
 library(ggplot2)
+library(cowplot)
+
+set.seed(20210311)
 
 # Introduction: Build ggplot distribution map with prior annotations.
-
-# Specimen priors total subset
-# 
-# Bounding box:
-# - Longitude: c(-115.2, -103)
-# - Latitude: c(37, 49.1)
-# 
-# Species IDs excluded:
-# - Lesquerella
-# - cnema
-# - alpina
-# - cordiformis
-# - macrantha
-# - geyeri
-#
 spp_total_priors <- ThesisPackage::herbarium_specimens %>%
-  dplyr::select("prior_id", "Latitude", "Longitude") %>%
-  subset_coords(specimen_tbl = .,
-                Latitude = c(37, 49.1), Longitude = c(-115.2, -103)) %>%
-  # Filter out Lesquerella / Physaria sensu lato spp.
-  dplyr::filter(
-    !grepl(paste("Lesquerella", "cnema", "alpina", "cordiformis",
-                 "macrantha", "geyeri", sep = "|", collapse = ""),
-           x = prior_id) & !grepl("\\?|Brassicaceae", x = prior_id)
+  select("prior_id", "Latitude", "Longitude") %>%
+  filter(prior_id %in%
+    paste("Physaria",
+      c("acutifolia", "brassicoides", "condensata", "dornii",
+        "eburniflora", "integrifolia", "vitulifera",
+        "medicinae", "chambersii", "rollinsii",
+        paste("didymocarpa ssp.", c("didymocarpa", "lanata", "lyrata")),
+        paste("saximontana ssp.", c("saximontana", "dentata")),
+        paste("floribunda ssp.", c("floribunda", "osterhoutii"))
+      )
+    ) | grepl("^Physaria$", .data$prior_id)
+  ) %>%
+  subset_coords(
+    specimen_tbl = .,
+    Latitude = c(37, 49.1),
+    Longitude = c(-114.5, -102)
   )
 
 FigIntroPriors <- ggplot() +
-  layer_borders(spl_extent = spl_bbox(spp_total_priors),
-                sf_county_color = "black") +
-  layer_specimens(specimen_tbl = spp_total_priors, shape_aes = TRUE,
-                  id_column = "prior_id") +
+  layer_borders(
+    spl_extent = spl_bbox(spp_total_priors),
+    sf_county_color = "black"
+  ) +
+  layer_specimens(
+    specimen_tbl = spp_total_priors,
+    shape_aes = TRUE,
+    id_column = "prior_id",
+    jitter_width = 0.1,
+    jitter_height = 0.1,
+    jitter_alpha = 0.75
+  ) +
   layer_themes(
     specimen_tbl = spp_total_priors,
     id_column = "prior_id",
@@ -43,6 +48,9 @@ FigIntroPriors <- ggplot() +
     ylim = range(spl_bbox(spp_total_priors)[["Latitude"]])
   )
 
-save_plot(
-  gg_plot = FigIntroPriors
+FigIntroPriors <- plot_grid(FigIntroPriors)
+
+ThesisPackage::save_plot(
+  gg_plot = FigIntroPriors,
+  height = 5, width = 6
 )
