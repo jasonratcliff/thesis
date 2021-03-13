@@ -82,4 +82,7 @@ FigIntroCarbonWyo <-
   theme(legend.direction = "vertical", legend.position = "bottom") +
   guides(colour = guide_legend(ncol = 2, byrow = TRUE))
 
-ThesisPackage::save_plot(gg_plot = FigIntroCarbonWyo)
+ThesisPackage::save_plot(
+  gg_plot = FigIntroCarbonWyo,
+  width = 6, height = 6
+)
