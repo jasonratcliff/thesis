@@ -18,6 +18,7 @@
 # File paths to scripts, raw data, and binary .rda files.
 spp_herbarium	:= inst/extdata/specimens.xlsx
 spp_dna_samples	:= data-raw/specimens/dna_specimens.csv
+spp_themes := data-raw/mapping/map_themes.R
 trait_scripts	:= $(wildcard data-raw/specimens/trait*.R)
 trait_rda	:= $(wildcard data/trait*.rda)
 seinet_csv	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
@@ -27,15 +28,21 @@ all: traits seinet specimens
 
 ##### SPECIMEN DATA #####
 
-specimens: $(spp_herbarium) $(spp_dna)
+specimens: $(spp_herbarium) $(spp_dna_samples) themes
 
 # Parsed herbarium voucher specimens as: `ThesisPackage::herbarium_specimens`
 data/herbarium_specimens.rda: $(spp_herbarium)
 	Rscript data-raw/specimens/herbarium_specimens.R
 
 # Subset of DNA specimens as: `ThesisPackage::dna_specimens`
-data/dna_specimens.rda: $(spp_dna)
+data/dna_specimens.rda: $(spp_dna_samples)
 	Rscript data-raw/specimens/herbarium_specimens.R
+
+# ggplot aesthetic manual value specifications
+themes: data/spp_color.rda data/spp_shape.rda
+
+data/spp_color.rda data/spp_shape.rda: $(spp_themes)
+	Rscript data-raw/mapping/map_themes.R
 
 ##### TRAIT DATA #####
 
