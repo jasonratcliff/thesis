@@ -1,65 +1,59 @@
-spp_color <- c(
-  "Physaria" = "seashell",
-  "Physaria flowering" = "seashell",
-  "Physaria acutifolia" = "yellow4",
-  "Physaria brassicoides" = "olivedrab2",
-  "Physaria vitulifera" = "darkturquoise",
-  "Physaria medicinae" = "darkorchid",
-  "Physaria acutifolia - vitulifera-like" = "plum",
-  "Physaria vitulifera - Carbon" = "steelblue",
-  "Physaria floribunda" = "red",
-  "Physaria floribunda ssp. floribunda" = "red",
-  "Physaria floribunda ssp. osterhoutii" = "azure4",
-  "Physaria rollinsii" = "darkorchid1",
-  "Physaria bellii" = "blue",
-  "Physaria alpina" = "firebrick",
-  "Physaria geyeri" = "plum1",
-  "Physaria chambersii" = "springgreen",
-  "Physaria didymocarpa ssp. didymocarpa" = "skyblue",
-  "Physaria didymocarpa ssp. lanata" = "goldenrod",
-  "Physaria didymocarpa ssp. lyrata"= "black",
-  "Physaria saximontana ssp. dentata" = "maroon",
-  "Physaria saximontana ssp. saximontana" = "indianred",
-  "Physaria eburniflora" = "cyan",
-  "Physaria integrifolia" =  "seagreen",
-  "Physaria dornii" = "darkorange",
-  "Physaria condensata"= "mediumblue",
-  "Physaria obcordata" = "black",
-  "Physaria fendleri" = "black",
-  "Physaria argyraea" = "black"
+
+spp_color <-
+  c(
+    "Physaria" = "#C0C0C0",  # silver
+    "Physaria acutifolia" = "#BDB76B",  # dark khaki
+    "Physaria brassicoides" = "#000000",  # black
+    "Physaria condensata" =  "#FFFF99",  # canary yellow
+    "Physaria dornii" =  "#7FC97F",  # light green
+    "Physaria eburniflora" =  "#56B4E9",  # picton blue
+    "Physaria integrifolia" =  "#009E73",  # green haze
+    "Physaria medicinae" = "#BA55D3",  # orchid
+    "Physaria vitulifera" = "#D8BFD8",  # thistle
+    "Physaria didymocarpa ssp. didymocarpa" =  "#386CB0",  # azure
+    "Physaria didymocarpa ssp. lanata" =  "#666666",  # dark gray
+    "Physaria didymocarpa ssp. lyrata" =  "#FDC086",  # salmon
+    "Physaria saximontana ssp. dentata" =  "#BF5B17",  # burnt orange
+    "Physaria saximontana ssp. saximontana" =  "#F0027F",  # rose
+    "Physaria bellii" = "#0000FF",  # blue
+    "Physaria chambersii" = "#006400",  # dark green
+    "Physaria floribunda ssp. floribunda" = "#8B0000",  # dark red
+    "Physaria floribunda ssp. osterhoutii" = "#666666",  # dark gray
+    "Physaria rollinsii" = "#000000",  # black
+    "Physaria vitulifera - Carbon" = "#00008B",  # dark blue
+    "Physaria acutifolia - vitulifera-like" = "#00FFFF",  # cyan
+    "Physaria argyraea" = "#000000",
+    "Physaria fendleri" = "#000000",
+    "Physaria obcordata" = "#000000"
   )
 
-spp_shape <- c(
-  "Physaria" = 16,
-  "Physaria flowering" = 16,
-  "Physaria acutifolia" = 3,
-  "Physaria brassicoides" = 16,
-  "Physaria vitulifera"= 18,
-  "Physaria medicinae" = 18,
-  "Physaria acutifolia - vitulifera-like" = 18,
-  "Physaria vitulifera - Carbon" = 18,
-  "Physaria floribunda" = 0,
-  "Physaria floribunda ssp. floribunda" = 0,
-  "Physaria floribunda ssp. osterhoutii" = 5,
-  "Physaria rollinsii" = 17,
-  "Physaria bellii" = 17,
-  "Physaria alpina" = 17,
-  "Physaria geyeri" = 17,
-  "Physaria chambersii" = 17,
-  "Physaria didymocarpa ssp. didymocarpa" = 15,
-  "Physaria didymocarpa ssp. lanata" = 15,
-  "Physaria didymocarpa ssp. lyrata" = 15,
-  "Physaria saximontana ssp. dentata" = 15,
-  "Physaria saximontana ssp. saximontana" = 15,
-  "Physaria eburniflora" = 15,
-  "Physaria integrifolia" = 16,
-  "Physaria dornii" = 16,
-  "Physaria condensata"= 16,
-  "Physaria obcordata" = 16,
-  "Physaria fendleri" = 15,
-  "Physaria argyraea" = 18
+spp_shape <-
+  c(
+    "Physaria" = 16,  # circle
+    "Physaria acutifolia" =  3,  # plus sign
+    "Physaria brassicoides" =  16,
+    "Physaria condensata" =  18,  # diamond
+    "Physaria dornii" =  18,
+    "Physaria eburniflora" =  18,
+    "Physaria integrifolia" =  16,
+    "Physaria medicinae" = 17,
+    "Physaria vitulifera" = 18,
+    "Physaria didymocarpa ssp. didymocarpa" =  15,  # square
+    "Physaria didymocarpa ssp. lanata" =  17,  # triangle
+    "Physaria didymocarpa ssp. lyrata" =  17,
+    "Physaria saximontana ssp. dentata" =  18,
+    "Physaria saximontana ssp. saximontana" = 18,
+    "Physaria bellii" = 17,
+    "Physaria chambersii" = 17,
+    "Physaria floribunda ssp. floribunda" = 0,  # hollow square
+    "Physaria floribunda ssp. osterhoutii" = 5,  # hollow diamond
+    "Physaria rollinsii" = 1,  # hollow circle
+    "Physaria acutifolia - vitulifera-like" = 17,
+    "Physaria vitulifera - Carbon" = 17,
+    "Physaria argyraea" = 5,
+    "Physaria fendleri" = 0,
+    "Physaria obcordata" = 1
   )
 
 # Save objects as internal R data
 usethis::use_data(spp_color, spp_shape, overwrite = TRUE)
-
