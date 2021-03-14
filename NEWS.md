@@ -1,6 +1,8 @@
-# ThesisPackage 0.1.6.9
+# ThesisPackage 0.1.7
 
 * `layer_specimens()` gains `jitter_alpha` argument to set aesthetic alpha value.
+
+* Re-balance `ggplot` color and shape aesthetics for maps and trees.
 
 * Fix column specification in `layer_elevation()` wrapper to `elevatr`.
 
