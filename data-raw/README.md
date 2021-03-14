@@ -34,16 +34,16 @@ ThesisPackage::herbarium_specimens
     ## # A tibble: 1,712 x 66
     ##    excel_sheet prior_id prior_1 prior_2 prior_3 prior_4 Taxon Taxon_a_posteri…
     ##    <chr>       <chr>    <chr>   <chr>   <chr>   <chr>   <chr> <chr>           
-    ##  1 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ##  2 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ##  3 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
+    ##  1 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
+    ##  2 P. Remaini… Physari… Physar… Physar… Physar… Physar… Phys… <NA>            
+    ##  3 P. Remaini… Physari… Physar… Physar… Physar… Physar… Phys… <NA>            
     ##  4 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ##  5 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
+    ##  5 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
     ##  6 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ##  7 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
+    ##  7 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
     ##  8 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
     ##  9 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ## 10 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
+    ## 10 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
     ## # … with 1,702 more rows, and 58 more variables: Collector <chr>,
     ## #   Collection_Number <chr>, Date <chr>, Date_parsed <date>, Date_md <date>,
     ## #   Herbarium <chr>, State <chr>, County <chr>, Location <chr>, Latitude <dbl>,

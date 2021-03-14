@@ -19,7 +19,8 @@
 #'
 read_tree <- function(tree_file) {
   ggtree_import <- treeio::read.beast(tree_file) %>% ggtree::fortify()
-  tree_data <- ggtree_import %>% dplyr::select("label", "node") %>%
+  tree_data <- ggtree_import %>%
+    dplyr::select("label", "node") %>%
     purrr::pmap_dfr(.l = ., function(label, node) {
       dplyr::bind_rows(
         node = rep(node),
@@ -57,21 +58,27 @@ read_tree <- function(tree_file) {
 #'   node_labels(tree_data = .)
 #'
 node_labels <- function(tree_data) {
+
   ggtree_labels <- tree_data %>%
     dplyr::select("node", "single_label", "label")
+
   multi_taxa_nodes <- ggtree_labels %>%
-    dplyr::add_count(.data$node) %>% dplyr::filter(.data$n > 1) %>%
+    dplyr::add_count(.data$node) %>%
+    dplyr::filter(.data$n > 1) %>%
     dplyr::arrange(dplyr::desc(.data$n)) %>%
-    dplyr::group_by(dplyr::desc(.data$n), .data$node) %>%
+    dplyr::group_by(.data = ., dplyr::desc(.data$n), .data$node) %>%
     dplyr::mutate(
       node_group = dplyr::cur_group_id() %>%
         paste0("Genotype ", ., " (n=", .data$n, ")")
-    ) %>% dplyr::ungroup()
+    ) %>%
+    dplyr::ungroup()
+
   ggtree_labels <- multi_taxa_nodes %>%
     dplyr::select("node", "single_label", "label", "node_group") %>%
     dplyr::right_join(x = ., y = ggtree_labels,
                       by = c("node", "single_label", "label")) %>%
     dplyr::arrange(.data$node)
+
   return(ggtree_labels)
 }
 
@@ -172,8 +179,8 @@ join_bayes <- function(tree_data, id_column, ...) {
 #'                      id_column = "prior_id", id_name = "Species")
 #'
 conserved_vouchers <- function(tree_file, id_column, id_name) {
-  tree_data <- read_tree(tree_file = tree_file)
-  conserved_specimens <- node_labels(tree_data) %>%
+  tree_data <- ThesisPackage::read_tree(tree_file = tree_file)
+  conserved_specimens <- ThesisPackage::node_labels(tree_data) %>%
     dplyr::filter(!is.na(.data$node_group)) %>%
     dplyr::left_join(x = ., y = ThesisPackage::dna_specimens,
                      by = c("single_label" = "label")) %>%
