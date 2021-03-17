@@ -2,6 +2,8 @@ library(ThesisPackage)
 library(ggplot2)
 library(cowplot)
 
+set.seed(20210316)
+
 # Specimens ----
 
 spp_integrifolia <- ThesisPackage::herbarium_specimens %>%
@@ -16,12 +18,13 @@ spp_integrifolia <- ThesisPackage::herbarium_specimens %>%
   ) %>%
   dplyr::select("prior_id", "Taxon_a_posteriori",
                 "State", "County", "Latitude", "Longitude",
-                "Stem_length_dm", "Basal_leaf_length_cm") %>%
+                "Stem_length_dm", "Basal_leaf_length_cm", "Ovule_number") %>%
 
   # Calculate Stem-to-Rosette Ratio
   dplyr::bind_cols(.,
     range_split(trait_tbl = ., split_var = "Stem_length_dm"),
-    range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
+    range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm"),
+    range_split(trait_tbl = ., split_var = "Ovule_number")
   ) %>%
   dplyr::mutate(
     rosette_ratio = Stem_length_dm_max * 10 - Basal_leaf_length_cm_max,
@@ -58,21 +61,46 @@ trait_identifications <- ggplot(data = spp_integrifolia) +
     name = "Prior Identifications", labels = trait_labels,
     values = ThesisPackage::spp_shape, na.value = 17
   ) +
+  guides(col = guide_legend(ncol = 3)) +
   theme_classic() +
-  theme(legend.text = ggtext::element_markdown())
+  theme(
+    legend.position = "left",
+    legend.title.align = 0,
+    legend.text = ggtext::element_markdown()
+  )
 
 # Extract ggplot legend for CowPlot grid.
 trait_legend <- cowplot::get_legend(trait_identifications)
 
 # Trait ggplots ----
 
+# Max Ovules ggplot
+trait_ovules <- ggplot(data = spp_integrifolia) +
+  geom_violin(
+    aes(x = Taxon_a_posteriori, y = Ovule_number_max),
+    na.rm = TRUE, scale = "width"
+  ) +
+  geom_jitter(
+    aes(x = Taxon_a_posteriori, y = Ovule_number_max,
+        color = prior_id, shape = prior_id),
+    width = 0.1, height = 0.2, na.rm = TRUE
+  ) +
+  scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
+  scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
+  labs(y = "Ovules per Locule") +
+  theme_classic() +
+  theme(
+    title = ggtext::element_markdown(),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    legend.position = "none"
+  )
+
 # Rosette Ratio ggplot
 trait_rosette <- ggplot(data = spp_integrifolia) +
   geom_violin(
     aes(x = Taxon_a_posteriori, y = rosette_ratio), na.rm = TRUE
   ) +
-  scale_color_manual(values = ThesisPackage::spp_color) +
-  ggnewscale::new_scale_color() +
   geom_jitter(
     aes(x = Taxon_a_posteriori, y = rosette_ratio,
         color = prior_id, shape = prior_id),
@@ -131,23 +159,30 @@ trait_leaves <- ggplot(data = spp_integrifolia) +
 
 # cowplot Grid ----
 
+# Create grobs for plot alignments.
 grid_left <- 
-  align_plots(trait_rosette, trait_stems, align = "hv", axis = "lbrt")
+  align_plots(trait_ovules, trait_stems, align = "hv", axis = "lbrt")
+grid_right <-
+  align_plots(trait_rosette, trait_leaves, align = "hv", axis = "lbrt")
 
+# Build plot sections from aligned grobs with labels.
 grid_top <-
-  plot_grid(grid_left[[1]],
-    plot_grid(NULL, trait_legend, NULL, ncol = 1, rel_heights = c(0.2, 1, 1)),
-    labels = c("A", ""), nrow = 1
-  )
-
+  plot_grid(grid_left[[1]], grid_right[[1]], nrow = 1,
+            labels = c("A", "B"), vjust = -0.5)
 grid_bottom <-
-  plot_grid(grid_left[[2]], trait_leaves, labels =  c("B", "C"), nrow = 1)
+  plot_grid(grid_left[[2]], grid_right[[2]], nrow = 1,
+            labels = c("C", "D"), vjust = -0.5)
 
+# Build grid from plot sections with legend at bottom.
 FigResultsPintegrifolia <-
-  plot_grid(grid_top, NULL, grid_bottom, nrow = 3, rel_heights = c(1, -0.175, 1))
+  plot_grid(NULL, grid_top, NULL, grid_bottom,
+            nrow = 4, rel_heights = c(0.1, 1, -0.175, 1))
 
-FigResultsPintegrifolia <-
+FigResultsPintegrifolia <-  # Add x-axis annotation
   ggdraw(add_sub(FigResultsPintegrifolia, "Reviewed Annotations"))
+FigResultsPintegrifolia <-
+  plot_grid(FigResultsPintegrifolia, trait_legend,
+            nrow = 2, rel_heights = c(2, 0.5))
 
 ThesisPackage::save_plot(
   gg_plot = FigResultsPintegrifolia,
