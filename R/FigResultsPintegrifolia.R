@@ -42,7 +42,7 @@ spp_integrifolia <- ThesisPackage::herbarium_specimens %>%
   dplyr::arrange(dplyr::desc(.data$n)) %>%
   dplyr::ungroup()
 
-# Legend ----
+# Prior ID Legend ----
 
 # Text markdown label replacements to legend.
 trait_labels <- 
@@ -74,96 +74,63 @@ trait_legend <- cowplot::get_legend(trait_identifications)
 
 # Trait ggplots ----
 
-# Max Ovules ggplot
-trait_ovules <- ggplot(data = spp_integrifolia) +
-  geom_violin(
-    aes(x = Taxon_a_posteriori, y = Ovule_number_max),
-    na.rm = TRUE, scale = "width"
-  ) +
-  geom_jitter(
-    aes(x = Taxon_a_posteriori, y = Ovule_number_max,
-        color = prior_id, shape = prior_id),
-    width = 0.1, height = 0.2, na.rm = TRUE
-  ) +
-  scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
-  scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
-  labs(y = "Ovules per Locule") +
-  theme_classic() +
-  theme(
-    title = ggtext::element_markdown(),
-    axis.text.x = element_blank(),
-    axis.title.x = element_blank(),
-    legend.position = "none"
-  )
+traits <- list()  # Initialize list for trait ggplots
 
-# Rosette Ratio ggplot
-trait_rosette <- ggplot(data = spp_integrifolia) +
-  geom_violin(
-    aes(x = Taxon_a_posteriori, y = rosette_ratio), na.rm = TRUE
+# Ovule count ggplot
+traits$ovules <-
+  jitter_violin(
+    specimen_tbl = spp_integrifolia,
+    trait = "Ovule_number_max",
+    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths
+    jitter.params = list(width = 0.25, height = 0.25),  # Jitter positions
+    theme.params = list(axis.text.x = element_blank())
   ) +
-  geom_jitter(
-    aes(x = Taxon_a_posteriori, y = rosette_ratio,
-        color = prior_id, shape = prior_id),
-    width = 0.1, height = 0, na.rm = TRUE
-  ) +
-  scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
-  scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
-  labs(y = "Inflorescence (cm)") +
-  theme_classic() +
-  theme(
-    title = ggtext::element_markdown(),
-    axis.text.x = element_blank(),
-    axis.title.x = element_blank(),
-    legend.position = "none"
-  )
+  labs(y = "Ovules per Locule")
 
-# Max Stem Length ggplot
-trait_stems <- ggplot(data = spp_integrifolia) +
-  geom_violin(
-    aes(x = Taxon_a_posteriori, y = Stem_length_dm_max), na.rm = TRUE
+# Rosette ratio ggplot
+traits$rosette <-
+  jitter_violin(
+    specimen_tbl = spp_integrifolia,
+    trait = "rosette_ratio",
+    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
+    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    theme.params = list(axis.text.x = element_blank())
   ) +
-  geom_jitter(
-    aes(x = Taxon_a_posteriori, y = Stem_length_dm_max,
-        color = prior_id, shape = prior_id),
-    width = 0.1, height = 0, na.rm = TRUE
+  labs(y = "Inflorescence (cm)")
+
+# Max stem length ggplot
+traits$stems <-
+  jitter_violin(
+    specimen_tbl = spp_integrifolia,
+    trait = "Stem_length_dm_max",
+    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
+    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    theme.params = list(
+      axis.text.x = ggtext::element_markdown(angle = 60, hjust = 1)
+    )
   ) +
-  scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
-  scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
-  labs(y = "Stem Length (dm)") +
-  theme_classic() +
-  theme(
-    axis.text.x = ggtext::element_markdown(angle = 60, hjust = 1),
-    axis.title.x = element_blank(),
-    legend.position = "none"
-  )
+  labs(y = "Stem Length (dm)")
 
 # Max Basal Leaf Length ggplot
-trait_leaves <- ggplot(data = spp_integrifolia) +
-  geom_violin(
-    aes(x = Taxon_a_posteriori, y = Basal_leaf_length_cm_max), na.rm = TRUE
+traits$leaves <-
+  jitter_violin(
+    specimen_tbl = spp_integrifolia,
+    trait = "Basal_leaf_length_cm_max",
+    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
+    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    theme.params = list(
+      axis.text.x = ggtext::element_markdown(angle = 60, hjust = 1)
+    )
   ) +
-  geom_jitter(
-    aes(x = Taxon_a_posteriori, y = Basal_leaf_length_cm_max,
-        color = prior_id, shape = prior_id),
-    width = 0.1, height = 0, na.rm = TRUE
-  ) +
-  scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
-  scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
-  labs(y = "Basal Leaf Length (cm)") +
-  theme_classic() +
-  theme(
-    axis.text.x = ggtext::element_markdown(angle = 60, hjust = 1),
-    axis.title.x = element_blank(),
-    legend.position = "none"
-  )
+  labs(y = "Basal Leaf Length (cm)")
 
 # cowplot Grid ----
 
 # Create grobs for plot alignments.
 grid_left <- 
-  align_plots(trait_ovules, trait_stems, align = "hv", axis = "lbrt")
+  align_plots(traits$ovules, traits$stems, align = "hv", axis = "lbrt")
 grid_right <-
-  align_plots(trait_rosette, trait_leaves, align = "hv", axis = "lbrt")
+  align_plots(traits$rosette, traits$leaves, align = "hv", axis = "lbrt")
 
 # Build plot sections from aligned grobs with labels.
 grid_top <-
