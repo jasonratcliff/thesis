@@ -140,3 +140,57 @@ map_trait_distribution <- function(tidy_trait,
     )
   return(trait_map)
 }
+
+# `ggplot` Wrappers ----
+
+
+#' Built violin plots with jittered points
+#'
+#' Semi-flexible plotting of continuous trait violin plots with adjustable
+#' point jitters.
+#'
+#' @inheritParams layer_specimens
+#' @param trait Variable with trait observation in
+#'   [ThesisPackage::herbarium_specimens].
+#' @param violin.params List of arguments passed to [ggplot2::geom_violin().
+#' @param jitter.paramsList List of arguments passed to [ggplot2::geom_jitter()].
+#' @param theme.params List of arguments passed to [ggplot2::theme()].
+#' @export
+#'
+#' @return [ggplot] of trait observations delineated by reviewed id (x-axis)
+#'   and jittered points (y-axis) representing numeric values.
+#'
+jitter_violin <- function(specimen_tbl, trait,
+                         violin.params = list(),
+                         jitter.params = list(),
+                         theme.params = list()) {
+
+  violins <- do.call("geom_violin", modifyList(
+    list(mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait)),
+         na.rm = TRUE),
+    val = violin.params)
+  )
+  jitters <- do.call("geom_jitter", modifyList(
+    list(mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait),
+                        color = quote(prior_id), shape = quote(prior_id)),
+         na.rm = TRUE),
+    val = jitter.params)
+  )
+  themes <- do.call("theme", modifyList(
+    list(title = ggtext::element_markdown(),
+         axis.title.x = element_blank(),
+         legend.position = "none"),
+    val = theme.params)
+  )
+
+  ggplot(data = specimen_tbl) +
+    scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
+    scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
+    theme_classic() +
+    violins +
+    jitters +
+    themes
+}
+
+
+
