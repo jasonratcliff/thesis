@@ -192,5 +192,73 @@ jitter_violin <- function(specimen_tbl, trait,
     themes
 }
 
+#' Extract Legend of [ggplot] Aesthetics from Specimen Annotations
+#'
+#' @inheritParams layer_specimens
+#' @export
+#'
+#' @return A `grob` with extracted plot legend of annotation aesthetics.
+#'
+annotation_legend <- function(specimen_tbl,
+                              theme.params = list(),
+                              guide.params = list()) {
+
+  # Text markdown label replacements to legend text from prior & reviewed IDs.
+  trait_labels <-
+    ThesisPackage::spl_labels(
+      specimen_tbl = specimen_tbl,
+      id_column = "prior_id"
+    )
+
+  plot_themes <- do.call("theme", modifyList(
+    list(
+      title = ggtext::element_markdown(),
+      axis.text = element_text(angle = 45, hjust = 1),
+      legend.title = element_text(colour = "grey"),
+      legend.title.align = 0.5,
+      legend.justification = "center",
+      legend.position = "bottom",
+      legend.text = ggtext::element_markdown()
+    ),
+    val = theme.params)
+  )
+
+  plot_guides <- do.call("guides", modifyList(
+    list(
+      "color" = guide_legend(ncol = 3, byrow = TRUE, title.position = "top"),
+      "shape" = guide_legend(ncol = 3, byrow = TRUE, title.position = "top")
+    ),
+    val = guide.params)
+  )
+
+  plot_layers <-
+    list(
+      geom_jitter(
+        aes(
+          x = Taxon_a_posteriori, y = prior_id,
+          color = prior_id, shape = prior_id),
+        width = 0.25, height = 0.25
+      ),
+      scale_color_manual(
+        name = "Prior Annotations", labels = trait_labels,
+        values = ThesisPackage::spp_color, na.value = "black"
+      ),
+      scale_shape_manual(
+        name = "Prior Annotations", labels = trait_labels,
+        values = ThesisPackage::spp_shape, na.value = 17
+      ),
+      theme_classic(),
+      labs(x = "Reviewed", y = "Prior")
+    )
+
+  built_ggplot <- ggplot(data = specimen_tbl) +
+    plot_layers +
+    plot_themes +
+    plot_guides
+
+  ggplot_legend <- cowplot::get_legend(built_ggplot)
+  return(ggplot_legend)
+}
+
 
 
