@@ -222,6 +222,101 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
     themes
 }
 
+#' Plot Trait Phenology
+#'
+#' Wrapper to [ggplot()] layering points by collection date for a given
+#' y variable speecified by `trait`. The `aesthetic_id` determines
+#' **color** and **shape** geom point aesthetics and `aesthetic_labels`
+#' are passed as manual scale specifications. Use `legend_title` to set
+#' the combined color and shape scale legend title.
+#'
+#' Additional paramaters can be passed to `geom_jitter()` via `jitter.params`
+#' and [theme()] via `theme.params()`, where each `\*.params()` argument
+#' takes a list
+#'
+#' @inheritParams jitter_violin
+#' @inheritParams layer_themes
+#' @importFrom ggplot2 geom_point theme
+#' @export
+#'
+#' @return [ggplot] object of trait phenology by "%m-%d" date format.
+#'
+#' @examples
+#' herbarium_specimens %>%
+#'   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42)) %>%
+#'   dplyr::bind_cols(.,
+#'     range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm")
+#'   ) %>%
+#'   trait_phenology(
+#'     specimen_tbl = .,
+#'     trait = "Mature_fruit_length_mm_max",
+#'     aesthetic_id = "Taxon_a_posteriori",
+#'     legend_title = "Reviewed Annotations"
+#'   )
+#'
+trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
+                            legend_title = NULL, aesthetic_labels = NULL,
+                            jitter.params = list(),
+                            theme.params = list()) {
+
+  specimen_tbl <- dplyr::filter(specimen_tbl,
+                                !is.na(.data$Date_md) & !is.na(.data[[trait]]))
+
+  # Text markdown label replacements to legend text from prior & reviewed IDs.
+  if (is.null(aesthetic_labels)) {
+    aesthetic_labels <-
+      ThesisPackage::spl_labels(
+        specimen_tbl = specimen_tbl,
+        id_column = aesthetic_id
+      )
+  }
+
+  jitters <- do.call("geom_point", utils::modifyList(
+    list(na.rm = TRUE),
+    val = jitter.params)
+  )
+
+  scales <- list(
+    ggplot2::scale_x_date(
+      name = "Collection Date",
+      date_labels = "%m-%d",
+      limits = as.Date(c("05-01", "09-01"), format = "%m-%d")
+    ),
+    ggplot2::scale_color_manual(
+      name = legend_title,
+      labels = aesthetic_labels,
+      values = ThesisPackage::spp_color,
+      na.value = "black"
+    ),
+    ggplot2::scale_shape_manual(
+      name = legend_title,
+      labels = aesthetic_labels,
+      values = ThesisPackage::spp_shape,
+      na.value = 17
+    )
+  )
+
+  themes <- do.call("theme", utils::modifyList(
+    list(legend.text = ggtext::element_markdown()),
+    val = theme.params)
+  )
+
+  ggplot2::ggplot(
+    data = specimen_tbl,
+    mapping = aes_(
+      x = quote(Date_md),
+      y = as.name(trait),
+      color = as.name(aesthetic_id),
+      shape = as.name(aesthetic_id)
+      )
+    ) +
+    ggplot2::geom_smooth(method = 'lm', na.rm = TRUE, formula = y ~ x) +
+    ggplot2::theme_classic() +
+    jitters +
+    scales +
+    themes
+}
+
 #' Extract Legend of [ggplot] Aesthetics from Specimen Annotations
 #'
 #' @param ncol Number of legend columns.
@@ -314,6 +409,4 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
   ggplot_legend <- cowplot::get_legend(built_ggplot)
   return(ggplot_legend)
 }
-
-
 
