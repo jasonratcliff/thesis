@@ -143,7 +143,6 @@ map_trait_distribution <- function(tidy_trait,
 
 # `ggplot` Wrappers ----
 
-
 #' Built violin plots with jittered points
 #'
 #' Semi-flexible plotting of continuous trait violin plots with adjustable
@@ -255,7 +254,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #'   )
 #'
 trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
-                            legend_title = NULL, aesthetic_labels = NULL,
+                            aesthetic_labels = NULL, legend_title = NULL,
                             jitter.params = list(),
                             theme.params = list()) {
 
@@ -279,8 +278,8 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
   scales <- list(
     ggplot2::scale_x_date(
       name = "Collection Date",
-      date_labels = "%m-%d",
-      limits = as.Date(c("05-01", "09-01"), format = "%m-%d")
+      date_labels = "%b",
+      limits = as.Date(c("05-01", "08-31"), format = "%m-%d")
     ),
     ggplot2::scale_color_manual(
       name = legend_title,
