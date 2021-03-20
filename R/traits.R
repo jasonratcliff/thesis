@@ -149,72 +149,117 @@ map_trait_distribution <- function(tidy_trait,
 #' Semi-flexible plotting of continuous trait violin plots with adjustable
 #' point jitters.
 #'
-#' @inheritParams layer_specimens
 #' @param trait Variable with trait observation in
 #'   [ThesisPackage::herbarium_specimens].
+#' @param aesthetic_id Variable to set color and shape aesthetics of jitters.
+#' @param aesthetic_labels Named vector of labels for manual scale values.
 #' @param violin.params List of arguments passed to [ggplot2::geom_violin().
-#' @param jitter.paramsList List of arguments passed to [ggplot2::geom_jitter()].
+#' @param jitter.params List of arguments passed to [ggplot2::geom_jitter()].
 #' @param theme.params List of arguments passed to [ggplot2::theme()].
+#' @inheritParams layer_specimens
+#' @inheritParams layer_themes
 #' @export
 #'
 #' @return [ggplot] of trait observations delineated by reviewed id (x-axis)
 #'   and jittered points (y-axis) representing numeric values.
 #'
-jitter_violin <- function(specimen_tbl, trait,
-                         violin.params = list(),
-                         jitter.params = list(),
-                         theme.params = list()) {
+jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
+                          aesthetic_labels = NULL, legend_title = NULL,
+                          violin.params = list(),
+                          jitter.params = list(),
+                          theme.params = list()) {
 
-  violins <- do.call("geom_violin", modifyList(
-    list(mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait)),
-         na.rm = TRUE),
+  # Text markdown label replacements to legend text from prior & reviewed IDs.
+  if (is.null(aesthetic_labels)) {
+    aesthetic_labels <-
+      ThesisPackage::spl_labels(
+        specimen_tbl = specimen_tbl,
+        id_column = aesthetic_id
+      )
+  }
+
+  violins <- do.call("geom_violin", utils::modifyList(
+    list(
+      mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait)),
+      na.rm = TRUE),
     val = violin.params)
   )
-  jitters <- do.call("geom_jitter", modifyList(
-    list(mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait),
-                        color = quote(prior_id), shape = quote(prior_id)),
-         na.rm = TRUE),
+
+  jitters <- do.call("geom_jitter", utils::modifyList(
+    list(
+      mapping = aes_(
+        x = quote(Taxon_a_posteriori),
+        y = as.name(trait),
+        color = as.name(aesthetic_id),
+        shape = as.name(aesthetic_id)
+        ),
+      na.rm = TRUE
+    ),
     val = jitter.params)
   )
-  themes <- do.call("theme", modifyList(
-    list(title = ggtext::element_markdown(),
-         axis.title.x = element_blank(),
-         legend.position = "none"),
+
+  themes <- do.call("theme", utils::modifyList(
+    list(
+      title = ggtext::element_markdown(),
+      axis.title.x = ggplot2::element_blank(),
+      legend.position = "none"
+    ),
     val = theme.params)
   )
 
   ggplot(data = specimen_tbl) +
-    scale_color_manual(values = ThesisPackage::spp_color, na.value = "black") +
-    scale_shape_manual(values = ThesisPackage::spp_shape, na.value = 17) +
-    theme_classic() +
+    ggplot2::theme_classic() +
     violins +
     jitters +
+    ggplot2::scale_color_manual(
+      name = legend_title, labels = aesthetic_labels,
+      values = ThesisPackage::spp_color, na.value = "black"
+    ) +
+    ggplot2::scale_shape_manual(
+      name = legend_title, labels = aesthetic_labels,
+      values = ThesisPackage::spp_shape, na.value = 17
+    ) +
     themes
 }
 
 #' Extract Legend of [ggplot] Aesthetics from Specimen Annotations
 #'
+#' @param ncol Number of legend columns.
+#' @inheritParams jitter_violin
 #' @inheritParams layer_specimens
+#' @inheritParams layer_themes
+#' @importFrom ggplot2 theme
 #' @export
 #'
 #' @return A `grob` with extracted plot legend of annotation aesthetics.
 #'
-annotation_legend <- function(specimen_tbl,
-                              theme.params = list(),
-                              guide.params = list()) {
+#' @examples
+#' specimen_tbl <- herbarium_specimens %>%
+#'   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42))
+#' aesthetic_id <- "Taxon_a_posteriori"
+#' legend_title <- "Reviewed Annotations"
+#' aesthetic_labels <- NULL
+#' theme.params <- list()
+#' guide.params <- list()
+#'
+annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
+                              legend_title, aesthetic_labels = NULL,
+                              theme.params = list()) {
 
   # Text markdown label replacements to legend text from prior & reviewed IDs.
-  trait_labels <-
-    ThesisPackage::spl_labels(
-      specimen_tbl = specimen_tbl,
-      id_column = "prior_id"
-    )
+  if (is.null(aesthetic_labels)) {
+    aesthetic_labels <-
+      ThesisPackage::spl_labels(
+        specimen_tbl = specimen_tbl,
+        id_column = aesthetic_id
+      )
+  }
 
-  plot_themes <- do.call("theme", modifyList(
+  plot_themes <- do.call("theme", utils::modifyList(
     list(
       title = ggtext::element_markdown(),
-      axis.text = element_text(angle = 45, hjust = 1),
-      legend.title = element_text(colour = "grey"),
+      axis.text = ggplot2::element_text(angle = 45, hjust = 1),
+      legend.title = ggplot2::element_text(colour = "grey"),
       legend.title.align = 0.5,
       legend.justification = "center",
       legend.position = "bottom",
@@ -223,38 +268,48 @@ annotation_legend <- function(specimen_tbl,
     val = theme.params)
   )
 
-  plot_guides <- do.call("guides", modifyList(
-    list(
-      "color" = guide_legend(ncol = 3, byrow = TRUE, title.position = "top"),
-      "shape" = guide_legend(ncol = 3, byrow = TRUE, title.position = "top")
-    ),
-    val = guide.params)
-  )
-
   plot_layers <-
     list(
       geom_jitter(
-        aes(
-          x = Taxon_a_posteriori, y = prior_id,
-          color = prior_id, shape = prior_id),
+        aes_(
+          x = quote(Taxon_a_posteriori),
+          y = as.name(aesthetic_id),
+          color = as.name(aesthetic_id),
+          shape = as.name(aesthetic_id)
+        ),
         width = 0.25, height = 0.25
       ),
-      scale_color_manual(
-        name = "Prior Annotations", labels = trait_labels,
-        values = ThesisPackage::spp_color, na.value = "black"
+      ggplot2::scale_color_manual(
+        name = legend_title,
+        labels = aesthetic_labels,
+        values = ThesisPackage::spp_color,
+        na.value = "black"
       ),
-      scale_shape_manual(
-        name = "Prior Annotations", labels = trait_labels,
-        values = ThesisPackage::spp_shape, na.value = 17
+      ggplot2::scale_shape_manual(
+        name = legend_title,
+        labels = aesthetic_labels,
+        values = ThesisPackage::spp_shape,
+        na.value = 17
       ),
-      theme_classic(),
-      labs(x = "Reviewed", y = "Prior")
+      ggplot2::guides(
+        "color" = ggplot2::guide_legend(
+          ncol = ncol,
+          byrow = TRUE,
+          title.position = "top"
+        ),
+        "shape" = ggplot2::guide_legend(
+          ncol = ncol,
+          byrow = TRUE,
+          title.position = "top"
+        )
+      ),
+      ggplot2::theme_classic(),
+      ggplot2::labs(x = "Reviewed", y = "Prior")
     )
 
   built_ggplot <- ggplot(data = specimen_tbl) +
     plot_layers +
-    plot_themes +
-    plot_guides
+    plot_themes
 
   ggplot_legend <- cowplot::get_legend(built_ggplot)
   return(ggplot_legend)
