@@ -13,40 +13,64 @@ if (basename(getwd()) != "ThesisPackage") {
   stop("Source from top level of `ThesisPackage`.")
 }
 
-# 1. Read in specimen data ----
+# Read Specimens ----
 #
 # An .xlsx file located in the `data-raw/` subdirectory contains
 # specimen voucher information from project herbarium records, including
 # geographic coordinate data (decimal degrees), collection dates,
 # annotation information, trait measurements and observations.
 
+specimens <- list()
+
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
-specimen_excel_path <- system.file("extdata/specimens.xlsx",
-                                   package = "ThesisPackage")
-specimens_raw <-
-  readxl::excel_sheets(path = specimen_excel_path) %>%
-  purrr::map(function(excel_sheet) {
-    readxl::read_xlsx(path = specimen_excel_path,
-                      sheet = excel_sheet, na = c("", "NA", "s.n."),
-                      col_types = c(rep("text", 16), rep("skip", 10),
-                                    rep("text", 2), rep("skip", 1),
-                                    rep("text", 36))) %>%
+specimens$path <-
+  system.file("extdata/specimens.xlsx", package = "ThesisPackage")
+specimens$raw <-
+  readxl::excel_sheets(path = specimens$path) %>%
+  purrr::keep(.x = ., ~ !grepl("excluded", x = .x)) %>%
+  purrr::map_dfr(function(excel_sheet) {
+    readxl::read_xlsx(
+      path = specimens$path,
+      sheet = excel_sheet,
+      na = c("", "NA", "s.n."),
+      col_types = c(
+        rep("text", 16),
+        rep("skip", 10),
+        rep("text", 2),
+        rep("skip", 1),
+        rep("text", 36)
+        )
+      ) %>%
       tibble::add_column(excel_sheet = excel_sheet, .before = TRUE)
     }) %>%
 
   # bind row-wise and remove rows not matching Genera / Family of interest.
-  dplyr::bind_rows() %>%
-  dplyr::filter(grepl("Physaria|Lesquerella|Brassicaceae", Taxon)) %>%
+  dplyr::filter(
+    grepl(
+      pattern = "Physaria|Lesquerella|Brassicaceae",
+      x = .data$Taxon
+    )
+  ) %>%
 
   # Parse dates with lubridate, create vector for month / day and reorder.
-  dplyr::mutate(Date_parsed = lubridate::mdy(Date)) %>%
-  dplyr::mutate(Date_md = gsub("/[0-9]{4}", "", x = Date) %>%
-                  as.Date(., format = "%m/%d")) %>%
-  dplyr::select(excel_sheet:Date, Date_parsed, Date_md,
-                Herbarium:`Chromosome #`) %>%
+  dplyr::mutate(
+    Date_parsed = lubridate::mdy(Date),
+    Date_md = gsub(
+      pattern = "/[0-9]{4}", "",
+      x = .data$Date) %>%
+      as.Date(
+        x = .,
+        format = "%m/%d"
+      )
+  ) %>%
+  dplyr::select(
+    excel_sheet:Collection_Number,
+    dplyr::matches("Date"),
+    Herbarium:`Chromosome #`
+  ) %>%
   dplyr::rename(Chromosomes = "Chromosome #")
 
-# 2. Log collection and ID date formats ----
+# Log Date Formats ----
 #
 # In the herbarium specimen .xlsx file, dates were converted to an
 # Excel Date format "mm/dd/yyyy" (e.g. 06/15/2003) and saved to a new column
@@ -59,7 +83,7 @@ if (!dir.exists("log")) {
 }
 
 # Select date columns, filter by format, and write mismatches to a .csv log.
-specimens_raw %>%
+specimens$raw %>%
   dplyr::select(excel_sheet, Collector, Collection_Number, Date,
                 Date_parsed, ID) %>%
   dplyr::filter(.,
@@ -68,7 +92,7 @@ specimens_raw %>%
       !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)) %>%
   readr::write_excel_csv(x = ., file = "log/remaining_dates.csv")
 
-# 3. Parse prior identifications ----
+# Parse Prior ID ----
 
 # Function to recursively replace identification agreements marked by "!"
 prior_ids <- function(prior_vector) {
@@ -76,22 +100,28 @@ prior_ids <- function(prior_vector) {
   if (TRUE %in% grepl(pattern = "!", x = prior_vector)) {
     id_match <- grep(pattern = "!", x = prior_vector) %>% min()
     prior_vector[id_match] <- prior_vector[id_match - 1]
-    return(prior_ids(prior_vector))  # Recursive function call.
+    return(prior_ids(prior_vector))
     } else {
       return(prior_vector)
     }
 }
 
-# Assign list of prior specimens annotations accounting for "!" ID's.
-specimens_split <- specimens_raw %>% dplyr::pull(Taxon) %>%
-  strsplit(x = ., split = ", ") %>%
-  purrr::map(function(split_ids) prior_ids(prior_vector = split_ids))
+# Built tibble from prior annotation history.
+specimens$split <- specimens$raw$Taxon %>%
 
-# Assign tibble column from character vector with most recent annotations.
-specimens_recent <- specimens_split %>%
-  purrr::map_chr(function(annotations) {
+  # Map list of comma-separated annotations to replace synonyms and concurrence.
+  stringr::str_split(string = ., pattern = ", ") %>%
+  purrr::map(.x = ., function(split_ids) {
+    prior_ids(prior_vector = split_ids)
+  })
+
+specimens$priors <- specimens$split %>%
+
+  # Subset most recent identification from list of annotation vectors.
+  purrr::map_chr(.x = ., .f = function(annotations) {
     annotations[length(annotations)]
   }) %>%
+
   # Remove author names and replace variety with subsp. abbreviations.
   stringr::str_replace_all(string = ., replacement = "",
     pattern =  " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins") %>%
@@ -111,107 +141,104 @@ specimens_recent <- specimens_split %>%
          yes = "Physaria saximontana ssp. saximontana", no = .) %>%
 
   # Enframe character vector as tibble.
-  tibble::enframe(value = "prior_id", name = NULL)
+  tibble::enframe(value = "prior_id", name = NULL) %>%
 
-# Combine recent ID, split IDs, and raw herbarium record info.
-specimens_parsed <- dplyr::bind_cols(specimens_raw %>%
-  dplyr::select(excel_sheet), specimens_recent,
-  plyr::ldply(.data = specimens_split, rbind) %>%
-    stats::setNames(object = ., paste0("prior_", names(.))) %>%
-    tibble::as_tibble(),
-  specimens_raw %>% dplyr::select(Taxon:Chromosomes))
+  # Combine recent ID and
+  dplyr::bind_cols(
+    plyr::ldply(
+      .data = specimens$split,
+      .fun = rbind
+    ) %>%
+      setNames(
+        object = .,
+        nm = paste0("prior_", names(.))
+      )
+  )
 
-# Clean up workspace.
-rm(specimens_raw, specimens_split, specimens_recent, prior_ids)
-
-# 4. Parse elevation data ----
+# Parse Elevation ----
 
 # Convert geographic coordinate column classes from character to numeric.
-specimens_parsed <- specimens_parsed %>%
-  dplyr::mutate(Longitude = as.numeric(Longitude)) %>%
-  dplyr::mutate(Latitude = as.numeric(Latitude)) %>%
+specimens$geography <- specimens$raw %>%
+  dplyr::select(Longitude, Latitude) %>%
+  dplyr::mutate_all(.tbl = ., ~ as.numeric(.x))
 
-# Rename columns, remove illegal characters, and replace NA elevation data.
-  dplyr::rename(Elev_ft = `Elev_(ft.)`, Elev_m = `Elev_(m)`) %>%
-  dplyr::mutate(Elev_ft = gsub(",|'|~", "", x = Elev_ft) %>%
-                  gsub("[A-Za-z].+", NA, x = .) %>% gsub(" +", "", x = .),
-                Elev_m = gsub(",|'|~", "", x = Elev_m) %>%
-                  gsub("[A-Za-z].+", NA, x = .) %>% gsub(" +", "", x = .))
+# Convert geographic coordinate column classes from character to numeric.
+specimens$elevation <- specimens$raw %>%
 
-#  Map tibble data frame to merge ft / m elevation data.
-elev_parsed <-
-  specimens_parsed %>% dplyr::select(Elev_ft, Elev_m) %>%
-  purrr::pmap_dfr(function(Elev_ft, Elev_m) {
-    if (is.na(Elev_ft) & !is.na(Elev_m)) {
-      dplyr::bind_cols(Elev_var = "Elev_m", Elev_raw = Elev_m)
-      } else {
-        dplyr::bind_cols(Elev_var = "Elev_ft", Elev_raw = Elev_ft)
-        }
-    })
+  dplyr::select(dplyr::matches("Elev")) %>%
+  dplyr::rename_at(
+    .vars = dplyr::vars(dplyr::matches("Elev")),
+    .funs =  ~  paste0(
+      "Elev_",
+      stringr::str_extract(string = .x, pattern = "m|ft")
+    )
+  ) %>%
 
-# Map tibble data frame with split range data and convert meters to ft.
-elev_parsed <-
-  dplyr::bind_cols(elev_parsed,
-    ThesisPackage::range_split(trait_tbl = elev_parsed,
-                               split_var = "Elev_raw")) %>%
-  purrr::pmap_dfr(.l = ., function(Elev_var, Elev_raw_min,
-                                   Elev_raw_max, Elev_raw) {
-    if (Elev_var == "Elev_m") {
-      elev_min <- as.numeric(Elev_raw_min) * 3.281
-      elev_max <- as.numeric(Elev_raw_max) * 3.281
-      dplyr::bind_cols(Elev_var = Elev_var, Elev_raw = Elev_raw,
-                       Elev_raw_min = elev_min, Elev_raw_max = elev_max)
-      } else {
-        dplyr::bind_cols(Elev_var = Elev_var, Elev_raw = Elev_raw,
-          Elev_raw_min = Elev_raw_min, Elev_raw_max = Elev_raw_max)
-        }
-    })
+  dplyr::mutate_at(
+    .vars = dplyr::vars(dplyr::matches("Elev")),
+    .funs =
+      ~ stringr::str_remove_all(
+        string = .x,
+        pattern = "[A-Za-z\\.,'~ ]"
+      )
+  ) %>%
 
-# Bind parsed specimens tibble with merged elevation vectors.
+  dplyr::mutate(
+    Elev_var = dplyr::case_when(
+      !is.na(Elev_ft) ~ "Elev_ft",
+      !is.na(Elev_m) ~ "Elev_m",
+      TRUE ~ NA_character_
+    ),
+    Elev_raw = dplyr::case_when(
+      !is.na(Elev_ft) ~ as.character(Elev_ft),
+      !is.na(Elev_m) ~ as.character(Elev_m),
+      TRUE ~ NA_character_
+    )
+  ) %>%
+
+  dplyr::bind_cols(
+    ThesisPackage::range_split(
+      trait_tbl = .,
+      split_var = "Elev_raw"
+    )
+  )  %>%
+
+  dplyr::mutate(
+    Elev_var = dplyr::case_when(
+      !is.na(Elev_ft) ~ "Elev_ft",
+      !is.na(Elev_m) ~ "Elev_m",
+      TRUE ~ NA_character_
+    ),
+    Elev_raw = dplyr::case_when(
+      !is.na(Elev_ft) ~ as.character(Elev_ft),
+      !is.na(Elev_m) ~ as.character(Elev_m),
+      TRUE ~ NA_character_
+    )
+  ) %>%
+
+  dplyr::mutate_at(
+    .vars = dplyr::vars(dplyr::matches("Elev_raw_(min|max)")),
+    .funs = ~ dplyr::case_when(
+      Elev_var == "Elev_ft" ~ .x,
+      Elev_var == "Elev_m" ~ .x * 3.281,
+      TRUE ~ NA_real_
+    )
+  )
+
+# Bind Columns ----
+
 herbarium_specimens <-
-  dplyr::bind_cols(dplyr::select(specimens_parsed, excel_sheet:Elev_ft),
-    elev_parsed, dplyr::select(specimens_parsed, TRS1:Chromosomes))
+  dplyr::bind_cols(
+    excel_sheet = specimens$raw$excel_sheet,
+    specimens$priors,
+    dplyr::select(specimens$raw, Taxon:Location),
+    specimens$geography,
+    dplyr::select(specimens$raw, ID:Imaged),
+    specimens$elevation,
+    dplyr::select(specimens$raw, TRS1:Chromosomes)
+  )
 
-rm(elev_parsed, specimens_parsed) # Clean up workspace
+# Write Data .Rda ----
 
-# 5. Bind DNA Extraction Information ----
-
-# Combine herbarium specimen record information with sequence documentation.
-dna_metadata <-
-  readr::read_csv(file = "data-raw/specimens/dna_specimens.csv",
-                  col_types = "ccdcccddcclccc") %>%
-  dplyr::rename(label = taxa_label)
-
-dna_specimens <- purrr::pmap_dfr(dna_metadata,
-  function(label, Collector, Collection_Number, ...) {
-
-    # Subset total herbarium record data frame by collector and collection.
-    record_match <- herbarium_specimens %>%
-      dplyr::filter(., Collector == !!Collector &
-                      Collection_Number == !!Collection_Number)  %>%
-      dplyr::mutate(Collection_Number = as.numeric(Collection_Number)) %>%
-      dplyr::select(-c(State, County))
-
-    # Join the herbarium records to matching sequencing specimen .csv rows.
-    dplyr::left_join(dplyr::filter(dna_metadata, label == !!label),
-      record_match, by = c("Collector", "Collection_Number"))
-    }) %>%
-
-  # Account for duplicate label matches from joining.
-  dplyr::group_by(.data$label) %>% dplyr::slice(1) %>% dplyr::ungroup()
-
-rm(dna_metadata) # Clean up workspace
-
-# 6. .Rda files ----
 usethis::use_data(herbarium_specimens, overwrite = TRUE)
-usethis::use_data(dna_specimens, overwrite = TRUE)
-
-# Define subset from ThesisPackage::herbarium_specimens
-# TODO Move to herbarium_specimens.R and rename Roxygen examples and tests.
-
-# Roxygen Example Dataset
-spp_co_front_range <-
-  subset_coords(herbarium_specimens,
-                Longitude = c(-107.5, -104.5),
-                Latitude = c(38, 41))
 

@@ -91,6 +91,7 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #' @param geom_size Numeric scalar for size of jitter aesthetic.
 #' @param jitter_width Numeric scalar for [geom_jitter()] width.
 #' @param jitter_height Numeric scalar for [geom_jitter()] height.
+#' @param jitter_alpha Numeric scalar for [geom_jitter()] alpha value.
 #' @importFrom ggplot2 ggplot geom_jitter aes_
 #' @export
 #'

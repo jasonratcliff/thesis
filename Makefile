@@ -16,40 +16,46 @@
 #
 
 # File paths to scripts, raw data, and binary .rda files.
-spp_herbarium	:= inst/extdata/specimens.xlsx
-spp_dna_samples	:= data-raw/specimens/dna_specimens.csv
-spp_themes := data-raw/mapping/map_themes.R
-trait_scripts	:= $(wildcard data-raw/specimens/trait*.R)
-trait_rda	:= $(wildcard data/trait*.rda)
-seinet_csv	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
+xlsx_herbaria	:= inst/extdata/specimens.xlsx
+
+csv_spp_dna	:= data-raw/specimens/dna_specimens.csv
+csv_seinet	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
+
+r_spp_dna := data-raw/specimens/dna_specimens.R
+r_spp_themes := data-raw/mapping/map_themes.R
+r_traits	:= $(wildcard data-raw/specimens/trait*.R)
+
+rda_herbaria	:= data/herbarium_specimens.rda
+rda_spp_dna	:= data/dna_specimens.rda
+rda_traits	:= $(wildcard data/trait*.rda)
 
 all: traits seinet specimens
 .PHONY: all
 
 ##### SPECIMEN DATA #####
 
-specimens: $(spp_herbarium) $(spp_dna_samples) themes
+specimens: $(xlsx_herbaria) $(csv_spp_dna) $(rda_spp_dna) $(rda_herbaria) themes
 
 # Parsed herbarium voucher specimens as: `ThesisPackage::herbarium_specimens`
-data/herbarium_specimens.rda: $(spp_herbarium)
+data/herbarium_specimens.rda: $(xlsx_herbaria)
 	Rscript data-raw/specimens/herbarium_specimens.R
 
 # Subset of DNA specimens as: `ThesisPackage::dna_specimens`
-data/dna_specimens.rda: $(spp_dna_samples)
-	Rscript data-raw/specimens/herbarium_specimens.R
+data/dna_specimens.rda: $(csv_spp_dna) $(r_spp_dna)
+	Rscript data-raw/specimens/dna_specimens.R
 
 # ggplot aesthetic manual value specifications
 themes: data/spp_color.rda data/spp_shape.rda
 
-data/spp_color.rda data/spp_shape.rda: $(spp_themes)
+data/spp_color.rda data/spp_shape.rda: $(r_spp_themes)
 	Rscript data-raw/mapping/map_themes.R
 
 ##### TRAIT DATA #####
 
 # Save .Rda files for specimen discrete and continuous trait subsets.
-traits: $(trait_scripts) $(trait_rda)
+traits: $(r_traits) $(rda_traits)
 
-$(trait_scripts) $(trait_rda): data/herbarium_specimens.rda
+$(r_traits) $(rda_traits): data/herbarium_specimens.rda
 
 # trait%.rda - Pattern rule for compressed .rda (R data) trait files.
 data/trait%.rda: data-raw/specimens/trait%.R
@@ -61,7 +67,7 @@ data/trait%.rda: data-raw/specimens/trait%.R
 seinet: data-raw/SEINet/SEINet.R
 
 # Rscript is dependent on wildcard matched "occurrences.csv" files.
-data/seinet_coords.rda: $(seinet_csv)
+data/seinet_coords.rda: $(csv_seinet)
 	Rscript data-raw/SEINet/SEINet.R
 
 ##### README #####

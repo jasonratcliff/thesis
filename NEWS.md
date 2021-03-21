@@ -1,3 +1,19 @@
+# ThesisPackage 0.1.8.0
+
+* New `jitter_violin()` wraps `ggplot()` to layer violin and jitter geoms
+  by reviewed ID (x-axis) with color and shape aethetics binding to
+  prior identifications.
+
+* New `trait_phenology()` wraps `ggplot()` to plot a trait by continuous date
+  of collection with a smoothing geom.
+
+* New `annotation_grid()` builds extractable legend with prior / reviewed 
+  shape and color aesthetic bindings to build with `cowplot::plot_grid()`.
+
+* New `filter_reviewed()` subsets specimen records to taxa of interest.
+  Non-study specimens were excluded from `herbarium_specimens` and
+  outgroup taxa were separated to an `outgroup` *.xlsx* sheet.
+
 # ThesisPackage 0.1.7
 
 * `layer_specimens()` gains `jitter_alpha` argument to set aesthetic alpha value.

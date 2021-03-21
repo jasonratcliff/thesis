@@ -75,3 +75,51 @@ capitalize <- function(character_vector) {
            collapse = "")
   })
 }
+
+#' Filter Reviewed Specimens
+#'
+#' Subset specimen tibble to exclude outgroups, leaving only species of interest.
+#'
+#' @details
+#' Reviewed species include:
+#' - Physaria
+#' - P. acutifolia
+#' - P. brassicoides
+#' - P. condensata
+#' - P. didymocarpa ssp. didymocarpa
+#' - P. didymocarpa ssp. lanata
+#' - P. didymocarpa ssp. lyrata
+#' - P. dornii
+#' - P. eburniflora
+#' - P. integrifolia
+#' - P. medicinae
+#' - P. vitulifera
+#'
+#' @inheritParams layer_specimens
+#' @importFrom dplyr filter select add_count distinct
+#' @export
+#'
+#' @return Tibble of specimens filtered by species of reviewed annotation.
+#'
+#' @examples
+#' herbarium_specimens %>%
+#'   filter_reviewed(specimen_tbl = .) %>%
+#'   dplyr::select(Taxon_a_posteriori) %>%
+#'   dplyr::add_count(Taxon_a_posteriori) %>%
+#'   dplyr::distinct()
+#'
+filter_reviewed <- function(specimen_tbl) {
+  filtered_specimens <- specimen_tbl %>%
+    filter(
+      !grepl(
+        pattern = "outgroup|excluded",
+        x = .data$excel_sheet
+      ),
+      !grepl(
+        pattern = paste("chambersii", "floribunda", "rollinsii", sep = "|"),
+        x = .data$Taxon_a_posteriori
+      )
+    )
+  return(filtered_specimens)
+}
+
