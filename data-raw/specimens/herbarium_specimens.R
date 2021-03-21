@@ -13,40 +13,64 @@ if (basename(getwd()) != "ThesisPackage") {
   stop("Source from top level of `ThesisPackage`.")
 }
 
-# 1. Read in specimen data ----
+# Read Specimens ----
 #
 # An .xlsx file located in the `data-raw/` subdirectory contains
 # specimen voucher information from project herbarium records, including
 # geographic coordinate data (decimal degrees), collection dates,
 # annotation information, trait measurements and observations.
 
+specimens <- list()
+
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
-specimen_excel_path <- system.file("extdata/specimens.xlsx",
-                                   package = "ThesisPackage")
-specimens_raw <-
-  readxl::excel_sheets(path = specimen_excel_path) %>%
-  purrr::map(function(excel_sheet) {
-    readxl::read_xlsx(path = specimen_excel_path,
-                      sheet = excel_sheet, na = c("", "NA", "s.n."),
-                      col_types = c(rep("text", 16), rep("skip", 10),
-                                    rep("text", 2), rep("skip", 1),
-                                    rep("text", 36))) %>%
+specimens$path <-
+  system.file("extdata/specimens.xlsx", package = "ThesisPackage")
+specimens$raw <-
+  readxl::excel_sheets(path = specimens$path) %>%
+  purrr::keep(.x = ., ~ !grepl("excluded", x = .x)) %>%
+  purrr::map_dfr(function(excel_sheet) {
+    readxl::read_xlsx(
+      path = specimens$path,
+      sheet = excel_sheet,
+      na = c("", "NA", "s.n."),
+      col_types = c(
+        rep("text", 16),
+        rep("skip", 10),
+        rep("text", 2),
+        rep("skip", 1),
+        rep("text", 36)
+        )
+      ) %>%
       tibble::add_column(excel_sheet = excel_sheet, .before = TRUE)
     }) %>%
 
   # bind row-wise and remove rows not matching Genera / Family of interest.
-  dplyr::bind_rows() %>%
-  dplyr::filter(grepl("Physaria|Lesquerella|Brassicaceae", Taxon)) %>%
+  dplyr::filter(
+    grepl(
+      pattern = "Physaria|Lesquerella|Brassicaceae",
+      x = .data$Taxon
+    )
+  ) %>%
 
   # Parse dates with lubridate, create vector for month / day and reorder.
-  dplyr::mutate(Date_parsed = lubridate::mdy(Date)) %>%
-  dplyr::mutate(Date_md = gsub("/[0-9]{4}", "", x = Date) %>%
-                  as.Date(., format = "%m/%d")) %>%
-  dplyr::select(excel_sheet:Date, Date_parsed, Date_md,
-                Herbarium:`Chromosome #`) %>%
+  dplyr::mutate(
+    Date_parsed = lubridate::mdy(Date),
+    Date_md = gsub(
+      pattern = "/[0-9]{4}", "",
+      x = .data$Date) %>%
+      as.Date(
+        x = .,
+        format = "%m/%d"
+      )
+  ) %>%
+  dplyr::select(
+    excel_sheet:Collection_Number,
+    dplyr::matches("Date"),
+    Herbarium:`Chromosome #`
+  ) %>%
   dplyr::rename(Chromosomes = "Chromosome #")
 
-# 2. Log collection and ID date formats ----
+# Log Date Formats ----
 #
 # In the herbarium specimen .xlsx file, dates were converted to an
 # Excel Date format "mm/dd/yyyy" (e.g. 06/15/2003) and saved to a new column
