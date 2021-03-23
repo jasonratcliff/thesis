@@ -31,7 +31,7 @@ traits$legend <-
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
-    ncol = 3
+    ncol = 6
   )
 
 traits$ovules <-
@@ -104,16 +104,16 @@ grids$top <-
   )
 
 grids$bottom <-
-  plot_grid(traits$legend, NULL, rel_widths = c(2, 1))
+  plot_grid(traits$legend)
 
 FigResultsPhysariaOvules <-
   plot_grid(
-    grids$top, grids$bottom,
-    ncol = 1, rel_heights = c(2, 1)
+    grids$top, NULL, grids$bottom,
+    ncol = 1, rel_heights = c(1, -0.025, 0.25)
   )
 
 ThesisPackage::save_plot(
   gg_plot = FigResultsPhysariaOvules,
-  height = 6, width = 10
+  height = 4, width = 10
 )
 
