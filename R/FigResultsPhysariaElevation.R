@@ -159,8 +159,6 @@ traits$grob <-
     )
   )
 
-plot_grid(traits$grob)
-
 traits$grob <-  # Add column name rectangle
   gtable::gtable_add_grob(
     x = traits$grob,
@@ -198,15 +196,25 @@ for (i in 2:ncol(traits$grob)) {
 
 grids <- list()
 
+grids$bottom_right <-
+  plot_grid(
+    traits$grob,
+    labels = "C",
+    label_x = 0.05,
+    label_y = 1
+  )
+
 grids$bottom <-
   plot_grid(
     traits$ridgeline,
-    traits$grob,
+    # traits$grob,
+    grids$bottom_right,
     rel_widths = c(1, 1),
     align = "h",
     axis = "tb",
     labels = "B",
-    label_y = 1
+    label_x = 0.175,
+    label_y = 1.0075
   )
 
 grids$align <-
@@ -221,6 +229,7 @@ grids$top <-
   plot_grid(
     grids$align[[1]],
     labels = "A",
+    label_x = 0.09,
     label_y = 1
   )
 
