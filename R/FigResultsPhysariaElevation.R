@@ -1,9 +1,14 @@
 library(ThesisPackage)
-library(dplyr)
-library(ggplot2)
-library(ggtext)
-library(ggExtra)
 library(cowplot)
+library(dplyr)
+library(ggExtra)
+library(ggplot2)
+library(ggridges)
+library(ggtext)
+library(grid)
+library(gridExtra)
+library(gtable)
+
 
 set.seed(20210320)
 
@@ -12,9 +17,27 @@ specimens <- list()
 
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- ThesisPackage::herbarium_specimens %>%
-  filter_reviewed(specimen_tbl = .)
+  filter_reviewed(specimen_tbl = .) %>%
+  filter(
+    !is.na(Elev_raw_max),
+    !is.na(Taxon_a_posteriori),
+    !grepl("^Physaria$", .data$Taxon_a_posteriori)
+  )
 
-# Elevation ----
+specimens$Mean <- specimens$filtered %>%
+  filter(!is.na(Taxon_a_posteriori)) %>%
+  select(Taxon_a_posteriori, Elev_raw_max) %>%
+  group_by(Taxon_a_posteriori) %>%
+  summarize(
+    Mean = mean(Elev_raw_max, na.rm = TRUE) %>% round(),
+    SD = sd(Elev_raw_max, na.rm = TRUE) %>% round(),
+    n = n()
+  ) %>%
+  filter(!is.nan(Mean)) %>%
+  arrange(Mean) %>%
+  rename("Species" = .data$Taxon_a_posteriori)
+
+# Elevation Violin ----
 
 traits <- list()
 
@@ -46,7 +69,10 @@ traits$elevation <-
       axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1)
     )
   ) +
-  scale_x_discrete(labels = traits$labels) +
+  scale_x_discrete(
+    limits = specimens$Mean$Species,
+    labels = traits$labels
+  ) +
   labs(y = "Maximum Elevation (ft.)")
 
 traits$elevation <-
@@ -56,13 +82,156 @@ traits$elevation <-
     type = "violin"
   )
 
+# Elevation Ridgeline ----
+
+traits$ridgeline <- ggplot(data = specimens$filtered) +
+  geom_density_ridges(
+    mapping = aes(
+      x = Elev_raw_max,
+      y = Taxon_a_posteriori,
+      fill = Taxon_a_posteriori
+    ),
+    na.rm = TRUE,
+    bandwidth = 500
+  ) +
+  theme_classic() +
+  scale_x_continuous(name = "Maximum Elevation (ft.)") +
+  scale_y_discrete(
+    labels = traits$labels,
+    limits = rev(specimens$Mean$Species)) +
+  scale_fill_manual(
+    name = "Reviewed Annotation",
+    values = ThesisPackage::spp_color,
+    labels = desc(traits$labels)
+  ) +
+  theme(
+    legend.position = "none",
+    legend.text = ggtext::element_markdown(),
+    axis.text.y = ggtext::element_markdown(),
+    axis.title.y = element_blank()
+  )
+
+# Table ----
+
+specimens$table <- specimens$Mean %>%
+    mutate(  # Italicization
+      Species = purrr::map_chr(.x = Species, function(taxon) {
+        taxon_split <- unlist(strsplit(taxon, " "))
+        if (length(taxon_split) < 3) {
+          parsed_label <-
+            paste0(
+              c("italic(", paste(taxon_split, collapse = " "), ")"),
+              collapse = ""
+            )
+        } else {
+          parsed_label <-
+            paste0(
+              "italic(",
+              paste(taxon_split[1:2], collapse = " "),
+              ") ssp. italic(",
+              taxon_split[4],
+              ")",
+              collapse = ""
+            )
+        }
+        parsed_label <- unlist(parsed_label) %>%
+          gsub(" +", "~", x = .)  # Replace white space to parse by expression()
+        return(parsed_label)
+      })
+    ) %>%
+  rename_all(~ paste0("bold(", .x, ")"))
+
+traits$grob <-
+  tableGrob(
+    d = specimens$table, rows = NULL,
+    theme = ttheme_default(
+      parse = TRUE, # Parse expressions for column names and subspecies.
+      core = list(
+        fg_params = list(
+          # Define matrices for horizontal adjustment and x-axis positioning.
+          hjust = matrix(c(0, 0, 0.5, 1), ncol = 4,
+                         nrow = nrow(specimens$table), byrow = TRUE),
+          x = matrix(c(0.025, 0.1, 0.5, 0.9), ncol = 4,
+                     nrow = nrow(specimens$table), byrow = TRUE),
+          fontsize = 8
+        )
+      )
+    )
+  )
+
+plot_grid(traits$grob)
+
+traits$grob <-  # Add column name rectangle
+  gtable::gtable_add_grob(
+    x = traits$grob,
+    grobs = grid::rectGrob(gp = grid::gpar(fill = NA, lwd = 4)),
+    t = 1,  # top
+    r = ncol(traits$grob),  # right
+    b = 1,  # bottom
+    l = 1  # left
+  )
+
+traits$grob <-  # Add table rectangle
+  gtable::gtable_add_grob(
+    x = traits$grob,
+    grobs = grid::rectGrob(gp = grid::gpar(fill = NA, lwd = 3)),
+    t = 2,  # top
+    r = ncol(traits$grob),  # right
+    b = nrow(traits$grob),  # bottom
+    l = 1  # left
+  )
+
+# Add column separators for each column in the grob.
+for (i in 2:ncol(traits$grob)) {
+  traits$grob <- 
+    gtable::gtable_add_grob(
+      x = traits$grob,
+      grobs = grid::rectGrob(gp = grid::gpar(fill = NA, lwd = 3)),
+      t = 1,  # top
+      r = ncol(traits$grob),  # right
+      b = nrow(traits$grob),  # bottom
+      l = i  # left
+    )
+}
+
 # Grid Plot ----
 
+grids <- list()
+
+grids$bottom <-
+  plot_grid(
+    traits$ridgeline,
+    traits$grob,
+    rel_widths = c(1, 1),
+    align = "h",
+    axis = "tb",
+    labels = "B",
+    label_y = 1
+  )
+
+grids$align <-
+  align_plots(
+    traits$elevation,
+    traits$ridgeline,
+    align = "v",
+    axis = "l"
+  )
+
+grids$top <-
+  plot_grid(
+    grids$align[[1]],
+    labels = "A",
+    label_y = 1
+  )
+
 FigResultsPhysariaElevation <-
-  plot_grid(traits$elevation)
+  plot_grid(
+    grids$top,
+    grids$bottom,
+    ncol = 1
+  )
 
 ThesisPackage::save_plot(
   gg_plot = FigResultsPhysariaElevation,
-  height = 4, width = 8
+  height = 8, width = 10
 )
-
