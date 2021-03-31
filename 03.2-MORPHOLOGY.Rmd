@@ -1,0 +1,199 @@
+
+```{r, eval=FALSE}
+
+# One-way ANOVA
+anovaPhysariaElevation <- herbarium_specimens %>%
+  filter(!is.na(Taxon_a_posteriori) & !is.na(Elev_raw_max)) %>%
+  dplyr::filter(., !is.na(Elev_raw_max)) %>%
+  aov(formula = Elev_raw_max ~ Taxon_a_posteriori, data = .) %>%
+  broom::tidy()
+
+# ANCOVA
+ancovaPhysariaFruits <- herbarium_specimens %>%
+  dplyr::filter(!is.na(Ovule_number), !is.na(Taxon_a_posteriori)) %>%
+  bind_cols(range_split(trait_tbl = ., split_var = "Ovule_number")) %>%
+  aov(data = .,
+      formula = Ovule_number_max ~ Taxon_a_posteriori + Date_md) %>%
+  broom::tidy()
+
+anovaPhysariaStems <- herbarium_specimens %>%
+  dplyr::filter(!is.na(Stem_length_dm), !is.na(Taxon_a_posteriori)) %>%
+  bind_cols(range_split(trait_tbl = ., split_var = "Stem_length_dm")) %>%
+  aov(data = .,
+      formula = Stem_length_dm_max ~ Taxon_a_posteriori) %>%
+  broom::tidy()
+
+```
+
+\clearpage
+
+\vspace*{-18pt}
+
+```{r sectionTraitPlots}
+
+knitr_section(
+  knitr_title = "Trait Distributions",
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} Records of trait observations from specimen vouchers were used for
+exploratory data analysis of species hypotheses based on morphological and
+ecological data. Discrete observations of ovules (or *funiculi*: persistent,
+stalk-like protrusions along the replum) generally follow one of two trends:
+taxa with predominantly 2 ovules per locules, and those with commonly 3-4 or
+more ovules *not restricted* to the apex of the replum
+(Panel A, Figure \@ref(fig:FigResultsPhysariaOvules)).
+*Physaria acutifolia*, *P. brassicoides*, *P. didymocarpa* subsp.
+*lanata*, *P. vitulifera*, and individuals of the Sierra Madre and Medicine Bow
+mountains comprise the former group. The latter group includes *P. didymocarpa*
+subspecies, previously-annotated *P. saximontana* subspecies
+(Panel B, Figure \@ref(fig:FigResultsPhysariaOvules)),
+*P. eburniflora*, and the southwest Wyoming endemics *P. integrifolia*,
+*P. dornii*, and *P. condensata*.
+Fruit length from `r physaria(knitr_chunk = knit_variables$pandoc)`
+individuals of the Sierra Madre and Medicine Bow mountain ranges are
+highly reduced relative to other species
+(*P. medicinae* in Panel A, Figure \@ref(fig:FigResultsPhysariaFruits)).
+When accounting for collection date, these individuals form fruits through
+June similar to nearby *P. acutifolia*
+(Panel B, Figure \@ref(fig:FigResultsPhysariaFruits)). In contrast,
+observations indicate individuals of *P. integrifolia* and *P. didymocarpa*
+subsp. *lyrata* may form slightly larger fruits later into the season.
+Other subspecies of *Physraia didymocarpa*, subsp. *lanata* and subsp.
+*didymocarpa*, fruit into July and August with sizes in the range of 7-12 mm.
+
+\vspace*{24pt}
+
+```{r FigResultsPhysariaOvules, fig.cap=caption$FigResultsPhysariaOvules, fig.scap="Counts of maximum ovules per locule"}
+
+caption$FigResultsPhysariaOvules <-
+  "Counts of maximum ovules per locule."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsPhysariaOvules.", knit_variables$graphics)
+)
+
+```
+
+\clearpage
+\vfill
+
+```{r FigResultsPhysariaFruits, fig.cap=caption$FigResultsPhysariaFruits, fig.scap="Fruit size observations from reviewed specimen vouchers"}
+
+# Plot of fruit dimensions by reviewed species ID and collection date.
+caption$FigResultsPhysariaFruits <-
+  "Observations of fruit size from reviewed specimen vouchers."
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsPhysariaFruits.", knit_variables$graphics)
+)
+
+```
+
+\vfill
+\clearpage
+
+```{r statisticsPhysariaElevation}
+
+results <- list()
+
+results$elevation$specimens <- ThesisPackage::herbarium_specimens %>%
+  ThesisPackage::filter_reviewed(specimen_tbl = .) %>%
+  dplyr::filter(
+    !is.na(Elev_raw_max),
+    !is.na(Taxon_a_posteriori),
+    !grepl("^Physaria$", .data$Taxon_a_posteriori)
+  ) %>%
+  dplyr::mutate(
+    elevation = Elev_raw_max,
+    taxon = as.factor(Taxon_a_posteriori)
+  )
+
+results$elevation$aov <- results$elevation$specimens %>%
+   aov(elevation ~ taxon, data = .)
+
+results$elevation$shapiro <- shapiro.test(results$elevation$aov$residuals) %>%
+  broom::tidy() %>%
+  dplyr::pull("p.value")
+# Patrick Royston (1982). An extension of Shapiro and Wilk's W test for normality to large samples. Applied Statistics, 31, 115–124. doi: 10.2307/2347973.
+# Patrick Royston (1982). Algorithm AS 181: The W test for Normality. Applied Statistics, 31, 176–180. doi: 10.2307/2347986.
+# Patrick Royston (1995). Remark AS R94: A remark on Algorithm AS 181: The W test for normality. Applied Statistics, 44, 547–551. doi: 10.2307/2986146.
+
+results$elevation$levene <- results$elevation$specimens %>%
+  car::leveneTest(elevation ~ taxon, data = .) %>%
+  broom::tidy() %>%
+  dplyr::pull("p.value")
+# Fox, J. (2016) Applied Regression Analysis and Generalized Linear Models, Third Edition. Sage.
+# Fox, J. and Weisberg, S. (2019) An R Companion to Applied Regression, Third Edition, Sage.
+
+results$elevation$kruskal <- results$elevation$specimens %>%
+  kruskal.test(elevation ~ taxon, data = .) %>%
+  broom::tidy() %>%
+  dplyr::pull("p.value")
+
+```
+
+\paragraph{} Maximum values were obtained from specimen voucher elevation
+ranges (Figure \@ref(fig:FigResultsPhysariaElevation)). In total, elevation
+records from `r nrow(results$elevation$specimens)` specimens were included.
+Elevation data were non-normal according to the Shapiro-Wilk normality test 
+(p=`r results$elevation$shapiro`), with each of *P. didymocarpa* subspecies
+*lanata* and *lyrata* showing bimodal distributions
+(Panels A and B, Figure \@ref(fig:FigResultsPhysariaElevation)).
+Additionally, variances were unequal according to Levene's test of variance
+homogeneity (p=`r results$elevation$levene`). Non-parametric Kruskal-Wallis 
+rank sum test indicates the elevation medians are unequal
+(p=`r results$elevation$kruskal`). These ranges reveal a relatively narrow 
+distribution for Wyoming endemic species *P. condensata*, *P. dornii*, and
+*P. eburniflora* (Panels B and C, Figure \@ref(fig:FigResultsPhysariaElevation)).
+Individuals from the Sierra Madre and Medicine Bow ranges had the highest median
+distribution at greater than 8,000 ft.
+
+```{r FigResultsPhysariaElevation, fig.cap=caption$FigResultsPhysariaElevation, fig.scap="Maximum elevation records from specimen vouchers"}
+
+# Maximum elevation range
+caption$FigResultsPhysariaElevation <-
+  paste(
+    "Elevation records from specimen vouchers.",
+    "Panel A: Violin plots with jittered points by reviewed annotation.",
+    "Panel B: Ridgeline plot with relative maximum elevation distributions.",
+    "Panel C: Summary statistics for median of maximum elevation (ft.),",
+    "median absolute deviation (MAD), and total specimens (n)."
+  )
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsPhysariaElevation.", knit_variables$graphics)
+)
+
+```
+
+\clearpage
+
+\paragraph{} Measurements of basal leaf length, stem length, and the degree to
+which the inflorescence exceed the basal rosette reveal three species with
+condensed growth (Figure \@ref(fig:FigResultsPhysariaHabit)). Both of the
+southwest Wyoming endemics *P. dornii* and *P. condensata* have relatively
+short stem lengths with inflorescences barely exceeding the basal rosette
+(Panels B and C Figure \@ref(fig:FigResultsPhysariaHabit)), where the former
+is distinguished by larger basal leaves
+(Panels A Figure \@ref(fig:FigResultsPhysariaHabit)). The other condensed growth
+habit species from central Wyoming *P. eburniflora* is similarly distinguished
+by from other `r physaria(knitr_chunk = knit_variables$pandoc)` species by
+inflorescences barely exceeding basal rosettes and relatively shorter stems.
+
+\vspace*{24pt}
+
+```{r FigResultsPhysariaHabit, fig.cap=caption$FigResultsPhysariaHabit, fig.scap="Growth habit of \textit{physaria} species"}
+
+# Growth habit plot
+caption$FigResultsPhysariaHabit <-
+  physaria(knitr_chunk = knit_variables$pandoc) %>%
+  paste("Growth habit of", ., "species.")
+
+knitr::include_graphics(
+  path = paste0("Figs/FigResultsPhysariaHabit.", knit_variables$graphics)
+)
+
+```

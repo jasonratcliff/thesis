@@ -16,6 +16,3 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 ```{r, child='03.2-MORPHOLOGY.Rmd'}
 ```
 
-```{r, child='03.3-SPECIES.Rmd'}
-```
-
