@@ -26,8 +26,10 @@ introduction_variables <- list()  # Initialize list for assigned variables
 emphasis on the regional and state endemics of Wyoming and surrounding areas.
 Historically, these species of *Physaria* were circumscribed from
 close relatives on the basis of didymous fruits, in which two highly inflated
-valves are separated by a constricted replum [@Gray1848; @Watson1888].
-Twelve such species have described distributions at least partially in Wyoming:
+valves are separated by a constricted replum [@Gray1848; @Watson1888], rather
+than uninflated, unlobed fruits where the width of the replum is the same as
+that of the fruit. Twelve such species have described distributions at least
+partially in Wyoming:
 
 * ***Physaria acutifolia*** Rydberg
 * ***Physaria brassicoides*** Rydberg
@@ -43,14 +45,14 @@ Twelve such species have described distributions at least partially in Wyoming:
 * ***Physaria vitulifera*** Rydberg
 
 \paragraph{} Multiple authors have noted the difficulty in delineating between
-species traditionally recognized in *Physaria* and those of the closely related
+species traditionally placed in *Physaria* and those placed in the closely related
 genus *Lesquerella* Watson. As first described by @Watson1888, *Lesquerella*
 comprised 33 species previously recognized as the Old World *Vesicaria*.
 Watson distinguished *Lesquerella* by the presence of a veined septum and the
 absence of teeth or appendages on the filaments. Notably, he supported the
 recognition of *Physaria* as a distinct entity presumably on the basis of
 fruit morphology. In a monograph of *Lesquerella*, @Payson1921 remarked of
-*L. utahensis* Rydberg, “...great similarity, in some of its forms particularly,
+*L. utahensis* Rydberg, “$\ldots$great similarity, in some of its forms particularly,
 to members of the genus *Physaria*.” @Rollins1939 noted further similarity,
 stating that, “These two genera have almost exactly the same floral pattern,
 habit of growth, and trichome morphology. The siliques too are very similar.”
@@ -160,7 +162,7 @@ The synonym *P. didymocarpa* (Hook) A. Gray var. *lyrata* C. L. Hitchcock is
 listed for *P. alpestris* var. *lyrata*, but no reference for the varietal name
 is provided. The author cites a single collection from Lemhi county shown near
 Salmon, Idaho, stating variety *lyrata* shows intergradation with
-*P. didymocarpa* var. *didymocarpa* populations near Malad in Oenida County
+*P. didymocarpa* var. *didymocarpa* populations near Malad in Oneida County
 of south-central Idaho as well as populations in north-central Montana. It is
 unclear where the name *Physaria alpestris* var. *lyrata* originated, though it
 is listed as a synonym in a later report on the status of *P. didymocarpa* var.
@@ -180,7 +182,7 @@ basis of a highly reduced growth-form while sharing fruit characteristics with
 *P. didymocarpa*. The stems of *P. condensata* are described as less than a
 centimeter in length with the entire plant generally forming a tuft under 5cm
 in diameter. Additionally, @Rollins1939 mentions individuals of this species
-form either soboles or single caudexes, an example of intraspecific variation
+form either soboles or single caudices, an example of intraspecific variation
 in caudex branching.
 
 \paragraph{} @Rollins1939 applied the name *Physaria australis* to
