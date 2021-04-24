@@ -274,6 +274,10 @@ separate variety *dentata* from variety *saximontana*. Additionally, the ovule
 count in variety *dentata* was described as ranging from 2 to 4 per locule
 while variety *saximontana* typically had 2 ovules per locule present.
 
+\clearpage
+
+\vspace*{-24pt}
+
 ```{r sectionDistribution}
 
 knitr_section(
@@ -311,7 +315,7 @@ of Lehmi County [@Rollins1993; @OKane2010].
 \paragraph{} Three species of *Physaria* sensu-stricto have been described from
 southwestern and west-central Wyoming (Figure \@ref(fig:FigureIntroPriors)).
 These include two state endemics, *P. condensata* Rollins and *P. dornii*
-Lichvar, with rangesnextending through the Overthrust Belt mountains of central
+Lichvar, with ranges extending through the Overthrust Belt mountains of central
 Uinta county and southern Lincoln county [@Fertig1998; @Fertig2002]. Both
 species were formerly considered for the Endangered Species Act as C2
 candidates. Currently, they are recognized as state endemics of high
@@ -319,6 +323,20 @@ conservation priority by the Wyoming National Diversity Database with
 *P. dornii* given a G1/S1 heritage ranking while *P. condensata* is listed at
 the G2G3/S2S3 heritage ranking (@HeidelOKane2012). *Physaria integrifolia* is a
 regional endemic of western Wyoming and eastern Idaho.
+
+```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors}
+
+caption$FigureIntroPriors <-
+  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
+        "by most recent annotations.")
+
+knitr::include_graphics(
+  path = paste0("Figs/FigIntroPriors.", knit_variables$graphics)
+)
+
+```
+
+\clearpage
 
 \paragraph{} Three state and regional endemics have distributions through
 central to eastern Wyoming (Figure \@ref(fig:FigureIntroPriors)).
@@ -336,17 +354,7 @@ south to Colorado and Nebraska at generally lower elevations, ranging from
 and clay soils, its distribution is primarily non-overlapping with other
 Wyoming *Physaria*.
 
-```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors}
 
-caption$FigureIntroPriors <-
-  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
-        "by most recent annotations.")
-
-knitr::include_graphics(
-  path = paste0("Figs/FigIntroPriors.", knit_variables$graphics)
-)
-
-```
 
 ```{r subsectionCarbonVitulifera}
 
@@ -456,11 +464,11 @@ if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
 ```
 
 \paragraph{} Dorn's [-@Dorn2001] Wyoming Flora key to *Physaria* did report the
-species from southcentral Wyoming, distinguished by fruits with a somewhat
+species from south-central Wyoming, distinguished by fruits with a somewhat
 rectangular outline and obtuse or truncate basal apices. It was noted the replum
 often attached nearly the full length of the fruit resulting in highly reduced
 apices, and that basal leaf petioles tended to be toothed. This entity was
-described as occurruing on rocky slopes in or nearby mountains [@Dorn2001].
+described as occurring on rocky slopes in or nearby mountains [@Dorn2001].
 This treatment preceded a review of putative *P. vitulifera* specimens in the
 state [@Jennings2004]. As previously described, the taxonomic status of
 *P. vitulifera* in Wyoming is unclear

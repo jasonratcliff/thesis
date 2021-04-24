@@ -1,12 +1,15 @@
 library(ThesisPackage)
-library(dplyr)
-library(ggplot2)
 library(cowplot)
+library(dplyr)
+library(fs)
+library(ggplot2)
+library(purrr)
 
 set.seed(20210311)
 
 # Introduction: Build ggplot distribution map with prior annotations.
-spp_total_priors <- ThesisPackage::herbarium_specimens %>%
+priors <- list()
+priors$specimens <- ThesisPackage::herbarium_specimens %>%
   select("prior_id", "Latitude", "Longitude") %>%
   filter(prior_id %in%
     paste("Physaria",
@@ -25,13 +28,13 @@ spp_total_priors <- ThesisPackage::herbarium_specimens %>%
     Longitude = c(-114.5, -102)
   )
 
-FigIntroPriors <- ggplot() +
+priors$ggplot <- ggplot() +
   layer_borders(
-    spl_extent = spl_bbox(spp_total_priors),
+    spl_extent = ThesisPackage::spl_bbox(priors$specimens),
     sf_county_color = "black"
   ) +
   layer_specimens(
-    specimen_tbl = spp_total_priors,
+    specimen_tbl = priors$specimens,
     shape_aes = TRUE,
     id_column = "prior_id",
     jitter_width = 0.1,
@@ -39,18 +42,52 @@ FigIntroPriors <- ggplot() +
     jitter_alpha = 0.75
   ) +
   layer_themes(
-    specimen_tbl = spp_total_priors,
+    specimen_tbl = priors$specimens,
     id_column = "prior_id",
     legend_title = "Prior Annotations"
   ) +
   coord_sf(
-    xlim = range(spl_bbox(spp_total_priors)[["Longitude"]]),
-    ylim = range(spl_bbox(spp_total_priors)[["Latitude"]])
+    xlim = range(ThesisPackage::spl_bbox(priors$specimens)[["Longitude"]]),
+    ylim = range(ThesisPackage::spl_bbox(priors$specimens)[["Latitude"]])
+  ) +
+  guides(color = guide_legend(ncol = 3, byrow = TRUE))
+
+priors$map <-
+  priors$ggplot +
+  theme(
+    panel.background = element_rect(fill = "grey99"),
+    panel.grid = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(0, 0.55, 0, 0, "in")
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0))
+
+priors$legend <-
+  get_legend(
+    priors$ggplot +
+      theme(
+        legend.background = element_rect(fill = "grey99"),
+        legend.position = "bottom",
+        legend.direction = "vertical"
+      )
   )
 
-FigIntroPriors <- plot_grid(FigIntroPriors)
+priors$figure <-
+  plot_grid(
+    priors$map,
+    priors$legend,
+    ncol = 1,
+    rel_heights = c(0.75, 0.25)
+  )
 
-ThesisPackage::save_plot(
-  gg_plot = FigIntroPriors,
-  height = 5, width = 6
-)
+purrr::walk(.x = c("png", "pdf"), .f = function(ext) {
+  cowplot::save_plot(
+    filename = fs::path("Figs/FigIntroPriors", ext = ext),
+    plot = priors$figure,
+    base_width = 6,
+    base_height = 4,
+    base_asp = 2.5,
+    nrow = 2
+  )
+})
