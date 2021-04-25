@@ -126,7 +126,7 @@ knitr_section(
 
 \paragraph{} In the context of molecular phylogenies, there has been debate
 regarding the extent to which density of taxon sampling versus gene number
-effect the accuracy of phylogenetic inference. Simulation studies by
+affect the accuracy of phylogenetic inference. Simulation studies by
 @MaddisonKnowles2006 found for recent divergences, sampling more individuals
 increased the accuracy of species tree inference. In such cases, increased taxon
 sampling may improve the number of detectable gene coalescence events between
@@ -139,16 +139,17 @@ sampled for each individual.
 
 \paragraph{} Taxon sampling was determined by species distribution patterns,
 with broader sampling from more widespread species (Table
-`r knitr_table_dna(knit_variables$pandoc)`). For the narrowly distributed Wyoming state
-endemics *P. dornii* and *P. condensata*, four individuals were sampled from
-each taxa. For Wyoming state endemics *P. eburniflora* and *P. saximontana*
-ssp. *saximontana*, five individuals from each taxa were included. Four
-individuals of *P. saximontana* ssp. *dentata* were sampled broadly from
-Montana. Five specimens identified as *P. didymocarpa* ssp. *lanata* in Wyoming
-and three identified as *P. didymocarpa* ssp. *lyrata* in Idaho were included.
-These two *P. didymocarpa* subspecies have narrow distributions and are thought
-to be state endemics of Wyoming and Idaho, respectively. Five individuals were
-sampled from *P. didymocarpa* ssp. *didymocarpa* in Wyoming and Montana.
+`r knitr_table_dna(knit_variables$pandoc)`). For the narrowly distributed
+Wyoming state endemics *P. dornii* and *P. condensata*, four individuals were
+sampled from each taxa. For Wyoming state endemics *P. eburniflora* and
+*P. saximontana* subsp. *saximontana*, five individuals from each taxa were
+included. Four individuals of *P. saximontana* subsp. *dentata* were sampled
+broadly from Montana. Five specimens identified as *P. didymocarpa* subsp.
+*lanata* in Wyoming and three identified as *P. didymocarpa* subsp. *lyrata* in 
+Idaho were included. These two *P. didymocarpa* subspecies have narrow 
+distributions and are thought to be state endemics of Wyoming and Idaho, 
+respectively. Five individuals were sampled from *P. didymocarpa* subsp. 
+*didymocarpa* in Wyoming and Montana.
 
 \paragraph{} For the regional endemics *P. brassicoides* and *P. integrifolia*,
 six and five individuals were sampled, respectively. For *P. vitulifera*, three
@@ -176,11 +177,11 @@ knitr_section(
 \paragraph{} Genomic DNA was extracted from one of two sources: basal leaf
 tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
 leaf tissue from specimens collected in June and August of 2014 from Wyoming,
-Idaho, and Montana with Dr. S. L. O’Kane Jr. Dried leaf tissues were stored at
--20 $^{\circ}$C prior to extraction. DNA was extracted from only a single
+Idaho, and Montana with O’Kane Jr. Dried leaf tissues were stored at
+-20$^{\circ}$C prior to extraction. DNA was extracted from a single
 individual specimen to minimize noise in the sequence data. Sequence data from
 a preliminary systematic analysis of *Physaria* sensu stricto by
-@Rethwisch2014 in addition to data previously obtained by Dr. O'Kane were
+@Rethwisch2014 in addition to data previously obtained by O'Kane were
 also included in this study.
 
 ```{r TableDnaSpecimens}
@@ -301,7 +302,7 @@ methods. Firstly, approximately 20 mg dried plant tissue was combined with ca.
 250 mg washed sea sand and ground to a fine powder using a mortar and pestle.
 Secondly, a modified approach of @Alexander2007 was used where ca.
 20 mg of plant tissue was combined in a 2.0 mL microcentrifuge tube with three
-4.5 mm zinc plate BBs and two 2.3 mm stainless steel beads. Samples were
+4.5 mm zinc plated BBs and two 2.3 mm stainless steel beads. Samples were
 attached to a reciprocating saw and the saw was operated for 90s at medium until
 leave tissue was pulverized. Finally, a Retsch MM400 Bead Mill was used in place
 of the reciprocating saw with the same bead, BB and tissue combination. Plant
@@ -564,7 +565,7 @@ Individual gene trees were estimated by MrBayes for the rITS and *rps* loci
 using the full set of aligned sequences (n=72 and n=66, respectively).
 A concatenated FASTA file for partitioned multi-locus analysis with MrBayes
 was also built from the subset alignments using Biostrings. Alignments were
-performed separarately for each locus with the full multi-FASTA files
+performed separately for each locus with the full multi-FASTA files
 and the multi-FASTA files with the subset of 51 specimens.
 
 \paragraph{} Multiple sequence alignments were calculated from multi-FASTA
@@ -584,7 +585,7 @@ were coded using 2matrix [@Salinas2014], a Perl script that implements
 “simple indel coding” as described by @Simmons2000.
 
 <!-- https://www.megasoftware.net/mega1_manual/Distance.html -->
-\paragraph{} Nexus files output by 2Matrix were were partitioned to
+\paragraph{} Nexus files output by 2Matrix were partitioned to
 differentiate sequence data and coded gaps. The sequence partitions were
 assigned a model allowing different rates for transitions and transversions
 based on the results of the model test (MrBayes equivalents: ITS = HKY;
@@ -593,16 +594,16 @@ data. The parameters for the distribution shape of among-site rate variation
 (shape), nucleotide state frequency (statefreq), and proportion of invariant
 sites (pinvar) were unlinked to allow separate estimation. All data were
 analyzed for 20,000,000 generations with a sample frequency of 10,000
-generations. Two parallel analyses were run, each with 4 chains and a temp
-parameter of 0.04. A third of the trees were discarded as the burn-in fraction
-(0.33), and the stop value was set to 0.001.
+generations. Two parallel analyses were run, each with 4 chains and a 
+temperature parameter of 0.04. A third of the trees were discarded as the
+burn-in fraction (0.33), and the stop value was set to 0.001.
 
 \paragraph{} Additional NEXUS (*.nex*) files were written from the subset
 sequence alignments with the Bioconductor package `ape` [@R-ape]. BEAST analysis
 *.xml* files for were configured using BEAUti v2.6.3 [@Drummond2012].
 A multi-locus partitioned analysis with linked trees included rITS, *rps*, and
 *ycf1* sequences from all ingroup taxa (n=49). *Physaria* sensu lato specimens
-treated as outgroup taxa in the MrBayes inferences were exluded from BEAST
+treated as outgroup taxa in the MrBayes inferences were excluded from BEAST
 analyses as inconsistent sampling intensity relative to the ingroup may violate
 assumptions of standard time-tree priors [@Drummond2015 p. 98]. Recombinant
 sites were checked by 3Seq (build 170612, [@3SEQ]) with none identified.
@@ -612,13 +613,13 @@ TN93 [@Tamura1993] with empirical frequencies for rITS and JC69 [@Jukes1969]
 for both plastid loci *rps* and *ycf1*; substitution rates were estimated for
 each locus. A strict clock model was applied to rITS and a linked plastid loci
 with a uniform prior. Given the suspected recent divergence of ingroup taxa,
-a coalesescent constant population tree prior was set with a 1/X population
+a coalescent constant population tree prior was set with a 1/X population
 size parameter. Chain length was set to 50M, logging every 5K trace.
 Runs were submitted to CIPRES running BEAST v2.6.3 [@Drummond2007; @Suchard2009].
 Output log files were inspected using Tracer v1.7.1 [@Tracer] to verify
 parameter convergence by an effective sample size (ESS) over 200.
 Three independent runs of 50M states were combined using LogCombiner v2.6.3
-[@Bouckaert2019] with 10,000 resampled states.
+[@Bouckaert2019] with 10,000 re-sampled states.
 A maximum clade credibility (mcc) tree was calculated from the run output trees
 using TreeAnnotator v2.6.3 (*ibid.*) with 20% of the trees discarded as
 burn-in and a posterior probability limit of 0.5.
@@ -629,11 +630,11 @@ incomplete lineage sorting was use to estimate a species tree
 [@Heled2010; @Knowles2007]. Included alignments were limited to the rITS
 and *rps* intron (n=60 samples each) given the absence of potentially
 informative sites (defined as synapomorphic characters) in *ycf1*.
-Site and clock model paramaters were retained from the partitioned
+Site and clock model parameters were retained from the partitioned
 multi-locus analysis and a yule model was set for the species tree prior.
-The multi species coalescent model was set as a linear population function with
+The multispecies coalescent model was set as a linear population function with
 autosomal nuclear ploidy for rITS and non-recombining ploidy for plastid *rps*.
-A *BEAST template was used to assign taxon sets based on the following
+A \*BEAST template was used to assign taxon sets based on the following
 successive species hypotheses:
   (1) *a priori* subspecies and a novel species from the Medicine Range,
   (2) lumped *P. saximontanta* subspecies *saximontana* and *dentata*,
@@ -660,7 +661,7 @@ extension `ggtree` [@R-ggtree; @R-ggtree2020], where annotations for duplicate
 sequences in the MrBayes analyses were included using `dplyr` and `purrr`.
 Multiple sequence alignment were subset to potentially informative sites and
 visualized using `ggmsa` [@R-ggmsa].
-For project reproducilibilty, source code and data were maintained
+For project reproducibility, source code and data were maintained
 as an R package [@R-packages] utilizing the `usethis` [@R-usethis]
 and `devtools` [@R-devtools] packages. A project library with specific package
 versioning was maintained using the R package `renv` [@R-renv].

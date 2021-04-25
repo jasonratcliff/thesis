@@ -290,13 +290,11 @@ knitr_section(
 \paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and
 montane habitats with often-arid climates and intense sunlight where they tend
 to occupy siliceous soils, granitic talus or limestone shale outcrops
-[@Rollins1939; @Rollins1993]. The most widespread *Physaria* species considered
-here, *P. acutifolia* (Figure \@ref(fig:FigureIntroPriors)) forms a cline
-spanning Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona
-and New Mexico [@OKane2010]. Infraspecific taxa not recognized by @OKane2010
-include *P. acutifolia* var. *purpurea* @WelshReveal1977 of Grand County,
-Utah and var. *stylosa* @Welsh1986 of northeastern Utah, the latter previously
-described as *P. stylosa* by @Rollins1993.
+[@Rollins1939; @Rollins1993]. The most widespread species considered here,
+*P. acutifolia* (Figure 1.1), spans Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico and forms a cline with plants at the higher elevations being smaller, often with branched, sometimes elongated, caudices, and elongated styles (O’Kane 2010) Infraspecific taxa not recognized
+by @OKane2010 include *P. acutifolia* var. *purpurea* @WelshReveal1977 of Grand 
+County, Utah and var. *stylosa* @Welsh1986 of northeastern Utah, the latter
+previously described as *P. stylosa* by @Rollins1993.
 
 \paragraph{} Another relatively widespread species is *P. didymocarpa*
 (Hooker) A. Gray (Figure \@ref(fig:FigureIntroPriors)), which includes three
@@ -353,8 +351,6 @@ south to Colorado and Nebraska at generally lower elevations, ranging from
 900-1400 m [@OKane2010]. Often on bare hillsides, bluffs, riverbanks, badlands
 and clay soils, its distribution is primarily non-overlapping with other
 Wyoming *Physaria*.
-
-
 
 ```{r subsectionCarbonVitulifera}
 
