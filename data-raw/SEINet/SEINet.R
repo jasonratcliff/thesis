@@ -30,10 +30,10 @@ seinet_coords <-
   dplyr::mutate(
     scientificName = purrr::map_chr(.data$scientificName, function(spp) {
         gsub(pattern = "Physaria floribunda( floribunda)?$",
-             replacement = "Physaria floribunda ssp. floribunda", x = spp) %>%
+             replacement = "Physaria floribunda subsp. floribunda", x = spp) %>%
         gsub(pattern = "Physaria floribunda( osterhoutii)?$",
              replacement = "Physaria floribunda var. osterhoutii", x = .) %>%
-        gsub(pattern = "subsp\\.|var\\.", replacement = "ssp\\.", x = .)
+        gsub(pattern = "subsp\\.|var\\.", replacement = "subsp.", x = .)
     })
   )
 

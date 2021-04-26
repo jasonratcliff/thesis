@@ -86,9 +86,9 @@ capitalize <- function(character_vector) {
 #' - P. acutifolia
 #' - P. brassicoides
 #' - P. condensata
-#' - P. didymocarpa ssp. didymocarpa
-#' - P. didymocarpa ssp. lanata
-#' - P. didymocarpa ssp. lyrata
+#' - P. didymocarpa subsp. didymocarpa
+#' - P. didymocarpa subsp. lanata
+#' - P. didymocarpa subsp. lyrata
 #' - P. dornii
 #' - P. eburniflora
 #' - P. integrifolia

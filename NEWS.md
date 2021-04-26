@@ -1,4 +1,8 @@
-# ThesisPackage 0.1.8.0
+# ThesisPackage 0.1.8.9000
+
+* Replace all instances of `ssp.` abbreviation with string `subsp.`
+
+# ThesisPackage 0.1.8
 
 * New `jitter_violin()` wraps `ggplot()` to layer violin and jitter geoms
   by reviewed ID (x-axis) with color and shape aethetics binding to

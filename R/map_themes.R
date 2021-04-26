@@ -24,13 +24,13 @@ spl_labels <- function(specimen_tbl, id_column) {
         # Genus with or without specific epithet.
         parsed_label <- paste0("*", label, "*")
       } else {
-        if (grepl("ssp\\.", x = label)) {
-          # Add html formatting to split ssp. onto second line.
+        if (grepl("subsp\\.", x = label)) {
+          # Add html formatting to split subsp. onto second line.
           parsed_label <-
             paste0("*", paste0(split_label[1:2], collapse = " "),
                    "*", collapse = "") %>%
-            paste0(., gsub(pattern = "s?sp\\.|var\\.", x = split_label[3],
-              replacement = "<br><span>&nbsp;&nbsp;&nbsp;</span>  ssp\\. *"),
+            paste0(., gsub(pattern = "s(ub)?sp\\.|var\\.", x = split_label[3],
+              replacement = "<br><span>&nbsp;&nbsp;&nbsp;</span>  subsp\\. *"),
               split_label[4:length(split_label)], "*")
         } else {  # Any other cases
           parsed_label <- paste0("*", label, "*")
