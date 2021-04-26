@@ -1,6 +1,6 @@
 library(ThesisPackage)
 library(ggplot2)
-# options(tigris_use_cache = TRUE)
+library(cowplot)
 
 # Introduction: Build ggmap of putative *P. vitulifera* in Carbon County, WY.
 carbon <- list()
@@ -28,6 +28,18 @@ carbon$specimens <-
     )
   )
 
+carbon$aesthetics <-
+  c(
+    ThesisPackage::spl_labels(
+      specimen_tbl = carbon$specimens,
+      id_column = "Taxon_a_posteriori"
+    ),
+    ThesisPackage::spl_labels(
+      specimen_tbl = seinet_coords,
+      id_column = "scientificName"
+    )
+  )
+
 # Subset specimens to add map labels.
 carbon$labels <- carbon$specimens %>%
   dplyr::filter(grepl("Kastning|Nelson", Collector)) %>%
@@ -36,45 +48,72 @@ carbon$labels <- carbon$specimens %>%
 # Satellite map of Carbon, WY specimens.
 carbon$ggplot <-
   layer_ggmap(
-    specimen_tbl = medicine$specimens,
+    specimen_tbl = carbon$specimens,
     gg_map_type = "satellite", zoom_lvl = 8,
     gg_longitude = -106.5, gg_latitude = 40.4
   ) + 
   layer_borders(
-    spl_extent = spl_bbox(medicine$specimens),
+    spl_extent = spl_bbox(carbon$specimens),
     sf_county_color = "black"
   ) + 
   layer_specimens(
-    specimen_tbl = medicine$specimens,
+    specimen_tbl = carbon$specimens,
     shape_aes = TRUE, 
     id_column = "Taxon_a_posteriori",
     legend_status = TRUE
   ) +
-  layer_themes(
-    specimen_tbl = medicine$specimens,
-    id_column = "Taxon_a_posteriori",
-    legend_title = "Reviewed Annotations"
+  geom_point(
+    data = seinet_coords,
+    mapping = aes(
+      x = Longitude, y = Latitude,
+      color = scientificName, shape = scientificName
+    ),
+    show.legend = TRUE, na.rm = TRUE, inherit.aes = TRUE
   ) +
+  scale_color_manual(
+    name = "Annotation", labels = carbon$aesthetics,
+    values = ThesisPackage::spp_color, na.value = "black"
+  ) +
+  scale_shape_manual(
+    name = "Annotation", labels = carbon$aesthetics,
+    values = ThesisPackage::spp_shape, na.value = 17
+  ) +
+  theme(
+    panel.background = ggplot2::element_blank(),
+    panel.border = ggplot2::element_rect(fill = NA, color = "black"), 
+    legend.text.align = 0,
+    legend.title.align = 0.5,
+    legend.direction = "vertical",
+    legend.key = ggplot2::element_blank(),
+    legend.background = ggplot2::element_rect(
+      fill = "grey90",
+      color = "black"
+    ),
+    legend.text = ggtext::element_markdown()
+  ) +
+  labs(x = "Longitude", y = "Latitude")
+
+carbon$map <- carbon$ggplot +
   geom_text(
-    data = medicine$bears_ear,
+    data = carbon$bears_ear,
     aes(Longitude, Latitude, label = Feature, group = NULL),
     color = "white",
     size = 3.5
   ) +
   spl_id(
-    specimen_tbl = medicine$labels,
+    specimen_tbl = carbon$labels,
     id_column = "Taxon_a_posteriori", shape_aes = "Taxon_a_posteriori", 
     collector = "Kastning", collection = 1462,
     h_adjust = -0.425, v_adjust = -0.15
   ) +
   spl_id(
-    specimen_tbl = medicine$labels,
+    specimen_tbl = carbon$labels,
     id_column = "Taxon_a_posteriori", shape_aes = "Taxon_a_posteriori",
     collector = "Kastning", collection = 1725,
     h_adjust = -0.4, v_adjust = -0.15
   ) + 
   spl_id(
-    specimen_tbl = medicine$labels,
+    specimen_tbl = carbon$labels,
     id_column = "Taxon_a_posteriori", shape_aes = "Taxon_a_posteriori",
     collector = "Nelson", collection = 49286,
     h_adjust = 0.275, v_adjust = -0.1
@@ -84,24 +123,75 @@ carbon$ggplot <-
     id_column = "Taxon_a_posteriori", shape_aes = "Taxon_a_posteriori",
     collector = "Nelson", collection = 49478,
     h_adjust = -0.225, v_adjust = -0.12
-  ) +
-  
-  theme(legend.direction = "vertical", legend.position = "bottom") +
-  guides(colour = guide_legend(ncol = 2, byrow = TRUE))
-
-purrr::walk(.x = c("png", "pdf"), .f = function(ext) {
-  cowplot::save_plot(
-    filename = fs::path("Figs/FigIntroCarbonWyo", ext = ext),
-    plot = carbon$ggplot,
-    base_width = 6,
-    base_height = 4,
-    base_asp = 2.5,
-    nrow = 2
+  ) + 
+  theme(
+    panel.background = element_rect(fill = "grey99"),
+    panel.grid = element_blank(),
+    legend.position = "none",
+    plot.margin = margin(0, 0.5, -1, 0, "in")
   )
-})
 
+carbon$legend_pdf <-
+  get_legend(
+    carbon$ggplot +
+      guides(color = guide_legend(ncol = 2, byrow = TRUE)) +
+      theme(
+        legend.background = element_rect(fill = "grey99"),
+        legend.position = "bottom",
+        legend.direction = "vertical"
+      )
+  )
 
-# ThesisPackage::save_plot(
-#   gg_plot = FigIntroCarbonWyo,
-#   width = 6, height = 6
-# )
+carbon$legend_png <-
+  get_legend(
+    carbon$ggplot +
+      guides(color = guide_legend(ncol = 1)) +
+      theme(
+        legend.background = element_rect(fill = "grey99"),
+        legend.position = "right",
+        legend.direction = "vertical"
+      )
+  )
+
+carbon$figure_pdf <-
+  plot_grid(
+    plotlist = list(
+      NULL,
+      carbon$map,
+      NULL,
+      carbon$legend_pdf
+    ),
+    ncol = 1,
+    rel_heights = c(-0.1, 0.8, -0.1, 0.2)
+  )
+
+carbon$figure_png <-
+  plot_grid(
+    carbon$map,
+    carbon$legend_png,
+    nrow = 1,
+    rel_widths = c(0.8, 0.2)
+  )
+
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    plot = list(carbon$figure_png, carbon$figure_pdf),
+    width = c(6, 6),
+    height = c(8, 4),
+    aspect = c(.167, 2.5),
+    row = c(1, 2),
+    col = c(2, 1)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigIntroCarbonWyo", ext = ext),
+      plot = plot,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
+  })
+

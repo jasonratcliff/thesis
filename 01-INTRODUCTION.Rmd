@@ -478,10 +478,33 @@ or fit the phenotype described by Dorn [-@Dorn2001]
 appear geographically separated from the Colorado Front range *P. vitulifera*
 (Figure \@ref(fig:FigureIntroCarbon)).
 
-```{r FigureIntroCarbon, fig.cap=caption$FigureIntroCarbon}
+\clearpage
+
+```{r FigureIntroCarbon, fig.cap=caption$FigureIntroCarbon, fig.scap="Putative \\textit{Physaria vitulifera} specimens with SEINet occurrences of related species"}
 
 caption$FigureIntroCarbon <-
-  "Distribution of reported Carbon County, WY *Physaria vitulifera*."
+  paste(
+    "Distribution of reported Carbon County, Wyoming",
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{Physaria vitulifera}.",
+      "*Physaria vitulifera*."
+    ),
+    "SEINet specimen occurrences reveal ranges of neighboring",
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{P. floribunda}", "*Physaria floribunda*"
+    ),
+    "supspecies southwest from Middle Park and",
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{P. bellii}", "*Physaria bellii*"
+    ), "north of",
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{P. vitulifera}", "*Physaria vitulifera*"
+    ), "along the eastern slope of the Front Range in Colorado."
+  )
 
 knitr::include_graphics(
   path = paste0("Figs/FigIntroCarbonWyo.", knit_variables$graphics)
