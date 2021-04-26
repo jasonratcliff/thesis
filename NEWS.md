@@ -1,4 +1,4 @@
-# ThesisPackage 0.1.8.9000
+# ThesisPackage 0.1.8.9001
 
 * Replace all instances of `ssp.` abbreviation with string `subsp.`
 
