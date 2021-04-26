@@ -178,7 +178,7 @@ knitr_section(
 tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
 leaf tissue from specimens collected in June and August of 2014 from Wyoming,
 Idaho, and Montana with O’Kane Jr. Dried leaf tissues were stored at
--20$^{\circ}$C prior to extraction. DNA was extracted from a single
+-20 $^{\circ}$C prior to extraction. DNA was extracted from a single
 individual specimen to minimize noise in the sequence data. Sequence data from
 a preliminary systematic analysis of *Physaria* sensu stricto by
 @Rethwisch2014 in addition to data previously obtained by O'Kane were
@@ -200,17 +200,21 @@ methods_variables$collections <-
 
 # Table footnote caption
 methods_variables$dna_footnote <-
-  paste0("Requested herbarium specimens used for extraction of ",
-         "genomic DNA.  Voucher information includes record ",
-         "collector and collection number while locality reports ",
-         "the county and state for the collection.  Specimens ",
-         "with a single * represent vouchers with DNA sequence ",
-         "data obtained by K. Rethwisch (2014) while a double ** ",
-         "indicate specimens with sequence data obtained by Dr. O'Kane.")
+  paste(
+    "Requested herbarium specimens used for extraction of",
+    "genomic DNA. Voucher information includes record",
+    "collector and collection number while locality reports",
+    "the county and state for the collection. Specimens",
+    "with a single * represent vouchers with DNA sequence",
+    "data obtained by Rethwisch (2014) while a double **",
+    "indicate specimens with sequence data previously obtained by",
+    "O'Kane Jr."
+  )
 
 ```
 
 ```{r TableDnaSpecimensLatex}
+
 # LaTeX specimen table part 1
 if (knit_variables$pandoc == "latex") {
   methods_variables$collections %>% dplyr::slice(1:39) %>%
@@ -218,13 +222,18 @@ if (knit_variables$pandoc == "latex") {
           caption = "DNA Extraction Herbarium Specimens.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
-    row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-    column_spec(1, border_left = TRUE, width = "3cm") %>%
+    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    column_spec(1, border_left = TRUE, width = "3.2cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1) %>%
-    footnote(general = methods_variables$dna_footnote, general_title = "",
-             threeparttable = TRUE, escape = FALSE)
+    footnote(
+      general = methods_variables$dna_footnote,
+      general_title = "",
+      threeparttable = TRUE,
+      escape = FALSE
+    )
 }
+
 ```
 
 \clearpage
@@ -244,8 +253,8 @@ if (knit_variables$pandoc == "latex") {
           caption = "Table 2. Continued.") %>%
     kable_styling(full_width = FALSE, font_size = 10,
                   latex_options= "hold_position") %>%
-    row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-    column_spec(1, border_left = TRUE, width = "3cm") %>%
+    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    column_spec(1, border_left = TRUE, width = "3.2cm") %>%
     column_spec(3, border_right = TRUE) %>%
     collapse_rows(columns = 1)
 }
@@ -265,7 +274,7 @@ if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
     dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
       gsub("\\\\textit\\{", "\\*", taxon) %>%
         gsub("\\}$", "\\*", x = .) %>%
-        gsub("\\} ssp.", "\\*  ssp.", x = .)
+        gsub("\\} subsp.", "\\*  subsp.", x = .)
     })) %>%
     dplyr::select(c(taxa, `Voucher Information`, Locality)) %>%
     dplyr::rename(Taxon = taxa) %>%
@@ -286,7 +295,9 @@ if (knit_variables$pandoc == "html") {
     collapse_rows(columns = 1) %>%
     footnote(
       general = methods_variables$dna_footnote,
-      general_title = "", threeparttable = TRUE, escape = FALSE
+      general_title = "",
+      threeparttable = TRUE,
+      escape = FALSE
     )
 } 
 
