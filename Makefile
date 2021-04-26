@@ -20,16 +20,16 @@ xlsx_herbaria	:= inst/extdata/specimens.xlsx
 
 csv_spp_dna	:= data-raw/specimens/dna_specimens.csv
 csv_seinet	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
-
-r_spp_dna := data-raw/specimens/dna_specimens.R
-r_spp_themes := data-raw/mapping/map_themes.R
+r_spp_herb	:= data-raw/specimens/herbarium_specimens.R
+r_spp_dna	:= data-raw/specimens/dna_specimens.R
+r_spp_themes	:= data-raw/mapping/map_themes.R
 r_traits	:= $(wildcard data-raw/specimens/trait*.R)
 
 rda_herbaria	:= data/herbarium_specimens.rda
 rda_spp_dna	:= data/dna_specimens.rda
 rda_traits	:= $(wildcard data/trait*.rda)
 
-all: traits seinet specimens
+all: traits seinet specimens themes
 .PHONY: all
 
 ##### SPECIMEN DATA #####
@@ -37,11 +37,11 @@ all: traits seinet specimens
 specimens: $(xlsx_herbaria) $(csv_spp_dna) $(rda_spp_dna) $(rda_herbaria) themes
 
 # Parsed herbarium voucher specimens as: `ThesisPackage::herbarium_specimens`
-data/herbarium_specimens.rda: $(xlsx_herbaria)
+data/herbarium_specimens.rda:
 	Rscript data-raw/specimens/herbarium_specimens.R
 
 # Subset of DNA specimens as: `ThesisPackage::dna_specimens`
-data/dna_specimens.rda: $(csv_spp_dna) $(r_spp_dna)
+data/dna_specimens.rda: $(csv_spp_dna) $(r_spp_herb) $(r_spp_dna) $(xlsx_herbaria)
 	Rscript data-raw/specimens/dna_specimens.R
 
 # ggplot aesthetic manual value specifications

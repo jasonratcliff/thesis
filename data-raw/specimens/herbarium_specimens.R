@@ -110,7 +110,7 @@ prior_ids <- function(prior_vector) {
 specimens$split <- specimens$raw$Taxon %>%
 
   # Map list of comma-separated annotations to replace synonyms and concurrence.
-  stringr::str_split(string = ., pattern = ", ") %>%
+  stringr::str_split(string = ., pattern = ", ?") %>%
   purrr::map(.x = ., function(split_ids) {
     prior_ids(prior_vector = split_ids)
   })
@@ -126,7 +126,7 @@ specimens$priors <- specimens$split %>%
   stringr::str_replace_all(string = ., replacement = "",
     pattern =  " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins") %>%
   stringr::str_replace_all(string = .,
-    pattern = "var\\.?|var\\.$|ssp(?= )", replacement = "ssp.") %>%
+    pattern = "var\\.?|var\\.$|(ssp|subsp).?(?= )", replacement = "subsp.") %>%
 
   # Replace identification synonyms.
   ifelse(grepl("australis|purpurea|stylosa", x = .),
@@ -134,11 +134,11 @@ specimens$priors <- specimens$split %>%
   ifelse(grepl("integrifolia", x = .),
          yes = "Physaria integrifolia", no = .) %>%
   ifelse(grepl("Physaria didymocarpa( ssp\\.$)?$|normalis", x = .),
-         yes = "Physaria didymocarpa ssp. didymocarpa", no = .) %>%
+         yes = "Physaria didymocarpa subsp. didymocarpa", no = .) %>%
   ifelse(grepl("lanata", x = .),
-         yes = "Physaria didymocarpa ssp. lanata", no = .) %>%
+         yes = "Physaria didymocarpa subsp. lanata", no = .) %>%
   ifelse(grepl("Physaria saximontana$", x = .),
-         yes = "Physaria saximontana ssp. saximontana", no = .) %>%
+         yes = "Physaria saximontana subsp. saximontana", no = .) %>%
 
   # Enframe character vector as tibble.
   tibble::enframe(value = "prior_id", name = NULL) %>%
@@ -154,6 +154,10 @@ specimens$priors <- specimens$split %>%
         nm = paste0("prior_", names(.))
       )
   )
+
+# Replace instances of `ssp.` with `subsp.` in reviewed annotations
+specimens$raw$Taxon_a_posteriori <- specimens$raw$Taxon_a_posteriori %>%
+  gsub(pattern = "ssp.", "subsp.", x = .)
 
 # Parse Elevation ----
 
