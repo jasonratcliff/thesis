@@ -16,9 +16,9 @@ priors$specimens <- ThesisPackage::herbarium_specimens %>%
       c("acutifolia", "brassicoides", "condensata", "dornii",
         "eburniflora", "integrifolia", "vitulifera",
         "medicinae", "chambersii", "rollinsii",
-        paste("didymocarpa ssp.", c("didymocarpa", "lanata", "lyrata")),
-        paste("saximontana ssp.", c("saximontana", "dentata")),
-        paste("floribunda ssp.", c("floribunda", "osterhoutii"))
+        paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
+        paste("saximontana subsp.", c("saximontana", "dentata")),
+        paste("floribunda subsp.", c("floribunda", "osterhoutii"))
       )
     ) | grepl("^Physaria$", .data$prior_id)
   ) %>%
@@ -49,8 +49,7 @@ priors$ggplot <- ggplot() +
   coord_sf(
     xlim = range(ThesisPackage::spl_bbox(priors$specimens)[["Longitude"]]),
     ylim = range(ThesisPackage::spl_bbox(priors$specimens)[["Latitude"]])
-  ) +
-  guides(color = guide_legend(ncol = 3, byrow = TRUE))
+  )
 
 priors$map <-
   priors$ggplot +
@@ -58,14 +57,15 @@ priors$map <-
     panel.background = element_rect(fill = "grey99"),
     panel.grid = element_blank(),
     legend.position = "none",
-    plot.margin = margin(0, 0.55, 0, 0, "in")
+    plot.margin = margin(0, 0.55, 0.2, 0, "in")
   ) +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0))
 
-priors$legend <-
+priors$legend_pdf <-
   get_legend(
     priors$ggplot +
+      guides(color = guide_legend(ncol = 3, byrow = TRUE)) +
       theme(
         legend.background = element_rect(fill = "grey99"),
         legend.position = "bottom",
@@ -73,21 +73,52 @@ priors$legend <-
       )
   )
 
-priors$figure <-
+priors$legend_png <-
+  get_legend(
+    priors$ggplot +
+      guides(color = guide_legend(ncol = 1)) +
+      theme(
+        legend.background = element_rect(fill = "grey99"),
+        legend.position = "right",
+        legend.direction = "vertical"
+      )
+  )
+
+priors$figure_pdf <-
   plot_grid(
     priors$map,
-    priors$legend,
+    priors$legend_pdf,
     ncol = 1,
     rel_heights = c(0.75, 0.25)
   )
 
-purrr::walk(.x = c("png", "pdf"), .f = function(ext) {
-  cowplot::save_plot(
-    filename = fs::path("Figs/FigIntroPriors", ext = ext),
-    plot = priors$figure,
-    base_width = 6,
-    base_height = 4,
-    base_asp = 2.5,
-    nrow = 2
+priors$figure_png <-
+  plot_grid(
+    priors$map,
+    priors$legend_png,
+    nrow = 1,
+    rel_widths = c(0.8, 0.2)
   )
+
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    plot = list(priors$figure_png, priors$figure_pdf),
+    width = c(6, 6),
+    height = c(8, 4),
+    aspect = c(.167, 2.5),
+    row = c(1, 2),
+    col = c(2, 1)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigIntroPriors", ext = ext),
+      plot = plot,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
 })
+
