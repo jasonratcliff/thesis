@@ -527,10 +527,10 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r FigureResultsBeastMultiLocus, fig.cap=caption$FigureResultsBeastMultiLocus}
+```{r FigureResultsBeastMultiLocus, fig.cap=caption$FigureResultsBeastMultiLocus, fig.scap="BEAST multilocus maximum clade credibility tree"}
 
 caption$FigureResultsBeastMultiLocus <-
-  "BEAST multi-locus partitioned phylogeny."
+  "Multilocus partitioned BEAST maximum clade credibility tree."
 
 knitr::include_graphics(
   path = paste0("Figs/FigResultsBeastMultiLocus.", knit_variables$graphics)
@@ -540,10 +540,10 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r FigureResultsBeastGeography, fig.cap=caption$FigureResultsBeastGeography}
+```{r FigureResultsBeastGeography, fig.cap=caption$FigureResultsBeastGeography, fig.scap="BEAST phylogeography maximum clade credibility tree"}
 
 caption$FigureResultsBeastGeography <-
-  "BEAST multi-locus with phylogeography modelling."
+  "Continuous landscape phylogeography BEAST maximum clade credibility tree."
 
 knitr::include_graphics(
   path = paste0("Figs/FigResultsBeastGeography.", knit_variables$graphics)
@@ -553,7 +553,7 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r FigureResultsBeastSpecies, fig.cap=caption$FigureResultsBeastSpecies}
+```{r FigureResultsBeastSpecies, fig.cap=caption$FigureResultsBeastSpecies, fig.scap="*BEAST species trees"}
 
 caption$FigureResultsBeastSpecies <-
   "*BEAST species tree hypotheses."
@@ -563,3 +563,4 @@ knitr::include_graphics(
 )
 
 ```
+
