@@ -12,6 +12,11 @@ specimens <- list()
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- ThesisPackage::herbarium_specimens %>%
   filter_reviewed(specimen_tbl = .) %>%
+  filter(
+    !is.na(Ovule_number),
+    !is.na(Taxon_a_posteriori),
+    !grepl("^Physaria$", .data$Taxon_a_posteriori)
+  ) %>%
   bind_cols(range_split(trait_tbl = ., split_var = "Ovule_number"))
 
 # Ovules ----
@@ -106,14 +111,30 @@ grids$top <-
 grids$bottom <-
   plot_grid(traits$legend)
 
-FigResultsPhysariaOvules <-
+grids$figure <-
   plot_grid(
     grids$top, NULL, grids$bottom,
     ncol = 1, rel_heights = c(1, -0.025, 0.25)
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsPhysariaOvules,
-  height = 4, width = 10
-)
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    width = c(6, 12),
+    height = c(8, 3),
+    aspect = c(.167, 1.67),
+    row = c(1, 2),
+    col = c(2, 1)
+  ),
+  .f = function(ext, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigResultsPhysariaOvules", ext = ext),
+      plot = grids$figure,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
+  })
 
