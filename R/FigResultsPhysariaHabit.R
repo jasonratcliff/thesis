@@ -13,6 +13,12 @@ specimens <- list()
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- ThesisPackage::herbarium_specimens %>%
   filter_reviewed(specimen_tbl = .) %>%
+  filter(
+    !is.na(Stem_length_dm),
+    !is.na(Basal_leaf_length_cm),
+    !is.na(Taxon_a_posteriori),
+    !grepl("^Physaria$", .data$Taxon_a_posteriori)
+  ) %>%
   bind_cols(
     range_split(trait_tbl = ., split_var = "Stem_length_dm"),
     range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
