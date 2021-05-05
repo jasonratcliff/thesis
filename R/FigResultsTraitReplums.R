@@ -13,10 +13,25 @@ FigResultsTraitReplums <-
     ggplotTraitReplums +
       theme(legend.position = "none"),
     get_legend(ggplotTraitReplums),
-    nrow = 1, rel_widths = c(2.8, 1.2)
+    nrow = 1, rel_widths = c(2, 1)
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsTraitReplums,
-  width = 6, height = 4.5
-)
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    width = c(10, 5),
+    height = c(8, 4.5),
+    aspect = c(.167, .167)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigResultsTraitReplums", ext = ext),
+      plot = FigResultsTraitReplums,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = 1,
+      ncol = 1
+    )
+  })
+

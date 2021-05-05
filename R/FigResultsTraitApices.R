@@ -13,10 +13,25 @@ FigResultsTraitApices <-
     ggplotTraitApices +
       theme(legend.position = "none"),
     get_legend(ggplotTraitApices),
-    nrow = 1, rel_widths = c(2.8, 1.2)
+    nrow = 1, rel_widths = c(2.25, 1)
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsTraitApices,
-  width = 6, height = 4.5
-)
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    width = c(10, 5),
+    height = c(8, 5),
+    aspect = c(.167, .167)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigResultsTraitApices", ext = ext),
+      plot = FigResultsTraitApices,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = 1,
+      ncol = 1
+    )
+  })
+
