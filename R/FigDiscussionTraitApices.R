@@ -8,7 +8,7 @@ ggplotTraitApices <- ThesisPackage::trait_apices %>%
   scale_color_brewer(type = "qual", palette = "Set1") +
   labs(color = "Mature Fruit Apices")
 
-FigResultsTraitApices <-
+FigDiscussionTraitApices <-
   plot_grid(
     ggplotTraitApices +
       theme(legend.position = "none"),
@@ -25,8 +25,8 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsTraitApices", ext = ext),
-      plot = FigResultsTraitApices,
+      filename = fs::path("Figs/FigDiscussionTraitApices", ext = ext),
+      plot = FigDiscussionTraitApices,
       base_width = width,
       base_height = height,
       base_asp = aspect,

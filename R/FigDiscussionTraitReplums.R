@@ -8,7 +8,7 @@ ggplotTraitReplums <- ThesisPackage::trait_replums %>%
   scale_color_brewer(type = "qual", palette = "Dark2") +
   labs(color = "Replum Shape")
 
-FigResultsTraitReplums <-
+FigDiscussionTraitReplums <-
   plot_grid(
     ggplotTraitReplums +
       theme(legend.position = "none"),
@@ -25,8 +25,8 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsTraitReplums", ext = ext),
-      plot = FigResultsTraitReplums,
+      filename = fs::path("Figs/FigDiscussionTraitReplums", ext = ext),
+      plot = FigDiscussionTraitReplums,
       base_width = width,
       base_height = height,
       base_asp = aspect,

@@ -8,7 +8,7 @@ ggplotTraitMargins <- ThesisPackage::trait_margins %>%
   scale_color_viridis_d(option = "A") +
   labs(color = "Basal Leaf Margins")
 
-FigResultsTraitMargins <-
+FigDiscussionTraitMargins <-
   plot_grid(
     ggplotTraitMargins +
       theme(legend.position = "none"),
@@ -25,8 +25,8 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsTraitMargins", ext = ext),
-      plot = FigResultsTraitMargins,
+      filename = fs::path("Figs/FigDiscussionTraitMargins", ext = ext),
+      plot = FigDiscussionTraitMargins,
       base_width = width,
       base_height = height,
       base_asp = aspect,

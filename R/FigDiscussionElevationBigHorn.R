@@ -83,7 +83,7 @@ legend_grid <-
 
 # cowplot Grid ----
 
-FigResultsElevationBigHorn <-
+FigDiscussionElevationBigHorn <-
   plot_grid(
     ggplot_elevation +
       theme(legend.position = "none") +
@@ -93,6 +93,6 @@ FigResultsElevationBigHorn <-
   )
 
 ThesisPackage::save_plot(
-  gg_plot = FigResultsElevationBigHorn,
+  gg_plot = FigDiscussionElevationBigHorn,
   height = 6, width = 6
 )

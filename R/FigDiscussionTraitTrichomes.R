@@ -8,7 +8,7 @@ ggplotTraitTrichomes <- ThesisPackage::trait_trichomes %>%
   scale_color_brewer(palette = "Paired") +
   labs(color = "Fruit Trichomes")
 
-FigResultsTraitTrichomes <-
+FigDiscussionTraitTrichomes <-
   plot_grid(
     ggplotTraitTrichomes +
       theme(legend.position = "none"),
@@ -25,8 +25,8 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsTraitTrichomes", ext = ext),
-      plot = FigResultsTraitTrichomes,
+      filename = fs::path("Figs/FigDiscussionTraitTrichomes", ext = ext),
+      plot = FigDiscussionTraitTrichomes,
       base_width = width,
       base_height = height,
       base_asp = aspect,

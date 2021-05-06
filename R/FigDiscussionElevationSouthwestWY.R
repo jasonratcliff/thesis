@@ -103,7 +103,7 @@ legend_grid <-
 
 # cowplot Grid ----
 
-FigResultsElevationSouthwestWY <-
+FigDiscussionElevationSouthwestWY <-
   plot_grid(
     ggplot_elevation +
       theme(legend.position = "none") +
@@ -113,6 +113,6 @@ FigResultsElevationSouthwestWY <-
   )
 
 ThesisPackage::save_plot(
-  gg_plot = FigResultsElevationSouthwestWY,
+  gg_plot = FigDiscussionElevationSouthwestWY,
   height = 6, width = 6
 )

@@ -8,7 +8,7 @@ ggplotTraitOvules <- ThesisPackage::trait_ovules %>%
   scale_color_viridis_d(option = "D") +
   labs(color = "Ovules per Locule")
 
-FigResultsTraitOvules <-
+FigDiscussionTraitOvules <-
   plot_grid(
     ggplotTraitOvules +
       theme(legend.position = "none"),
@@ -25,8 +25,8 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsTraitOvules", ext = ext),
-      plot = FigResultsTraitOvules,
+      filename = fs::path("Figs/FigDiscussionTraitOvules", ext = ext),
+      plot = FigDiscussionTraitOvules,
       base_width = width,
       base_height = height,
       base_asp = aspect,

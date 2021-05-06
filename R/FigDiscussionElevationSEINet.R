@@ -116,7 +116,7 @@ legend_grid <-
 
 # cowplot Grid ----
 
-FigResultsElevationSEINet <-
+FigDiscussionElevationSEINet <-
   plot_grid(
     ggplot_elevation +
       theme(legend.position = "none") +
@@ -126,6 +126,6 @@ FigResultsElevationSEINet <-
   )
 
 ThesisPackage::save_plot(
-  gg_plot = FigResultsElevationSEINet,
+  gg_plot = FigDiscussionElevationSEINet,
   height = 6, width = 6
 )
