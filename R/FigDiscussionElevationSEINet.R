@@ -98,9 +98,11 @@ ggplot_elevation <-
 
 # Legends ----
 
-legend_elevation <- get_legend(ggplot_elevation)
+legends <- list()
 
-legend_specimens <-
+legends$elevation <- get_legend(ggplot_elevation)
+
+legends$specimens_pdf <-
   get_legend(
     ggplot() + 
       ggplot_specimens() +
@@ -108,24 +110,61 @@ legend_specimens <-
       theme(legend.title.align = 0.5)
   )
 
-legend_grid <-
-  plot_grid(
-    NULL, legend_elevation, legend_specimens, NULL,
-    nrow = 1, rel_widths = c(1, 1, 3, 0.5)
+legends$specimens_png <-
+  get_legend(
+    ggplot() + 
+      ggplot_specimens() +
+      guides(col = guide_legend(ncol = 1)) +
+      theme(legend.title.align = 0.5)
   )
 
 # cowplot Grid ----
 
-FigResultsElevationSEINet <-
+grids <- list()
+
+grids$pdf <-
   plot_grid(
     ggplot_elevation +
       theme(legend.position = "none") +
       ggplot_specimens(),
-    legend_grid,
+    plot_grid(
+      NULL, legends$elevation, legends$specimens_pdf, NULL,
+      nrow = 1, rel_widths = c(1, 1, 3, 0.5)
+    ),
     nrow = 2, rel_heights = c(3, 1)
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsElevationSEINet,
-  height = 6, width = 6
-)
+grids$png <-
+  plot_grid(
+    ggplot_elevation +
+      theme(legend.position = "none") +
+      ggplot_specimens(),
+    plot_grid(
+      legends$specimens_png, NULL, legends$elevation,
+      ncol = 1, rel_heights = c(0.6, -0.275, 0.4)
+    ),
+    ncol = 2, rel_widths = c(3, 1)
+  )
+
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    plot = list(grids$png, grids$pdf),
+    width = c(6, 6),
+    height = c(8, 4),
+    aspect = c(.167, .167),
+    row = c(1, 2),
+    col = c(2, 1)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigDiscussionElevationSEINet", ext = ext),
+      plot = plot,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
+  })
+

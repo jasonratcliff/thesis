@@ -13,6 +13,11 @@ specimens <- list()
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- ThesisPackage::herbarium_specimens %>%
   filter_reviewed(specimen_tbl = .) %>%
+  filter(
+    !is.na(Mature_fruit_length_mm),
+    !is.na(Taxon_a_posteriori),
+    !grepl("^Physaria$", .data$Taxon_a_posteriori)
+  ) %>%
   bind_cols(range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm"))
 
 # Fruits ----
@@ -27,12 +32,20 @@ traits$labels <-
   gsub("Physaria", "P.", x = .)
 
 # Extract ggplot legend for cowplot grid.
-traits$legend <-
+traits$legend_pdf <-
   ThesisPackage::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
     ncol = 1
+  )
+
+traits$legend_png <-
+  ThesisPackage::annotation_legend(
+    specimen_tbl = specimens$filtered,
+    aesthetic_id = "Taxon_a_posteriori",
+    legend_title = "Reviewed Annotations",
+    ncol = 6
   )
 
 traits$fruits <-
@@ -83,20 +96,57 @@ traits$phenology <-
 
 # Grid Plot ----
 
-FigResultsPhysariaFruits <-
+traits$png_fruit <-
+  plot_grid(
+    traits$fruits,
+    traits$legend_png,
+    ncol = 1,
+    rel_heights = c(1, 0.25)
+  )
+
+traits$png_phenology <-
+  plot_grid(
+    traits$phenology,
+    traits$legend_pdf,
+    nrow = 1, rel_widths = c(2, 1)
+  )
+
+traits$fruit_pdf <-
   plot_grid(
     traits$fruits,
     plot_grid(
       traits$phenology,
-      traits$legend,
+      traits$legend_pdf,
       nrow = 1, rel_widths = c(2, 1)
     ),
     ncol = 1, rel_heights = c(1, 2),
     labels = c("A", "B")
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsPhysariaFruits,
-  height = 10, width = 8
-)
+purrr::pwalk(
+  .l = list(
+    path = c(
+      "FigResultsPhysariaFruits",
+      "FigResultsPhysariaFruitsPhenology",
+      "FigResultsPhysariaFruits"
+    ),
+    ext = c("png", "png", "pdf"),
+    plot = list(traits$png_fruit, traits$png_phenology, traits$fruit_pdf),
+    width = c(6, 6, 6),
+    height = c(8, 8, 4),
+    aspect = c(.167, .167, 2.5),
+    row = c(1, 1, 2),
+    col = c(2, 2, 1)
+  ),
+  .f = function(path, ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/", path, ext = ext),
+      plot = plot,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
+  })
 

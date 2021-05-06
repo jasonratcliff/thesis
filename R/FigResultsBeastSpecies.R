@@ -49,7 +49,10 @@ spp_hypothesis_4 <-
   ggtitle("Hypothesis 4")
 
 # cowplot Grid ----
-spp_plots <-
+
+ggtree_spp <- list()
+
+ggtree_spp$spp <-
   plot_grid(
     spp_hypothesis_1 + theme(legend.position = "none"),
     spp_hypothesis_2 + theme(legend.position = "none"),
@@ -58,13 +61,31 @@ spp_plots <-
     nrow = 2
   )
 
-FigResultsBeastSpecies <- 
+ggtree_spp$plot <-
   plot_grid(
-    spp_plots, get_legend(spp_hypothesis_1),
+    ggtree_spp$spp, get_legend(spp_hypothesis_1),
     ncol = 2, rel_widths = c(0.9, 0.1)
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsBeastSpecies,
-  width = 6, height = 6
-)
+purrr::pwalk(
+  .l = list(
+    ext = c("png", "pdf"),
+    plot = list(ggtree_spp$plot, ggtree_spp$plot),
+    width = c(6, 6),
+    height = c(8, 4),
+    aspect = c(.167, 2.5),
+    row = c(1, 2),
+    col = c(2, 1)
+  ),
+  .f = function(ext, plot, width, height, aspect, row, col) {
+    cowplot::save_plot(
+      filename = fs::path("Figs/FigResultsBeastSpecies", ext = ext),
+      plot = plot,
+      base_width = width,
+      base_height = height,
+      base_asp = aspect,
+      nrow = row,
+      ncol = col
+    )
+  })
+
