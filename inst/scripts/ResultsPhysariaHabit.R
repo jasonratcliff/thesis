@@ -134,7 +134,16 @@ FigResultsPhysariaHabit <-
     label_y = 1
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsPhysariaHabit,
-  height = 8, width = 10
-)
+purrr::walk(
+  .x = c("png", "pdf"),
+  .f = function(ext) {
+    cowplot::save_plot(
+      filename = fs::path("inst/figures/ResultsPhysariaHabit", ext = ext),
+      plot = FigResultsPhysariaHabit,
+      base_width = 12,
+      base_height = 4,
+      nrow = 2,
+      ncol = 1
+    )
+  })
+

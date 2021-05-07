@@ -25,7 +25,7 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigDiscussionTraitApices", ext = ext),
+      filename = fs::path("inst/figures/DiscussionTraitApices", ext = ext),
       plot = FigDiscussionTraitApices,
       base_width = width,
       base_height = height,

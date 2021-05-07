@@ -135,7 +135,7 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigDiscussionElevationIdaho", ext = ext),
+      filename = fs::path("inst/figures/DiscussionElevationIdaho", ext = ext),
       plot = plot,
       base_width = width,
       base_height = height,

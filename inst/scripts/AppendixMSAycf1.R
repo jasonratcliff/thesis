@@ -8,13 +8,22 @@ ggMSAycf1 <-
               package = "ThesisPackage") %>%
   potentially_informative_sites(
     fasta_file = .,
-    seq_name = TRUE
+    seq_name = TRUE,
+    char_width = 0.5
   ) +
   theme(
     panel.grid = element_blank(),
     axis.text.y = element_text(size = 3)
   )
 
-FigAppendixMSAycf1 <- plot_grid(ggMSAycf1)
+AppendixMSAycf1 <- plot_grid(ggMSAycf1)
 
-ThesisPackage::save_plot(gg_plot = FigAppendixMSAycf1)
+purrr::walk(
+  .x = c("png", "pdf"),
+  .f = function(ext) {
+    cowplot::save_plot(
+      filename = fs::path("inst/figures/AppendixMSAycf1", ext = ext),
+      plot = AppendixMSAycf1
+    )
+  })
+

@@ -126,9 +126,9 @@ traits$fruit_pdf <-
 purrr::pwalk(
   .l = list(
     path = c(
-      "FigResultsPhysariaFruits",
-      "FigResultsPhysariaFruitsPhenology",
-      "FigResultsPhysariaFruits"
+      "ResultsPhysariaFruits",
+      "ResultsPhysariaFruitsPhenology",
+      "ResultsPhysariaFruits"
     ),
     ext = c("png", "png", "pdf"),
     plot = list(traits$png_fruit, traits$png_phenology, traits$fruit_pdf),
@@ -140,7 +140,7 @@ purrr::pwalk(
   ),
   .f = function(path, ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/", path, ext = ext),
+      filename = fs::path("inst/figures", path, ext = ext),
       plot = plot,
       base_width = width,
       base_height = height,

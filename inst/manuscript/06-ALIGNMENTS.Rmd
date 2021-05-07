@@ -35,7 +35,10 @@ caption$msa_rITS <-
   "Mulitple sequence alignment of unique Nuclear rITS sites."
 
 knitr::include_graphics(
-    path = paste0("Figs/FigAppendixMSArITS.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/AppendixMSArITS", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -65,7 +68,10 @@ caption$msa_rps <-
   )
 
 knitr::include_graphics(
-    path = paste0("Figs/FigAppendixMSArpsIntron.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/AppendixMSArpsIntron", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -95,7 +101,10 @@ caption$msa_ycf1 <-
   )
 
 knitr::include_graphics(
-    path = paste0("Figs/FigAppendixMSAycf1.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/AppendixMSAycf1", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```

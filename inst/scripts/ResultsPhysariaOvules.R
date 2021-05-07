@@ -128,7 +128,7 @@ purrr::pwalk(
   ),
   .f = function(ext, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsPhysariaOvules", ext = ext),
+      filename = fs::path("inst/figures/ResultsPhysariaOvules", ext = ext),
       plot = grids$figure,
       base_width = width,
       base_height = height,

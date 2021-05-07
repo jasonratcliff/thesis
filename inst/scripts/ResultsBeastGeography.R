@@ -70,7 +70,7 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("Figs/FigResultsBeastGeography", ext = ext),
+      filename = fs::path("inst/figures/ResultsBeastGeography", ext = ext),
       plot = plot,
       base_width = width,
       base_height = height,

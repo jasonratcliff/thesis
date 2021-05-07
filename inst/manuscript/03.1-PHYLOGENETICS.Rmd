@@ -185,7 +185,10 @@ caption$FigureBayesrITS <-
   "MrBayes consensus tree of rITS locus. "
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_rITS.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBayes_rITS", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -346,7 +349,10 @@ caption$FigureBayesrpsIntron <-
   )
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_rps.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBayes_rps", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -520,7 +526,10 @@ caption$FigureBayesMultiLocus <-
   "MrBayes consensus tree of concatenated multi-locus data."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBayes_ML.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBayes_ML", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -533,7 +542,10 @@ caption$FigureResultsBeastMultiLocus <-
   "Multilocus partitioned BEAST maximum clade credibility tree."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastMultiLocus.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBeastMultiLocus", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -546,7 +558,10 @@ caption$FigureResultsBeastGeography <-
   "Continuous landscape phylogeography BEAST maximum clade credibility tree."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastGeography.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBeastGeography", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -559,7 +574,10 @@ caption$FigureResultsBeastSpecies <-
   "*BEAST species tree hypotheses."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsBeastSpecies.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsBeastSpecies", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```

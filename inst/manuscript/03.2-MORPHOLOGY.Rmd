@@ -72,7 +72,10 @@ caption$FigResultsPhysariaOvules <-
   "Counts of maximum ovules per locule."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPhysariaOvules.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsPhysariaOvules", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -82,12 +85,14 @@ knitr::include_graphics(
 
 ```{r FigResultsPhysariaFruits, fig.cap=caption$FigResultsPhysariaFruits, fig.scap="Fruit size observations from reviewed specimen vouchers"}
 
-# Plot of fruit dimensions by reviewed species ID and collection date.
 caption$FigResultsPhysariaFruits <-
   "Observations of fruit size from reviewed specimen vouchers."
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPhysariaFruits.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsPhysariaFruits", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -153,7 +158,6 @@ distribution at greater than 8,000 ft.
 
 ```{r FigResultsPhysariaElevation, fig.cap=caption$FigResultsPhysariaElevation, fig.scap="Maximum elevation records from specimen vouchers"}
 
-# Maximum elevation range
 caption$FigResultsPhysariaElevation <-
   paste(
     "Elevation records from specimen vouchers.",
@@ -164,7 +168,10 @@ caption$FigResultsPhysariaElevation <-
   )
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPhysariaElevation.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/ResultsPhysariaElevation", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
@@ -187,13 +194,15 @@ inflorescences barely exceeding basal rosettes and relatively shorter stems.
 
 ```{r FigResultsPhysariaHabit, fig.cap=caption$FigResultsPhysariaHabit, fig.scap="Growth habit of \textit{physaria} species"}
 
-# Growth habit plot
 caption$FigResultsPhysariaHabit <-
   physaria(knitr_chunk = knit_variables$pandoc) %>%
   paste("Growth habit of", ., "species.")
 
 knitr::include_graphics(
-  path = paste0("Figs/FigResultsPhysariaHabit.", knit_variables$graphics)
+ path = system.file(
+    fs::path("figures/ResultsPhysariaHabit", ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```

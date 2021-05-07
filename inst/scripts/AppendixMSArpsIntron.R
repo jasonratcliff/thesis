@@ -8,13 +8,22 @@ ggMSArpsIntron <-
               package = "ThesisPackage") %>%
   potentially_informative_sites(
     fasta_file = .,
-    seq_name = TRUE
+    seq_name = TRUE,
+    char_width = 0.5
   ) +
   theme(
     panel.grid = element_blank(),
     axis.text.y = element_text(size = 3)
   )
 
-FigAppendixMSArpsIntron <- plot_grid(ggMSArpsIntron)
+AppendixMSArpsIntron <- plot_grid(ggMSArpsIntron)
 
-ThesisPackage::save_plot(gg_plot = FigAppendixMSArpsIntron)
+purrr::walk(
+  .x = c("png", "pdf"),
+  .f = function(ext) {
+    cowplot::save_plot(
+      filename = fs::path("inst/figures/AppendixMSArpsIntron", ext = ext),
+      plot = AppendixMSArpsIntron
+    )
+  })
+

@@ -240,7 +240,16 @@ FigResultsPhysariaElevation <-
     ncol = 1
   )
 
-ThesisPackage::save_plot(
-  gg_plot = FigResultsPhysariaElevation,
-  height = 8, width = 10
-)
+purrr::walk(
+  .x = c("png", "pdf"),
+  .f = function(ext) {
+    cowplot::save_plot(
+      filename = fs::path("inst/figures/ResultsPhysariaElevation", ext = ext),
+      plot = FigResultsPhysariaElevation,
+      base_width = 12,
+      base_height = 4,
+      nrow = 2,
+      ncol = 1
+    )
+  })
+

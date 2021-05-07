@@ -62,7 +62,11 @@ caption$FigureDiscussionPosteriori <-
         "by reviewed annotations.")
 
 knitr::include_graphics(
-  path = paste0("Figs/FigDiscussionPosteriori.", knit_variables$graphics)
+  path = system.file(
+    fs::path("figures/DiscussionPosteriori",
+             ext = knit_variables$graphics),
+    package = "Thesis"
+  )
 )
 
 ```
