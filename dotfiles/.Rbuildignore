@@ -1,0 +1,12 @@
+^renv$
+^renv\.lock$
+^.*\.Rproj$
+^\.Rproj\.user$
+^_descriptions$
+^_word$
+^Appendix$
+^Makefile$
+^log$
+^tools$
+^inst/issues$
+^inst/literature$
