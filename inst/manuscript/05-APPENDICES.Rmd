@@ -1,0 +1,36 @@
+# REFERENCES {-}
+
+```{=latex}
+\vspace*{-18pt}
+\singlespacing
+\setlength{\parskip}{12pt}
+\begin{hangparas}{0.5in}{1}
+```
+
+<div id="refs"></div>
+
+```{=latex}
+\end{hangparas}
+\doublespacing
+```
+
+```{r LaTeXspecimens, results="asis"}
+if (knit_variables$pandoc == "latex") {
+  cat(
+    "\\setlength{\\parindent}{0.5in}",
+    "\\setlength{\\leftskip}{0in}",
+    "\\setlength{\\parskip}{12pt}",
+    "\\hspace*{-0.5in}",
+    "# (APPENDIX) Appendix {-}",
+    "<!-- Specimen appendix TeX files -->",
+    "\\input{latex/specimens-P-medicinae}",
+    "\\input{latex/specimens-P-vitulifera}",
+    "\\input{latex/specimens-P-integrifolia}",
+    "\\input{latex/specimens-P-didymocarpa}",
+    "\\input{latex/specimens-P-brassicoides}",
+    "\\input{latex/specimens-P-acutifolia}",
+    sep = "\n"
+    )
+  }
+```
+

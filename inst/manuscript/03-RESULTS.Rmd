@@ -1,0 +1,18 @@
+---
+bibliography: "references.bib"
+csl: council-of-science-editors-author-date.csl
+---
+
+```{r, include=FALSE}
+WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
+```
+
+```{r, child=if (WORD_DOC) '_setup.Rmd'}
+```
+
+```{r, child='03.1-PHYLOGENETICS.Rmd'}
+```
+
+```{r, child='03.2-MORPHOLOGY.Rmd'}
+```
+

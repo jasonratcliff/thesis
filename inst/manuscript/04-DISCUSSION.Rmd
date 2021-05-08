@@ -1,0 +1,504 @@
+---
+bibliography: "references.bib"
+csl: council-of-science-editors-author-date.csl
+---
+
+```{r, include=FALSE}
+WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
+```
+
+```{r, child=if (WORD_DOC) '_setup.Rmd'}
+```
+
+# DISCUSSION {#DISCUSSION}
+
+\paragraph{} How species are defined is a key issue in biology, the aptly named
+species problem.  Potential for amibguity in this problem was recognized early
+on by @Darwin1859 [p. 46] who surmised, "No one definition has
+satisfied all naturalists; yet every naturalist knows vaguely what he means when
+he speaks of a species." Over the years, much consideration has been given to
+this question as evidenced by the numerous species concepts described in the
+literature (Reviewed by @Zachos2016). @Simpson1951 noted the importance of the
+temporal dimension for the species concept debate, asserting an evolutionary
+criterion for species as, "...a phyletic lineage (ancestral-descendent sequence
+of interbreeding populations) evolving independently of others, with its own
+separate and unitary evolutionary role and tendencies is a basic unit of
+evolution" [@Simpson1951 p. 289].  @Mayden1997 argued that while the
+evolutionary species concept (ESC) described by @Simpson1951 was
+non-operational, it provided a robust theoretical framework and general
+applicability for use as a primary species concept.  With the ESC as a primary
+species concept, secondary species concepts provide mutually applicable and
+equally valid operational support for recognizing species entities
+[@Mayden1997].
+
+```{r sectionSpeciesConcept}
+
+knitr_section(
+  knitr_title = "The Species Concept",
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} Attempting to reconcile differences among the various proposed
+species concepts, @deQueiroz1998 described a general lineage concept of
+species as population-level segments of evolutionary lineages to denote the
+fundamental natural unit the term represents. Under this model, some concepts
+describe the general lineage concept whereas other alternative species
+definitions provide operational criteria by which to investigate lineage
+separation. These criteria (e.g. interbreeding, monophyly, ecological niche,
+cladogenesis) represent various lines of evidence for species delimitation,
+where inference of an evolutionary lineage separation - that is, a species
+entity - is ideally described by multiple criteria [@deQueiroz2007].
+From this perspective, there is agreement about the fundamental entity
+described by the term "species" despite differences in the mechanistic
+hypotheses (i.e. secondary criteria) pertaining to the separation and
+maintenance of the population-level evolutionary lineage segments.
+
+```{r FigureDiscussionPosteriori, fig.cap=caption$FigureDiscussionPosteriori}
+
+caption$FigureDiscussionPosteriori <-
+  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
+        "by reviewed annotations.")
+
+knitr::include_graphics(
+  path = system.file(
+    fs::path("figures/DiscussionPosteriori",
+             ext = knit_variables$graphics),
+    package = "Thesis"
+  )
+)
+
+```
+
+\paragraph{} Notwithstanding progress toward a universal species concept, a
+complementary problem exists in species delimitation. Within the framework of
+the general lineage concept, a demarcation exists between the conceptual
+definition of species as evolutionary lineages and the operational criteria
+providing evidence for their existence - each of which is based on notable
+biological properties [@deQueiroz2007]. However, @Garnett2017 recently noted an
+apparent lack of agreement regarding how to define lineages. The authors also
+assert that international agreements, environmental legislation, and a variety
+of entities concerned with biodiversity treat species as fixed entities (ibid).
+Others have argued that species are far from fixed entities, and instead
+represent falsifiable hypotheses with varying degrees of support
+[@Thiele2002; @Hey2003; @Dayrat2005; @Raposo2017].
+
+\paragraph{} Taxonomic nomenclature provides a necessary framework for
+delineating species by discontinuous natural boundaries with utility across a
+variety of disciplines. Contending arbitrariness in the species delimitation
+process, @Garnett2017 called for global oversight and the restriction of
+freedom of taxonomic action given the apparent consequences for research
+programs and policy decisions dependent on accurate species estimates. However,
+there may be inherent limitations in utilizing a discrete binary system to
+characterize species as entities arising from a continuous evolutionary process,
+particularly in the grey area of recent divergence following lineage splitting
+[@Zachos2018]. A degree of uncertainty is an inherent component of empirical
+scientific research, and in the case of species taxa hypotheses can result from
+the dynamic demographic and evolutionary fluctuations species entities are
+subject to [@Hey2003]. A recent suggestion for reducing ambiguity from species
+delimitation is to explicitly cite the working species concept and include
+information concerning distribution, ecology, conservation status, and potential
+threats facing the species [@Thomson2018].
+
+\paragraph{} Which species concept is applied by an investigator has
+consequences for taxonomic treatments and alpha diversity [@Isaac2004].
+Accurate species assignment and determination of species boundaries has
+implications for downstream analyses. When different data support contradicting
+species boundaries, a single line of evidence may fail to recover a species.
+For species defined *a priori* by qualitatively combining genetic,
+morphological, geographical, and ecological data, individual species assignment
+using clustering and multivariate techniques recovered species more accurately
+when multiple types of data sets were included [@Edwards2014].
+An "integrative taxonomy" considers naming species when supported by broad
+biological evidence, where higher confidence is placed in a hypothesis supported
+by different kinds of data [@Dayrat2005]. In particular, caution is warranted
+for describing species on the basis of morphological diversity without support
+from additional lines of evidence given the possibility of homoplasy (*ibid.*).
+
+\paragraph{} Utilizing multiple lines of evidence (e.g genealogical,
+morphological, and reproductive barriers) for delimitation may recover species
+that would otherwise be missed from only a single line of evidence
+[@Padial2009]. Broadly, two frameworks for an integrative taxonomy are possible:
+integration by congruence where a concordant pattern among several taxonomic
+characters indicates lineage separation, and integration by cumulation where a
+single character set may provide a good indication of lineage divergence
+[@Padial2010]. The former may result in higher confidence at the cost of
+decreased taxonomic resolving power, while uncritical application of the latter
+may contribute to over-splitting of species taxa (ibid.). In the case of recent
+radiations, integration by congruence may fail to recover species on the basis
+of a strict consensus approach due to a lack of gene monophyly [@Shaffer2007].
+
+Considerations against a generalized lineage concept (GLC)
+
+- Hausdorf 2011
+- Freudenstein 2017
+- Carstens 2013 (Box 3)
+
+\clearpage
+
+\vspace*{-24pt}
+
+```{r sectionDichotomousKey}
+
+knitr_section(
+  knitr_title = "Dichotomous Key",
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\singlespacing
+
+\begin{enumerate}
+
+  \item[1. ]
+  Fruits didymous; replum constricted, linear; ovules 2 per locule,
+  restricted to replum apex.
+
+    \begin{enumerate}
+
+  \item[2. ] Sinuses of mature fruits equal; from northern Wind River and
+  Green River Basins in Wyoming south through the Colorado River Basin
+  \dotfill \textit{Physaria acutifolia} Rydberg
+
+  \item[2. ] Sinuses of mature fruits unequal in size.
+
+        \begin{enumerate}
+
+  \item[3. ] Fruits cordate; eastern Wyoming north to Montana and western
+  North and South Dakota \dotfill \textit{Physaria brassicoides} Rydberg
+
+  \item[3. ] Fruits angular, often wrinkled, with truncate basal sinuses.
+
+            \begin{enumerate}
+
+  \item[4. ] Mature fruits > 8 mm; pedicels recurved, basal leaves
+  pinnatifid; north from Middle Park Colorado \dotfill
+  \textit{Physaria floribunda} Rydberg
+
+  \item[4. ] Mature fruits < 8 mm; pedicels ascending or sigmoidal.
+
+                \begin{enumerate}
+
+  \item[5. ] Mature fruits 4-8 mm; basal leaves pandurate, often with
+  dentate margins; Eastern Front Range, Colorado
+  \dotfill \textit{Physaria vitulifera} Rydberg
+
+  \item[5. ] Mature fruits < 5 mm; plants alpine; Medicine Bow Mountains
+  and Sierra Madre Range of Wyoming, NC Colorado
+  \dotfill \textit{Physaria medicinaea} Ratcliff
+
+                \end{enumerate}
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+    \end{enumerate}
+
+\end{enumerate}
+
+\begin{enumerate}
+
+  \item[1. ] Fruits didymous; replum wider, oblong or elliptic to oblanceolate
+  or obovate; ovules (2-)4(-6) per locule, not restricted to apex of replum.
+
+    \begin{enumerate}
+
+  \item[6. ] Racemes equal to or barely exceeding the rosette.
+
+        \begin{enumerate}
+
+  \item[7. ] Petals whitish, pale yellow; basal sinuses of mature fruits
+  shallow or absent with spreading trichomes; Wyoming state endemic of
+  Fremont, Natrona and Carbon counties
+  \dotfill \textit{Physaria eburniflora} Rollins
+
+  \item[7. ] Petals yellow; basal sinuses of mature fruits equally incised
+  above and below with appressed trichomes.
+
+            \begin{enumerate}
+
+  \item[8. ] Basal leaves $\geq$ 2cm; mature fruits generally $\geq$ 1 x 1 cm;
+  Wyoming state endemic of Lincoln and Uinta counties
+  \dotfill \textit{Physaria dornii} Lichvar
+
+  \item[8. ] Basal leaves more often $\leq$ 2cm; mature fruits $\leq$ 1 x 1 cm;
+  Wyoming state endemic of Sublette, Lincoln and Uinta counties
+  \dotfill \textit{Physaria condensata} Rollins
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+  \item[6. ] Racemes exceeding the basal rosette.
+
+        \begin{enumerate}
+
+  \item[9. ] Basal sinuses of fruits absent or less often shallow, apical
+  sinuses deeper; > 2 ovules per locule   %%% \newline \hspace*{0pt} %%%
+  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
+  subsp. \textit{didymocarpa}
+
+  \item[9. ]  Fruit sinuses generally equal, less often basally shallow;
+
+            \begin{enumerate}
+
+  \item[10. ] Basal leaf margins generally dentate or toothed;
+  mature fruit trichomes spreading; 2 ovules per locule;
+  regional endemic of the Big Horn Mountains in Wyoming and Montana
+  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
+  subsp. \textit{lanata} (A. Nelson) O'Kane
+
+  \item[10. ] Basal leaf margins more often entire, occasionally toothed;
+  mature fruit trichomes appressed; > 2 ovules per locule;
+  regional endemic of SW Wyoming and eastern Idaho
+  \dotfill \textit{Physaria integrifolia} (Rollins) Lichvar
+
+            \end{enumerate}
+
+        \end{enumerate}
+
+    \end{enumerate}
+
+\end{enumerate}
+
+\doublespacing
+
+\clearpage
+
+\vspace*{-24pt}
+
+```{r sectionDescriptions}
+
+knitr_section(
+  knitr_title = "Species Descriptions",
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\vspace*{-18pt}
+
+```{r subsectionDescriptionPacutifolia}
+
+knitr_section(
+  knitr_title = "*Physaria acutifolia* Rydberg",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched, (tufted or condensed);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
+**Stems** several, 0.4-1.2(-2) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-lenticular, less often suborbicular or obovate,
+ 2-5(-9) cm, margins entire, occasionally toothed, (apex acute),
+ petioles slender, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, (spatulate), 1-3(-4) cm,
+ margins entire, apex acute.
+**Racemes** elongated, less often congested to subumbellate.
+**Fruiting pedicels** erect or ascending, often sigmoidal, 6-12 mm.
+**Flowers**: petals yellow, spatulate, 7-10(-12) mm;
+ sepals lanceolate, 5-7(-8) mm.
+**Fruits** didymous, inflated, reniform to suborbicular, 5-10(-15) x 6-12(-20) mm,
+ apices more or less equal; valves pubescent with trichomes appressed;
+ replum linear, constricted, (oblong), rarely oblong or slightly oblanceolate;
+ ovules 2(-4) per locule, restricted to apex of the replum; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPbrassicoides}
+
+knitr_section(
+  knitr_title = "*Physaria brassicoides* Rydberg",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
+**Stems** several, 0.6-1.3(-3) dm, exceeding a basal rosette,
+ decumbent to ascending or erect.
+**Basal leaves**: rhombic to obovate, 3-7(-10) cm,
+ margins often dentate, otherwise entire,
+ petioles slender, tapering from basal leaf.
+**Cauline leaves**: oblanceolate to spatulate, 1-3(-5) cm,
+ margins entire, apex acute.
+**Racemes** elongated, less often congested.
+**Fruiting pedicels** ascending, generally sigmoidal, 5-12 mm.
+**Flowers**: petals yellow, spatulate, 7-9(-11) mm;
+ sepals lanceolate, 5-7 mm.
+**Fruits** didymous, distinctly cordate, 5-9(-13) x 7-14(-22) mm,
+ lacking a basal sinus with a broad apical sinus;
+ valves pubescent with trichomes spreading, generally furcate;
+ replum linear, often with an obtuse apex;
+ ovules 2 per locule, restricted to apex of the replum; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPcondensata}
+
+knitr_section(
+  knitr_title = "*Physaria condensata* Rollins",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched); plants compact, rosulate;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.1-0.4(-0.6) dm, often equal to basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-lenticular to obovate, 0.5-2.5 cm,
+ margins entire, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, 0.5-1.0(-1.5) cm, margins entire.
+**Racemes** subumbellate to congested.
+**Fruiting pedicels** erect to ascending, 5-10 mm.
+**Flowers**: petals yellow, spatulate, 6-8(-9) mm;
+ sepals lanceolate, 4-5(-6) mm.
+**Fruits** didymous, 4-7(-10) x 4-8(-12) mm, sinuses equal above and below;
+ valves pubescent with trichomes appressed, bifurcate, (umbonate);
+ replum obovate to oblanceolate, apex obtuse;
+ ovules 3-4(-5) per locule; style 3-5(-6) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPdidymocarpaSspDidymocarpa}
+
+knitr_section(
+  knitr_title = "*Physaria didymocarpa* (Hooker) A. Gray subsp. *didymocarpa*",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, less often branched;
+ densely pubescent, with appressed stellate trichomes, rays furcate or bifurcate.
+**Stems** several to numerous, (few), 0.3-1.0(-2) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: obovate, rhombic to suborbicular, 1.5-4(-8) cm,
+ margins more often dentate than entire, (apex acute),
+ petioles slender, tapering from blade, (abruptly narrowing), (lyrate).
+**Cauline leaves**: oblanceolate, (spatulate), 1-2(-3) cm,
+ margins entire, (dentate).
+**Racemes** elongated or congested to subumbellate.
+**Fruiting pedicels** erect or ascending, curved to sigmoidal, 8-12 mm.
+**Flowers**: petals yellow, spatulate, 7-11(-15) mm;
+ sepals lanceolate, 5-7(-10) mm.
+**Fruits** didymous, inflated, reniform to suborbicular,
+ 5-10(-20) x 5-15(-25) mm, basal sinus shallow or absent, apical sinus deep;
+ valves pubescent with spreading trichomes, rays simple or branched, furcate;
+ replum elliptic (oblong) to oblanceolate or obovate;
+ ovules (2-)4(-6) per locule; style 5-7(-10) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r subsectionDescriptionPdornii}
+
+knitr_section(
+  knitr_title = "*Physaria dornii* Lichvar",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple; plants compact, rosulate;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.2-0.6(-1.0) dm, barely exceeding a basal rosette, erect.
+**Basal leaves**: rhombic-lenticular to suborbicular, 2-5(-7.5) cm,
+ margins entire, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, 0.8-2.0(-2.5) cm, margins entire.
+**Racemes** subumbellate to congested.
+**Fruiting pedicels** erect to ascending, 7-18 mm.
+**Flowers**: petals yellow, spatulate, 7-9(-10) mm;
+ sepals lanceolate, 5-6 mm.
+**Fruits** didymous, 6-12(-16) x 8-16(-18) mm, sinuses equal above and below;
+ valves pubescent with trichomes appressed, more often furcate, (umbonate);
+ replum oblanceolate to obovate or elliptic; ovules 2-4(-6) per locule;
+ style 3-5(-7) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+
+```{r subsectionDescriptionPintegrifolia}
+
+knitr_section(
+  knitr_title = "*Physaria integrifolia* (Rollins) Lichvar",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple or often branched;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.5-1.5(-2) dm, exceeding the basal rosette,
+ decumbent to ascending.
+**Basal leaves**: rhombic-orbicular to obovate, 2-5(-10) cm,
+ margins entire, (toothed), petiole slender, tapering from blade.
+**Cauline leaves**: oblanceolate, 1.0-2.5(-5) cm, margins entire.
+**Racemes** elongated, less often congested or subumbellate.
+**Fruiting pedicels** erect to ascending, less often sigmoidal, 7-11 mm.
+**Flowers**: petals yellow, spatulate, 8-11(-13) mm;
+ sepals lanceolate, 5-8(-10) mm.
+**Fruits** didymous, inflated, 6-13(-20) x 8-17(-30) mm,
+ sinuses equal above and below, (shallow basal sinus);
+ valves pubescent with trichomes appressed, furcate or bifurcate, (umbonate);
+ replum oblanceolate to obovate, elliptic or oblong; ovules 2-4(-6) per locule;
+ style 5-7(-9) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPmedicinae}
+
+knitr_section(
+  knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
+**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
+ margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
+**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
+**Racemes** elongated, (subumbellate).
+**Fruiting pedicels** erect to ascending, sigmoidal.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-7) mm.
+**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
+ sinuses more or less equal; valves pubescent with trichomes appressed,
+ rays furcate to less often bifurcate; replum linear, (constricted),
+ (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
+**Seeds** brown, flattened, 2(-3) mm.
+
+
+```{r subsectionDescriptionPvitulifera}
+
+knitr_section(
+  knitr_title = "*Physaria vitulifera* Rydberg",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple; densely pubescent,
+ with appressed stellate trichomes, rays bifurcating.
+**Stems** several, 0.5-1.7(-2.5) dm, exceeding the basal rosette,
+ decumbent to ascending.
+**Basal leaves**: often pandurate, rhombic or elliptic, 2-6(-10) cm,
+ margins dentate, (entire), petiole slender, tapering from blade,
+ (abruptly narrowing), often lyrate.
+**Cauline leaves**: oblanceolate to spatulate, 1-2.5(-3.5) cm, margins entire.
+**Racemes** generally elongated, less often subumbellate.
+**Fruiting pedicels** sigmoidal or otherwise ascending, 6–10 mm.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-8) mm.
+**Fruits** didymous, angular, (wrinkled); 4-6(-8) x 5-10(-15) mm,
+ basal sinus truncate, apical deeper;
+ valves pubescent with trichomes appressed to spreading, furcate, (bifurcate);
+ replum linear; ovules 2 per locule; style 4-6(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
+```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
+```
+
