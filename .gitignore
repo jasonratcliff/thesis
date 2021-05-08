@@ -1,17 +1,9 @@
-*.DS_store
-*.aux
-*.log
-*.html
-*.png
-*.pdf
-.Rproj.user
+.DS_Store
 .Rhistory
 .RData
-.Ruserdata
-_book
-_bookdown_files
-_presentation/
-Appendix/alignments
-Appendix/P.*
-Appendix/digikam/*.xlsx
+.Rproj.user
+data-raw/SEINet/
+data-raw/BAYES/CIPRES
+data-raw/BEAST/CIPRES
+data-raw/BEAST/Species-Tree/species-hypothesis-[1-4]/*
 
