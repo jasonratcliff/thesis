@@ -1,0 +1,9 @@
+.DS_Store
+.Rhistory
+.RData
+.Rproj.user
+data-raw/SEINet/
+data-raw/BAYES/CIPRES
+data-raw/BEAST/CIPRES
+data-raw/BEAST/Species-Tree/species-hypothesis-[1-4]/*
+

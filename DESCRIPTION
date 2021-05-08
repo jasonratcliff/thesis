@@ -1,0 +1,59 @@
+Package: ThesisPackage
+Type: Package
+Title: Data and functions for systematic botany thesis work
+Version: 0.1.8.9001
+Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
+Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
+Description: Data and code for compiling Thesis Bookdown document. Includes
+    functions for importing and parsing herbarium and DNA specimen information,
+    distribution mapping, phylogenetic tree annotation, and quantitative trait
+    comparisons.
+Encoding: UTF-8
+LazyData: true
+SystemRequirements: GNU make
+License: GPL-3
+RoxygenNote: 7.1.1
+Depends:
+    R (>= 4.0)
+Imports:
+    knitr,
+    magrittr,
+    tibble,
+    dplyr,
+    plyr,
+    purrr,
+    stringr,
+    rlang,
+    readr,
+    ggplot2,
+    scales,
+    ggnewscale,
+    cowplot,
+    ggtext,
+    ggrepel,
+    sf,
+    raster,
+    ggmap (>= 3.0.0.9),
+    elevatr,
+    tigris,
+    rmapshaper,
+    Biostrings,
+    msa,
+    ggtree,
+    treeio,
+    fs,
+    methods,
+    stats,
+    tidyr,
+    broom,
+    ggmsa
+Suggests:
+    ape,
+    DiagrammeR,
+    kableExtra,
+    lubridate,
+    readxl,
+    remotes,
+    testthat,
+    usethis,
+    covr

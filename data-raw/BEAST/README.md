@@ -1,0 +1,57 @@
+BEAST Methods
+================
+
+## Running BEAUti
+
+    java -jar /Applications/BEAST.v1.10.4/lib/beauti.jar
+
+## Running BEAST
+
+    # Open BEAST to run .xml file
+    java -jar /Applications/BEAST.v1.10.4/lib/beast.jar
+
+# Installations
+
+## BEAST
+
+  - Installation [Overview](https://beast.community/installing)
+      - Mac [Install](https://beast.community/install_on_mac)
+      - CLI
+        [Install](https://beast.community/install_on_unix#homebrew-package-manager-for-mac-os-x)
+
+## Java
+
+  - For macOS,
+    [install](http://beast.community/install_on_mac#installing-beast)
+    recommends using Java version 8. Needed for:
+      - `beauti.jar`
+      - `beast.jar`
+
+### Java Downloads
+
+  - [Maintained Version
+    Downloads](https://www.oracle.com/java/technologies/javase-jsp-downloads.html)
+      - Java Development Kit
+        [Version 8](https://www.oracle.com/java/technologies/jdk8-downloads.html)
+          - BEAST requires Java version 6 or 8
+      - Downloading a Java Runtime Enviroment (JRE) installs java as a
+        *plug in*
+          - Install the comparable Java Development Kit (JDK)
+
+> Warning: Do not install the Java software offered on the
+> <http://java.com> website. This will install java only as a plug in to
+> your web browser. This version of Java will not be able to run BEAST.
+> - Mac [BEAST Installation](https://beast.community/install_on_mac)
+
+  - From instructions for [OS X JDK 8
+    Installation](https://docs.oracle.com/javase/8/docs/technotes/guides/install/mac_jdk.html)
+
+### Java Specifications
+
+``` bash
+java -version
+```
+
+``` bash
+/usr/libexec/java_home -V
+```
