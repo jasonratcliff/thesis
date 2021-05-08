@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: report
 maintfont: Palatino
-bibliography: "Ratcliff2020Thesis.bib"
+bibliography: "references.bib"
 csl: council-of-science-editors-author-date.csl
 link-citations: yes
 subparagraph: true
@@ -20,4 +20,5 @@ nocite: |
 ```{r setup, child='_setup.Rmd'}
 ```
 
-\include{TeX/front-matter}
+\include{latex/front-matter}
+

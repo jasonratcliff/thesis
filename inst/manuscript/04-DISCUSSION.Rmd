@@ -1,5 +1,5 @@
 ---
-bibliography: "Ratcliff2020Thesis.bib"
+bibliography: "references.bib"
 csl: council-of-science-editors-author-date.csl
 ---
 
