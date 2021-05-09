@@ -1,6 +1,22 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^data-raw$
 ^LICENSE\.md$
-^app\.R$
 ^Makefile$
+^README\.Rmd$
+^app\.R$
+^renv\.lock$
+^data-raw$
+^inst/issues$
+^inst/literature$
+^inst/log$
+^renv$
+^tools$
+
+# TODO re-org top-level dirs
+^_descriptions$
+^_word$
+^Appendix$
+
+# TODO code test coverage
+^codecov\.yml$
+^public$
