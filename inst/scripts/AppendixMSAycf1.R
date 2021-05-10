@@ -1,11 +1,11 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(cowplot)
 
 # ycf1 Intron Alignment ----
 ggMSAycf1 <-
   system.file("extdata/Alignments/ycf1-single.fasta",
-              package = "ThesisPackage") %>%
+              package = "Thesis") %>%
   potentially_informative_sites(
     fasta_file = .,
     seq_name = TRUE,

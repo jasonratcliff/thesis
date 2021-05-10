@@ -2,7 +2,7 @@
 
 # Assign list of raw FASTA files from project subdirectory.
 fasta_files <-
-  list.files(system.file("extdata/FASTA", package = "ThesisPackage"),
+  list.files(system.file("extdata/FASTA", package = "Thesis"),
              full.names = TRUE)
 
 ## Read FASTA into R ----

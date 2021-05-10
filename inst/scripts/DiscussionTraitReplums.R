@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Replum Shape.
-ggplotTraitReplums <- ThesisPackage::trait_replums %>%
+ggplotTraitReplums <- Thesis::trait_replums %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_brewer(type = "qual", palette = "Dark2") +
   labs(color = "Replum Shape")

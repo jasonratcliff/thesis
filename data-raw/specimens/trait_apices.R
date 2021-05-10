@@ -1,7 +1,7 @@
-library(ThesisPackage)
+library(Thesis)
 
 # Results: ggplot distribution of specimen Basal Fruit Apices.
-trait_apices <- ThesisPackage::herbarium_specimens %>%
+trait_apices <- Thesis::herbarium_specimens %>%
   dplyr::mutate(
     Mature_fruit_apices = purrr::map_chr(
       .x = .data$Mature_fruit_apices,

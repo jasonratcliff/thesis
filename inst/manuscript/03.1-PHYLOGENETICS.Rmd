@@ -60,7 +60,7 @@ abbreviate_spp <- function(label_vector, pandoc_conversion) {
 
 # Multi-taxa rITS node groups
 conserved_rITS <-
-  list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+  list.files(system.file("extdata/MrBayes", package = "Thesis"),
              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
@@ -74,7 +74,7 @@ conserved_rITS <-
 
 # Multi-taxa rps intron node groups
 conserved_rps <-
-  list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+  list.files(system.file("extdata/MrBayes", package = "Thesis"),
              full.names = TRUE, pattern = "rps-infile.nex.con.tre") %>%
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
@@ -88,7 +88,7 @@ conserved_rps <-
 
 # Multi-taxa concatenated node groups
 conserved_multiLocus <-
-  list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+  list.files(system.file("extdata/MrBayes", package = "Thesis"),
              full.names = TRUE, pattern = "ml-infile.nex.con.tre") %>%
   conserved_vouchers(tree_file = .,
                      id_column = "prior_id", id_name = "Priors") %>%
@@ -384,7 +384,7 @@ of sequence homogeneity, a gene tree analysis was not performed.
 ```{r TableIdenticalSeqycf1}
 
 conserved_ycf1 <-
-  list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+  list.files(system.file("extdata/MrBayes", package = "Thesis"),
              full.names = TRUE, pattern = "ycf1-identical-seqs.csv") %>%
   readr::read_csv(file = ., col_types = c("dcccd")) %>%
   dplyr::mutate(., 

@@ -25,7 +25,7 @@ methods_variables$seinet <-
 # Read in raw FASTA system files.
 methods_variables$fasta_paths <-
   list.files(
-    path = system.file("extdata/FASTA", package = "ThesisPackage"),
+    path = system.file("extdata/FASTA", package = "Thesis"),
     full.names = TRUE
   )
 
@@ -188,7 +188,7 @@ also included in this study.
 
 # Read in DNA collection localities for methods table.
 methods_variables$collections <-
-  list.files(system.file("extdata/Methods", package = "ThesisPackage"),
+  list.files(system.file("extdata/Methods", package = "Thesis"),
              pattern = "DNA-collections", full.names = TRUE) %>%
   readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
 
@@ -381,7 +381,7 @@ of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
 # Table: PCR Primers
 methods_variables$primers <-
-  list.files(system.file("extdata/Methods", package = "ThesisPackage"),
+  list.files(system.file("extdata/Methods", package = "Thesis"),
              pattern = "DNA-primers", full.names = TRUE) %>%
   readr::read_csv(file = ., col_names = TRUE, col_types = "ccc")
 
@@ -687,12 +687,12 @@ to automate figure generation and document compilation.
 References were maintained using Zotero v5.0.93 [@Zotero] with the
 Better BibTeX v5.2.86 [@BetterBibTeX] add-on. GitHub repositories were
 maintained for the R package source code
-(https://github.com/jasonratcliff/ThesisPackage)
+(https://github.com/jasonratcliff/Thesis)
 and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
 
 ```{r TableSpeciesTreeHypotheses}
 methods_variables$star_beast <-
-  system.file("extdata/BEAST", package = "ThesisPackage") %>%
+  system.file("extdata/BEAST", package = "Thesis") %>%
   list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
   readr::read_csv(file = ., col_types = 'ccccc') %>%
   setNames(c("Sample", paste("Hypothesis", 1:4))) %>%

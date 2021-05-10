@@ -149,7 +149,7 @@ map_trait_distribution <- function(tidy_trait,
 #' point jitters.
 #'
 #' @param trait Variable with trait observation in
-#'   [ThesisPackage::herbarium_specimens].
+#'   [Thesis::herbarium_specimens].
 #' @param aesthetic_id Variable to set color and shape aesthetics of jitters.
 #' @param aesthetic_labels Named vector of labels for manual scale values.
 #' @param violin.params List of arguments passed to [ggplot2::geom_violin().
@@ -171,7 +171,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      ThesisPackage::spl_labels(
+      Thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -212,11 +212,11 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
     jitters +
     ggplot2::scale_color_manual(
       name = legend_title, labels = aesthetic_labels,
-      values = ThesisPackage::spp_color, na.value = "black"
+      values = Thesis::spp_color, na.value = "black"
     ) +
     ggplot2::scale_shape_manual(
       name = legend_title, labels = aesthetic_labels,
-      values = ThesisPackage::spp_shape, na.value = 17
+      values = Thesis::spp_shape, na.value = 17
     ) +
     themes
 }
@@ -264,7 +264,7 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      ThesisPackage::spl_labels(
+      Thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -284,13 +284,13 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
     ggplot2::scale_color_manual(
       name = legend_title,
       labels = aesthetic_labels,
-      values = ThesisPackage::spp_color,
+      values = Thesis::spp_color,
       na.value = "black"
     ),
     ggplot2::scale_shape_manual(
       name = legend_title,
       labels = aesthetic_labels,
-      values = ThesisPackage::spp_shape,
+      values = Thesis::spp_shape,
       na.value = 17
     )
   )
@@ -343,7 +343,7 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      ThesisPackage::spl_labels(
+      Thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -376,13 +376,13 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
       ggplot2::scale_color_manual(
         name = legend_title,
         labels = aesthetic_labels,
-        values = ThesisPackage::spp_color,
+        values = Thesis::spp_color,
         na.value = "black"
       ),
       ggplot2::scale_shape_manual(
         name = legend_title,
         labels = aesthetic_labels,
-        values = ThesisPackage::spp_shape,
+        values = Thesis::spp_shape,
         na.value = 17
       ),
       ggplot2::guides(

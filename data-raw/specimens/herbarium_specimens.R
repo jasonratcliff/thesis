@@ -7,10 +7,10 @@ library(purrr)
 library(lubridate)
 library(stringr)
 library(tibble)
-library(ThesisPackage)
+library(Thesis)
 
-if (basename(getwd()) != "ThesisPackage") {
-  stop("Source from top level of `ThesisPackage`.")
+if (basename(getwd()) != "Thesis") {
+  stop("Source from top level of `Thesis`.")
 }
 
 # Read Specimens ----
@@ -24,7 +24,7 @@ specimens <- list()
 
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
 specimens$path <-
-  system.file("extdata/specimens.xlsx", package = "ThesisPackage")
+  system.file("extdata/specimens.xlsx", package = "Thesis")
 specimens$raw <-
   readxl::excel_sheets(path = specimens$path) %>%
   purrr::keep(.x = ., ~ !grepl("excluded", x = .x)) %>%
@@ -201,7 +201,7 @@ specimens$elevation <- specimens$raw %>%
   ) %>%
 
   dplyr::bind_cols(
-    ThesisPackage::range_split(
+    Thesis::range_split(
       trait_tbl = .,
       split_var = "Elev_raw"
     )

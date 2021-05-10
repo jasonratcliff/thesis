@@ -99,12 +99,12 @@ msa_wrapper <- function(msa_fasta, msa_output,
 
   # Assign DNA multiple alignment object from external package data:
   dna_align <-
-    list.files(system.file("extdata/Alignments", package = "ThesisPackage"),
+    list.files(system.file("extdata/Alignments", package = "Thesis"),
                full.names = TRUE, pattern = msa_fasta) %>%
     Biostrings::readDNAMultipleAlignment(filepath = ., format = "fasta")
 
   # Write an MSA .tex file for each subset in the list of alignment intervals.
-  interval_list <- ThesisPackage::msa_intervals(msa_alignment = dna_align)
+  interval_list <- Thesis::msa_intervals(msa_alignment = dna_align)
   purrr::iwalk(interval_list, function(interval, index) {
     tex_file <- fs::path(alignment_dir, paste0(msa_output, "_msa_", index),
                          ext = "tex")

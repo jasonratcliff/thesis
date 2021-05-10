@@ -5,7 +5,7 @@ The first approach to generating specimen descriptions from a template
 *.Rmd* file involved the use of R markdown [parameterized
 reports](https://bookdown.org/yihui/rmarkdown/parameterized-reports.html)
 with species values used to filter data from
-[`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage).
+[`Thesis`](https://github.com/jasonratcliff/Thesis).
 However, the reports are rendered as various [output
 formats](https://rmarkdown.rstudio.com/lesson-9.html) which limited the
 use of [`bookdown`](https://bookdown.org/yihui/bookdown/) for rendering

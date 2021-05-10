@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(cowplot)
 
@@ -15,7 +15,7 @@ carbon$bears_ear <-
   )
 
 carbon$specimens <-
-  subset_coords(specimen_tbl = ThesisPackage::herbarium_specimens,
+  subset_coords(specimen_tbl = Thesis::herbarium_specimens,
                 Latitude = c(39.1, 41.9), Longitude = c(-107.9, -105.1)) %>%
   dplyr::mutate(
     Taxon_a_posteriori = dplyr::case_when(
@@ -30,11 +30,11 @@ carbon$specimens <-
 
 carbon$aesthetics <-
   c(
-    ThesisPackage::spl_labels(
+    Thesis::spl_labels(
       specimen_tbl = carbon$specimens,
       id_column = "Taxon_a_posteriori"
     ),
-    ThesisPackage::spl_labels(
+    Thesis::spl_labels(
       specimen_tbl = seinet_coords,
       id_column = "scientificName"
     )
@@ -72,11 +72,11 @@ carbon$ggplot <-
   ) +
   scale_color_manual(
     name = "Annotation", labels = carbon$aesthetics,
-    values = ThesisPackage::spp_color, na.value = "black"
+    values = Thesis::spp_color, na.value = "black"
   ) +
   scale_shape_manual(
     name = "Annotation", labels = carbon$aesthetics,
-    values = ThesisPackage::spp_shape, na.value = 17
+    values = Thesis::spp_shape, na.value = 17
   ) +
   theme(
     panel.background = ggplot2::element_blank(),
@@ -178,7 +178,7 @@ purrr::pwalk(
     ext = c("png", "pdf"),
     plot = list(carbon$figure_png, carbon$figure_pdf),
     width = c(6, 6),
-    height = c(8, 4),
+    height = c(7.5, 4),
     aspect = c(.167, 2.5),
     row = c(1, 2),
     col = c(2, 1)

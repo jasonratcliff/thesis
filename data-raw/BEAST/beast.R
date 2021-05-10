@@ -32,7 +32,7 @@ list.files("data-raw/sequencing/3.alignments-subset",
 # *BEAST ----
 
 # Write subset of specimen IDs for species tree taxa labels.
-spp_combined <- ThesisPackage::dna_specimens %>%
+spp_combined <- Thesis::dna_specimens %>%
   dplyr::select(1:11, dplyr::matches("header_")) %>%
 
   # Exclude outgroup and duplicated sample localities.

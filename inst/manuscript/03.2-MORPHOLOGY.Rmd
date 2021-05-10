@@ -104,8 +104,8 @@ knitr::include_graphics(
 
 results <- list()
 
-results$elevation$specimens <- ThesisPackage::herbarium_specimens %>%
-  ThesisPackage::filter_reviewed(specimen_tbl = .) %>%
+results$elevation$specimens <- Thesis::herbarium_specimens %>%
+  Thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Elev_raw_max),
     !is.na(Taxon_a_posteriori),

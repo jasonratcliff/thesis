@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(dplyr)
 library(ggExtra)
@@ -16,7 +16,7 @@ set.seed(20210320)
 specimens <- list()
 
 # Set of reviewed annotations for species of interest.
-specimens$filtered <- ThesisPackage::herbarium_specimens %>%
+specimens$filtered <- Thesis::herbarium_specimens %>%
   filter_reviewed(specimen_tbl = .) %>%
   filter(
     !is.na(Elev_raw_max),
@@ -50,7 +50,7 @@ traits$labels <-
 
 # Extract ggplot legend for cowplot grid.
 traits$legend <-
-  ThesisPackage::annotation_legend(
+  Thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -101,7 +101,7 @@ traits$ridgeline <- ggplot(data = specimens$filtered) +
     limits = rev(specimens$Mean$Species)) +
   scale_fill_manual(
     name = "Reviewed Annotation",
-    values = ThesisPackage::spp_color,
+    values = Thesis::spp_color,
     labels = desc(traits$labels)
   ) +
   theme(

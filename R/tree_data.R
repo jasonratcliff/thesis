@@ -4,7 +4,7 @@
 #'
 #' Given an input Nexus file with results from a Mr. Bayes run, split rows of
 #' nodes with identical sample genotypes and join in data from
-#' [ThesisPackage::dna_specimens].
+#' [Thesis::dna_specimens].
 #'
 #' @param tree_file Nexus file of MrBayes results to read in by `treeio`.
 #' @export
@@ -12,7 +12,7 @@
 #' @return Tibble for [ggtree::ggtree()] plotting with joined DNA specimen data.
 #'
 #' @examples
-#' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#' list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   dplyr::select(node, single_label, label)
@@ -32,7 +32,7 @@ read_tree <- function(tree_file) {
     }) %>%
     dplyr::right_join(x = ., y = ggtree_import, by = "node") %>%
     dplyr::left_join(x = .,
-      y = ThesisPackage::dna_specimens,
+      y = Thesis::dna_specimens,
       by = c("single_label" = "label")
     )
   return(tree_data)
@@ -41,7 +41,7 @@ read_tree <- function(tree_file) {
 #' Label Multi-taxa Nodes
 #'
 #' For tips (i.e. terminal nodes) with multiple taxa split into
-#' `single_label` by [ThesisPackage::read_tree], create a new variable
+#' `single_label` by [Thesis::read_tree], create a new variable
 #' `node_group` to distinguish multi-sample genotype labels.
 #'
 #' @param tree_data Tibble output by [read_tree()] with ggtree node and
@@ -52,7 +52,7 @@ read_tree <- function(tree_file) {
 #'   variables where `node_group` represents multi-sample terminal nodes.
 #'
 #' @examples
-#' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#' list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   node_labels(tree_data = .)
@@ -97,7 +97,7 @@ node_labels <- function(tree_data) {
 #'   where `geom_size` represents geom sizes scaled by `node` and `id_column`.
 #'
 #' @examples
-#' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#' list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   node_geoms(tree_data = ., id_column = "prior_id")
@@ -123,11 +123,11 @@ node_geoms <- function(tree_data, id_column, scale_vector = c(4, 12)) {
 #' @export
 #'
 #' @return Tibble of multi-sample split node labels and geom sizes joined to
-#'   MrBayes import by [read_tree()] and [ThesisPackage::dna_specimens] data.
+#'   MrBayes import by [read_tree()] and [Thesis::dna_specimens] data.
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id")
@@ -135,11 +135,11 @@ node_geoms <- function(tree_data, id_column, scale_vector = c(4, 12)) {
 join_bayes <- function(tree_data, id_column, ...) {
   joined_ggtree <- tree_data %>%
     dplyr::left_join(x = .,
-      y = ThesisPackage::node_labels(tree_data = tree_data),
+      y = Thesis::node_labels(tree_data = tree_data),
       by = c("node", "single_label", "label")
     ) %>%
       dplyr::left_join(x = .,
-      y = ThesisPackage::node_geoms(
+      y = Thesis::node_geoms(
         tree_data = tree_data, id_column = id_column, ...
       ),
       by = c("node", id_column)) %>%
@@ -173,16 +173,16 @@ join_bayes <- function(tree_data, id_column, ...) {
 #'   DNA sequences for MrBayes analysis.
 #'
 #' @examples
-#' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#' list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   conserved_vouchers(tree_file = .,
 #'                      id_column = "prior_id", id_name = "Species")
 #'
 conserved_vouchers <- function(tree_file, id_column, id_name) {
-  tree_data <- ThesisPackage::read_tree(tree_file = tree_file)
-  conserved_specimens <- ThesisPackage::node_labels(tree_data) %>%
+  tree_data <- Thesis::read_tree(tree_file = tree_file)
+  conserved_specimens <- Thesis::node_labels(tree_data) %>%
     dplyr::filter(!is.na(.data$node_group)) %>%
-    dplyr::left_join(x = ., y = ThesisPackage::dna_specimens,
+    dplyr::left_join(x = ., y = Thesis::dna_specimens,
                      by = c("single_label" = "label")) %>%
     dplyr::select("node_group", !!id_column, "State",
                   "Collector", "Collection_Number") %>%
@@ -218,7 +218,7 @@ conserved_vouchers <- function(tree_file, id_column, id_name) {
 #'   `knitr::opts_knit$get("rmarkdown.pandoc.to")`
 #'
 #' @examples
-#' list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#' list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'            full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   conserved_vouchers(tree_file = .,
 #'                      id_column = "prior_id", id_name = "Species") %>%
