@@ -1,9 +1,9 @@
-# Verify installation of ThesisPackage data
-if (!"ThesisPackage" %in% installed.packages()) {
-  stop("Make sure ThesisPackage data are installed:",
-       "https://github.com/jasonratcliff/ThesisPackage")
+# Verify installation of Thesis data
+if (!"Thesis" %in% installed.packages()) {
+  stop("Make sure Thesis data are installed:",
+       "https://github.com/jasonratcliff/Thesis")
 } else {
-  library(ThesisPackage)
+  library(Thesis)
   library(dplyr)
   library(purrr)
   library(fs)

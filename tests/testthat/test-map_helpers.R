@@ -23,7 +23,7 @@ test_that("Bounding box extraction", {
   expect_equal(specimen_bbox[3, 2],
                max(herbarium_specimens$Latitude, na.rm = TRUE))
   specimen_ggmap <-
-    layer_ggmap(specimen_tbl = ThesisPackage::spp_co_front_range,
+    layer_ggmap(specimen_tbl = Thesis::spp_co_front_range,
                 gg_map_type = "satellite")
   expect_s3_class(spl_bbox(specimen_ggmap), class = "data.frame")
 })
@@ -54,7 +54,7 @@ test_that("Specimen identification(s) geoms", {
   # List of evaluated calls to `spl_id()` with sampled collections.
   spl_calls <-
     purrr::pmap(spl_ids, function(Collector, Collection_Number) {
-      rlang::call2(.fn = rlang::expr(ThesisPackage::spl_id),
+      rlang::call2(.fn = rlang::expr(Thesis::spl_id),
           specimen_tbl = herbarium_specimens,
           id_column = id_aes, shape_aes = id_aes,
           collector = Collector, collection = Collection_Number

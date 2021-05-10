@@ -17,13 +17,13 @@ test_that("Layer ggmap functions", {
                            gg_longitude = -111))
 
   # Test Longitude & Latitude midrange
-  expect_s3_class(layer_ggmap(specimen_tbl = ThesisPackage::spp_co_front_range,
+  expect_s3_class(layer_ggmap(specimen_tbl = Thesis::spp_co_front_range,
                               gg_map_type = "satellite"), "ggplot")
 })
 
 test_that("Layer elevation functions", {
   elev_ggplot <-
-    layer_elevation(specimen_tbl = ThesisPackage::spp_co_front_range,
+    layer_elevation(specimen_tbl = Thesis::spp_co_front_range,
                     raster_zoom = 7, raster_factor = 1)
   expect_s3_class(elev_ggplot, "ggplot")
   expect_s3_class(elev_ggplot$layers[[1]]$geom, "GeomTile")
