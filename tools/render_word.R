@@ -27,7 +27,7 @@ c(
       input = fs::path(filename, ext = "Rmd"),
       output_file = fs::path(filename, ext = "docx"),
       output_format = "bookdown::word_document2",
-      output_dir = "_word"
+      output_dir = "inst/word"
     )
   })
 
