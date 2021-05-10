@@ -26,7 +26,7 @@ if (knit_variables$pandoc == "latex") {
 
 ```{r ggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS}
 
-ThesisPackage::knitr_section(
+Thesis::knitr_section(
   knitr_title = "Nuclear rITS",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -53,7 +53,7 @@ if (knit_variables$pandoc == "latex") {
   )
 }
 
-ThesisPackage::knitr_section(
+Thesis::knitr_section(
   knitr_title = "Plastid *rps* Intron",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -86,7 +86,7 @@ if (knit_variables$pandoc == "latex") {
   )
 }
 
-ThesisPackage::knitr_section(
+Thesis::knitr_section(
   knitr_title = "Plastid *ycf1* ",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -116,7 +116,7 @@ knitr::include_graphics(
 ```{r sessionInfo}
 
 pkg_session <-
-  devtools::session_info(pkgs = "ThesisPackage")[2] %>%
+  devtools::session_info(pkgs = "Thesis")[2] %>%
   plyr::ldply(.data = .) %>%
   dplyr::select(package, ondiskversion, date, source) %>%
   setNames(object = ., nm = c("Package", "Version", "Date", "Source"))
@@ -125,7 +125,7 @@ if (knit_variables$pandoc == "latex") {
   knitr::kable(
     x = pkg_session, format = knit_variables$kable_format,
     longtable = TRUE, escape = TRUE,
-    caption = "\\texttt{ThesisPackage} R session info."
+    caption = "\\texttt{Thesis} R session info."
   ) %>%
     kableExtra::column_spec(column = 1, border_left = TRUE) %>%
     kableExtra::column_spec(column = 4, border_right = TRUE) %>%
