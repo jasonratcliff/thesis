@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Basal Leaf Margins.
-ggplotTraitMargins <- ThesisPackage::trait_margins %>%
+ggplotTraitMargins <- Thesis::trait_margins %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_viridis_d(option = "A") +
   labs(color = "Basal Leaf Margins")

@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(cowplot)
 
@@ -9,7 +9,7 @@ ggtree_geo <- list()
 ggtree_geo$data <-
   system.file(
     "extdata/BEAST/phylogeography.mcc",
-    package = "ThesisPackage"
+    package = "Thesis"
   ) %>%
   read_tree(tree_file = .)
 

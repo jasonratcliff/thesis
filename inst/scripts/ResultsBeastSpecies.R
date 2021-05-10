@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(ggtree)
 library(ggrepel)
@@ -8,7 +8,7 @@ library(cowplot)
 spp_hypothesis_1 <-
   treeio::read.beast(
     file = system.file(
-      "extdata/BEAST/spp-hypothesis-1.mcc", package = "ThesisPackage"
+      "extdata/BEAST/spp-hypothesis-1.mcc", package = "Thesis"
     )
   ) %>%
   ggtree::fortify() %>%
@@ -19,7 +19,7 @@ spp_hypothesis_1 <-
 spp_hypothesis_2 <-
   treeio::read.beast(
     file = system.file(
-      "extdata/BEAST/spp-hypothesis-2.mcc", package = "ThesisPackage"
+      "extdata/BEAST/spp-hypothesis-2.mcc", package = "Thesis"
     )
   ) %>%
   ggtree::fortify() %>%
@@ -30,7 +30,7 @@ spp_hypothesis_2 <-
 spp_hypothesis_3 <-
   treeio::read.beast(
     file = system.file(
-      "extdata/BEAST/spp-hypothesis-3.mcc", package = "ThesisPackage"
+      "extdata/BEAST/spp-hypothesis-3.mcc", package = "Thesis"
     )
   ) %>%
   ggtree::fortify() %>%
@@ -41,7 +41,7 @@ spp_hypothesis_3 <-
 spp_hypothesis_4 <-
   treeio::read.beast(
     file = system.file(
-      "extdata/BEAST/spp-hypothesis-4.mcc", package = "ThesisPackage"
+      "extdata/BEAST/spp-hypothesis-4.mcc", package = "Thesis"
     )
   ) %>%
   ggtree::fortify() %>%
