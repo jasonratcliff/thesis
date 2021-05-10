@@ -6,7 +6,7 @@ data-raw README
 Records of voucher specimens on loan from lending herbaria (RM, NY, MO,
 F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled
 into an excel file,
-[`specimens.xlsx`](https://github.com/jasonratcliff/ThesisPackage/blob/master/inst/extdata/specimens.xlsx).
+[`specimens.xlsx`](https://github.com/jasonratcliff/Thesis/blob/master/inst/extdata/specimens.xlsx).
 Data recorded from vouchers include locality, identification history,
 collector, collection number, date, institution, geographic coordinates,
 elevation, any ecological descriptions, and measurements of continuous
@@ -15,20 +15,20 @@ reviewed.
 
 ``` r
 # Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "ThesisPackage") %>%
+system.file("extdata/specimens.xlsx", package = "Thesis") %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
     ## [1] "extdata/specimens.xlsx"
 
 The
-[`herbarium_specimens.R`](https://github.com/jasonratcliff/ThesisPackage/blob/master/data-raw/specimens/herbarium_specimens.R)
+[`herbarium_specimens.R`](https://github.com/jasonratcliff/Thesis/blob/master/data-raw/specimens/herbarium_specimens.R)
 script creates an *.Rda* from `specimens.xlsx`, formatting specimen data
 for downstream phylogenetic, distribution, and morphological analyses to
-define a tibble `herbarium_specimens` in the `ThesisPackage` namespace.
+define a tibble `herbarium_specimens` in the `Thesis` namespace.
 
 ``` r
-ThesisPackage::herbarium_specimens
+Thesis::herbarium_specimens
 ```
 
     ## # A tibble: 1,712 x 66
@@ -86,7 +86,7 @@ Briefly, the script does the following:
     -   Combine variables with m / ft. elevation data
     -   Split minimum and maximum values and convert m to ft.
 -   Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    -   Create *dna\_specimens.Rda* with tibble in the `ThesisPackage`
+    -   Create *dna\_specimens.Rda* with tibble in the `Thesis`
         namespace
 
 # DNA Map
@@ -107,7 +107,7 @@ identifications and locations of DNA samples.
 
 Multi-FASTA files for sequenced loci were assembled from sequence
 chromatograms and deposited in the
-[`inst/extdata/FASTA`](https://github.com/jasonratcliff/ThesisPackage/blob/master/inst/extdata/FASTA)
+[`inst/extdata/FASTA`](https://github.com/jasonratcliff/Thesis/blob/master/inst/extdata/FASTA)
 subdirectory. Here, `FASTA` headers are formatted with two fields
 `accession` and `locus` following “&gt;.” A single whitespace separates
 the sample accession from the name of the locus, for example:
@@ -118,7 +118,7 @@ indicated in the second field of the `FASTA` headers.
 ``` r
 # Assign list of raw FASTA files from installed external package data.
 list.files(
-  path = system.file("extdata/FASTA", package = "ThesisPackage"),
+  path = system.file("extdata/FASTA", package = "Thesis"),
   full.names = TRUE
   ) %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
@@ -138,21 +138,21 @@ subsets for each locus were indexed by the set of specimens sequenced
 for all loci. Untrimmed, single locus `FASTA` files from
 [`inst/extdata/FASTA`]() and `FASTA` files filtered to common specimens
 in
-[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/sequencing/2.subset-fastas)
+[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/2.subset-fastas)
 were aligned using MAFFT version 7.306B ([Katoh and Standley
 2013](#ref-Katoh2013)). The G-INS-i alignment ([Katoh et al.
 2005](#ref-Katoh2005)) with iterative refinement and 1PAM / k=2
 nucleotide scoring matrix were set as alignment parameters. Aligned
 `FASTA` files were deposited in the
-[`data-raw/sequencing/3.alignments-single/`](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/sequencing/3.alignments-single)
+[`data-raw/sequencing/3.alignments-single/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.alignments-single)
 and
-[`data-raw/sequencing/3.alignments-subset/`](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/sequencing/3.alignments-subset)
+[`data-raw/sequencing/3.alignments-subset/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.alignments-subset)
 subdirectories. For the subset of samples with DNA sequence data from
 all three sample loci, a concatenated multi-FASTA file was compiled
 using the
-[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/ThesisPackage/blob/master/data-raw/sequencing/fasta-concat.R)
+[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/Thesis/blob/master/data-raw/sequencing/fasta-concat.R)
 Rscript, written to
-[`data-raw/sequencing/3.multi-locus/`](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/sequencing/3.multi-locus).
+[`data-raw/sequencing/3.multi-locus/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.multi-locus).
 
 ![](README_files/figure-gfm/diagFASTA-1.png)<!-- -->
 
@@ -165,7 +165,7 @@ using MEGA version 10.1.8 ([Kumar et al. 2018](#ref-Kumar2018);
 were calculated by p-distance treating gaps as pairwise deletions.
 Distance matrices and FASTA (*.fas*) files with combined headers for
 duplicate DNA sequences were deposited in
-[Bayes/MEGA/](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/Bayes/MEGA).
+[Bayes/MEGA/](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/Bayes/MEGA).
 Non-identical single locus (rITS, *rps*, *ycf1*) and concatenated
 multi-locus FASTA files were used as input for jModelTest ([Posada
 2008](#ref-Posada2008)) to assess evolutionary model fit. Lastly,
@@ -174,7 +174,7 @@ alignment gaps were coded using 2matrix ([Salinas and Little
 coding” as described by [Simmons and Ochoterena](#ref-Simmons2000)
 ([2000](#ref-Simmons2000)). Partitioned NEXUS (*.nex*) files with
 defined command blocks were deposited in
-[Bayes/Runs/](https://github.com/jasonratcliff/ThesisPackage/tree/master/data-raw/Bayes/Runs).
+[Bayes/Runs/](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/Bayes/Runs).
 
 ![](README_files/figure-gfm/diagMEGA-1.png)<!-- -->
 

@@ -1,7 +1,7 @@
-library(ThesisPackage)
+library(Thesis)
 
 # Results: ggplot distribution of specimen Ovule Number (per locule).
-trait_ovules <- ThesisPackage::herbarium_specimens %>%
+trait_ovules <- Thesis::herbarium_specimens %>%
   dplyr::select(
     "prior_id", "Taxon_a_posteriori", "Ovule_number",
     "Latitude", "Longitude", "Collector", "Collection_Number"

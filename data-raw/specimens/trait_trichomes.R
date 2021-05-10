@@ -1,7 +1,7 @@
-library(ThesisPackage)
+library(Thesis)
 
 # Results: ggplot distribution of specimen Fruit Trichomes.
-trait_trichomes <- ThesisPackage::herbarium_specimens %>%
+trait_trichomes <- Thesis::herbarium_specimens %>%
   separate_discrete_trait(
     specimen_tbl = .,
     trait_selection = "Fruit_trichomes"
