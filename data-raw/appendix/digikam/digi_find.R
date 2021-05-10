@@ -72,14 +72,14 @@ digi_search <- function(sheetname, specimens, digi_path) {
 
 # Map sheet names to search digikam photo directories for joined search patterns
 readxl::excel_sheets(path = specimens_xlsx) %>%
-purrr::map_dfr(., function(sheet) {
-  digi_paths <-
-    digi_search(sheetname = sheet,
-                specimens = Thesis::herbarium_specimens,
-                digi_path = digikam_path)
-  dplyr::bind_cols(excel_sheet = rep(sheet, times = nrow(digi_paths)),
-                   digi_paths)
-}) %>%
-  # setNames(object = ., nm = sheets) %>%
+  purrr::keep(.x = ., ~ !grepl(pattern = "excluded", x = .x)) %>%
+  purrr::map_dfr(., function(sheet) {
+    digi_paths <-
+      digi_search(sheetname = sheet,
+                  specimens = Thesis::herbarium_specimens,
+                  digi_path = digikam_path)
+    dplyr::bind_cols(excel_sheet = rep(sheet, times = nrow(digi_paths)),
+                     digi_paths)
+  }) %>%
   writexl::write_xlsx(x = ., path = "digikam/digikam.xlsx")
 
