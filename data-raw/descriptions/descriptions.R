@@ -40,7 +40,7 @@ specimen_counts %>%
   pull("Taxon_a_posteriori") %>%
   purrr::walk(.x = ., function(taxon) {
     template_description <-
-      base::readLines("_descriptions/_description.Rmd",
+      base::readLines("data-raw/descriptions/_description.Rmd",
         n = -1L, encoding = "UTF-8", warn = FALSE
       )
 
@@ -58,14 +58,14 @@ specimen_counts %>%
 
     # print(fs::path("_descriptions", spp_file(taxon), ext = "Rmd"))
     write_over(
-      path = fs::path("_descriptions", spp_file(taxon), ext = "Rmd"),
+      path = fs::path("data-raw/descriptions", spp_file(taxon), ext = "Rmd"),
       lines = template_whisker
     )
   })
 
 # Generate bookdown from .Rmd whisker templates.
 owd <- proj_get()
-setwd("_descriptions/")
+setwd("data-raw/descriptions")
 
 if (file_exists("_main.Rmd")) file_delete("_main.Rmd")
 clean_book(clean = TRUE)
@@ -75,7 +75,7 @@ render_book(
 )
 
 # Clean .Rmd files
-if (path_file(path_wd()) == "_descriptions") {
+if (path_file(path_wd()) == "descriptions") {
   list.files(
     pattern = "^P-",
     full.names = TRUE,
