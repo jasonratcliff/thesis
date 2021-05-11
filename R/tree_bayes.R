@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id")
@@ -74,7 +74,7 @@ bayes_ggtree <- function(joined_ggtree, id_column,
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id",
@@ -87,17 +87,17 @@ bayes_ggtree <- function(joined_ggtree, id_column,
 bayes_themes <- function(joined_ggtree, id_column) {
 
   # Assign HTML markdown label vector.
-  markdown_labels <- ThesisPackage::spl_labels(
+  markdown_labels <- Thesis::spl_labels(
     specimen_tbl = joined_ggtree,
     id_column = id_column
   )
 
   theme_layer <- list(
     ggplot2::scale_color_manual(
-      values = ThesisPackage::spp_color, labels = markdown_labels
+      values = Thesis::spp_color, labels = markdown_labels
     ),
     ggplot2::scale_shape_manual(
-      values = ThesisPackage::spp_shape, labels = markdown_labels
+      values = Thesis::spp_shape, labels = markdown_labels
     ),
     ggplot2::theme(
       legend.text = ggtext::element_markdown(size = 8),
@@ -134,7 +134,7 @@ bayes_themes <- function(joined_ggtree, id_column) {
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "ThesisPackage"),
+#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
 #'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id",

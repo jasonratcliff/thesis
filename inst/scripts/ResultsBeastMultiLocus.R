@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(cowplot)
 
@@ -9,7 +9,7 @@ ggtree_beast <- list()
 ggtree_beast$data <-
   system.file(
     "extdata/BEAST/multi-locus.combined.mcc",
-    package = "ThesisPackage"
+    package = "Thesis"
   ) %>%
   read_tree(tree_file = .)
 

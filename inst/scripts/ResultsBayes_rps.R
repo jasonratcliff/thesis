@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 library(ggtree)
@@ -11,7 +11,7 @@ ggtree_rps <- list()
 
 ggtree_rps$joined <-
   list.files(
-    path = system.file("extdata/MrBayes", package = "ThesisPackage"),
+    path = system.file("extdata/MrBayes", package = "Thesis"),
     pattern = "rps-infile.nex.con.tre",
     full.names = TRUE
   ) %>%

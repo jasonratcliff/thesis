@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 suppressMessages({
-  library(ThesisPackage)
+  library(Thesis)
   library(magrittr)
   library(ggplot2)
   library(lubridate)
@@ -18,7 +18,7 @@ species_appendix <- function(species_tab) {
 
   # Read in specimen data by sheet name and order columns for appendix style.
   specimens <-
-    ThesisPackage::herbarium_specimens %>% 
+    Thesis::herbarium_specimens %>% 
     dplyr::filter(excel_sheet == species_tab) %>%
     dplyr::select(
       dplyr::one_of(c("Taxon", "Location", "Elev_ft", "Elev_m",
@@ -42,7 +42,7 @@ species_appendix <- function(species_tab) {
 
 # Write .tsv files with selected appendix entry columns.
 readxl::excel_sheets(
-  path = system.file("extdata/specimens.xlsx", package = "ThesisPackage")
+  path = system.file("extdata/specimens.xlsx", package = "Thesis")
 ) %>% purrr::walk(.x = ., ~ species_appendix(species_tab = .))
 
 # Walk appendix files to cleanup formatting and write new .tsv files.

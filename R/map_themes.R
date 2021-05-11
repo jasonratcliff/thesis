@@ -77,15 +77,15 @@ spl_labels <- function(specimen_tbl, id_column) {
 layer_themes <- function(specimen_tbl, id_column, legend_title) {
 
   # Assign HTML markdown label vector.
-  markdown_labels <- ThesisPackage::spl_labels(specimen_tbl = specimen_tbl,
+  markdown_labels <- Thesis::spl_labels(specimen_tbl = specimen_tbl,
                                                id_column = id_column)
 
   # Build ggplot scale and theme layers.
   theme_layer <- list(
     ggplot2::scale_color_manual(name = legend_title, labels = markdown_labels,
-      values = ThesisPackage::spp_color, na.value = "black"),
+      values = Thesis::spp_color, na.value = "black"),
     ggplot2::scale_shape_manual(name = legend_title, labels = markdown_labels,
-      values = ThesisPackage::spp_shape, na.value = 17),
+      values = Thesis::spp_shape, na.value = 17),
 
     ggplot2::theme(
       panel.background = ggplot2::element_blank(),

@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 
 # Results: ggplot distribution of specimen Replum Shape.
 trait_replums <-
   separate_discrete_trait(
-    specimen_tbl = ThesisPackage::herbarium_specimens,
+    specimen_tbl = Thesis::herbarium_specimens,
     trait_selection = "Replum_shape"
   ) %>%
   dplyr::filter(

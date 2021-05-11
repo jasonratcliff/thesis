@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 if (fs::path_file(getwd()) != "data-raw") stop("Call from `data-raw/`")
 
 #  Assign Specimen Data ----
-dna_specimens <- ThesisPackage::dna_specimens %>%
+dna_specimens <- Thesis::dna_specimens %>%
   dplyr::select(-c("Latitude.y", "Longitude.y")) %>%
   dplyr::rename_at(.vars = dplyr::vars(dplyr::matches(".x$")),
                    ~ gsub(pattern = "\\.x$", replacement = "", x = .)) %>%
@@ -18,9 +18,9 @@ dna_specimens <- ThesisPackage::dna_specimens %>%
   dplyr::filter(!is.na(Latitude) & !is.na(Longitude))
 
 # Prior Annotations ----
-total_priors <- ThesisPackage::herbarium_specimens %>%
+total_priors <- Thesis::herbarium_specimens %>%
   dplyr::select(prior_id, Latitude, Longitude) %>%
-  ThesisPackage::subset_coords(specimen_tbl = .,
+  Thesis::subset_coords(specimen_tbl = .,
                                Latitude = c(37, 49.1),
                                Longitude = c(-115.2, -103)) %>%
   # Filter out Lesquerella / Physaria sensu lato spp.
@@ -43,7 +43,7 @@ dna_ggplot <- ggplot2::ggplot() +
 map_labels <-
   purrr::pmap(dna_specimens,
             function(Collector, Collection_Number, x_nudge, y_nudge, ...) {
-              rlang::call2(rlang::expr(ThesisPackage::map_spp_id),
+              rlang::call2(rlang::expr(Thesis::map_spp_id),
                            specimen_tbl = rlang::expr(dna_specimens),
                            gg_map_obj = rlang::expr(.), label_size = 2,
                            id_column = "prior_id",  shape_opt = "prior_id",

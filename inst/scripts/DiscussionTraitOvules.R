@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Ovule Number (per locule).
-ggplotTraitOvules <- ThesisPackage::trait_ovules %>%
+ggplotTraitOvules <- Thesis::trait_ovules %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_viridis_d(option = "D") +
   labs(color = "Ovules per Locule")

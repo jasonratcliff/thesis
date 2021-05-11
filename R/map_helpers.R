@@ -41,7 +41,7 @@ spl_order <- function(specimen_tbl, id_column) {
 #' @examples
 #' spl_bbox(herbarium_specimens)
 #'
-#' ggmap_ggplot <- layer_ggmap(specimen_tbl = ThesisPackage::spp_co_front_range,
+#' ggmap_ggplot <- layer_ggmap(specimen_tbl = Thesis::spp_co_front_range,
 #'                             gg_map_type = "satellite")
 #' spl_bbox(ggmap_ggplot)
 #' spl_bbox(spp_co_front_range)
@@ -149,7 +149,7 @@ spl_id <- function(specimen_tbl, id_column, collector, collection,
                    h_adjust = 0.25, v_adjust = -0.15) {
 
   # Call `find_spp()` function to get specimen annotation data.
-  spp_id <- ThesisPackage::find_spp(specimen_tbl = specimen_tbl,
+  spp_id <- Thesis::find_spp(specimen_tbl = specimen_tbl,
                                     collector = collector,
                                     collection = collection) %>%
     dplyr::mutate(

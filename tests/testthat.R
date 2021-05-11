@@ -1,4 +1,4 @@
 library(testthat)
-library(ThesisPackage)
+library(Thesis)
 
-test_check("ThesisPackage")
+test_check("Thesis")

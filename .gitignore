@@ -1,9 +1,5 @@
-.DS_Store
+*.DS_store
+.Rproj.user
 .Rhistory
 .RData
-.Rproj.user
-data-raw/SEINet/
-data-raw/BAYES/CIPRES
-data-raw/BEAST/CIPRES
-data-raw/BEAST/Species-Tree/species-hypothesis-[1-4]/*
-
+.Ruserdata

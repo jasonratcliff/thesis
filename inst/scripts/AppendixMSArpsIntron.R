@@ -1,11 +1,11 @@
-library(ThesisPackage)
+library(Thesis)
 library(ggplot2)
 library(cowplot)
 
 # rps Intron Alignment ----
 ggMSArpsIntron <-
   system.file("extdata/Alignments/rps-single.fasta",
-              package = "ThesisPackage") %>%
+              package = "Thesis") %>%
   potentially_informative_sites(
     fasta_file = .,
     seq_name = TRUE,

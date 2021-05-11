@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Basal Fruit Apices.
-ggplotTraitApices <- ThesisPackage::trait_apices %>%
+ggplotTraitApices <- Thesis::trait_apices %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_brewer(type = "qual", palette = "Set1") +
   labs(color = "Mature Fruit Apices")

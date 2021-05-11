@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(eval.after = 'fig.cap')
 
 library(magrittr)
-library(ThesisPackage)
+library(Thesis)
 
 # Note: phantomjs required for HTML rendering of of Diagrammer::mermaid()
 # - To install v2.1.1 via Homebrew:
@@ -22,61 +22,40 @@ library(ThesisPackage)
 ```
 
 ```{r linkSpecimens, echo=FALSE}
+link_github <- "https://github.com/jasonratcliff/Thesis/"
+
 link_spp_xlsx <- 
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "blob/master/inst/extdata/specimens.xlsx"
-  )
+  paste0(link_github, "blob/master/inst/extdata/specimens.xlsx")
+
 link_spp_script <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "blob/master/data-raw/specimens/herbarium_specimens.R"
-  )
+  paste0(link_github, "blob/master/data-raw/specimens/herbarium_specimens.R")
+
 link_fasta <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "blob/master/inst/extdata/FASTA"
-  )
+  paste0(link_github, "blob/master/inst/extdata/FASTA")
+
 link_seq_subset <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/sequencing/2.subset-fastas"
-  )
+  paste0(link_github, "tree/master/data-raw/sequencing/2.subset-fastas")
+
 link_aln_single <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/sequencing/3.alignments-single"
-  )
+  paste0(link_github, "tree/master/data-raw/sequencing/3.alignments-single")
+
 link_aln_concat <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/sequencing/3.alignments-subset"
-  )
+  paste0(link_github, "tree/master/data-raw/sequencing/3.alignments-subset")
+
 link_script_concat <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "blob/master/data-raw/sequencing/fasta-concat.R"
-  )
+  paste0(link_github, "blob/master/data-raw/sequencing/fasta-concat.R")
+
 link_multilocus <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/sequencing/3.multi-locus"
-  )
+  paste0(link_github, "tree/master/data-raw/sequencing/3.multi-locus")
+
 link_bayes_mega <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/Bayes/MEGA"
-  )
+  paste0(link_github, "tree/master/data-raw/Bayes/MEGA")
+
 link_bayes_nexus <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/Bayes/Runs"
-  )
+  paste0(link_github, "tree/master/data-raw/Bayes/Runs")
+
 link_beast_nexus <-
-  paste0(
-    "https://github.com/jasonratcliff/ThesisPackage/",
-    "tree/master/data-raw/BEAST/"
-  )
+  paste0(link_github, "tree/master/data-raw/BEAST/")
 ```
 
 # Specimen Data
@@ -92,17 +71,17 @@ unique collections were reviewed.
 
 ```{r specimenData}
 # Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "ThesisPackage") %>%
+system.file("extdata/specimens.xlsx", package = "Thesis") %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
 The [`herbarium_specimens.R`](`r link_spp_script`) script creates an *.Rda* 
 from `specimens.xlsx`, formatting specimen data for downstream phylogenetic,
 distribution, and morphological analyses to define a tibble
-`herbarium_specimens` in the `ThesisPackage` namespace.
+`herbarium_specimens` in the `Thesis` namespace.
 
 ```{r}
-ThesisPackage::herbarium_specimens
+Thesis::herbarium_specimens
 ```
 
 Briefly, the script does the following:
@@ -127,7 +106,7 @@ Briefly, the script does the following:
     - Split minimum and maximum values and convert m to ft.
 
 - Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    - Create *dna_specimens.Rda* with tibble in the `ThesisPackage` namespace
+    - Create *dna_specimens.Rda* with tibble in the `Thesis` namespace
 
 # DNA Map
 
@@ -158,7 +137,7 @@ where the locus is indicated in the second field of the `FASTA` headers.
 ```{r fastaFiles}
 # Assign list of raw FASTA files from installed external package data.
 list.files(
-  path = system.file("extdata/FASTA", package = "ThesisPackage"),
+  path = system.file("extdata/FASTA", package = "Thesis"),
   full.names = TRUE
   ) %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
@@ -327,7 +306,7 @@ fasta_summaries <- function(fasta_path) {
 ### Raw FASTAs
 
 ```{r summarizeRaw, echo=FALSE}
-fasta_summaries(system.file("extdata/FASTA", package = "ThesisPackage"))
+fasta_summaries(system.file("extdata/FASTA", package = "Thesis"))
 ```
 
 ### Subset FASTAs

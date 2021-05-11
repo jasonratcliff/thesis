@@ -2,7 +2,7 @@
 #
 # 1) Create `data/*.rda` Files
 #
-# Each .rda file contains an exported R data object in the ThesisPackage
+# Each .rda file contains an exported R data object in the Thesis
 # NAMESPACE. Scripts and raw data are contained in `data-raw/` subdirectories.
 #
 # Includes:
@@ -36,11 +36,11 @@ all: traits seinet specimens themes
 
 specimens: $(xlsx_herbaria) $(csv_spp_dna) $(rda_spp_dna) $(rda_herbaria) themes
 
-# Parsed herbarium voucher specimens as: `ThesisPackage::herbarium_specimens`
+# Parsed herbarium voucher specimens as: `Thesis::herbarium_specimens`
 data/herbarium_specimens.rda:
 	Rscript data-raw/specimens/herbarium_specimens.R
 
-# Subset of DNA specimens as: `ThesisPackage::dna_specimens`
+# Subset of DNA specimens as: `Thesis::dna_specimens`
 data/dna_specimens.rda: $(csv_spp_dna) $(r_spp_herb) $(r_spp_dna) $(xlsx_herbaria)
 	Rscript data-raw/specimens/dna_specimens.R
 
@@ -63,7 +63,7 @@ data/trait%.rda: data-raw/specimens/trait%.R
 
 ##### SEINet DATA #####
 
-# SEINet specimen occurrence available as: `ThesisPackage::seinet_coords`
+# SEINet specimen occurrence available as: `Thesis::seinet_coords`
 seinet: data-raw/SEINet/SEINet.R
 
 # Rscript is dependent on wildcard matched "occurrences.csv" files.

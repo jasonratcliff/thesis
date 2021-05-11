@@ -1,7 +1,7 @@
 library(shiny)
 library(knitr)
 
-library(ThesisPackage)
+library(Thesis)
 library(magrittr)
 library(dplyr)
 
@@ -23,7 +23,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   search <- reactive({
     req(input$search)
-    ThesisPackage::herbarium_specimens %>%
+    Thesis::herbarium_specimens %>%
       dplyr::filter(.data = .,
         grepl(pattern = input$collector, x = .data$Collector),
         grepl(pattern = input$collection, x = .data$Collection_Number)

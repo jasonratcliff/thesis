@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r}
 suppressMessages({
-  library(ThesisPackage)
+  library(Thesis)
   library(ggplot2)
   library(cowplot)
   library(dplyr)
@@ -40,15 +40,15 @@ summarize_discrete <- function(specimen_tbl, trait, separator = "[,;] ") {
 
 # Plot continuous trait observations
 summarize_continuous <- function(specimen_tbl, trait) {
-  
+
   # Split continuous trait into minimum and maximum range values.
   split_ranges <- specimen_tbl %>%
     select(all_of(trait)) %>%
     filter(!is.na(.data[[trait]])) %>%
-    ThesisPackage::range_split(trait_tbl = ., split_var = trait) %>%
+    Thesis::range_split(trait_tbl = ., split_var = trait) %>%
     rename_at(.tbl = ., .vars = vars(matches("_min")), ~ paste("Minimum")) %>%
     rename_at(.tbl = ., .vars = vars(matches("_max")), ~ paste("Maximum"))
-  
+
   # Create table with summary statistics for range of min / max observations.
   table_summary <-
     bind_rows(
@@ -58,7 +58,7 @@ summarize_continuous <- function(specimen_tbl, trait) {
     bind_cols(
       tibble("Range" = c("Minimum", "Maximum")), .
     )
-  
+
   # Pivot into tidy data and build ggplot object with boxplots.
   tidy_boxplots <-
     tidyr::pivot_longer(
@@ -70,7 +70,7 @@ summarize_continuous <- function(specimen_tbl, trait) {
     scale_x_discrete(limits = c("Minimum", "Maximum")) +
     labs(x = "Range", y = trait) +
     theme_classic()
-  
+
   # Built cowplot grid with ggplot and summary table.
   plot_grid(
     tidy_boxplots, gridExtra::tableGrob(d = table_summary),

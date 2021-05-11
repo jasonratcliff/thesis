@@ -37,7 +37,7 @@
 #' # Sys.getenv('TIGRIS_CACHE_DIR')
 #' # options(tigris_class = "sf", tigris_use_cache = TRUE)
 #' ggplot2::ggplot() +
-#'   layer_borders(spl_extent = spl_bbox(ThesisPackage::spp_co_front_range))
+#'   layer_borders(spl_extent = spl_bbox(Thesis::spp_co_front_range))
 #'
 layer_borders <- function(spl_extent, sf_crs = NULL,
                           sf_state_color = "black",
@@ -99,7 +99,7 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #'
 #' @examples
 #' ggplot2::ggplot() +
-#'   layer_specimens(specimen_tbl = ThesisPackage::spp_co_front_range,
+#'   layer_specimens(specimen_tbl = Thesis::spp_co_front_range,
 #'                   id_column = "Taxon_a_posteriori", shape_aes = FALSE,
 #'                   jitter_width = 0.033, jitter_height = 0.033)
 #'

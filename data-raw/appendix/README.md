@@ -9,10 +9,9 @@ library(ggplot2)
 To facilitate formatting appendix files for specimens reviewed, an
 Rscript was used to read in a column subset from each sheetname in the
 `specimens.xlsx` external data from
-[`ThesisPackage`](https://github.com/jasonratcliff/ThesisPackage). A
-*.tsv* file for each sheetnem in `specimens.xlsx` is written from
-entries without appendix completion (missing values in variable
-`App.A`).
+[`Thesis`](https://github.com/jasonratcliff/Thesis). A *.tsv* file for
+each sheetnem in `specimens.xlsx` is written from entries without
+appendix completion (missing values in variable `App.A`).
 
 ``` bash
 Rscript appendix_script.R
@@ -78,7 +77,7 @@ library(dplyr)
 
 ``` r
 library(ggplot2)
-library(ThesisPackage)
+library(Thesis)
 
 id_dates <- herbarium_specimens %>%
   select(ID) %>%

@@ -1,4 +1,14 @@
-# ThesisPackage 0.1.8.9001
+# Thesis 0.2.0
+
+* Merge `ThesisPackage` into single `Thesis` R package repository.
+    - Compartmentalize `bookdown` manuscript and `xaringan` slide rendering.
+    - Move top-level project directories to `inst/` and `data-raw/`
+        - Appendix summaries
+        - Species descriptions
+        - R markdown Word *.docx* chapters
+    - Update namespace for functions, data, and installed file paths.
+
+# ThesisPackage 0.1.9
 
 * Replace all instances of `ssp.` abbreviation with string `subsp.`
 

@@ -1,4 +1,4 @@
-library(ThesisPackage)
+library(Thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
@@ -7,7 +7,7 @@ set.seed(20210312)
 
 # Subset Specimens ----
 
-spp_lyrata <- ThesisPackage::herbarium_specimens %>%
+spp_lyrata <- Thesis::herbarium_specimens %>%
   subset_coords(
     specimen_tbl = .,
     Latitude = c(43, 47),
@@ -59,11 +59,11 @@ ggplot_specimens <- function() {
     ),
     ggplot2::scale_color_manual(
       name = "Annotations", labels = specimen_labels,
-      values = ThesisPackage::spp_color, na.value = "black"
+      values = Thesis::spp_color, na.value = "black"
     ),
     ggplot2::scale_shape_manual(
       name = "Annotations", labels = specimen_labels,
-      values = ThesisPackage::spp_shape, na.value = 17
+      values = Thesis::spp_shape, na.value = 17
     ),
     theme(
       legend.box = "horizontal",

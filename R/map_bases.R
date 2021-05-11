@@ -27,7 +27,7 @@
 #'  http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
 #'
 #' @examples
-#' ggmap_ggplot <- layer_ggmap(specimen_tbl = ThesisPackage::spp_co_front_range,
+#' ggmap_ggplot <- layer_ggmap(specimen_tbl = Thesis::spp_co_front_range,
 #'                             gg_map_type = "satellite", zoom_lvl = 8)
 #' ggmap_ggplot +
 #'   layer_borders(spl_extent = spl_bbox(ggmap_ggplot)) +
@@ -94,7 +94,7 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #' @examples
 #' library(ggplot2)
 #' elev_ggplot <-
-#'   layer_elevation(specimen_tbl = ThesisPackage::spp_co_front_range,
+#'   layer_elevation(specimen_tbl = Thesis::spp_co_front_range,
 #'                   raster_zoom = 7, raster_factor = 1)
 #' elev_ggplot +
 #'   layer_specimens(specimen_tbl = spp_co_front_range,

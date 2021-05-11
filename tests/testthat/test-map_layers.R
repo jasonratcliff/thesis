@@ -17,8 +17,8 @@ test_that("Specimen layer works", {
 
   # Test ggplot builds
   specimen_ggplot <- function(shape_opt) {
-    ggplot(data = ThesisPackage::spp_co_front_range) +
-      layer_specimens(specimen_tbl = ThesisPackage::spp_co_front_range,
+    ggplot(data = Thesis::spp_co_front_range) +
+      layer_specimens(specimen_tbl = Thesis::spp_co_front_range,
                       id_column = "Taxon_a_posteriori", shape_aes = shape_opt)
   }
   specimen_ggplots <- lapply(X = c(TRUE, FALSE), specimen_ggplot)
@@ -29,7 +29,7 @@ test_that("Specimen layer works", {
 
 test_that("Border layer works", {
   border_layer <- ggplot() +
-    layer_borders(spl_extent = spl_bbox(ThesisPackage::spp_co_front_range),
+    layer_borders(spl_extent = spl_bbox(Thesis::spp_co_front_range),
                   sf_crs = 3857)
   expect_s3_class(object = border_layer$layers[[1]]$geom,
                   class = c("GeomSf", "Geom", "ggproto", "gg"))

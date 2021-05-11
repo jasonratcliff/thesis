@@ -1,9 +1,9 @@
-library(ThesisPackage)
+library(Thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Fruit Trichomes.
-ggplotTraitTrichomes <- ThesisPackage::trait_trichomes %>%
+ggplotTraitTrichomes <- Thesis::trait_trichomes %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_brewer(palette = "Paired") +
   labs(color = "Fruit Trichomes")

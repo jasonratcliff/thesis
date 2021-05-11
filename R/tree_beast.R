@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' list.files(
-#'   path = system.file("extdata/BEAST", package = "ThesisPackage"),
+#'   path = system.file("extdata/BEAST", package = "Thesis"),
 #'   pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'   ) %>%
 #'   read_tree(tree_file = .) %>%
@@ -43,7 +43,7 @@ beast_posterior <- function() {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
+#'     path = system.file("extdata/BEAST", package = "Thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'     ) %>%
 #'     read_tree(tree_file = .)
@@ -95,7 +95,7 @@ beast_labels <- function(tree_data) {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
+#'     path = system.file("extdata/BEAST", package = "Thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'     ) %>%
 #'     read_tree(tree_file = .)
@@ -116,10 +116,10 @@ beast_theme <- function(tree_data) {
   theme_list <-
     list(
       ggplot2::scale_color_manual(
-        "Annotations", values = ThesisPackage::spp_color, labels = id_labels
+        "Annotations", values = Thesis::spp_color, labels = id_labels
       ),
       ggplot2::scale_shape_manual(
-        "Annotations", values = ThesisPackage::spp_shape, labels = id_labels
+        "Annotations", values = Thesis::spp_shape, labels = id_labels
       ),
       ggplot2::theme(
         legend.text = ggtext::element_markdown(),
@@ -147,7 +147,7 @@ beast_theme <- function(tree_data) {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "ThesisPackage"),
+#'     path = system.file("extdata/BEAST", package = "Thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'   ) %>%
 #'   read_tree(tree_file = .)
@@ -173,13 +173,13 @@ beast_plot <- function(tree_data, ggtree_layout = "circular") {
 #'
 #' @return `gtable` object with specimen label legend.
 #'
-beast_legend_color <- function(tree_data) {
+beast_legend_color <- function(tree_data, ncol = 2) {
   color_legend <-
     cowplot::get_legend(
       ggtree::ggtree(tree_data) +
         beast_labels(tree_data = tree_data) +
         beast_theme(tree_data = tree_data) +
-        ggplot2::guides(col = ggplot2::guide_legend(ncol = 2))
+        ggplot2::guides(col = ggplot2::guide_legend(ncol = ncol))
     )
   return(color_legend)
 }
@@ -216,7 +216,7 @@ beast_legend_probability <- function(tree_data) {
 #' @examples
 #' treeio::read.beast(
 #'   file = system.file("extdata/BEAST/spp-hypothesis-4.mcc",
-#'                      package = "ThesisPackage")
+#'                      package = "Thesis")
 #'   ) %>%
 #'   ggtree::fortify() %>%
 #'   species_plot(tree_data = .)
