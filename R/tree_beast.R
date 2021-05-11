@@ -173,13 +173,13 @@ beast_plot <- function(tree_data, ggtree_layout = "circular") {
 #'
 #' @return `gtable` object with specimen label legend.
 #'
-beast_legend_color <- function(tree_data) {
+beast_legend_color <- function(tree_data, ncol = 2) {
   color_legend <-
     cowplot::get_legend(
       ggtree::ggtree(tree_data) +
         beast_labels(tree_data = tree_data) +
         beast_theme(tree_data = tree_data) +
-        ggplot2::guides(col = ggplot2::guide_legend(ncol = 2))
+        ggplot2::guides(col = ggplot2::guide_legend(ncol = ncol))
     )
   return(color_legend)
 }
