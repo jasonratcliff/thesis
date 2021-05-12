@@ -58,4 +58,15 @@ inst/figures/%.png: inst/scripts/%.R
 word:
 	Rscript tools/render_word.R
 
+# Build species descriptions bookdown.
+descriptions:
+	Rscript data-raw/descriptions/descriptions.R
+
+# Render project README files.
+readme:
+	Rscript tools/render_readme.R
+
+clean:
+	rm Rplots.pdf
+	rm inst/figures/*
 
