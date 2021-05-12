@@ -1,66 +1,58 @@
 ################################################################################
 #
-# 1) Create `data/*.rda` Files
+# 1) Create `data/*.rda` files
 #
-# Each .rda file contains an exported R data object in the Thesis
+# Each `.rda` file contains an exported R data object in the Thesis
 # NAMESPACE. Scripts and raw data are contained in `data-raw/` subdirectories.
 #
 # Includes:
-#   - Tidied herbarium voucher data and sampled DNA specimens
-#   - SEINet occurrences
+#   - Herbarium voucher data    `herbarium_specimens`
+#   - Sampled DNA specimens     `dna_specimens`
+#   - SEINet occurrences        `seinet_coords`
+#   - ggplot aesthetic values   `spp_(color|shape)`
 #
-# 2) Generate README `github_document` output.
+# 2) Write figure images to `inst/figures/*(.png|.pnf)`
 #
-#   - `data-raw/`
+# - File stems are matched by R scripts in `inst/scripts/*.R`
 #
+# `data-raw/` R scripts to render binary `.Rda` files.
+r_spp	:= data-raw/specimens/herbarium_specimens.R
+r_dna	:= data-raw/specimens/dna_specimens.R
+r_themes	:= data-raw/mapping/map_themes.R
+r_seinet	:= data-raw/SEINet/SEINet.R
+rda_specimens	:= $(wildcard data/*specimens.rda)
+rda_themes	:= $(wildcard data/spp*.rda)
 
-# File paths to scripts, raw data, and binary .rda files.
-xlsx_herbaria	:= inst/extdata/specimens.xlsx
+# `inst/scripts/` R scripts to render `inst/figures/` images.
+inst_scripts 	:= $(wildcard inst/scripts/*.R)
+inst_figures 	:= $(inst_scripts:inst/scripts%=inst/figures%)
+pdf		:= $(inst_figures:%.R=%.pdf)
+png		:= $(inst_figures:%.R=%.png)
 
-csv_spp_dna	:= data-raw/specimens/dna_specimens.csv
-csv_seinet	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
-r_spp_herb	:= data-raw/specimens/herbarium_specimens.R
-r_spp_dna	:= data-raw/specimens/dna_specimens.R
-r_spp_themes	:= data-raw/mapping/map_themes.R
-
-rda_herbaria	:= data/herbarium_specimens.rda
-rda_spp_dna	:= data/dna_specimens.rda
-
-all: traits seinet specimens themes
 .PHONY: all
+all: specimens themes seinet figures word
 
-##### SPECIMEN DATA #####
+# Write .rda binary `data/` files.
+specimens: $(rda_specimens)
+data/herbarium_specimens.rda: $(r_spp) inst/extdata/specimens.xlsx
+	Rscript $(r_spp)
+data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna_specimens.csv
+	Rscript $(r_dna)
 
-specimens: $(xlsx_herbaria) $(csv_spp_dna) $(rda_spp_dna) $(rda_herbaria) themes
+themes: $(rda_themes)
+data/spp_color.rda data/spp_shape.rda: $(r_themes)
+	Rscript $(r_themes)
 
-# Parsed herbarium voucher specimens as: `Thesis::herbarium_specimens`
-data/herbarium_specimens.rda:
-	Rscript data-raw/specimens/herbarium_specimens.R
+seinet: data/seinet_coords.rda
+data/seinet_coords.rda: $(r_seinet) data-raw/SEINet/P*/occurrences.csv
+	Rscript $(r_seinet)
 
-# Subset of DNA specimens as: `Thesis::dna_specimens`
-data/dna_specimens.rda: $(csv_spp_dna) $(r_spp_herb) $(r_spp_dna) $(xlsx_herbaria)
-	Rscript data-raw/specimens/dna_specimens.R
-
-# ggplot aesthetic manual value specifications
-themes: data/spp_color.rda data/spp_shape.rda
-
-data/spp_color.rda data/spp_shape.rda: $(r_spp_themes)
-	Rscript data-raw/mapping/map_themes.R
-
+# Write .png / .pdf image `inst/figures/` files.
+figures: $(pdf) $(png)
+inst/figures/%.pdf: inst/scripts/%.R
+	Rscript $(<D)/$(<F)
+inst/figures/%.png: inst/scripts/%.R
 	Rscript $(<D)/$(<F)
 
-##### SEINet DATA #####
 
-# SEINet specimen occurrence available as: `Thesis::seinet_coords`
-seinet: data-raw/SEINet/SEINet.R
 
-# Rscript is dependent on wildcard matched "occurrences.csv" files.
-data/seinet_coords.rda: $(csv_seinet)
-	Rscript data-raw/SEINet/SEINet.R
-
-##### README #####
-
-# Generate data-raw/README as `github_document` output.
-data-raw/README.md: data-raw/README.Rmd data-raw/mapping/map-dna.R
-	Rscript -e 'rmarkdown::render(input = "data-raw/README.Rmd", output_format = "github_document", output_file = "README.md")';\
-	rm data-raw/README.html
