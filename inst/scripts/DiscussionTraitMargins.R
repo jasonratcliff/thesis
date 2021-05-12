@@ -3,7 +3,20 @@ library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Basal Leaf Margins.
-ggplotTraitMargins <- Thesis::trait_margins %>%
+trait_margins <- Thesis::herbarium_specimens %>%
+  separate_discrete_trait(
+    specimen_tbl = .,
+    trait_selection = "Basal_leaf_margins"
+  ) %>%
+  dplyr::filter(
+    !grepl(pattern = paste(c("obtuse", "acute"), collapse = "|"),
+           x = .data$Trait)
+  ) %>%
+  dplyr::mutate(
+    Trait = capitalize(character_vector = .data$Trait)
+  )
+
+ggplotTraitMargins <- trait_margins %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_viridis_d(option = "A") +
   labs(color = "Basal Leaf Margins")

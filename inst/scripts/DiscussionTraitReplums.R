@@ -3,7 +3,25 @@ library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Replum Shape.
-ggplotTraitReplums <- Thesis::trait_replums %>%
+trait_replums <-
+  separate_discrete_trait(
+    specimen_tbl = Thesis::herbarium_specimens,
+    trait_selection = "Replum_shape"
+  ) %>%
+  dplyr::filter(
+    !grepl(pattern = paste(c("obtuse", "constricted"), collapse = "|"),
+           x = .data$Trait)
+  ) %>%
+  dplyr::mutate(
+    Trait = purrr::map_chr(.x = .data$Trait, function(trait) {
+      trait %>%
+        gsub("oblanceolate|obovate", "Oblanceolate | Obovate", x = .) %>%
+        gsub("elliptic|oblong", "Elliptic | Oblong", x = .) %>%
+        capitalize(character_vector = .)
+    })
+  ) %>% dplyr::distinct()
+
+ggplotTraitReplums <- trait_replums %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_brewer(type = "qual", palette = "Dark2") +
   labs(color = "Replum Shape")

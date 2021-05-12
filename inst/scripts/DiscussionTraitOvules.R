@@ -3,7 +3,20 @@ library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Ovule Number (per locule).
-ggplotTraitOvules <- Thesis::trait_ovules %>%
+trait_ovules <- Thesis::herbarium_specimens %>%
+  dplyr::select(
+    "prior_id", "Taxon_a_posteriori", "Ovule_number",
+    "Latitude", "Longitude", "Collector", "Collection_Number"
+  ) %>%
+  dplyr::filter(!is.na(.data$Ovule_number)) %>%
+  dplyr::bind_cols(., range_split(trait_tbl = .,
+                                  split_var = "Ovule_number")) %>%
+  dplyr::rename(Trait = "Ovule_number_max") %>%
+  dplyr::mutate(
+    Trait = as.factor(x = .data$Trait)
+  )
+
+ggplotTraitOvules <- trait_ovules %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_viridis_d(option = "D") +
   labs(color = "Ovules per Locule")

@@ -7,7 +7,6 @@
 #
 # Includes:
 #   - Tidied herbarium voucher data and sampled DNA specimens
-#   - Trait observations (discrete | continuous)
 #   - SEINet occurrences
 #
 # 2) Generate README `github_document` output.
@@ -23,11 +22,9 @@ csv_seinet	:= $(wildcard data-raw/SEINet/P*/occurrences.csv)
 r_spp_herb	:= data-raw/specimens/herbarium_specimens.R
 r_spp_dna	:= data-raw/specimens/dna_specimens.R
 r_spp_themes	:= data-raw/mapping/map_themes.R
-r_traits	:= $(wildcard data-raw/specimens/trait*.R)
 
 rda_herbaria	:= data/herbarium_specimens.rda
 rda_spp_dna	:= data/dna_specimens.rda
-rda_traits	:= $(wildcard data/trait*.rda)
 
 all: traits seinet specimens themes
 .PHONY: all
@@ -50,15 +47,6 @@ themes: data/spp_color.rda data/spp_shape.rda
 data/spp_color.rda data/spp_shape.rda: $(r_spp_themes)
 	Rscript data-raw/mapping/map_themes.R
 
-##### TRAIT DATA #####
-
-# Save .Rda files for specimen discrete and continuous trait subsets.
-traits: $(r_traits) $(rda_traits)
-
-$(r_traits) $(rda_traits): data/herbarium_specimens.rda
-
-# trait%.rda - Pattern rule for compressed .rda (R data) trait files.
-data/trait%.rda: data-raw/specimens/trait%.R
 	Rscript $(<D)/$(<F)
 
 ##### SEINet DATA #####
