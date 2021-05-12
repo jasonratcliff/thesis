@@ -1,3 +1,7 @@
+# Thesis 0.2.0.9000
+
+* Update project `Makefile` post package merge
+
 # Thesis 0.2.0
 
 * Merge `ThesisPackage` into single `Thesis` R package repository.

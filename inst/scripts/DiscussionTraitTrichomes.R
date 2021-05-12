@@ -3,7 +3,23 @@ library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Fruit Trichomes.
-ggplotTraitTrichomes <- Thesis::trait_trichomes %>%
+trait_trichomes <- Thesis::herbarium_specimens %>%
+  separate_discrete_trait(
+    specimen_tbl = .,
+    trait_selection = "Fruit_trichomes"
+  ) %>%
+  dplyr::filter(
+    grepl(pattern = paste(c("spreading", "appressed"), collapse = "|"),
+          x = .data$Trait)
+  ) %>%
+  dplyr::mutate(
+    Trait = dplyr::case_when(
+      grepl("spreading", x = .data$Trait) ~ "Spreading",
+      grepl("appressed", x = .data$Trait) ~ "Appressed"
+    )
+  )
+
+ggplotTraitTrichomes <- trait_trichomes %>%
   map_trait_distribution(tidy_trait = .) +
   scale_color_brewer(palette = "Paired") +
   labs(color = "Fruit Trichomes")
