@@ -30,7 +30,7 @@ pdf		:= $(inst_figures:%.R=%.pdf)
 png		:= $(inst_figures:%.R=%.png)
 
 .PHONY: all
-all: specimens themes seinet figures word
+all: specimens themes seinet figures
 
 # Write .rda binary `data/` files.
 specimens: $(rda_specimens)
@@ -54,5 +54,8 @@ inst/figures/%.pdf: inst/scripts/%.R
 inst/figures/%.png: inst/scripts/%.R
 	Rscript $(<D)/$(<F)
 
+# Render R markdown .docx chapter files.
+word:
+	Rscript tools/render_word.R
 
 

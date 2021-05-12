@@ -11,8 +11,8 @@ if (dir_check != "Thesis") {
   stop("Verify working directory is set to 'Thesis/' root project directory.")
 }
 
-if (!fs::dir_exists("_word")) {
-  fs::dir_create("_word")
+if (!fs::dir_exists("inst/word")) {
+  fs::dir_create("inst/word")
 }
 
 c(
@@ -24,7 +24,7 @@ c(
 ) %>%
   purrr::walk(.x = ., function(filename) {
     rmarkdown::render(
-      input = fs::path(filename, ext = "Rmd"),
+      input = fs::path("inst/manuscript/", filename, ext = "Rmd"),
       output_file = fs::path(filename, ext = "docx"),
       output_format = "bookdown::word_document2",
       output_dir = "inst/word"
