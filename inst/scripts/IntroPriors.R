@@ -51,6 +51,7 @@ priors$ggplot <- ggplot() +
     ylim = range(Thesis::spl_bbox(priors$specimens)[["Latitude"]])
   )
 
+# Map ----
 priors$map <-
   priors$ggplot +
   theme(
@@ -61,6 +62,11 @@ priors$map <-
   ) +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0))
+
+# .pdf ----
+
+priors$map_pdf <- priors$map +
+  theme(plot.margin = margin(0, -2.5, 0, -3, "in"))
 
 priors$legend_pdf <-
   get_legend(
@@ -73,6 +79,19 @@ priors$legend_pdf <-
       )
   )
 
+priors$figure_pdf <-
+  plot_grid(
+    priors$map_pdf,
+    priors$legend_pdf,
+    ncol = 1,
+    rel_heights = c(0.75, 0.25)
+  )
+
+# .png ----
+
+priors$map_png <- priors$map +
+  theme(plot.margin = margin(0.25, -2.5, 0.25, -2.5, "in"))
+
 priors$legend_png <-
   get_legend(
     priors$ggplot +
@@ -84,28 +103,22 @@ priors$legend_png <-
       )
   )
 
-priors$figure_pdf <-
-  plot_grid(
-    priors$map,
-    priors$legend_pdf,
-    ncol = 1,
-    rel_heights = c(0.75, 0.25)
-  )
-
 priors$figure_png <-
   plot_grid(
-    priors$map,
+    priors$map_png,
     priors$legend_png,
     nrow = 1,
     rel_widths = c(0.8, 0.2)
   )
 
+# cowplot Grid ----
+
 purrr::pwalk(
   .l = list(
     ext = c("png", "pdf"),
     plot = list(priors$figure_png, priors$figure_pdf),
-    width = c(6, 6),
-    height = c(8, 4),
+    width = c(5, 6),
+    height = c(7, 4),
     aspect = c(.167, 2.5),
     row = c(1, 2),
     col = c(2, 1)

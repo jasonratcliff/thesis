@@ -14,6 +14,7 @@ carbon$bears_ear <-
     "Middle Park", -105.94, 40.11
   )
 
+# Specimens ----
 carbon$specimens <-
   subset_coords(specimen_tbl = Thesis::herbarium_specimens,
                 Latitude = c(39.1, 41.9), Longitude = c(-107.9, -105.1)) %>%
@@ -44,6 +45,8 @@ carbon$aesthetics <-
 carbon$labels <- carbon$specimens %>%
   dplyr::filter(grepl("Kastning|Nelson", Collector)) %>%
   dplyr::filter(grepl("1462|1725|49286|49478", Collection_Number))
+
+# Map ----
 
 # Satellite map of Carbon, WY specimens.
 carbon$ggplot <-
@@ -93,6 +96,7 @@ carbon$ggplot <-
   ) +
   labs(x = "Longitude", y = "Latitude")
 
+# Labels ----
 carbon$map <- carbon$ggplot +
   geom_text(
     data = carbon$bears_ear,
@@ -127,9 +131,13 @@ carbon$map <- carbon$ggplot +
   theme(
     panel.background = element_rect(fill = "grey99"),
     panel.grid = element_blank(),
-    legend.position = "none",
-    plot.margin = margin(0, 0.5, -1, 0, "in")
+    legend.position = "none"
   )
+
+# .pdf ----
+
+carbon$map_pdf <- carbon$map +
+  theme(plot.margin = margin(0, 0.5, -1, 0, "in"))
 
 carbon$legend_pdf <-
   get_legend(
@@ -142,22 +150,11 @@ carbon$legend_pdf <-
       )
   )
 
-carbon$legend_png <-
-  get_legend(
-    carbon$ggplot +
-      guides(color = guide_legend(ncol = 1)) +
-      theme(
-        legend.background = element_rect(fill = "grey99"),
-        legend.position = "right",
-        legend.direction = "vertical"
-      )
-  )
-
 carbon$figure_pdf <-
   plot_grid(
     plotlist = list(
       NULL,
-      carbon$map,
+      carbon$map_pdf,
       NULL,
       carbon$legend_pdf
     ),
@@ -165,20 +162,39 @@ carbon$figure_pdf <-
     rel_heights = c(-0.1, 0.8, -0.1, 0.2)
   )
 
+# .png ----
+
+carbon$map_png <- carbon$map +
+  theme(plot.margin = margin(0.25, -2.5, 0.25, -2.5, "in"))
+
+carbon$legend_png <-
+  get_legend(
+    carbon$ggplot +
+      guides(color = guide_legend(ncol = 1)) +
+      theme(
+        legend.background = element_rect(fill = "grey99"),
+        legend.position = "right",
+        legend.direction = "vertical",
+        plot.margin = margin(0, -0.25, 0, 0.1, "in")
+      )
+  )
+
 carbon$figure_png <-
   plot_grid(
-    carbon$map,
+    carbon$map_png,
     carbon$legend_png,
     nrow = 1,
-    rel_widths = c(0.8, 0.2)
+    rel_widths = c(0.75, 0.25)
   )
+
+# cowplot Grid ----
 
 purrr::pwalk(
   .l = list(
     ext = c("png", "pdf"),
     plot = list(carbon$figure_png, carbon$figure_pdf),
     width = c(6, 6),
-    height = c(7.5, 4),
+    height = c(8, 4),
     aspect = c(.167, 2.5),
     row = c(1, 2),
     col = c(2, 1)
