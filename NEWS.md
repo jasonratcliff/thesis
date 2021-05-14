@@ -1,4 +1,4 @@
-# Thesis 0.2.0.9005
+# Thesis 0.2.0.9009
 
 * Tune plot margins for *.png* and *.pdf* images.
 
@@ -6,6 +6,8 @@
 
 * Update project `Makefile` and package dependencies.
     - Render figures before install and check to compile manuscript.
+
+* Fix join of DNA specimens by specifying collection coordinate variables.
 
 # Thesis 0.2.0
 
