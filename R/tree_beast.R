@@ -169,6 +169,7 @@ beast_plot <- function(tree_data, ggtree_layout = "circular") {
 #' Extract Color Legend
 #'
 #' @inheritParams node_labels
+#' @param ncol Number of columns for annotation legend guide.
 #' @export
 #'
 #' @return `gtable` object with specimen label legend.

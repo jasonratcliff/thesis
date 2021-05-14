@@ -78,8 +78,8 @@ specimens$raw <-
 # and saved to a new column using 'paste special...' by value.
 #
 # Check for log directory, create if non-existent, and open log file.
-if (!dir.exists("log")) {
-  dir.create("log")
+if (!dir.exists("inst/log")) {
+  dir.create("inst/log")
 }
 
 # Select date columns, filter by format, and write mismatches to a .csv log.
@@ -90,7 +90,7 @@ specimens$raw %>%
     !grepl(pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
            x = as.character(Date_parsed)) & !is.na(Date) |
       !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)) %>%
-  readr::write_excel_csv(x = ., file = "log/remaining_dates.csv")
+  readr::write_excel_csv(x = ., file = "inst/log/remaining_dates.csv")
 
 # Parse Prior ID ----
 
