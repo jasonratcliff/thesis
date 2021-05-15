@@ -20,7 +20,7 @@ spp_color <-
     "Physaria floribunda subsp. floribunda" = "#8B0000",  # dark red
     "Physaria floribunda subsp. osterhoutii" = "#ff5c5c",  # dark gray
     "Physaria rollinsii" = "#000000",  # black
-    "Physaria vitulifera - Carbon" = "#00008B",  # dark blue
+    "Physaria vitulifera - Carbon" = "#c5ff6e",  # bright green
     "Physaria acutifolia - vitulifera-like" = "#00FFFF",  # cyan
     "Physaria argyraea" = "#000000",
     "Physaria fendleri" = "#000000",
@@ -43,13 +43,13 @@ spp_shape <-
     "Physaria didymocarpa subsp. lyrata" =  17,
     "Physaria saximontana subsp. dentata" =  18,
     "Physaria saximontana subsp. saximontana" = 18,
-    "Physaria bellii" = 17,
+    "Physaria bellii" = 5, # hollow diamond
     "Physaria chambersii" = 17,
     "Physaria floribunda subsp. floribunda" = 0,  # hollow square
-    "Physaria floribunda subsp. osterhoutii" = 5,  # hollow diamond
+    "Physaria floribunda subsp. osterhoutii" = 5,
     "Physaria rollinsii" = 1,  # hollow circle
     "Physaria acutifolia - vitulifera-like" = 17,
-    "Physaria vitulifera - Carbon" = 17,
+    "Physaria vitulifera - Carbon" = 18,
     "Physaria argyraea" = 5,
     "Physaria fendleri" = 0,
     "Physaria obcordata" = 1
