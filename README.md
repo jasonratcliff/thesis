@@ -11,6 +11,7 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+![](README_files/figure-gfm/punchCard-1.png)<!-- -->
 ## `Makefile` Targets
 
 GNU [make](-%20https://www.gnu.org/software/make/) is used for rendering
