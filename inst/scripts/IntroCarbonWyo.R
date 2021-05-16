@@ -11,7 +11,7 @@ carbon <- list()
 carbon$specimens <-
   Thesis::subset_coords(
     specimen_tbl = Thesis::herbarium_specimens,
-    Longitude = c(-107.9, -105.1),
+    Longitude = c(-109, -105),
     Latitude = c(39.1, 41.9)
   ) %>%
   dplyr::mutate(
@@ -23,17 +23,6 @@ carbon$specimens <-
         "Physaria acutifolia - vitulifera-like",
       TRUE ~ as.character(.data$Taxon_a_posteriori)
     )
-  )
-
-# Labels ----
-
-# Row tibble for text annotation of Bears Ears Range area.
-carbon$bears_ear <-
-  tibble::tribble(
-    ~"Feature", ~"Longitude", ~"Latitude",
-    "Bears Ears\nRange", -106.025, 40.45,
-    "North\nPark", -106.25, 40.75,
-    "Middle\nPark", -105.94, 40.11
   )
 
 # Aesthetic values from combined herbarium and SEINet records.
@@ -56,7 +45,7 @@ carbon$aesthetics <-  # Drop duplicate aesthetics values from named vector
 carbon$dna <-
   Thesis::subset_coords(
     specimen_tbl = Thesis::dna_specimens,
-    Longitude = c(-108, -105),
+    Longitude = c(-108.5, -105),
     Latitude = c(39, 42)
   ) %>%
   dplyr::select(Collector, Collection_Number, Longitude, Latitude) %>%
@@ -107,7 +96,7 @@ carbon$ggplot <-
   Thesis::layer_ggmap(
     specimen_tbl = carbon$specimens,
     gg_map_type = "satellite", zoom_lvl = 8,
-    gg_longitude = -106.5, gg_latitude = 40.4
+    gg_longitude = -106.75, gg_latitude = 40.4
   ) +
   Thesis::layer_borders(
     spl_extent = Thesis::spl_bbox(carbon$specimens),
@@ -120,9 +109,21 @@ carbon$ggplot <-
     legend_status = TRUE
   ) +
   geom_text(
-    data = carbon$bears_ear,
+    data = tibble::tribble(
+      ~"Feature", ~"Longitude", ~"Latitude",
+      "North\nPark", -106.25, 40.75,
+      "Middle\nPark", -105.94, 40.11
+    ),
     mapping = aes(x = Longitude, y = Latitude, label = Feature),
-    color = "white", alpha = 0.5, size = 2
+    color = "white", alpha = 0.75, size = 3
+  ) +
+  geom_text(
+    data = tibble::tribble(
+      ~"Feature", ~"Longitude", ~"Latitude",
+      "Bears Ears\nRange", -106.1285, 40.475,
+    ),
+    mapping = aes(x = Longitude, y = Latitude, label = Feature),
+    color = "white", alpha = 0.5, size = 3
   ) +
   geom_point(
     data = Thesis::seinet_coords,
@@ -140,7 +141,7 @@ carbon$ggplot <-
   geom_point(
     data = carbon$jackson, inherit.aes = FALSE, show.legend = FALSE,
     mapping = aes(x = .data$Longitude, y = .data$Latitude),
-    size = 5, shape = 5, fill = NA, color = "gold"
+    size = 5, shape = 0, fill = NA, color = "gold"
   ) +
   scale_color_manual(
     name = "Annotation", labels = carbon$aesthetics,
@@ -165,24 +166,10 @@ carbon$ggplot <-
 
 # Call Expression ----
 
-carbon$map <-
-  tibble::tribble(
-    ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"Key",
-    0.4, -0.05, 0.1,  "Nelson_49286",
-    -0.6, -0.25, 0.1, "Kastning_Kastning_1462",
-    -0.5, -0.25, 0.1, "Kastning_Culp_1725",
-    -0.4, -0.1, -0.1, "Nelson_49478",
-    0.5, 0.1, 0.1,  "Rollins_Rollins_8621",
-    -0.4, -0.125, 0.2,  "Dorn_10105",
-    -0.33, 0.1, -0.1,  "Fertig_16713",
-    -0.4, 0.3, -0.1,  "Fertig_Welp_19075",
-    0.7, 0.3, -0.75,  "Ratcliff_O_Kane_Jr_34",
-    -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
-    -0.3, -0.225, 0.1,  "Dorn_9837"
-  ) %>%
+repel_labels <- function(label_nudges, label_join, init_ggplot) {
   dplyr::left_join(
-    x = .,
-    y = carbon$labels,
+    x = label_nudges,
+    y = label_join,
     by = "Key"
   ) %>%
   purrr::pmap(
@@ -215,12 +202,33 @@ carbon$map <-
   purrr::reduce(
     .x = .,
     .f = ~ rlang::expr(!!.x + !!.y),
-    .init = rlang::expr(carbon$ggplot)
+    .init = init_ggplot
   )
-
-carbon$map <- rlang::eval_tidy(carbon$map)
+}
 
 # .png ----
+
+carbon$map_png <-
+  tibble::tribble(
+    ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"Key",
+    0.4, -0.05, 0.1,  "Nelson_49286",
+    -1, -0.25, 0.1, "Kastning_Kastning_1462",
+    -1, -0.25, 0.1, "Kastning_Culp_1725",
+    -0.4, -0.1, -0.1, "Nelson_49478",
+    0.5, 0.1, 0.1,  "Rollins_Rollins_8621",
+    -0.8, -0.125, 0.2,  "Dorn_10105",
+    -0.33, 0.1, -0.1,  "Fertig_16713",
+    -0.4, 0.3, -0.1,  "Fertig_Welp_19075",
+    0.7, 0.3, -0.75,  "Ratcliff_O_Kane_Jr_34",
+    -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
+    -0.3, -0.225, 0.1,  "Dorn_9837"
+  ) %>%
+  repel_labels(
+    label_nudges = .,
+    label_join = carbon$labels,
+    init_ggplot = carbon$ggplot
+  ) %>%
+  rlang::eval_tidy(expr = .)
 
 carbon$legend_png <-
   get_legend(
@@ -236,7 +244,7 @@ carbon$legend_png <-
 
 carbon$figure_png <-
   plot_grid(
-    carbon$map +
+    carbon$map_png +
       theme(
         plot.margin = margin(0.25, -2.5, 0.25, -2.5, "in"),
         legend.position = "none"
@@ -247,6 +255,28 @@ carbon$figure_png <-
   )
 
 # .pdf ----
+
+carbon$map_pdf <-
+  tibble::tribble(
+    ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"Key",
+    0.6, -0.05, 0.1,  "Nelson_49286",
+    -1.4, -0.25, 0.1, "Kastning_Kastning_1462",
+    -0.925, -0.25, 0.1, "Kastning_Culp_1725",
+    -0.65, -0.1, -0.1, "Nelson_49478",
+    0.75, 0.1, 0.1,  "Rollins_Rollins_8621",
+    -1.25, -0.125, 0.2,  "Dorn_10105",
+    -0.33, 0.1, -0.1,  "Fertig_16713",
+    -0.4, 0.5, -0.1,  "Fertig_Welp_19075",
+    0.775, 0.3, -0.75,  "Ratcliff_O_Kane_Jr_34",
+    -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
+    -0.3, -0.225, 0.1,  "Dorn_9837"
+  ) %>%
+  repel_labels(
+    label_nudges = .,
+    label_join = carbon$labels,
+    init_ggplot = carbon$ggplot
+  ) %>%
+  rlang::eval_tidy(expr = .)
 
 carbon$legend_pdf <-
   get_legend(
@@ -260,14 +290,14 @@ carbon$legend_pdf <-
 
 carbon$figure_pdf <-
   plot_grid(
-    carbon$map +
+    carbon$map_pdf +
       theme(
-        plot.margin = margin(-0.33, 0.2, -0.66, 0, "in"),
+        plot.margin = margin(-0.5, 0.5, -0.5, 0, "in"),
         legend.position = "none"
       ),
     carbon$legend_pdf,
     ncol = 1,
-    rel_heights = c(0.8, 0.2)
+    rel_heights = c(0.75, 0.25)
   )
 
 # cowplot Grid ----
