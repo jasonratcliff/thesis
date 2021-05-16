@@ -1,0 +1,5 @@
+# inst/manuscript
+*.aux
+*.log
+_book
+_gitbook

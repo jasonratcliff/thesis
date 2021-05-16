@@ -169,6 +169,7 @@ beast_plot <- function(tree_data, ggtree_layout = "circular") {
 #' Extract Color Legend
 #'
 #' @inheritParams node_labels
+#' @param ncol Number of columns for annotation legend guide.
 #' @export
 #'
 #' @return `gtable` object with specimen label legend.
@@ -246,12 +247,14 @@ species_plot <- function(tree_data) {
 
   # Build ggtree from species tree.
   spp_ggtree <-
-    ggtree::ggtree(tr = tree_data, ggplot2::aes(color = posterior)) +
+    ggtree::ggtree(tr = tree_data, ggplot2::aes(color = .data$posterior)) +
     # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
     ggtree::geom_tiplab(size = 2, parse = T) +
     ggrepel::geom_label_repel(
       data = dplyr::filter(tree_data, !is.na(.data$posterior)),
-      ggplot2::aes(x, y, label = round(posterior, 2)), nudge_x = -0.00001,
+      ggplot2::aes(
+        x = .data$x, y = .data$y, label = round(x = .data$posterior, 2)),
+      nudge_x = -0.00001,
       size = 2
     ) +
     ggplot2::scale_color_gradientn(

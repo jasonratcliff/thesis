@@ -3,6 +3,7 @@
 ^LICENSE\.md$
 ^Makefile$
 ^README\.Rmd$
+^Rplots\.pdf$
 ^app\.R$
 ^renv\.lock$
 ^data-raw$
@@ -20,3 +21,4 @@
 # TODO code test coverage
 ^codecov\.yml$
 ^public$
+^vignettes/articles$

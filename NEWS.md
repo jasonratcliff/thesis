@@ -1,12 +1,25 @@
-# Thesis 0.2.0.9000
+# Thesis 0.2.1
 
-* Update project `Makefile` post package merge
+* Medicine Bow and CO Front Range satellite map proofs.
+
+* Add `git` punchard to `README`.
+
+* Implement `purrr` map / reduce of `ggplot` calls to add labels with `ggrepel`.
+
+* Tune plot margins for *.png* and *.pdf* images.
+
+* Remove trait `.rda` data files from `data/`.
+
+* Update project `Makefile` and package dependencies.
+    - Render figures before install and check to compile manuscript.
+
+* Fix join of DNA specimens by specifying collection coordinate variables.
 
 # Thesis 0.2.0
 
 * Merge `ThesisPackage` into single `Thesis` R package repository.
     - Compartmentalize `bookdown` manuscript and `xaringan` slide rendering.
-    - Move top-level project directories to `inst/` and `data-raw/`
+    - Move top-level project directories to `inst/` and `data-raw/`.
         - Appendix summaries
         - Species descriptions
         - R markdown Word *.docx* chapters
@@ -14,7 +27,7 @@
 
 # ThesisPackage 0.1.9
 
-* Replace all instances of `ssp.` abbreviation with string `subsp.`
+* Replace all instances of `ssp.` abbreviation with string `subsp.`.
 
 # ThesisPackage 0.1.8
 
@@ -25,7 +38,7 @@
 * New `trait_phenology()` wraps `ggplot()` to plot a trait by continuous date
   of collection with a smoothing geom.
 
-* New `annotation_grid()` builds extractable legend with prior / reviewed 
+* New `annotation_grid()` builds extractable legend with prior / reviewed
   shape and color aesthetic bindings to build with `cowplot::plot_grid()`.
 
 * New `filter_reviewed()` subsets specimen records to taxa of interest.

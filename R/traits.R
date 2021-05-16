@@ -114,10 +114,17 @@ separate_discrete_trait <- function(specimen_tbl, trait_selection,
 #' @param bb_ylim Numeric vctor to scale `sf` coordinates y-limits.
 #' @export
 #'
-#' @return A `ggplot` with specimen trait distributin mapping.
+#' @return A `ggplot` with specimen trait distribution mapping.
 #'
 #' @examples
-#' map_trait_distribution(tidy_trait = trait_ovules) +
+#' Thesis::herbarium_specimens %>%
+#'   dplyr::filter(!is.na(.data$Ovule_number)) %>%
+#'   dplyr::bind_cols(., 
+#'     range_split(trait_tbl = ., split_var = "Ovule_number")
+#'   ) %>%
+#'   dplyr::rename(Trait = "Ovule_number_max") %>%
+#'   dplyr::mutate(Trait = as.factor(x = .data$Trait)) %>%
+#'   map_trait_distribution(tidy_trait = .) +
 #'   ggplot2::scale_color_viridis_d(option = "D") +
 #'   ggplot2::labs(color = "Max Ovule Count per Locule")
 #'
