@@ -27,10 +27,10 @@
     },
     "BiocManager": {
       "Package": "BiocManager",
-      "Version": "1.30.14",
+      "Version": "1.30.15",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "2e8928778618aaee5ef5cfc92b05990f"
+      "Hash": "87a690190741d0791c9c10b390c933ff"
     },
     "BiocVersion": {
       "Package": "BiocVersion",
@@ -629,7 +629,7 @@
     },
     "ggtree": {
       "Package": "ggtree",
-      "Version": "2.5.3",
+      "Version": "2.99.0",
       "Source": "GitHub",
       "Remotes": "GuangchuangYu/treeio",
       "RemoteType": "github",
@@ -637,8 +637,8 @@
       "RemoteRepo": "ggtree",
       "RemoteUsername": "YuLab-SMU",
       "RemoteRef": "HEAD",
-      "RemoteSha": "7afb395ece66749180d967eb4bcbc3c385b2816d",
-      "Hash": "24ba75b426b6c24dc23d1afc3bb86b39"
+      "RemoteSha": "384cc42a2cf5b6200756fc607b00a00598c65a25",
+      "Hash": "fa2518617093985f60221375af3de34d"
     },
     "gh": {
       "Package": "gh",
@@ -646,6 +646,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "38c2580abbda249bd6afeec00d14f531"
+    },
+    "git2r": {
+      "Package": "git2r",
+      "Version": "0.28.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f64fd34026f6025de71a4354800e6d79"
     },
     "gitcreds": {
       "Package": "gitcreds",
@@ -688,6 +695,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "9ace652bffef34af558eb5d70903ac2f"
+    },
+    "here": {
+      "Package": "here",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "24b224366f9c2e7534d2344d10d59211"
     },
     "highr": {
       "Package": "highr",
@@ -1383,10 +1397,10 @@
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.5.3",
+      "Version": "1.6.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "a063ebea753c92910a4cca7b18bc1f05"
+      "Hash": "3b9a9c9454b864b08713715396689b9e"
     },
     "stringr": {
       "Package": "stringr",

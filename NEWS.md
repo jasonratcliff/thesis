@@ -1,4 +1,10 @@
-# Thesis 0.2.0.9009
+# Thesis 0.2.1
+
+* Medicine Bow and CO Front Range satellite map proofs.
+
+* Add `git` punchard to `README`.
+
+* Implement `purrr` map / reduce of `ggplot` calls to add labels with `ggrepel`.
 
 * Tune plot margins for *.png* and *.pdf* images.
 
