@@ -192,3 +192,64 @@ haplotype_labels <- function(specimen_tbl) {
   return(haplotypes)
 }
 
+
+repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
+                                   initial_ggtree) {
+  # Check tree object class and join variables as expected.
+  stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
+  stopifnot(
+    unique(
+      c("node", "Taxon_a_posteriori") %in%
+        names(label_nudges)
+    ) == TRUE
+  )
+
+  # Build call for `ggrepel::geom_label_repel()` layer expression.
+  repelled_ggplot <-
+    dplyr::left_join(
+      x = label_nudges,
+      y = grouped_haplotypes,
+      by = c("node", "Taxon_a_posteriori")
+    ) %>%
+      purrr::pmap(
+        .l = .,
+        .f = function(
+          x, y, Label, Taxon_a_posteriori, color,
+          nudge_x, nudge_y, segment.curvature, ...
+        ) {
+          rlang::call2(
+           .fn = ggrepel::geom_label_repel,
+            data = tibble::tibble(
+              x = x,
+              y = y,
+              Label = Label
+           ),
+           mapping = ggplot2::aes(
+             x = x,
+             y = y,
+             label = Label,
+             fill = Taxon_a_posteriori
+           ),
+           xlim = c(NA, Inf),
+           ylim = c(-Inf, Inf),
+           nudge_x = nudge_x,
+           nudge_y = nudge_y,
+           alpha = 1,
+           box.padding = 0.65,
+           color = color,
+           parse = TRUE,
+           segment.color = "black",
+           segment.curvature = segment.curvature,
+           segment.shape = 0.5,
+           size = 3
+         )
+       }
+      ) %>%
+    purrr::reduce(
+      .x = .,
+      .f = ~ rlang::expr(!!.x + !!.y),
+      .init = initial_ggtree
+    )
+  return(repelled_ggplot)
+}
+
