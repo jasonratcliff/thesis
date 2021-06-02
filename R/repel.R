@@ -131,17 +131,21 @@ repel_map_labels <- function(label_nudges, map_labels, initial_ggplot) {
 }
 
 
+haplotype_labels <- function(haplotypes) {
 
-haplotype_labels <- function(specimen_tbl) {
+  grouped_haplotypes <- haplotypes %>%
 
-  # Create labels of multiple taxa tip positions grouped by count.
-  haplotype_labels <- haplotypes %>%
-    dplyr::group_by(label, Taxon_a_posteriori) %>%
+    # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
+    dplyr::group_by(node) %>%
+    dplyr::mutate(nodes = dplyr::n()) %>%
+    dplyr::filter(.data$nodes > 1 & !is.na(.data$label)) %>%
+    dplyr::group_by(node, Taxon_a_posteriori) %>%
     dplyr::mutate(n = dplyr::n()) %>%
-    dplyr::filter(.data$n > 1 & !is.na(.data$label)) %>%
     dplyr::ungroup() %>%
-    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n") %>%
+    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n", node_group) %>%
     dplyr::distinct(.keep_all = TRUE) %>%
+
+    # Create labels with plotmath expressions to parse expressions into text.
     dplyr::mutate(
       Label = paste(
         .data$Taxon_a_posteriori,
@@ -172,24 +176,26 @@ haplotype_labels <- function(specimen_tbl) {
               "italic(P.",
               ifelse(
                 test = grepl(pattern = "didymocarpa", x = epithet),
-                yes = paste0("d.) subsp. italic(", subsp, ")\n"),
-                no = paste0(epithet, ")\n")
+                yes = paste0("d.) subsp. italic(", subsp, ")"),
+                no = paste0(epithet, ")")
               )
             ) %>%
-              paste(
-                .,
+              paste(.,
                 stringr::str_extract(
                   string = label,
                   pattern = "\\(n ?==.+$"
                 )
               ) %>%
-              gsub(pattern = " +", replacement = "~", x = .) %>%
-              gsub(pattern = "\\(n==", replacement = "(n==", x = .)
+              gsub(
+                pattern = " +",
+                replacement = "~",
+                x = .
+              )
           return(plotmath)
           })
     ) %>%
     dplyr::arrange(.data$node)
-  return(haplotypes)
+  return(grouped_haplotypes)
 }
 
 
