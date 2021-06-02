@@ -200,7 +200,7 @@ haplotype_labels <- function(haplotypes) {
 
 
 repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
-                                   initial_ggtree) {
+                                   initial_ggtree, label_size = 2) {
   # Check tree object class and join variables as expected.
   stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
   stopifnot(
@@ -236,7 +236,7 @@ repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
              label = Label,
              fill = Taxon_a_posteriori
            ),
-           xlim = c(NA, Inf),
+           xlim = c(-Inf, Inf),
            ylim = c(-Inf, Inf),
            nudge_x = nudge_x,
            nudge_y = nudge_y,
@@ -247,8 +247,9 @@ repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
            segment.color = "black",
            segment.curvature = segment.curvature,
            segment.shape = 0.5,
-           size = 3
-         )
+           show.legend = FALSE,
+           size = label_size
+          )
        }
       ) %>%
     purrr::reduce(
