@@ -1,24 +1,30 @@
 # Call expression wrapper over ggrepel geoms
 
-#' Layer [ggrepel] label geoms
+#' Repel Map Labels
 #'
-#' Leverage [rlang] to build call expressions, mapping a [tibble] with
-#' x- and y-axis nugdes for each point layered onto an initial [ggplot].
-#' Points represent specimen sampling, with labels identifying individual
-#' records of interest.
+#' @description
+#' Leverage [rlang::call2()] to build call expressions, mapping
+#' a [tibble::tribble()] with x- and y-axis nudges for layered
+#' labels via [ggrepel::geom_label_repel()]. For expression evaluation,
+#' pipe output into [rlang::eval_tidy()].
 #'
-#' @param label_nudges Inline [tibble::tribble()] with variables to set
+#' @details
+#' For each call layered onto a [ggplot2::ggplot()], labels represent
+#' specimen sampling identifying individual records of interest.
+#'
+#' @param map_nudges Inline [tibble::tribble()] with variables to set
 #'   `nudge_x`, `nudge_y`, `segment.curvature`, and variable to join by:
-#'       - For maps: `Key`
-#'       - For trees: `node`
-#'   TODO consider abstraction (... implementation?) of calls to `ggrepel`
-#' @param map_labels A [tibble] input for `ggplot` with `x`, `y`, and `label`
-#'   aesthetics passed to [ggrepel::geom_label_repel()]. 
-#' @param initial_ggplot Base [ggplot2::ggplot()] for [purrr::map()] and [reduce()]
-#'   into [rlang::call2()] for building R call expressions.
+#'
+#'       - `Key`: e.g., collector(s) and collection separated by "_".
+#' @param map_labels A [tibble::tibble()] input for `ggplot` with `x`, `y`, and
+#'   `label` aesthetics passed to [ggrepel::geom_label_repel()].
+#' @param initial_ggplot Base layer [ggplot2::ggplot()] for [purrr::map()] and
+#'   [purrr::reduce()] into [rlang::call2()] to build R call expressions.
+#' @family repel_labels
 #' @export
 #'
-#' @return List of R calls to build layered label repel calls.
+#' @return List of R call expressions to layer repelled labels with coordinate
+#'   nudges onto [ggplot2::ggplot()] object.
 #'
 #' @examples
 #' extent <-
@@ -59,22 +65,21 @@
 #'     )
 #'   )
 #'
-#' map <- ggplot() +
-#'  # layer_borders(spl_extent = extent,sf_county_color = "black") +
-#'   layer_specimens(
+#' map <- ggplot2::ggplot() +
+#'   Thesis::layer_specimens(
 #'     specimen_tbl = specimens,
 #'     id_column = "Taxon_a_posteriori"
 #'   ) +
-#'   geom_point(
+#'   ggplot2::geom_point(
 #'     data = jackson,
-#'     mapping = aes(x = Longitude, y = Latitude),
+#'     mapping = ggplot2::aes(x = Longitude, y = Latitude),
 #'     shape = 5, color = "black", size = 4
 #'   ) +
-#'   coord_sf(
+#'   ggplot2::coord_sf(
 #'     xlim = range(extent$Longitude),
 #'     ylim = range(extent$Latitude)
 #'   ) +
-#'   theme_classic()
+#'   ggplot2::theme_classic()
 #'
 #' tibble::tribble(
 #'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"Key",
@@ -130,19 +135,42 @@ repel_map_labels <- function(label_nudges, map_labels, initial_ggplot) {
     )
 }
 
-
+#' Group Haplotype Taxon Labels
+#'
+#' Create labels of multiple taxa tip positions grouped by count.
+#'
+#' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
+#' @export
+#'
+#' @return [tibble::tibble()] of multi-taxa node labels with `x`, `y`, `label`,
+#'   and `fill` [ggplot2::ggplot()] aesthetics.
+#'
+#' @examples
+#' list.files(
+#'   path = system.file("extdata/MrBayes", package = "Thesis"),
+#'   pattern = "rps-infile.nex.con.tre",
+#'   full.names = TRUE
+#' ) %>%
+#'   Thesis::read_tree(tree_file = .) %>%
+#'   Thesis::join_bayes(
+#'     tree_data = .,
+#'     id_column = "Taxon_a_posteriori",
+#'     scale_vector = c(5, 10)
+#'   ) %>%
+#'   Thesis::haplotype_labels(haplotypes = .)
+#'
 haplotype_labels <- function(haplotypes) {
 
   grouped_haplotypes <- haplotypes %>%
 
     # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
-    dplyr::group_by(node) %>%
+    dplyr::group_by(.data$node) %>%
     dplyr::mutate(nodes = dplyr::n()) %>%
     dplyr::filter(.data$nodes > 1 & !is.na(.data$label)) %>%
-    dplyr::group_by(node, Taxon_a_posteriori) %>%
+    dplyr::group_by(.data$node, .data$Taxon_a_posteriori) %>%
     dplyr::mutate(n = dplyr::n()) %>%
     dplyr::ungroup() %>%
-    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n", node_group) %>%
+    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n") %>%
     dplyr::distinct(.keep_all = TRUE) %>%
 
     # Create labels with plotmath expressions to parse expressions into text.
@@ -198,8 +226,70 @@ haplotype_labels <- function(haplotypes) {
   return(grouped_haplotypes)
 }
 
-
 repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
+#' Repel Tree Labels
+#'
+#' @inherit repel_map_labels description
+#'
+#' @details
+#' For nodes with multiple taxa in the base layer [ggtree::ggtree()], repelled
+#' labels denote specimen annotations with counts tabulated by
+#' [haplotype_labels()].
+#'
+#' @param tree_nudges Inline [tibble::tribble()] with variables to set
+#'   `nudge_x`, `nudge_y`, `segment.curvature`, `color` (label text),
+#'   and variables to join by:
+#'
+#'       - `node`: Numeric scalar denoting phylogenetic tree node.
+#'       - `Taxon_a_posteriori`: Character scalar of reviewed identification.
+#' @param tree_labels Tibble of labels output by [haplotype_labels()] with
+#'   with [ggplot] aesthetics for `x`, `y`, `label`, and `fill` aesthetics.
+#' @param initial_ggtree Base layer [ggtree::ggtree()] for [purrr::map()] and
+#'   [purrr::reduce()] into [rlang::call2()] to build R call expressions.
+#' @param label_size Numeric scalar to indicate `size` parameter for
+#'   the repelled geom layer.
+#' @family repel_labels
+#' @export
+#' @seealso haplotype_labels
+#'
+#' @return List of R call expressions to layer repelled labels with coordinate
+#'   nudges onto [ggtree::ggtree()] object.
+#'
+#' @examples
+#' bayes_joined <-
+#'   list.files(
+#'     path = system.file("extdata/MrBayes", package = "Thesis"),
+#'     pattern = "rps-infile.nex.con.tre",
+#'     full.names = TRUE
+#'   ) %>%
+#'     Thesis::read_tree(tree_file = .) %>%
+#'     Thesis::join_bayes(
+#'       tree_data = .,
+#'       id_column = "Taxon_a_posteriori",
+#'       scale_vector = c(5, 10)
+#'     )
+#'
+#' bayes_haplotypes <- Thesis::haplotype_labels(haplotypes = bayes_joined)
+#'
+#' bayes_ggtree <-
+#'   ggtree::ggtree(tr = bayes_joined, layout = "circular") +
+#'     ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
+#'
+#' tibble::tribble(
+#'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
+#'   0.01, -1.5, 0.1, 5, "Physaria medicinae", "white",
+#'   0.0075, -1.5, 0.1, 5, "Physaria didymocarpa subsp. didymocarpa", "white",
+#'   0.005, -1.5, 0.1, 5, "Physaria eburniflora", "white",
+#'   0.0025, -1.5, 0.1, 5, "Physaria acutifolia", "black"
+#' ) %>%
+#'   Thesis::repel_haplotype_labels(
+#'     tree_nudges = .,
+#'     tree_labels = bayes_haplotypes,
+#'     initial_ggtree = bayes_ggtree,
+#'     label_size = 3
+#'   ) %>%
+#'     rlang::eval_tidy(expr = .)
+#'
                                    initial_ggtree, label_size = 2) {
   # Check tree object class and join variables as expected.
   stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
