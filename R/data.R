@@ -113,7 +113,7 @@
 #'   \item{references}{SEINet record site reference}
 #' }
 #'
-#' @source \url{https://swbiodiversity.org/seinet/index.php}
+#' @source <https://swbiodiversity.org/seinet/index.php>
 #'
 "seinet_coords"
 

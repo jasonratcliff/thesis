@@ -6,7 +6,7 @@
 #' files from the input `ggplot` object name.
 #'
 #' @param gg_plot Input plot to save ggplot graphic *.png* and *.pdf* figures.
-#' @param ... Forwarding arguments to [ggplot::ggsave()].
+#' @param ... Forwarding arguments to [ggplot2::ggsave()].
 #' @export
 #'
 save_plot <- function(gg_plot, ...) {

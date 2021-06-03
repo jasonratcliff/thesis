@@ -230,7 +230,10 @@ species_plot <- function(tree_data) {
       label = purrr::map_chr(.data$label, function(label) {
         if (!is.na(label)) {
           label <- gsub("_", " ", x = label) %>% gsub("Physaria", "P.", x = .)
-          species <- stringr::str_extract(string = label, "P\\. [a-z]+")
+          species <- stringr::str_extract(
+            string = label,
+            pattern = "P\\. [a-z]+"
+          )
           ifelse(grepl(" subsp ", label),
                  paste0("italic(", species, ")", " subsp. ",
                         stringr::str_extract(
