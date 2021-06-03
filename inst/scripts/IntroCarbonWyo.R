@@ -181,10 +181,10 @@ carbon$map_png <-
     -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
     -0.3, -0.225, 0.1,  "Dorn_9837"
   ) %>%
-  repel_labels(
-    label_nudges = .,
-    label_join = carbon$labels,
-    init_ggplot = carbon$ggplot
+  Thesis::repel_map_labels(
+    map_nudges = .,
+    map_labels = carbon$labels,
+    initial_ggplot = carbon$ggplot
   ) %>%
   rlang::eval_tidy(expr = .)
 
@@ -196,7 +196,13 @@ carbon$legend_png <-
         legend.background = element_rect(fill = "grey99"),
         legend.position = "right",
         legend.direction = "vertical",
-        plot.margin = margin(0, -0.25, 0, 0.1, "in")
+        plot.margin = margin(
+          t = 0,
+          r = -0.25,
+          b = 0,
+          l = 0.1,
+          unit = "in"
+        )
       )
   )
 
@@ -204,7 +210,13 @@ carbon$figure_png <-
   plot_grid(
     carbon$map_png +
       theme(
-        plot.margin = margin(0.25, -2.5, 0.25, -2.5, "in"),
+        plot.margin = margin(
+          t = 0.25,
+          r = -2.5,
+          b = 0.25,
+          l = -2.5,
+          unit = "in"
+        ),
         legend.position = "none"
       ),
     carbon$legend_png,
@@ -229,10 +241,10 @@ carbon$map_pdf <-
     -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
     -0.3, -0.225, 0.1,  "Dorn_9837"
   ) %>%
-  repel_labels(
-    label_nudges = .,
-    label_join = carbon$labels,
-    init_ggplot = carbon$ggplot
+  Thesis::repel_map_labels(
+    map_nudges = .,
+    map_labels = carbon$labels,
+    initial_ggplot = carbon$ggplot
   ) %>%
   rlang::eval_tidy(expr = .)
 
@@ -250,7 +262,13 @@ carbon$figure_pdf <-
   plot_grid(
     carbon$map_pdf +
       theme(
-        plot.margin = margin(-0.5, 0.5, -0.5, 0, "in"),
+        plot.margin = margin(
+          t = -0.5,
+          r = 0.5,
+          b = -0.5,
+          l = 0,
+          unit = "in"
+        ),
         legend.position = "none"
       ),
     carbon$legend_pdf,

@@ -88,17 +88,17 @@
 #'     -1, -0.25, 0.1, "Kastning_Culp_1725",
 #'     -0.4, -0.1, -0.1, "Nelson_49478",
 #'   ) %>%
-#'   repel_map_labels(
-#'     label_nudges = .,
+#'   Thesis::repel_map_labels(
+#'     map_nudges = .,
 #'     map_labels = jackson,
 #'     initial_ggplot = map
 #'   ) %>%
 #'   rlang::eval_tidy(expr = .)
 #'
-repel_map_labels <- function(label_nudges, map_labels, initial_ggplot) {
+repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
   stopifnot(identical(class(initial_ggplot), c("gg", "ggplot")))
   repelled_ggplot <- dplyr::left_join(
-    x = label_nudges,
+    x = map_nudges,
     y = map_labels,
     by = "Key"
   ) %>%
@@ -226,7 +226,6 @@ haplotype_labels <- function(haplotypes) {
   return(grouped_haplotypes)
 }
 
-repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
 #' Repel Tree Labels
 #'
 #' @inherit repel_map_labels description
@@ -290,21 +289,22 @@ repel_haplotype_labels <- function(label_nudges, grouped_haplotypes,
 #'   ) %>%
 #'     rlang::eval_tidy(expr = .)
 #'
+repel_haplotype_labels <- function(tree_nudges, tree_labels,
                                    initial_ggtree, label_size = 2) {
   # Check tree object class and join variables as expected.
   stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
   stopifnot(
     unique(
       c("node", "Taxon_a_posteriori") %in%
-        names(label_nudges)
+        names(tree_nudges)
     ) == TRUE
   )
 
   # Build call for `ggrepel::geom_label_repel()` layer expression.
   repelled_ggplot <-
     dplyr::left_join(
-      x = label_nudges,
-      y = grouped_haplotypes,
+      x = tree_nudges,
+      y = tree_labels,
       by = c("node", "Taxon_a_posteriori")
     ) %>%
       purrr::pmap(

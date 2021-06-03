@@ -108,8 +108,8 @@ tree$repel_pdf <-
     0.01, 0.1, 0.1, 26, "Physaria vitulifera", "black"
   ) %>%
     Thesis::repel_haplotype_labels(
-      label_nudges = .,
-      grouped_haplotypes = tree$haplotypes,
+      tree_nudges = .,
+      tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
       label_size = 2
     ) %>%
@@ -168,8 +168,8 @@ tree$repel_png <-
     0.0033, 0.1, -0.1, 11, "Physaria condensata", "black"
   ) %>%
     Thesis::repel_haplotype_labels(
-      label_nudges = .,
-      grouped_haplotypes = tree$haplotypes,
+      tree_nudges = .,
+      tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
       label_size = 3
     ) %>%

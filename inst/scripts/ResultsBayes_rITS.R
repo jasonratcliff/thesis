@@ -110,8 +110,8 @@ tree$repel_pdf <-
     0.015, 0.1, 0.1, 26, "Physaria eburniflora", "white"
   ) %>%
     Thesis::repel_haplotype_labels(
-      label_nudges = .,
-      grouped_haplotypes = tree$haplotypes,
+      tree_nudges = .,
+      tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
       label_size = 2
     ) %>%
@@ -168,8 +168,8 @@ tree$repel_png <-
     0.011, 0.05, 0.1, 26, "Physaria eburniflora", "white"
   ) %>%
     Thesis::repel_haplotype_labels(
-      label_nudges = .,
-      grouped_haplotypes = tree$haplotypes,
+      tree_nudges = .,
+      tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
       label_size = 3
     ) %>%
