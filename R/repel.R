@@ -261,54 +261,115 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
 
 #' Repel Node Probabilities
 #'
+#' @details
 #' [ggrepel::geom_label_repel()] `LayerInstance` for repelled node posterior
 #' probabilities. Excludes nodes with missing values. Probabilites are rounded
 #' to 3 digits.
 #'
-#' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
-#' @param nudge_x Numeric scalar passed on to [ggrepel::geom_label_repel()]
+#' @param node_nudges Inline [tibble::tribble()] with variables to set
+#'   `nudge_x`, `nudge_y`, `segment.curvature`
+#'   and variable to join by:
+#'
+#'       - `node`: Numeric scalar denoting phylogenetic tree node.
+#' @param node_labels Tibble subset from labels read in by [join_bayes()] to
+#'   nodes with posterior probabilities.
+#' @inherit repel_map_labels description
+#' @inheritParams repel_haplotype_labels
+#' @family repel_labels
 #' @export
 #'
 #' @return List with [ggplot2::ggplot2()] `LayerInstance` for node repelled
 #'   posterior probabilities by tree node.
 #'
 #' @examples
-#' list.files(
-#'   path = system.file("extdata/MrBayes", package = "Thesis"),
-#'   pattern = "rps-infile.nex.con.tre",
-#'   full.names = TRUE
-#' ) %>%
-#'   Thesis::read_tree(tree_file = .) %>%
-#'   Thesis::join_bayes(
-#'     tree_data = .,
-#'     id_column = "Taxon_a_posteriori"
-#'   ) %>%
-#'   repel_probability_labels(haplotypes = .)
+#' haplotypes <-
+#'   list.files(
+#'     path = system.file("extdata/MrBayes", package = "Thesis"),
+#'     pattern = "rps-infile.nex.con.tre",
+#'     full.names = TRUE
+#'  ) %>%
+#'    Thesis::read_tree(tree_file = .) %>%
+#'    Thesis::join_bayes(
+#'      tree_data = .,
+#'      id_column = "Taxon_a_posteriori"
+#'    )
 #'
-repel_probability_labels <- function(haplotypes, nudge_x = -0.004) {
-  probabilities <-
-    list(
-      ggrepel::geom_label_repel(
-        data = haplotypes %>%
-          dplyr::filter(!is.na(.data$prob)),
-        nudge_x = nudge_x,
-        ggplot2::aes(
-          label = sprintf(fmt ="%0.3f", as.numeric(.data$prob), digits = 3)
-        ),
-        fontface = "bold",
-        size = 2,
-        segment.linetype = 2,
-        segment.curvature = 0.1
-      )
+#' probabilities <- haplotypes %>%
+#'     dplyr::filter(.data$prob != 1)  # Exclude MrBayes polytomies
+#'
+#' bayes_ggtree <-
+#'   ggtree::ggtree(tr = haplotypes, layout = "circular") +
+#'     ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
+#'
+#' tibble::tribble(
+#'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
+#'   -0.001, 0, 0.01, 31,
+#'   -0.002, 0, 0.01, 32,
+#'   -0.003, 0, 0.01, 33,
+#'   -0.004, 0, 0.01, 34,
+#'   -0.005, 0, 0.01, 35
+#' ) %>%
+#'   Thesis::repel_node_labels(
+#'     node_nudges = .,
+#'     node_labels = probabilities,
+#'     initial_ggtree = bayes_ggtree,
+#'     label_size = 4
+#'   ) %>%
+#'     rlang::eval_tidy(expr = .)
+#'
+repel_node_labels <- function(node_nudges, node_labels,
+                              initial_ggtree, label_size = 3) {
+  stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
+
+  # Build call for `ggrepel::geom_label_repel()` layer expression.
+  repelled_ggplot <-
+    dplyr::left_join(
+      x = node_nudges,
+      y = node_labels,
+      by = c("node")
+    ) %>%
+      purrr::pmap(
+        .l = .,
+        .f = function(
+          x, y, prob, segment.curvature,
+          nudge_x, nudge_y, ...
+        ) {
+          rlang::call2(
+           .fn = ggrepel::geom_label_repel,
+            data = tibble::tibble(
+              x = x,
+              y = y,
+              prob = prob
+           ),
+           mapping = ggplot2::aes(
+             x = x,
+             y = y,
+             label = sprintf(fmt ="%0.3f", as.numeric(prob), digits = 3)
+           ),
+           xlim = c(-Inf, Inf),
+           ylim = c(-Inf, Inf),
+           nudge_x = nudge_x,
+           nudge_y = nudge_y,
+           fontface = "bold",
+           size = label_size,
+           segment.linetype = 2,
+           segment.curvature = segment.curvature
+          )
+       }
+      ) %>%
+    purrr::reduce(
+      .x = .,
+      .f = ~ rlang::expr(!!.x + !!.y),
+      .init = initial_ggtree
     )
-  return(probabilities)
+  return(repelled_ggplot)
 }
 
 #' Group Haplotype Taxon Labels
 #'
 #' Create labels of multiple taxa tip positions grouped by count.
 #'
-#' @inheritParams repel_probability_labels
+#' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
 #' @export
 #'
 #' @return [tibble::tibble()] of multi-taxa node labels with `x`, `y`, `label`,
