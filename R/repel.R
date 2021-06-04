@@ -135,97 +135,6 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
     )
 }
 
-#' Group Haplotype Taxon Labels
-#'
-#' Create labels of multiple taxa tip positions grouped by count.
-#'
-#' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
-#' @export
-#'
-#' @return [tibble::tibble()] of multi-taxa node labels with `x`, `y`, `label`,
-#'   and `fill` [ggplot2::ggplot()] aesthetics.
-#'
-#' @examples
-#' list.files(
-#'   path = system.file("extdata/MrBayes", package = "Thesis"),
-#'   pattern = "rps-infile.nex.con.tre",
-#'   full.names = TRUE
-#' ) %>%
-#'   Thesis::read_tree(tree_file = .) %>%
-#'   Thesis::join_bayes(
-#'     tree_data = .,
-#'     id_column = "Taxon_a_posteriori",
-#'     scale_vector = c(5, 10)
-#'   ) %>%
-#'   Thesis::haplotype_labels(haplotypes = .)
-#'
-haplotype_labels <- function(haplotypes) {
-
-  grouped_haplotypes <- haplotypes %>%
-
-    # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
-    dplyr::group_by(.data$node) %>%
-    dplyr::mutate(nodes = dplyr::n()) %>%
-    dplyr::filter(.data$nodes > 1 & !is.na(.data$label)) %>%
-    dplyr::group_by(.data$node, .data$Taxon_a_posteriori) %>%
-    dplyr::mutate(n = dplyr::n()) %>%
-    dplyr::ungroup() %>%
-    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n") %>%
-    dplyr::distinct(.keep_all = TRUE) %>%
-
-    # Create labels with plotmath expressions to parse expressions into text.
-    dplyr::mutate(
-      Label = paste(
-        .data$Taxon_a_posteriori,
-        ifelse(
-          # Add new line for taxa with subspecific designations.
-          test = grepl(pattern = "subsp.", x = .data$Taxon_a_posteriori),
-          yes = "", no = "\n"
-        ),
-        paste0("(n==", .data$n, ")")
-      ) %>%
-        purrr::map_chr(.x = ., .f = function(label) {
-          epithet <-
-            stringr::str_extract(
-              string = label,
-              pattern = "(?<=Physaria )[a-z]+"
-            )
-          subsp <-
-            ifelse(
-              test = grepl(pattern = "subsp\\.", x = label),
-              yes = stringr::str_extract(
-                string = label,
-                pattern = ("(?<=subsp. )[a-z]+")
-              ),
-              no = ""
-            )
-          plotmath <-
-            paste(
-              "italic(P.",
-              ifelse(
-                test = grepl(pattern = "didymocarpa", x = epithet),
-                yes = paste0("d.) subsp. italic(", subsp, ")"),
-                no = paste0(epithet, ")")
-              )
-            ) %>%
-              paste(.,
-                stringr::str_extract(
-                  string = label,
-                  pattern = "\\(n ?==.+$"
-                )
-              ) %>%
-              gsub(
-                pattern = " +",
-                replacement = "~",
-                x = .
-              )
-          return(plotmath)
-          })
-    ) %>%
-    dplyr::arrange(.data$node)
-  return(grouped_haplotypes)
-}
-
 #' Repel Tree Labels
 #'
 #' @inherit repel_map_labels description
@@ -348,5 +257,141 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
       .init = initial_ggtree
     )
   return(repelled_ggplot)
+}
+
+#' Repel Node Probabilities
+#'
+#' [ggrepel::geom_label_repel()] `LayerInstance` for repelled node posterior
+#' probabilities. Excludes nodes with missing values. Probabilites are rounded
+#' to 3 digits.
+#'
+#' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
+#' @param nudge_x Numeric scalar passed on to [ggrepel::geom_label_repel()]
+#' @export
+#'
+#' @return List with [ggplot2::ggplot2()] `LayerInstance` for node repelled
+#'   posterior probabilities by tree node.
+#'
+#' @examples
+#' list.files(
+#'   path = system.file("extdata/MrBayes", package = "Thesis"),
+#'   pattern = "rps-infile.nex.con.tre",
+#'   full.names = TRUE
+#' ) %>%
+#'   Thesis::read_tree(tree_file = .) %>%
+#'   Thesis::join_bayes(
+#'     tree_data = .,
+#'     id_column = "Taxon_a_posteriori"
+#'   ) %>%
+#'   repel_probability_labels(haplotypes = .)
+#'
+repel_probability_labels <- function(haplotypes, nudge_x = -0.004) {
+  probabilities <-
+    list(
+      ggrepel::geom_label_repel(
+        data = haplotypes %>%
+          dplyr::filter(!is.na(.data$prob)),
+        nudge_x = nudge_x,
+        ggplot2::aes(
+          label = sprintf(fmt ="%0.3f", as.numeric(.data$prob), digits = 3)
+        ),
+        fontface = "bold",
+        size = 2,
+        segment.linetype = 2,
+        segment.curvature = 0.1
+      )
+    )
+  return(probabilities)
+}
+
+#' Group Haplotype Taxon Labels
+#'
+#' Create labels of multiple taxa tip positions grouped by count.
+#'
+#' @inheritParams repel_probability_labels
+#' @export
+#'
+#' @return [tibble::tibble()] of multi-taxa node labels with `x`, `y`, `label`,
+#'   and `fill` [ggplot2::ggplot()] aesthetics.
+#'
+#' @examples
+#' list.files(
+#'   path = system.file("extdata/MrBayes", package = "Thesis"),
+#'   pattern = "rps-infile.nex.con.tre",
+#'   full.names = TRUE
+#' ) %>%
+#'   Thesis::read_tree(tree_file = .) %>%
+#'   Thesis::join_bayes(
+#'     tree_data = .,
+#'     id_column = "Taxon_a_posteriori",
+#'     scale_vector = c(5, 10)
+#'   ) %>%
+#'   Thesis::haplotype_labels(haplotypes = .)
+#'
+haplotype_labels <- function(haplotypes) {
+
+  grouped_haplotypes <- haplotypes %>%
+
+    # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
+    dplyr::group_by(.data$node) %>%
+    dplyr::mutate(nodes = dplyr::n()) %>%
+    dplyr::filter(.data$nodes > 1 & !is.na(.data$label)) %>%
+    dplyr::group_by(.data$node, .data$Taxon_a_posteriori) %>%
+    dplyr::mutate(n = dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n") %>%
+    dplyr::distinct(.keep_all = TRUE) %>%
+
+    # Create labels with plotmath expressions to parse expressions into text.
+    dplyr::mutate(
+      Label = paste(
+        .data$Taxon_a_posteriori,
+        ifelse(
+          # Add new line for taxa with subspecific designations.
+          test = grepl(pattern = "subsp.", x = .data$Taxon_a_posteriori),
+          yes = "", no = "\n"
+        ),
+        paste0("(n==", .data$n, ")")
+      ) %>%
+        purrr::map_chr(.x = ., .f = function(label) {
+          epithet <-
+            stringr::str_extract(
+              string = label,
+              pattern = "(?<=Physaria )[a-z]+"
+            )
+          subsp <-
+            ifelse(
+              test = grepl(pattern = "subsp\\.", x = label),
+              yes = stringr::str_extract(
+                string = label,
+                pattern = ("(?<=subsp. )[a-z]+")
+              ),
+              no = ""
+            )
+          plotmath <-
+            paste(
+              "italic(P.",
+              ifelse(
+                test = grepl(pattern = "didymocarpa", x = epithet),
+                yes = paste0("d.) subsp. italic(", subsp, ")"),
+                no = paste0(epithet, ")")
+              )
+            ) %>%
+              paste(.,
+                stringr::str_extract(
+                  string = label,
+                  pattern = "\\(n ?==.+$"
+                )
+              ) %>%
+              gsub(
+                pattern = " +",
+                replacement = "~",
+                x = .
+              )
+          return(plotmath)
+          })
+    ) %>%
+    dplyr::arrange(.data$node)
+  return(grouped_haplotypes)
 }
 

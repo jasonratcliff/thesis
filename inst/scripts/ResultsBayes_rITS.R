@@ -28,18 +28,25 @@ tree$joined <-
       scale_vector = c(5, 10)
     )
 
+# Assign HTML markdown label vector.
+tree$labels <-
+  c(
+    Thesis::spl_labels(
+      specimen_tbl = tree$joined,
+      id_column = "prior_id"
+    ),
+    Thesis::spl_labels(
+      specimen_tbl = tree$joined,
+      id_column = "Taxon_a_posteriori"
+    )
+  )
+
 # Assign multi- and single-taxa node labels.
 tree$haplotypes <- Thesis::haplotype_labels(haplotypes = tree$joined)
 tree$single <- tree$joined %>%
   dplyr::group_by(label) %>%
   dplyr::mutate(n = dplyr::n()) %>%
   dplyr::filter(.data$n == 1)
-
-# Assign HTML markdown label vector.
-tree$labels <- Thesis::spl_labels(
-  specimen_tbl = tree$joined,
-  id_column = "Taxon_a_posteriori"
-)
 
 # Base `ggtree` ----
 
@@ -54,24 +61,37 @@ tree$ggtree <- tree$joined %>%
   ) %>%
   ggtree::ggtree(tr = ., layout = "circular") +
   ggplot2::geom_point(
-    data = tree$single,
-    mapping = aes(
+    data = tree$single, size = 5,
+    mapping = ggplot2::aes(
       color = prior_id,
       shape = prior_id
-    ),
-    size = 7
+    )
   ) +
-    ggplot2::geom_point(
-    data = tree$single,
-    mapping = aes(
-      color = Taxon_a_posteriori, # as.name(id_column),
-      shape = Taxon_a_posteriori # as.name(id_column)
-    ),
-    size = 4
+  ggplot2::geom_point(
+    data = tree$single, size = 3,
+    mapping = ggplot2::aes(
+      color = Taxon_a_posteriori,
+      shape = Taxon_a_posteriori
+    )
   ) +
   ggtree::geom_tiplab(hjust = -0.175, size = 3) +
-  ggplot2::scale_color_manual(values = Thesis::spp_color, labels = tree$labels) +
-  ggplot2::scale_shape_manual(values = Thesis::spp_shape, labels = tree$labels) +
+  Thesis::repel_probability_labels(
+    haplotypes =  dplyr::filter(
+      tree$joined, .data$prob != 1  # Exclude hard polytomies
+    )
+  ) +
+  ggplot2::scale_color_manual(
+    values = Thesis::spp_color,
+    labels = tree$labels
+  ) +
+  ggplot2::scale_shape_manual(
+    values = Thesis::spp_shape,
+    labels = tree$labels
+  ) +
+  ggplot2::scale_fill_manual(
+    values = Thesis::spp_color,
+    labels = tree$haplotypes$Label
+  ) +
   ggtree::xlim_expand(xlim = 0.01, panel = "Tree") +
   ggtree::geom_treescale() +
   ggtree::theme_tree() +
@@ -116,13 +136,10 @@ tree$repel_pdf <-
       label_size = 2
     ) %>%
     rlang::eval_tidy(expr = .) +
+
   ggtree::geom_highlight(
     node = 8,
     fill = "red"
-  ) +
-  ggplot2::scale_fill_manual(
-    values = Thesis::spp_color,
-    labels = tree$haplotypes$Label
   )
 
 tree$pdf <- tree$repel_pdf +
@@ -174,13 +191,10 @@ tree$repel_png <-
       label_size = 3
     ) %>%
     rlang::eval_tidy(expr = .) +
+
   ggtree::geom_highlight(
     node = 8,
     fill = "red"
-  ) +
-  ggplot2::scale_fill_manual(
-    values = Thesis::spp_color,
-    labels = tree$haplotypes$Label
   )
 
 tree$png <- tree$repel_png +
