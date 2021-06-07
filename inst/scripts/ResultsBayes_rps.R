@@ -92,22 +92,14 @@ tree$ggtree <- tree$joined %>%
     labels = tree$haplotypes$Label
   ) +
   ggtree::xlim_expand(xlim = 0.01, panel = "Tree") +
-  ggtree::geom_treescale() +
+  ggtree::geom_treescale(y = 29) +
   ggtree::theme_tree() +
   ggplot2::theme(
-    legend.text = ggtext::element_markdown(size = 6),
     legend.background = ggplot2::element_blank(),
     legend.title = ggplot2::element_text(
       hjust = 0.5,
       size = 14,
       face = "bold"
-    ),
-    plot.margin = ggplot2::margin(
-      t = 2,
-      r = 1.5,
-      b = 1.55,
-      l = 1.5,
-      unit = "in"
     )
   ) +
   ggplot2::labs(color = "Annotations", shape = "Annotations")
@@ -170,7 +162,15 @@ tree$pdf <- tree$repel_pdf +
     )
   ) +
   ggplot2::theme(
-    legend.position = "bottom"
+    legend.position = "bottom",
+    legend.text = ggtext::element_markdown(size = 6),
+    plot.margin = ggplot2::margin(
+      t = 2,
+      r = 1.8,
+      b = 1,
+      l = 1.75,
+      unit = "in"
+    )
   )
 
 tree$figure_pdf <-
@@ -236,7 +236,15 @@ tree$png <- tree$repel_png +
       ncol = 1, byrow = TRUE, keyheight = 0.15, default.unit = "inch")
   ) +
   ggplot2::theme(
-    legend.position = "right"
+    legend.position = "right",
+    legend.text = ggtext::element_markdown(size = 12),
+    plot.margin = ggplot2::margin(
+      t = 1.5,
+      r = 1.25,
+      b = 1,
+      l = 1.25,
+      unit = "in"
+    )
   )
 
 tree$figure_png <-
@@ -245,7 +253,7 @@ tree$figure_png <-
       cowplot::get_legend(plot = tree$png),
       ncol = 2,
       nrow = 1,
-      rel_widths = c(0.85, 0.15)
+      rel_widths = c(0.8, 0.2)
     )
 
 # Write Images ----
