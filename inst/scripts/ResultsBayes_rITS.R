@@ -48,6 +48,10 @@ tree$single <- tree$joined %>%
   dplyr::mutate(n = dplyr::n()) %>%
   dplyr::filter(.data$n == 1)
 
+# Subset nodes for labelling posterior probabilities
+tree$nodes <- tree$joined %>%
+    dplyr::filter(.data$prob != 1)
+
 # Base `ggtree` ----
 
 tree$ggtree <- tree$joined %>%
@@ -75,11 +79,6 @@ tree$ggtree <- tree$joined %>%
     )
   ) +
   ggtree::geom_tiplab(hjust = -0.175, size = 3) +
-  Thesis::repel_probability_labels(
-    haplotypes =  dplyr::filter(
-      tree$joined, .data$prob != 1  # Exclude hard polytomies
-    )
-  ) +
   ggplot2::scale_color_manual(
     values = Thesis::spp_color,
     labels = tree$labels
@@ -142,6 +141,26 @@ tree$repel_pdf <-
     fill = "red"
   )
 
+
+# Add node probabilities
+tree$repel_pdf <-
+  tibble::tribble(
+    ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
+    -0.005, 0, -0.01, 47,
+    -0.005, -1.5, -0.01, 48,
+    -0.0065, -1, -0.01, 49,
+    -0.0075, 1, 0.01, 50,
+    -0.0075, 2, 0.01, 51,
+    -0.0065, 0.25, -0.01, 52
+  ) %>%
+    Thesis::repel_node_labels(
+      node_nudges = .,
+      node_labels = tree$nodes,
+      initial_ggtree = tree$repel_pdf,
+      label_size = 2
+    ) %>%
+      rlang::eval_tidy(expr = .)
+
 tree$pdf <- tree$repel_pdf +
   ggplot2::guides(
     color = ggplot2::guide_legend(
@@ -196,6 +215,25 @@ tree$repel_png <-
     node = 8,
     fill = "red"
   )
+
+# Add node probabilities
+tree$repel_png <-
+  tibble::tribble(
+    ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
+    -0.005, 0, -0.01, 47,
+    -0.005, -1.5, -0.01, 48,
+    -0.0065, -1, -0.01, 49,
+    -0.0075, 1, 0.01, 50,
+    -0.0075, 2, 0.01, 51,
+    -0.0065, 0.25, -0.01, 52
+  ) %>%
+    Thesis::repel_node_labels(
+      node_nudges = .,
+      node_labels = tree$nodes,
+      initial_ggtree = tree$repel_png,
+      label_size = 2
+    ) %>%
+      rlang::eval_tidy(expr = .)
 
 tree$png <- tree$repel_png +
   ggplot2::guides(
