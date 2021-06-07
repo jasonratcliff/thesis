@@ -8,7 +8,9 @@ options(tigris_class = "sf", tigris_use_cache = TRUE)
 
 if (interactive()) {
   suppressMessages({
+    require(Thesis)
     require(devtools)
+    require(pkgdown)
   })
 }
 
