@@ -110,16 +110,20 @@ tree$ggtree <- tree$joined %>%
 tree$repel_pdf <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.019, 0.1, -0.1, 3, "Physaria vitulifera", "black",
-    0.0265, 0.1, 0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
-    0.024, 0.1, 0.1, 8, "Physaria condensata", "black",
-    0.0205, 0.15, 0.1, 8, "Physaria dornii", "black",
-    0.0175, 0.175, 0.1, 8, "Physaria integrifolia", "white",
-    0.0145, 0.1, 0.1, 8, "Physaria acutifolia", "black",
-    0.0175, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white",
-    0.0215, 0.05, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
-    0.02, 0.1, 0.1, 25, "Physaria eburniflora", "white",
-    0.015, 0.1, 0.1, 26, "Physaria eburniflora", "white"
+    0.0175, -0.5, -0.1, 3, "Physaria vitulifera", "black",
+    0.015, -1, -0.1, 3, "Physaria acutifolia", "black",
+    0.02, -2.25, 0.1, 8, "Physaria acutifolia", "black",
+    0.0225, -2, 0.1, 8, "Physaria condensata", "black",
+    0.02425, -1.6, 0.1, 8, "Physaria dornii", "black",
+    0.027, -1.5, 0.1, 8, "Physaria integrifolia", "white",
+    0.029, -1.25, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
+    0.031, -1, 0.1, 8, "Physaria medicinae", "white",
+    0.0235, 1.5, -0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
+    0.02, 1, -0.1, 9, "Physaria acutifolia", "black",
+    0.0225, 2.5, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
+    0.02, 2, -0.1, 25, "Physaria eburniflora", "white",
+    0.0175, 2, -0.1, 26, "Physaria eburniflora", "white",
+    0.0175, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white"
   ) %>%
     Thesis::repel_haplotype_labels(
       tree_nudges = .,
@@ -192,16 +196,20 @@ tree$figure_pdf <-
 tree$repel_png <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.0135, 0.1225, -0.1, 3, "Physaria vitulifera", "black",
-    0.0215, 0.1, 0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
-    0.02, 0.1, 0.1, 8, "Physaria condensata", "black",
-    0.0166, 0.15, 0.1, 8, "Physaria dornii", "black",
-    0.0133, 0.175, 0.1, 8, "Physaria integrifolia", "white",
-    0.01, 0.1, 0.1, 8, "Physaria acutifolia", "black",
-    0.012, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white",
-    0.0135, 0.05, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
-    0.0155, 0.05, 0.1, 25, "Physaria eburniflora", "white",
-    0.011, 0.05, 0.1, 26, "Physaria eburniflora", "white"
+    0.015, -0.5, -0.1, 3, "Physaria vitulifera", "black",
+    0.014, -1, -0.1, 3, "Physaria acutifolia", "black",
+    0.0145, -2.25, 0.1, 8, "Physaria acutifolia", "black",
+    0.0175, -2.25, 0.1, 8, "Physaria condensata", "black",
+    0.0185, -1.7, 0.1, 8, "Physaria dornii", "black",
+    0.021, -1.65, 0.1, 8, "Physaria integrifolia", "white",
+    0.023, -1.5, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
+    0.02465, -1.25, 0.1, 8, "Physaria medicinae", "white",
+    0.0175, 1.25, -0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
+    0.015, 0.75, -0.1, 9, "Physaria acutifolia", "black",
+    0.0135, 2, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
+    0.015, 2, -0.1, 25, "Physaria eburniflora", "white",
+    0.0125, 2, -0.1, 26, "Physaria eburniflora", "white",
+    0.012, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white"
   ) %>%
     Thesis::repel_haplotype_labels(
       tree_nudges = .,
