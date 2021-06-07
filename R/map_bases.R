@@ -15,11 +15,11 @@
 #' of `get_map()` longitude coordinates.
 #' @param gg_latitude Numeric vector of length one to optionally center call
 #' of `get_map()` latitude coordinates.
-#' @param ... Forwarded arguments from \link{build_map}
+#' @param ... Forwarded arguments from [build_map]
 #' @inheritParams layer_specimens
 #' @export
 #'
-#' @return Base ggplot layer from \link{ggmap} raster object.
+#' @return Base ggplot layer from [ggmap] raster object.
 #'
 #' @references
 #'  D. Kahle and H. Wickham. ggmap: Spatial Visualization with ggplot2. The R
@@ -73,7 +73,7 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #' Layer elevation raster for specimen plot.
 #'
 #' Build base ggplot layer from digital elevation model data from AWS Open Data
-#' Terrain Tiles via the \link{elevatr} package.
+#' Terrain Tiles via the [elevatr] package.
 #' Package repository: https://github.com/jhollist/elevatr
 #' Map terrain tiles: https://registry.opendata.aws/terrain-tiles/
 #'
@@ -81,11 +81,11 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #' `elevatr::get_elev_raster()` function call.  Must be between 1 and 14.
 #' @param raster_factor Integer vector of length 1 for optional aggregation
 #' of elevation raster to decrease resolution / object size.
-#' @param ... Forwarded arguments from \link{build_map}
+#' @param ... Forwarded arguments from [build_map]
 #' @inheritParams layer_specimens
 #' @export
 #'
-#' @return Base ggplot layer from \link{elevatr} raster object.
+#' @return Base ggplot layer from [elevatr] raster object.
 #'
 #' @references
 #' Hollister, J.W., Tarak Shah (2017). elevatr: Access Elevation Data from

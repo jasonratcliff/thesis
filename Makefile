@@ -30,7 +30,7 @@ pdf		:= $(inst_figures:%.R=%.pdf)
 png		:= $(inst_figures:%.R=%.png)
 
 .PHONY: all
-all: specimens themes seinet figures package check manuscript # slides 
+all: specimens themes seinet figures package check manuscript site # slides
 
 # Write .rda binary `data/` files.
 specimens: $(rda_specimens)
@@ -68,6 +68,7 @@ readme:
 
 # R CMD INSTALL
 package:
+	Rscript -e 'devtools::document()'
 	Rscript -e 'devtools::install_local(path = "~/Thesis", force = TRUE)'
 
 # R CMD check
@@ -76,6 +77,12 @@ check:
 
 manuscript:
 	make -C inst/manuscript all
+
+# `pkgdown` Package Website
+site: README.Rmd
+	Rscript -e 'pkgdown::clean_site()'
+	Rscript -e 'rmarkdown::render(input = "README.Rmd")'
+	Rscript -e 'pkgdown::build_site()'
 
 clean:
 	rm Rplots.pdf

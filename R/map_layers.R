@@ -5,16 +5,16 @@
 #' Build ggplot layer instance for state and county borders.
 #' Boundary shapefiles are downloaded from the US Census Bureau
 #' Topologically Integrated Geographic Encoding and Referencing (TIGER)
-#' database and read into R with the \link{tigris} package (Walker 2016).
-#' Data are read in to R as simple features through the \link{sf} package
-#' (Pebesma 2018) and transformed with the \link{rmapshaper} package
+#' database and read into R with the [tigris] package (Walker 2016).
+#' Data are read in to R as simple features through the [sf] package
+#' (Pebesma 2018) and transformed with the [rmapshaper] package
 #' (Teucher and Russell 2020) to simplify border polygons using the
 #' Visvalingam algorithm.
 #'
 #' @param sf_state_color Color of simple features boundry layer.
 #' @param sf_county_color Color of simple features boundry layer.
-#' @param sf_crs Optional CRS string called by \link[sf]{st_transform}
-#' @param ... Forwarded arguments from \link{build_map}
+#' @param sf_crs Optional CRS string called by [st_transform][sf::st_transform]
+#' @param ... Forwarded arguments from [build_map]
 #' @inheritParams spl_states
 #' @importFrom ggplot2 geom_sf coord_sf
 #' @export
@@ -86,7 +86,7 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #' @param id_column Character scalar matching specimen tibble ID variable.
 #'   Variable used for aesthetic (color and shape) mappings.
 #' @param legend_status Optional logical vector to show legend via `show.legend`
-#'   argument of \link[ggplot2]{geom_point}.
+#'   argument of [geom_point][ggplot2::geom_point].
 #' @param shape_aes Logical to optionally add shape aesthetic to ggplot.
 #' @param geom_size Numeric scalar for size of jitter aesthetic.
 #' @param jitter_width Numeric scalar for [geom_jitter()] width.
@@ -136,13 +136,13 @@ layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
 #'
 #' Assemble ggplot from various layer functions. Plot includes a base layer of
 #' bare, ggmap, or elevation rasters, county and state borders, specimens, and
-#' theme layers. The \link{cowplot} package is used to create a plot grid of the
+#' theme layers. The [cowplot] package is used to create a plot grid of the
 #' ggplot build.
 #'
 #' @param map_base Character vector to determine base ggplot layer.
-#' @param ... Forward arguments to: \link{layer_ggmap}, \link{layer_elevation},
-#'   \link{layer_borders}, \link{layer_specimens}, \link{layer_themes}, and
-#'   \link{spl_legend}
+#' @param ... Forward arguments to: [layer_ggmap], [layer_elevation],
+#'   [layer_borders], [layer_specimens], [layer_themes], and
+#'   [spl_legend]
 #' @inheritParams layer_specimens
 #' @inheritParams layer_themes
 #' @export

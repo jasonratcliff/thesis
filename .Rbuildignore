@@ -2,7 +2,9 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^Makefile$
+^README\.html$
 ^README\.Rmd$
+^README_files$
 ^Rplots\.pdf$
 ^app\.R$
 ^renv\.lock$
@@ -22,3 +24,6 @@
 ^codecov\.yml$
 ^public$
 ^vignettes/articles$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

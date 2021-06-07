@@ -1,9 +1,9 @@
 # Themes | Scales ----
 
 #' Generate HTML vector for
-#' \link[ggtext:element_markdown]{element_markdown()}
+#' [element_markdown()][ggtext::element_markdown]
 #'
-#' Requires installation of \link{ggtext} as follows:
+#' Requires installation of [ggtext] as follows:
 #'   remotes::install_github("clauswilke/ggtext")
 #'
 #' @inheritParams layer_specimens
@@ -53,8 +53,8 @@ spl_labels <- function(specimen_tbl, id_column) {
 #' Add map ggplot scales and themes
 #'
 #' Add manual values to specimen identification discrete scales in map ggplots
-#' set by \link{spp_color} and \link{spp_shape} vectors. Modify plot themes
-#' and add markdown italics for specific epithets with \link{spl_labels}.
+#' set by [spp_color] and [spp_shape] vectors. Modify plot themes
+#' and add markdown italics for specific epithets with [spl_labels].
 #'
 #' @param legend_title Character vector of length one to set the ggplot
 #'   legend title.

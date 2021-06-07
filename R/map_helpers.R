@@ -84,14 +84,14 @@ spl_bbox <- function(...) {
 #' Bounding box State intersect
 #'
 #' Build a bounding box polygon simple feature from a spatial extent data frame
-#' returned by \link{spl_bbox}. Given a set of state simple features, identify
-#' geometry intersections with \link[sf]{st_intersects} to subset state simple
+#' returned by [spl_bbox]. Given a set of state simple features, identify
+#' geometry intersections with [st_intersects][sf::st_intersects] to subset state simple
 #' features for plotting.
 #'
 #' @param spl_extent A data frame with specimen layer extent returned by
-#'   \link{spl_bbox}
+#'   [spl_bbox]
 #' @param sf_states State simple features data frame returned by
-#'   \link[tigris]{states}
+#'   [states][tigris::states]
 #' @export
 #'
 #' @return Character vector of states intersecting with spatial extent layer.

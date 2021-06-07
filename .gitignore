@@ -1,6 +1,9 @@
 *.DS_store
+*.html
+*.Rproj
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 Rplots.pdf
+docs

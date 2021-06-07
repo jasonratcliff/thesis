@@ -1,13 +1,14 @@
 #' Potentially Informative Site Alignment
 #'
-#' Create multiple sequence alignment ggplot with [ggmsa()] from [Biostrings]
-#' multiple sequence alignment subset to potentially informative sites.
+#' Create multiple sequence alignment ggplot with [ggmsa::ggmsa()] from multiple
+#' sequence alignment subset to potentially informative sites.
+#' FASTA files are read into R via [Biostrings::readDNAMultipleAlignment()]
 #'
 #' @param fasta_file FASTA file to read [DNAMultipleAlignment] from.
 #' @param ... Forwarding arguments to [ggmsa::ggmsa()]
 #' @export
 #'
-#' @return `ggmplot` object with multiple sequence alignment.
+#' @return `ggplot` object with multiple sequence alignment.
 #'
 #' @examples
 #' \dontrun{
@@ -80,7 +81,7 @@ msa_intervals <- function(msa_alignment) {
   return(interval_list)
 }
 
-#' Subset \code{\link[msa]{msaPrettyPrint}} *.tex* Alignments
+#' Subset [msa::msaPrettyPrint()] *.tex* Alignments
 #'
 #' From installed external data system files, read in alignment from FASTA
 #' file, calculate alignment intervals, and write subset *.tex* output files.
@@ -127,7 +128,7 @@ msa_wrapper <- function(msa_fasta, msa_output,
 #' alignments. Additional formatting to alignment text size and optional
 #' LaTeX landscape page orientation.
 #'
-#' Given an *.tex* file output by \code{\link[msa]{msaPrettyPrint}}, the
+#' Given an *.tex* file output by [msa::msaPrettyPrint()], the
 #' TEXshade environment text is subset and the contents overwritten to include
 #' sequence alignment character sizing and formatting.
 #'

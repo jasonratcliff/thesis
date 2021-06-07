@@ -1,3 +1,15 @@
+# Thesis 0.2.2
+
+* Add `ggrepel` function wrappers to specify label position nudges leveraging
+  `rlang` expression handling:
+  - `repel_map_labels()`
+  - `repel_tree_labels()`
+  - `repel_node_labels()`
+
+* Use markdown for Roxygen documentation
+
+* Add `pkgdown` infrastructure
+
 # Thesis 0.2.1
 
 * Medicine Bow and CO Front Range satellite map proofs.
