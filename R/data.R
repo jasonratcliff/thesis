@@ -5,7 +5,7 @@
 #' Collated by Jason Ratcliff
 #'
 #' \describe{
-#'   \item{label}{DNA specimen label annotation by <species>_<collection number>}
+#'   \item{label}{DNA specimen label annotation by `species_collection number`}
 #'   \item{Collector}{Name of specimen collector}
 #'   \item{Collection_Number}{Number of specimen collection by collector}
 #'   \item{Herbarium}{Herbarium institution code of specimen voucher(s)}
@@ -90,6 +90,8 @@
 #'
 #' SEINet records for *P. floribunda* and *P. bellii*.
 #'
+#' @source <https://swbiodiversity.org/seinet/index.php>
+#'
 #' \describe{
 #'   \item{scientificName}{Identification by scientific name}
 #'   \item{scientificNameAuthorship}{Taxon author}
@@ -113,8 +115,6 @@
 #'   \item{references}{SEINet record site reference}
 #' }
 #'
-#' @source <https://swbiodiversity.org/seinet/index.php>
-#'
 "seinet_coords"
 
 #' CO Front Range Subset
@@ -131,14 +131,14 @@
 #' Species Color Aesthetics
 #'
 #' \describe{
-#' \item{spp_color}{Vector with values for ggplot color aesthetics}
+#'   \item{spp_color}{Vector with values for ggplot color aesthetics}
 #' }
 "spp_color"
 
 #' Species Shape Aesthetics
 #'
 #' \describe{
-#' \item{spp_shape}{Vector with values for ggplot shape aesthetics}
+#'   \item{spp_shape}{Vector with values for ggplot shape aesthetics}
 #' }
 "spp_shape"
 
