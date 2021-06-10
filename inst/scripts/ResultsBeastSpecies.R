@@ -12,8 +12,8 @@ spp_hypothesis_1 <-
     )
   ) %>%
   ggtree::fortify() %>%
-  species_plot(tree_data = .) +
-  ggtitle("Hypothesis 1")
+  Thesis::species_plot(tree_data = .) +
+  ggplot2::ggtitle(label = "Hypothesis 1")
 
 # Hypothesis 2 ----
 spp_hypothesis_2 <-
@@ -23,8 +23,8 @@ spp_hypothesis_2 <-
     )
   ) %>%
   ggtree::fortify() %>%
-  species_plot(tree_data = .) +
-  ggtitle("Hypothesis 2")
+  Thesis::species_plot(tree_data = .) +
+  ggplot2::ggtitle(label = "Hypothesis 2")
 
 # Hypothesis 3 ----
 spp_hypothesis_3 <-
@@ -34,8 +34,8 @@ spp_hypothesis_3 <-
     )
   ) %>%
   ggtree::fortify() %>%
-  species_plot(tree_data = .) +
-  ggtitle("Hypothesis 3")
+  Thesis::species_plot(tree_data = .) +
+  ggplot2::ggtitle(label = "Hypothesis 3")
 
 # Hypothesis 4 ----
 spp_hypothesis_4 <-
@@ -45,25 +45,31 @@ spp_hypothesis_4 <-
     )
   ) %>%
   ggtree::fortify() %>%
-  species_plot(tree_data = .) +
-  ggtitle("Hypothesis 4")
+  Thesis::species_plot(tree_data = .) +
+  ggplot2::ggtitle(label = "Hypothesis 4")
 
 # cowplot Grid ----
 
 ggtree_spp <- list()
+ggtree_spp$theme <-
+  list(
+    ggplot2::theme(
+      legend.position = "none"
+    )
+  )
 
 ggtree_spp$spp <-
-  plot_grid(
-    spp_hypothesis_1 + theme(legend.position = "none"),
-    spp_hypothesis_2 + theme(legend.position = "none"),
-    spp_hypothesis_3 + theme(legend.position = "none"),
-    spp_hypothesis_4 + theme(legend.position = "none"),
+  cowplot::plot_grid(
+    spp_hypothesis_1 + ggtree_spp$theme,
+    spp_hypothesis_2 + ggtree_spp$theme,
+    spp_hypothesis_3 + ggtree_spp$theme,
+    spp_hypothesis_4 + ggtree_spp$theme,
     nrow = 2
   )
 
 ggtree_spp$plot <-
-  plot_grid(
-    ggtree_spp$spp, get_legend(spp_hypothesis_1),
+  cowplot::plot_grid(
+    ggtree_spp$spp, cowplot::get_legend(spp_hypothesis_1),
     ncol = 2, rel_widths = c(0.9, 0.1)
   )
 

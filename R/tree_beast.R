@@ -222,10 +222,10 @@ beast_legend_probability <- function(tree_data) {
 #'   ggtree::fortify() %>%
 #'   species_plot(tree_data = .)
 #'
-species_plot <- function(tree_data) {
+species_plot <- function(tree_data, label_size = 2) {
 
   # Parse tip label expressions for species italicization.
-  tree_data <- tree_data %>%
+  labeled_tree <- tree_data %>%
     dplyr::mutate(
       label = purrr::map_chr(.data$label, function(label) {
         if (!is.na(label)) {
@@ -234,25 +234,30 @@ species_plot <- function(tree_data) {
             string = label,
             pattern = "P\\. [a-z]+"
           )
-          ifelse(grepl(" subsp ", label),
-                 paste0("italic(", species, ")", " subsp. ",
+          ifelse(grepl(" ssp ", label),
+                 paste0("italic(", species, ") subsp. ",
                         stringr::str_extract(
                           string = label,
-                          pattern = "(?<=subsp )[a-z]+$"
+                          pattern = "(?<=ssp )[a-z]+$"
                         ) %>%
                           paste0("italic(", ., ")")),
                  paste0("italic(", species, ")"))
         } else {
           NA
         }
-      }) %>% gsub(" ", "~", x = .)
+      }) %>%
+        gsub(" ", "~", x = .) %>%
+
+        # TODO Parse workaround for subpecies
+        gsub("didymocarpa(?=\\)~subsp.)", "d.", x = ., perl = TRUE) %>%
+        gsub("saximontana(?=\\)~subsp.)", "s.", x = ., perl = TRUE)
     )
 
   # Build ggtree from species tree.
   spp_ggtree <-
-    ggtree::ggtree(tr = tree_data, ggplot2::aes(color = .data$posterior)) +
+    ggtree::ggtree(tr = labeled_tree, ggplot2::aes(color = .data$posterior)) +
     # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
-    ggtree::geom_tiplab(size = 2, parse = T) +
+    ggtree::geom_tiplab(size = label_size, parse = T) +
     ggrepel::geom_label_repel(
       data = dplyr::filter(tree_data, !is.na(.data$posterior)),
       ggplot2::aes(
@@ -263,7 +268,7 @@ species_plot <- function(tree_data) {
     ggplot2::scale_color_gradientn(
       colors = c("red", "orange", "green", "cyan", "blue")
     ) +
-    ggtree::xlim_expand(xlim = 0.001275, panel = "Tree") +
+    ggtree::xlim_expand(xlim = 0.0013, panel = "Tree") +
     ggtree::geom_treescale() +
     ggtree::theme_tree()
   return(spp_ggtree)
