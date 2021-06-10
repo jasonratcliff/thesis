@@ -117,6 +117,9 @@ bayes_themes <- function(joined_ggtree, id_column) {
 
 #' Build ggtree Plot Grid
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
 #' Wrapper function to plot legend inset onto ggtree object.
 #'
 #' @inheritParams bayes_ggtree

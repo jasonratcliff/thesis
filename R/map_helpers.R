@@ -124,6 +124,10 @@ spl_states <- function(spl_extent, sf_states) {
 
 #' Map Individual Specimen
 #'
+#' @description 
+#' `r lifecycle::badge("deprecated")`
+#' - See `inst/scripts/IntroCarbonWyo.R` for implementation by call expression.
+#' 
 #' Generate geom specifications to add label of individual specimen(s).
 #'
 #' @param h_adjust Numeric vector of length one for horizontal label adjustment.
