@@ -44,7 +44,7 @@ ggplot_specimens <- function() {
     stat_ellipse(
       data = spp_colorado %>%
         select(Longitude, Latitude, scientificName) %>%
-        filter(grepl("vitulifera|bellii|medicinae", scientificName)),
+        filter(grepl("vitulifera|bellii|'medicinae'", scientificName)),
       mapping = aes(x = Longitude, y = Latitude, group = scientificName),
       geom = "polygon", type = 'norm', level = 0.999,
       fill = "black", alpha = 0.25

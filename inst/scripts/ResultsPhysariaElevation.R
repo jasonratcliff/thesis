@@ -124,15 +124,19 @@ specimens$table <- specimens$Mean %>%
               collapse = ""
             )
         } else {
-          parsed_label <-
-            paste0(
-              "italic(",
-              paste(taxon_split[1:2], collapse = " "),
-              ") ssp. italic(",
-              taxon_split[4],
-              ")",
-              collapse = ""
-            )
+          if (grepl("'medicinae'", x = taxon)) {
+            parsed_label <- "italic(Physaria) 'medicinae'"
+          } else {
+            parsed_label <-
+              paste0(
+                "italic(",
+                paste(taxon_split[1:2], collapse = " "),
+                ") subsp. italic(",
+                taxon_split[4],
+                ")",
+                collapse = ""
+              )
+          }
         }
         parsed_label <- unlist(parsed_label) %>%
           gsub(" +", "~", x = .)  # Replace white space to parse by expression()

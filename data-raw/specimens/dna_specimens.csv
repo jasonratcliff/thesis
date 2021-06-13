@@ -62,10 +62,10 @@ PSAXI_SA_39,"J. Ratcliff & S. L. O'Kane, Jr.",39,ISTC,Wyoming,Fremont,42.6917,-1
 PSAXI_SA_50,"J. Ratcliff & S. L. O'Kane, Jr.",50,ISTC,Wyoming,Fremont,43.6986,-108.8783,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,TRUE,PSAXI_SA_50 rITS,PSAXI_SA_50 rps,PSAXI_SA_50 ycf1
 PSAXI_SA_74315,B.E. Nelson,74315,ISTC,Montana,Carbon,45.0145,-108.2925,Physaria saximontana ssp. saximontana,Physaria acutifolia,TRUE,PSAXI_SA_74315 rITS,PSAXI_SA_74315 rps,PSAXI_SA_74315 ycf1
 PSAXI_SA_9636,P. Lesica with P. Kittelson,9636,MONTU,Montana,Madison,45.1967,-111.9552,Physaria saximontana ssp. saximontana,Physaria saximontana ssp. saximontana,TRUE,PSAXI_SA_9636 rITS,PSAXI_SA_9636 rps,PSAXI_SA_9636 ycf1 
-PVITU_10105,R. Dorn,10105,RM,Wyoming,Carbon,41.0172,-106.8503,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_10105 rITS,PVITU_10105 rps,PVITU_10105 ycf1
-PVITU_16713,W. Fertig,16713,RM,Wyoming,Carbon,41.2144,-107.1844,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_16713 rITS,PVITU_16713 rps,PVITU_16713 ycf1
-PVITU_19075,W. Fertig & L. Welp,19075,RM,Wyoming,Carbon,41.3397,-106.5584,Physaria vitulifera - Carbon,Physaria medicinae,TRUE,PVITU_19075 rITS,PVITU_19075 rps,PVITU_19075 ycf1
-PVITU_34,"J. Ratcliff & S. L. O'Kane, Jr.",34,ISTC,Wyoming,Carbon,41.1735,-106.8196,Physaria vitulifera - Carbon,Physaria medicinae,FALSE,PVITU_34 rITS,PVITU_34 rps,FRAMESHIFT
+PVITU_10105,R. Dorn,10105,RM,Wyoming,Carbon,41.0172,-106.8503,Physaria vitulifera - Carbon,Physaria 'medicinae',TRUE,PVITU_10105 rITS,PVITU_10105 rps,PVITU_10105 ycf1
+PVITU_16713,W. Fertig,16713,RM,Wyoming,Carbon,41.2144,-107.1844,Physaria vitulifera - Carbon,Physaria 'medicinae',TRUE,PVITU_16713 rITS,PVITU_16713 rps,PVITU_16713 ycf1
+PVITU_19075,W. Fertig & L. Welp,19075,RM,Wyoming,Carbon,41.3397,-106.5584,Physaria vitulifera - Carbon,Physaria 'medicinae',TRUE,PVITU_19075 rITS,PVITU_19075 rps,PVITU_19075 ycf1
+PVITU_34,"J. Ratcliff & S. L. O'Kane, Jr.",34,ISTC,Wyoming,Carbon,41.1735,-106.8196,Physaria vitulifera - Carbon,Physaria 'medicinae',FALSE,PVITU_34 rITS,PVITU_34 rps,FRAMESHIFT
 PVITU_3754,"S.L. O'Kane, Jr.",3754,ISTC,Colorado,Gilpin,39.7333,-105.4167,Physaria vitulifera,Physaria vitulifera,TRUE,PVITU_3754 rITS,PVITU_3754 rps,PVITU_3754 ycf1
 PVITU_489,S.F. Smith,489,RM,Colorado,Teller,38.8667,-105.1167,Physaria vitulifera,Physaria vitulifera,FALSE,PVITU_489 rITS,PVITU_489 rps,MISSING
 PVITU_500,S.F. Smith,500,RM,Colorado,Park,38.95,-105.9917,Physaria vitulifera,Physaria vitulifera,FALSE,PVITU_500 rITS,PVITU_500 rps,MISSING

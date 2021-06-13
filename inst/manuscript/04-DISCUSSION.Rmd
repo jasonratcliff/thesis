@@ -186,9 +186,9 @@ knitr_section(
   dentate margins; Eastern Front Range, Colorado
   \dotfill \textit{Physaria vitulifera} Rydberg
 
-  \item[5. ] Mature fruits < 5 mm; plants alpine; Medicine Bow Mountains
-  and Sierra Madre Range of Wyoming, NC Colorado
-  \dotfill \textit{Physaria medicinaea} Ratcliff
+  \item[5. ] Mature fruits < 5 mm; plants upper montane to subalpine;
+  Medicine Bow Mountains and Sierra Madre Range of SC Wyoming, NC Colorado
+  \dotfill \textit{Physaria} 'medicinae'
 
                 \end{enumerate}
 
@@ -447,10 +447,10 @@ knitr_section(
  style 5-7(-9) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPmedicinae}
+```{r subsectionDescriptionPhysariaSpNov}
 
 knitr_section(
-  knitr_title = "*Physaria medicinae* Ratcliff, Sp. Nov.",
+  knitr_title = "*Physaria* 'medicinae'",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 

@@ -185,7 +185,7 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #'
 #' tibble::tribble(
 #'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-#'   0.01, -1.5, 0.1, 5, "Physaria medicinae", "white",
+#'   0.01, -1.5, 0.1, 5, "Physaria 'medicinae'", "white",
 #'   0.0075, -1.5, 0.1, 5, "Physaria didymocarpa subsp. didymocarpa", "white",
 #'   0.005, -1.5, 0.1, 5, "Physaria eburniflora", "white",
 #'   0.0025, -1.5, 0.1, 5, "Physaria acutifolia", "black"

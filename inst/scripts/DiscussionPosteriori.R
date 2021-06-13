@@ -13,7 +13,7 @@ reviewed$specimens <- Thesis::herbarium_specimens %>%
     paste("Physaria",
       c("acutifolia", "brassicoides", "condensata", "dornii",
         "eburniflora", "integrifolia", "vitulifera",
-        "medicinae", "chambersii", "rollinsii",
+        "'medicinae'", "chambersii", "rollinsii",
         paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
         paste("saximontana subsp.", c("saximontana", "dentata")),
         paste("floribunda subsp.", c("floribunda", "osterhoutii"))

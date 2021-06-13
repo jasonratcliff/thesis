@@ -209,6 +209,7 @@ beast_legend_probability <- function(tree_data) {
 #' Species tip labels are parsed to abbreviate genus and italicize using
 #' base expressions.
 #'
+#' @param label_size Numeric vector of length one for label size.
 #' @inheritParams node_labels
 #' @export
 #'

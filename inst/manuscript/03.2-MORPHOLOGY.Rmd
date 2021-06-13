@@ -55,7 +55,7 @@ subspecies, previously-annotated *P. saximontana* subspecies
 Fruit length from `r physaria(knitr_chunk = knit_variables$pandoc)`
 individuals of the Sierra Madre and Medicine Bow mountain ranges are
 highly reduced relative to other species
-(*P. medicinae* in Panel A, Figure \@ref(fig:FigResultsPhysariaFruits)).
+(*P.* 'medicinae' in Panel A, Figure \@ref(fig:FigResultsPhysariaFruits)).
 When accounting for collection date, these individuals form fruits through
 June similar to nearby *P. acutifolia*
 (Panel B, Figure \@ref(fig:FigResultsPhysariaFruits)). In contrast,
