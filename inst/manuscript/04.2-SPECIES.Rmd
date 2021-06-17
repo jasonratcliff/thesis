@@ -1,0 +1,87 @@
+
+\clearpage
+
+```{r sectionNovelPhysaria}
+
+knitr_section(
+  knitr_title = paste("Wyoming", physaria(knit_variables$pandoc), "Lineage"),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} Divergence of a novel *Physaria* lineage in the Sierra Madre and
+Medicine Bow Mountains is considered here on the basis of phylogenetic,
+morphological, and ecological data. For the loci comprising individual gene
+trees, reciprocal monophyly was not observed in either rITS or *rps* intron
+(Figures \@ref(fig:FigureBayesrITS) and \@ref(fig:FigureBayesrpsIntron)).
+Phylogenetic support in the concatenated MrBayes consensus tree
+(Figure \@ref(fig:FigureBayesMultiLocus)) and multi-locus BEAST maximum
+credibility clade tree (Figure \@ref(fig:FigureResultsBeastMultiLocus))
+does support divergence of these populations relative to *P. vitulifera* of
+Colorado. Modeling dispersal with contemporary geographic location similarly
+supports divergence of these populations from *P. vitulifera*, with
+exception to a single specimen from Hog Park in the Sierra Madre Range
+(Dorn 10105, Figure \@ref(fig:FigureResultsBeastGeography)). While sampling bias
+has been recently indicated as potentially influencing Brownian motion
+continuous phylogeography [@Kalkauskas2021], population genetic studies of
+*Calochortus gunnisonii* have revealed genetic differentiation of high-elevation
+Medicine Bow and Sierra Madre populations relative to populations north of the
+Wyoming Basin [@FullerMcGalughlin2019].
+
+\paragraph{} Species delimitation under the multispecies coalescent via
+\*BEAST yielded the highest support for divergence when prior *P. saximontana*
+subspecies were lumped with *P. didymocarpa* (Hypotheses 3 and 4, Figure
+\@ref(fig:FigureResultsBeastSpecies)). In considering species delimitation,
+the degree of gene exchange (e.g., immigration) and time since divergence
+provide potential measures for evolutionary independence of lineages
+[@HeyPinho2001]. Statistical delimitation methods based on the multispecies
+coalescent may overestimate genetic structure as species lineages, which has
+implications for any method utilizing species as a unit of analysis
+[@SukumaranKnowles2017]. The phylogenies reported here consist of a modest
+number of specimens sampled from a relatively small number of genetic loci.
+While not fully resolved, evidence for lineage separation of the disputed
+*P. vitulifera* specimens as a new taxon was also observed in morphological and
+ecological traits. Reviewed specimens are found generally above 2,100m, at
+a higher elevation relative to nearby *P. acutifolia* and allopatric
+*P. vitulifera* of Colorado (Figures \@ref(fig:FigResultsPhysariaElevation)
+and \@ref(fig:speciesSEINet)). Globally, endemic plant species have been shown
+to correlate with increases in elevation [@Steinbauer2016].
+
+```{r speciesSEINet, fig.cap=caption$FigDiscussionSEINet, fig.scap="SEINet Distribution Map."}
+
+# Plot of fruit dimensions by reviewed species ID and collection date.
+caption$FigDiscussionSEINet <-
+  paste(
+    "Distribution of regional", physaria(knit_variables$pandoc),
+    "species from SEINet."
+  )
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationSEINet",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
+\paragraph{} Specimen occurrences obtained from SEINet for *P. floribunda*
+subspecies and *P. bellii* highlight the allopatric distribution of Colorado
+*Physaria* species from the Medicine Bow and Sierra Madre Range populations
+\@ref(fig:FigureIntroCarbonWyo). Notably, the Front Range provides a
+geographic barrier, with *P. vitulifera* and *P. bellii* limited to the
+eastern slope. Similarly, the *P. floribunda* subspecies from Middle Park
+to the southwest are separated from the hypothesized *Physaria* lineage by
+the Bears Ears Range with populations north and northwest of North Park in
+Grand County, Colorado. Populations of questioned specimens examined are
+distributed from the Sierra Madre West of Encampment and East through the
+Medicine Bow Range. After accounting for collection date, these specimens
+show a marked reduction in average mature fruit length and width relative
+to other nearby species (Figure \@ref(fig:FigResultsPhysariaFruits)).
+Traditionally, *P. floribunda* have been differentiated by recurved, nearly
+pendant pedicels and pinnatifid basal leaves [@OKane2010]. Future phylogenetic
+and population genetic analysis should include both *P. floribunda* subspecies
+and *P. bellii*.
+
+
