@@ -31,7 +31,7 @@ anovaPhysariaStems <- herbarium_specimens %>%
 
 ```{r sectionTraitPlots}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Trait Distributions",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -61,7 +61,7 @@ June similar to nearby *P. acutifolia*
 (Panel B, Figure \@ref(fig:FigResultsPhysariaFruits)). In contrast,
 observations indicate individuals of *P. integrifolia* and *P. didymocarpa*
 subsp. *lyrata* may form slightly larger fruits later into the season.
-Other subspecies of *Physraia didymocarpa*, subsp. *lanata* and subsp.
+Other subspecies of *Physaria didymocarpa*, subsp. *lanata* and subsp.
 *didymocarpa*, fruit into July and August with sizes in the range of 7-12 mm.
 
 \vspace*{24pt}
@@ -179,7 +179,7 @@ knitr::include_graphics(
 \clearpage
 
 \paragraph{} Measurements of basal leaf length, stem length, and the degree to
-which the inflorescence exceed the basal rosette reveal three species with
+which the inflorescence exceeds the basal rosette reveal three species with
 condensed growth (Figure \@ref(fig:FigResultsPhysariaHabit)). Both of the
 southwest Wyoming endemics *P. dornii* and *P. condensata* have relatively
 short stem lengths with inflorescences barely exceeding the basal rosette
@@ -187,7 +187,7 @@ short stem lengths with inflorescences barely exceeding the basal rosette
 is distinguished by larger basal leaves
 (Panels A Figure \@ref(fig:FigResultsPhysariaHabit)). The other condensed growth
 habit species from central Wyoming *P. eburniflora* is similarly distinguished
-by from other `r physaria(knitr_chunk = knit_variables$pandoc)` species by
+from other `r physaria(knitr_chunk = knit_variables$pandoc)` species by
 inflorescences barely exceeding basal rosettes and relatively shorter stems.
 
 \vspace*{24pt}

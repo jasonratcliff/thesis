@@ -12,12 +12,6 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 
 # INTRODUCTION {#INTRODUCTION}
 
-```{r introductionVariables, echo=FALSE}
-
-introduction_variables <- list()  # Initialize list for assigned variables
-
-```
-
 \pagestyle{main}
 \pagenumbering{arabic}
 
@@ -69,17 +63,17 @@ interest as the species is known primarily from the eastern slope of the
 Front Range in Colorado [@Weber1996; @Ackerfield2015].
 Furthermore, @OKane2010 previously noted the characters distinguishing
 *P. didymocarpa* and *P. saximontana* show some intergradation, suggesting the
-need for further work on these taxa and described subspecies.  Lastly, the state
-endemic *P. dornii* of southwestern Wyoming has a described distribution
-overlapping with the regional endemic *P. integrifolia* and a peripatric
-distribution with *P. condensata* [@Lichvar1983].
+need for investigation of these taxa and described subspecies.
+Lastly, the state endemic *P. dornii* of southwestern Wyoming has a described
+distribution overlapping with the regional endemic *P. integrifolia* and a
+peripatric distribution with *P. condensata* [@Lichvar1983].
 Here, an integrative taxonomic treatment of these species considers evidence
 from molecular, ecological and morphological data to address the
 phylogenetic status of these taxa.
 
-```{r sectionTaxaHistory}
+```{r SectionTaxaHistory}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Systematic and Taxonomic History",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -278,9 +272,9 @@ while variety *saximontana* typically had 2 ovules per locule present.
 
 \vspace*{-24pt}
 
-```{r sectionDistribution}
+```{r SectionDistribution}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Geographical Distribution and Ecology",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -291,8 +285,11 @@ knitr_section(
 montane habitats with often-arid climates and intense sunlight where they tend
 to occupy siliceous soils, granitic talus or limestone shale outcrops
 [@Rollins1939; @Rollins1993]. The most widespread species considered here,
-*P. acutifolia* (Figure 1.1), spans Montana, Idaho, Wyoming, South Dakota, Colorado, Utah, Nevada, Arizona and New Mexico and forms a cline with plants at the higher elevations being smaller, often with branched, sometimes elongated, caudices, and elongated styles (O’Kane 2010) Infraspecific taxa not recognized
-by @OKane2010 include *P. acutifolia* var. *purpurea* @WelshReveal1977 of Grand 
+*P. acutifolia* (Figure 1.1), spans Montana, Idaho, Wyoming, South Dakota,
+Colorado, Utah, Nevada, Arizona and New Mexico and forms a cline with plants at 
+the higher elevations being smaller, often with branched, sometimes elongated, 
+caudices, and elongated styles (O’Kane 2010) Infraspecific taxa not recognized
+by @OKane2010 include *P. acutifolia* var. *purpurea* @WelshReveal1977 of Grand
 County, Utah and var. *stylosa* @Welsh1986 of northeastern Utah, the latter
 previously described as *P. stylosa* by @Rollins1993.
 
@@ -308,7 +305,7 @@ of north-central Wyoming and south-central Montana, *P. didymocarpa* subsp.
 southeast of the range of *P. didymocarpa* subsp. *didymocarpa*
 [@HandleyHeidel2011]. In Idaho, *P. didymocarpa* subsp. *lyrata*
 (C. L. Hitchcock) O'Kane has a narrow distribution in the Salmon River drainage
-of Lehmi County [@Rollins1993; @OKane2010].
+of Lemhi County [@Rollins1993; @OKane2010].
 
 \paragraph{} Three species of *Physaria* sensu-stricto have been described from
 southwestern and west-central Wyoming (Figure \@ref(fig:FigureIntroPriors)).
@@ -357,9 +354,9 @@ south to Colorado and Nebraska at generally lower elevations, ranging from
 and clay soils, its distribution is primarily non-overlapping with other
 Wyoming *Physaria*.
 
-```{r subsectionCarbonVitulifera}
+```{r SubsectionCarbonVitulifera}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Status of *Physaria vitulifera* in Wyoming",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -368,15 +365,31 @@ knitr_section(
 
 \paragraph{} Rollins' -@Rollins1993 treatment of *Physaria* described
 *P. vitulifera* as occurring in central Colorado. Weber and Wittman [-@Weber1996]
-reported the species with a distribution East of the Front Range, on gravelly
-slopes of the outer canyons in the foothills. @Ackerfield2015 also reported the
-species as East of the Rocky Mountains, from the South in Fremont County to the
-North in Larimer County. O'Kane's [-@OKane2010] treatment of *Physaria* follows
-the latter circumscriptions, reporting *P. vitulifera* from only Colorado.
-More recently, Heidel and O'Kane [-@HeidelOKane2012] identified a need for
+reported the species as East of the Front Range, on gravelly slopes of the
+foothills. @Ackerfield2015 reported a similar distribution, from the South in
+Fremont County to the North in Larimer County. O'Kane's [-@OKane2010] treatment
+of *Physaria* follows these circumscriptions, reporting *P. vitulifera* from
+only Colorado. Heidel and O'Kane [-@HeidelOKane2012] posited a need for
 taxonomic work based on *Physaria* collections with annotations as
-*P. vitulifera*, many of which were re-annotated by Jennings (2004) as
-*P. acutifolia* (indicated by “*”, Table \@ref(tab:TableIntroCarbon)).
+*P. vitulifera*, many of which were re-annotated by Jennings [-@Jennings2004] as
+*P. acutifolia* (indicated by “\*”, Table \@ref(tab:TableIntroCarbon)).
+In contrast to other treatments, Dorn's [-@Dorn2001] Wyoming Flora key to 
+*Physaria* reported the species from south-central Wyoming, distinguished by
+fruits with a somewhat rectangular outline and obtuse or truncate basal apices.
+It was noted the replum often attached nearly the full length of the fruit
+resulting in highly reduced apices, and that basal leaf petioles tended to be
+toothed, noting an occurrence on rocky slopes in or nearby mountains [@Dorn2001].
+This treatment preceded the review of putative *P. vitulifera* specimens
+by Jennings [-@Jennings2004]. As previously described, the taxonomic status of
+*P. vitulifera* in Wyoming is unclear
+[@Rollins1993; @Dorn2001; @Jennings2004; @OKane2010; @HeidelOKane2012].
+A number of specimens from Carbon county in Wyoming previously annotated as
+*P. vitulifera* ("*Physaria vitulifera* - Carbon")
+or matching the phenotype described by Dorn [-@Dorn2001]
+("*Physaria acutifolia - vitulifera*-like") are observed as
+geographically separated from the Colorado Front range *P. vitulifera*
+(Figure \@ref(fig:FigureIntroCarbonWyo)).
+
 
 ```{r TableIntroCarbon}
 
@@ -464,22 +477,21 @@ if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
 
 ```
 
-\paragraph{} Dorn's [-@Dorn2001] Wyoming Flora key to *Physaria* did report the
-species from south-central Wyoming, distinguished by fruits with a somewhat
-rectangular outline and obtuse or truncate basal apices. It was noted the replum
-often attached nearly the full length of the fruit resulting in highly reduced
-apices, and that basal leaf petioles tended to be toothed. This entity was
-described as occurring on rocky slopes in or nearby mountains [@Dorn2001].
-This treatment preceded a review of putative *P. vitulifera* specimens in the
-state [@Jennings2004]. As previously described, the taxonomic status of
-*P. vitulifera* in Wyoming is unclear
-[@Rollins1993; @Dorn2001; @Jennings2004; @OKane2010; @HeidelOKane2012].
-A number of specimens from Carbon county in Wyoming have previously been
-annotated as *P. vitulifera* ("*Physaria vitulifera* - Carbon")
-or fit the phenotype described by Dorn [-@Dorn2001]
-("*Physaria acutifolia - vitulifera*-like")
-appear geographically separated from the Colorado Front range *P. vitulifera*
-(Figure \@ref(fig:FigureIntroCarbon)).
+\paragraph{} The set of sympatric specimens with a concordant phenotype show
+reduced mature fruits on sigmoidal pedicels with often dentate basal leaves.
+To the South, two flowering specimens (*Kastning* 1462 and *Kastning* 1725)
+collected from Jackson County, Colorado show a general reduction in size with
+ascending pedicels ("Physaria"; Figure \@ref(fig:FigureIntroCarbonWyo)).
+An additional record from Jackson County with mature fruits (*Nelson* 49286)
+shows similarly ascending sigmoidal pedicels with reduced fruits. In contrast,
+records further South in Middle Park of Grand County, Colorado display notably
+pendent fruiting pedicels (*Nelson* 49478, *Patterson* s.n. (F-980, F-208917)),
+with two having distinctly pinnatifid basal leaves
+(*Patterson* s.n. (F-980, F-208917)). The *Patterson* specimens were both
+collected in 1875 with location data limited to a description as from
+Middle Park, in proximity to the Muddy River. Notably, North Park is separated
+from Middle Park to the South by the Rabbit Ears Range which divides Grand
+and Jackson Counties.
 
 \clearpage
 
@@ -498,7 +510,7 @@ caption$FigureIntroCarbon <-
       knit_variables$pandoc == "latex",
       "\\textit{P. floribunda}", "*Physaria floribunda*"
     ),
-    "supspecies southwest from Middle Park and",
+    "subspecies southwest from Middle Park and",
     ifelse(
       knit_variables$pandoc == "latex",
       "\\textit{P. bellii}", "*Physaria bellii*"
@@ -518,25 +530,10 @@ knitr::include_graphics(
 
 ```
 
-\paragraph{} The set of sympatric specimens with a concordant phenotype show
-reduced mature fruits on sigmoidal pedicels with often dentate basal leaves.
-To the South, two flowering specimens (*Kastning* 1462 and *Kastning* 1725)
-collected from Jackson County, Colorado show a general reduction in size with
-ascending pedicels ("Physaria"; Figure \@ref(fig:FigureIntroCarbon)).
-An additional record from Jackson County with mature fruits (*Nelson* 49286)
-shows similarly ascending sigmoidal pedicels with reduced fruits. In contrast,
-records further South in Middle Park of Grand County, Colorado display notably
-pendent fruiting pedicels (*Nelson* 49478, *Patterson* s.n. (F-980, F-208917)),
-with two having distinctly pinnatifid basal leaves
-(*Patterson* s.n. (F-980, F-208917)). The *Patterson* specimens were both
-collected in 1875 with location data limited to a description as from
-Middle Park, in proximity to the Muddy River. Notably, North Park is separated
-from Middle Park to the South by the Rabbit Ears Range which divides Grand
-and Jackson Counties.
 
-```{r sectionMorphologicalTraits}
+```{r SectionMorphologicalTraits}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Morphology and Phylogeny",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -585,7 +582,7 @@ With a greater proportion of sequence data constituting simultaneous analyses
 (i.e., co-estimation of phylogeny from genes and morphology; a "total evidence"
 or combined approach), genomic data will increasingly influence topology such
 that results approximate mapping morphology onto a molecular phylogeny (*ibid.*).
-Despite this marked increased in availability of sequence data, non-phylogenetic
+Despite this marked increase in availability of sequence data, non-phylogenetic
 signal from incomplete lineage sorting remains a potential hurdle for recent
 divergences of species with large effective population sizes
 [@Philippe2011].
@@ -606,42 +603,18 @@ species may show strong evidence of speciation by genetic evidence when
 Congruence between multiple lines of evidence may provide stronger support for
 phylogenetic hypotheses and taxonomic decisions, where morphology is considered
 an operational criterion for lineage separation [@deQueiroz2007]
-To asses the status of *Physaria* species, observations of suspected
+To assess the status of *Physaria* species, observations of suspected
 parsimony-informative continuous and discrete characters previously utilized in
 published dichotomous keys were recorded: replum shape; ovule count; mature
 fruit size, apices and trichomes; basal leaf margins; and overall habit.
 Of particular interest are species previously delimited on the basis of
-diagnosible monophyly from morphological characters despite the lack of
+diagnosable monophyly from morphological characters despite the lack of
 information about genetic history, cytology, or reproductive mechanisms
 (e.g., *Physaria saximontana* subspecies, *Physaria eburniflora*,
 *P. dornii*, *P. condensata*).
 
-```{r sectionSpeciation}
+\clearpage
 
-knitr_section(
-  knitr_title = "Mechanisms of Speciation",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
+```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
-
-
-
-
-
-```{r subsectionTopography}
-
-knitr_section(
-  knitr_title = "The Role of Topography in Speciation",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
-
-
-
-
-
-
-
 

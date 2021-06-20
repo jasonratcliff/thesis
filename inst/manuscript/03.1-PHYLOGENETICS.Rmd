@@ -4,7 +4,7 @@
 
 ```{r sectionBayesianInference}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Phylogenetic Analysis",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -115,7 +115,7 @@ the southwestern Wyoming endemics and a *Physaria didymocarpa* species complex.
 
 ```{r subsectionrITS}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "ITS Sequence Analysis",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -128,7 +128,7 @@ four include interspecific specimens when considered by prior annotation
 (Table \@ref(tab:TableIdenticalSeqrITS)).
 The largest group of 20 specimens (**Genotype 1**) is comprised of southwestern
 Wyoming endemics *P. dornii* (n=4), *P. condensata* (n=4), and
-*P. integififolia* (n=3); 6 individuals of *P. acutifolia* from 
+*P. integrifolia* (n=3); 6 individuals of *P. acutifolia* from 
 southern Wyoming and western Colorado; and three specimens from the Big Horn
 Mountains (*Nelson 74315*, *O'Dea 32*, *Ratcliff and O'Kane 48*).
 **Genotype 2** includes three specimens of *P. vitulifera* from central Colorado
@@ -200,11 +200,11 @@ individuals previously annotated as *Physaria condensata*
 *Fertig 17503* and *17506*) in addition to three *P. integrifolia* specimens
 (*Nelson 19288*, *Nelson and Scott 68918*, and *Fertig 17493*). An identical
 genotype was observed in six specimens of *P. acutifolia* from southern Wyoming
-and western Colorado in addition to three specimens from near Big Horn Canyon.
+and western Colorado in addition to three specimens from near Bighorn Canyon.
 A moderately supported polytomy (P=0.741) includes four specimens
 of *P. didymocarpa* subsp. *didymocarpa* (**Genotype 4** in part), two specimens
 *P. s.* subsp. *saximontana* (**Genotype 4** in part), three specimens of
-of *P. saximontana* subsp. *dentata*, four specimens of *P. brassicoides*,
+*P. saximontana* subsp. *dentata*, four specimens of *P. brassicoides*,
 and single specimens of *P. didymocarpa* subsp. *lanata*,
 *P. d.* subsp. *lyrata*, *P. acutifolia* from Utah 
 (*Holmgren and Holmgren 14222*), and putative *P. vitulifera* from Carbon County
@@ -214,7 +214,7 @@ with high support included *P. saximontana* subsp. *saximontana* and
 
 ```{r subsectionrps}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "*rps* Intron Sequence Analysis",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -224,11 +224,11 @@ knitr_section(
 \paragraph{} Sequences for the *rps* intron ranged from 802 to 852 base pairs
 with an aligned length of 889. A high degree of sequence homogeneity was
 observed in the *rps* intron alignment (Table \@ref(tab:TableIdenticalSeqrps)).
-Fourteen identical sequences (**Genotype 1**) includes specimens previously
+Fourteen identical sequences (**Genotype 1**) include specimens previously
 identified as *P. didymocarpa* subsp. *didymocarpa* (n=2),
 *P. d.* subsp. *lanata* (n=2), *P. saximontana* susp. *saximontana* (n=2),
 *P. s.* subsp. *dentata* (n=2), *P. acutifolia* (n=3), and *P. brassicoides*
-(n=3). These samples are primarily from populations of the Big Horn Moutains
+(n=3). These samples are primarily from populations of the Big Horn Mountains
 and Absaroka Range of Wyoming and Montana, with outliers in the Big Belt
 Mountains of Montana, northeastern Wyoming, and south-central Wyoming.
 Another grouping of identical sequences consists of specimens from
@@ -244,7 +244,7 @@ of Wyoming and Rio Blanco County of Colorado, and one specimen (*Dorn 10105*)
 from the Medicine Bow Range with a previous annotation as *P. vitulifera*.
 A fourth group (**Genotype 4**) includes two other specimens
 (*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range
-in addition to *P. integrifolia* from Lincoln County, Wyoming; *P. acutifola*
+in addition to *P. integrifolia* from Lincoln County, Wyoming; *P. acutifolia*
 from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.
 Five specimens with identical sequences from Lincoln County, Wyoming
 (**Genotype 5**) include two collections of *P. dornii*, two of *P. condensata*,
@@ -328,7 +328,7 @@ of Colorado and one specimen from the Medicine Bow Range (*Dorn 10105*),
 and *P. integrifolia* (n=2) were recovered in a clade of moderate support
 (P=0.860) with one *P. acutifolia* specimen from Montezuma County, Colorado.
 A separate highly supported clade (P=0.980) includes
-*P. saximontana* subsp. *saxmimontana* (n=3), *P. s* subsp. *dentata* (n=2),
+*P. saximontana* subsp. *saximontana* (n=3), *P. s* subsp. *dentata* (n=2),
 *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp. *lanata* (n=2),
 *P. brassicoides* (n=1), *P. acutifolia* (n=1) and *P. condensata* (n=1).
 Two additional clades include one (P=0.826) with Colorado *P. vitulifera*
@@ -363,7 +363,7 @@ knitr::include_graphics(
 
 ```{r subsectionycf1}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "*ycf1* Sequence Analysis",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -456,7 +456,7 @@ if (knit_variables$pandoc == "latex") {
 
 ```{r subsectionMultiLocus}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Concatenated Multi-locus Analysis",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -466,7 +466,7 @@ knitr_section(
 \paragraph{} Concatenation of the three sequenced loci yielded an alignment
 with more potentially informative characters than any individual gene alignment.
 Only two identical genotypes were observed, one with two specimens previously
-identified as *P. dornii* and *P. condensata*, and another comprised
+identified as *P. dornii* and *P. condensata*, and another comprising
 of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
 (Table \@ref(tab:TableIdenticalSeqMultiLocus))
 Despite higher overall resolution, 14 nodes were still unresolved as a polytomy
