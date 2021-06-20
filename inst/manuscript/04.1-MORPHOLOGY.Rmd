@@ -32,9 +32,9 @@ caption$traitReplumShape <-
   "Distribution of discrete replum shapes by specimen location."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionTraitReplums", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitReplums",
+    ext = knit_variables$graphics
   )
 )
 
@@ -64,9 +64,9 @@ caption$traitOvules <-
   "Maximum count of ovules per locule by specimen location."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionTraitOvules", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitOvules",
+    ext = knit_variables$graphics
   )
 )
 
@@ -92,9 +92,9 @@ caption$traitFruitApices <-
   "Observations of mature silique sinuses by specimen location."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionTraitApices", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitApices",
+    ext = knit_variables$graphics
   )
 )
 
@@ -122,9 +122,9 @@ caption$traitFruitTrichomes <-
   "Observations of mature silique trichomes by specimen location."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionTraitTrichomes", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitTrichomes",
+    ext = knit_variables$graphics
   )
 )
 
@@ -150,9 +150,9 @@ caption$traitBasalLeafMargins <-
   "Observations of basal leaf margins by specimen location."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionTraitMargins", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitMargins",
+    ext = knit_variables$graphics
   )
 )
 

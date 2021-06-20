@@ -13,7 +13,7 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 # DISCUSSION {#DISCUSSION}
 
 \paragraph{} How species are defined is a key issue in biology, the aptly named
-species problem.  Potential for amibguity in this problem was recognized early
+species problem.  Potential for ambiguity in this problem was recognized early
 on by @Darwin1859 [p. 46] who surmised, "No one definition has
 satisfied all naturalists; yet every naturalist knows vaguely what he means when
 he speaks of a species." Over the years, much consideration has been given to
@@ -62,10 +62,9 @@ caption$FigureDiscussionPosteriori <-
         "by reviewed annotations.")
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionPosteriori",
-             ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionPosteriori",
+    ext = knit_variables$graphics
   )
 )
 

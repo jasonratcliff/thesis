@@ -72,9 +72,9 @@ caption$FigResultsPhysariaOvules <-
   "Counts of maximum ovules per locule."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/ResultsPhysariaOvules", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/ResultsPhysariaOvules",
+    ext = knit_variables$graphics
   )
 )
 
@@ -89,9 +89,9 @@ caption$FigResultsPhysariaFruits <-
   "Observations of fruit size from reviewed specimen vouchers."
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/ResultsPhysariaFruits", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/ResultsPhysariaFruits",
+    ext = knit_variables$graphics
   )
 )
 
@@ -168,9 +168,9 @@ caption$FigResultsPhysariaElevation <-
   )
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/ResultsPhysariaElevation", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/ResultsPhysariaElevation",
+    ext = knit_variables$graphics
   )
 )
 
@@ -199,9 +199,9 @@ caption$FigResultsPhysariaHabit <-
   paste("Growth habit of", ., "species.")
 
 knitr::include_graphics(
- path = system.file(
-    fs::path("figures/ResultsPhysariaHabit", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/ResultsPhysariaHabit",
+    ext = knit_variables$graphics
   )
 )
 

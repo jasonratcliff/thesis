@@ -331,9 +331,9 @@ caption$FigureIntroPriors <-
   )
 
 knitr::include_graphics(
-  system.file(
-    fs::path("figures/IntroPriors", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/IntroPriors",
+    ext = knit_variables$graphics
   )
 )
 
@@ -510,9 +510,9 @@ caption$FigureIntroCarbon <-
   )
 
 knitr::include_graphics(
-  system.file(
-    fs::path("figures/IntroCarbonWyo", ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/IntroCarbonWyo",
+    ext = knit_variables$graphics
   )
 )
 
