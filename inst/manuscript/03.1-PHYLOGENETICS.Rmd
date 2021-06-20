@@ -57,48 +57,37 @@ abbreviate_spp <- function(label_vector, pandoc_conversion) {
 }
 
 # Conservered Seqeuences ----
-
-# Multi-taxa rITS node groups
-conserved_rITS <-
-  list.files(system.file("extdata/MrBayes", package = "Thesis"),
-             full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
-  conserved_vouchers(tree_file = .,
-                     id_column = "prior_id", id_name = "Priors") %>%
-  dplyr::mutate(
-    Priors = abbreviate_spp(
-      label_vector = .data$Priors,
-      pandoc_conversion = knit_variables$pandoc
-    )
-  ) %>%
-  dplyr::arrange(`Node Group`, Priors, State)
-
-# Multi-taxa rps intron node groups
-conserved_rps <-
-  list.files(system.file("extdata/MrBayes", package = "Thesis"),
-             full.names = TRUE, pattern = "rps-infile.nex.con.tre") %>%
-  conserved_vouchers(tree_file = .,
-                     id_column = "prior_id", id_name = "Priors") %>%
-  dplyr::mutate(
-    Priors = abbreviate_spp(
-      label_vector = .data$Priors,
-      pandoc_conversion = knit_variables$pandoc
-    )
-  ) %>%
-  dplyr::arrange(`Node Group`, Priors, State)
-
-# Multi-taxa concatenated node groups
-conserved_multiLocus <-
-  list.files(system.file("extdata/MrBayes", package = "Thesis"),
-             full.names = TRUE, pattern = "ml-infile.nex.con.tre") %>%
-  conserved_vouchers(tree_file = .,
-                     id_column = "prior_id", id_name = "Priors") %>%
-  dplyr::mutate(
-    Priors = abbreviate_spp(
-      label_vector = .data$Priors,
-      pandoc_conversion = knit_variables$pandoc
-    )
-  ) %>%
-  dplyr::arrange(`Node Group`, Priors, State)
+conserved <- 
+  purrr::map(
+  .x = c(
+    "rITS-infile.nex.con.tre",
+    "rps-infile.nex.con.tre",
+    "ml-infile.nex.con.tre"
+  ),
+  .f = function(consensus_tree) {
+    system.file("extdata/MrBayes", package = "Thesis") %>%
+      list.files(
+        pattern = consensus_tree,
+        full.names = TRUE) %>%
+      Thesis::conserved_vouchers(
+        tree_file = .,
+        id_column = "prior_id",
+        id_name = "Priors"
+      ) %>%
+      dplyr::mutate(
+        Priors = abbreviate_spp(
+          label_vector = .data$Priors,
+          pandoc_conversion = knit_variables$pandoc
+        ),
+        `Node Group` = stringr::str_replace(
+          string = .data$`Node Group`,
+          pattern = " (?=\\(n=[0-9]+\\))",
+          replacement = " \\\\ "
+        )
+      ) %>%
+      dplyr::arrange(`Node Group`, Priors, State)
+  }) %>%
+  stats::setNames(object = ., nm = c("rITS", "rps", "multilocus"))
 
 ```
 
@@ -163,13 +152,13 @@ caption$TableIdenticalSeqrITS <-
 
 if (knit_variables$pandoc != "docx") {
   bayes_kable(
-    conserved_specimens = conserved_rITS,
+    conserved_specimens = conserved$rITS,
     knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqrITS
   )
 } else {
   kable(
-    x = conserved_rITS,
+    x = conserved$rITS,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqrITS
   )
@@ -269,7 +258,7 @@ caption$TableIdenticalSeqrps <-
 
 if (knit_variables$pandoc == "html") {
   bayes_kable(
-    conserved_specimens = conserved_rps,
+    conserved_specimens = conserved$rps,
     knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqrps
   )
@@ -277,7 +266,7 @@ if (knit_variables$pandoc == "html") {
 
 if (knit_variables$pandoc == "docx") {
   kable(
-    x = conserved_rps,
+    x = conserved$rps,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqrps
   )
@@ -285,7 +274,7 @@ if (knit_variables$pandoc == "docx") {
 
 if (knit_variables$pandoc == "latex") {
   bayes_kable(
-    conserved_specimens = conserved_rps[1:27, ],
+    conserved_specimens = conserved$rps[1:27, ],
     knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqrps
   )
@@ -302,7 +291,7 @@ if (knit_variables$pandoc == "latex") {
 
 if (knit_variables$pandoc == "latex") {
   bayes_kable(
-    conserved_specimens = conserved_rps[28:nrow(conserved_rps), ],
+    conserved_specimens = conserved$rps[28:nrow(conserved$rps), ],
     knitr_chunk = knit_variables$kable_format,
     kable_caption = "Table 5. Continued."
   )
@@ -383,7 +372,7 @@ of sequence homogeneity, a gene tree analysis was not performed.
 
 ```{r TableIdenticalSeqycf1}
 
-conserved_ycf1 <-
+conserved$ycf1 <-
   list.files(system.file("extdata/MrBayes", package = "Thesis"),
              full.names = TRUE, pattern = "ycf1-identical-seqs.csv") %>%
   readr::read_csv(file = ., col_types = c("dcccd")) %>%
@@ -405,7 +394,7 @@ caption$TableIdenticalSeqycf1 <-
 
 if (knit_variables$pandoc == "html") {
   bayes_kable(
-    conserved_specimens = conserved_ycf1,
+    conserved_specimens = conserved$ycf1,
     knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqycf1
   )
@@ -413,7 +402,7 @@ if (knit_variables$pandoc == "html") {
 
 if (knit_variables$pandoc == "docx") {
   kable(
-    x = conserved_ycf1,
+    x = conserved$ycf1,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqycf1
   )
@@ -421,7 +410,7 @@ if (knit_variables$pandoc == "docx") {
 
 if (knit_variables$pandoc == "latex") {
     bayes_kable(
-      conserved_specimens = conserved_ycf1[1:28, ],
+      conserved_specimens = conserved$ycf1[1:28, ],
       knitr_chunk = knit_variables$kable_format,
       kable_caption = caption$TableIdenticalSeqycf1
     )
@@ -440,7 +429,7 @@ if (knit_variables$pandoc == "latex") {
 
 if (knit_variables$pandoc == "latex") {
   bayes_kable(
-    conserved_specimens = conserved_ycf1[29:nrow(conserved_ycf1), ],
+    conserved_specimens = conserved$ycf1[29:nrow(conserved$ycf1), ],
     knitr_chunk = knit_variables$kable_format,
     kable_caption = "Table 6. Continued."
   )
@@ -479,7 +468,7 @@ Wyoming endemics, and a third with two Medicine Bow Range specimens
 
 if (knit_variables$pandoc != "docx") {
   bayes_kable(
-    conserved_specimens = conserved_multiLocus,
+    conserved_specimens = conserved$multilocus,
     knitr_chunk = knit_variables$kable_format,
     kable_caption = paste(
       physaria(knit_variables$pandoc),
@@ -488,7 +477,7 @@ if (knit_variables$pandoc != "docx") {
   )
 } else {
   kable(
-    x = conserved_multiLocus,
+    x = conserved$multilocus,
     format = knit_variables$kable_format,
     caption = paste(
       physaria(knit_variables$pandoc),
