@@ -209,6 +209,8 @@ conserved_vouchers <- function(tree_file, id_column, id_name) {
 #' @param conserved_specimens Voucher tibble output by [conserved_vouchers()]
 #' @param kable_caption Character vector for caption passed to
 #'   [knitr::kable()] argument `caption`.
+#' @param kable_scap Character vector for caption passed to
+#'   [knitr::kable()] argument `caption`.
 #' @param knitr_chunk Character vector passed to [knitr::kable()] argument
 #'  `format` - one of "latex" or "html".  Defined by
 #'  `opts_knit$get("rmarkdown.pandoc.to")` in `index.Rmd` of Thesis Bookdown.
@@ -225,17 +227,29 @@ conserved_vouchers <- function(tree_file, id_column, id_name) {
 #'   bayes_kable(conserved_specimens = .,
 #'               kable_caption = "ggtree Specimens", knitr_chunk = "html")
 #'
-bayes_kable <- function(conserved_specimens, kable_caption, knitr_chunk) {
+bayes_kable <- function(conserved_specimens, knitr_chunk,
+                        kable_caption, kable_scap = "") {
   kable_build <-
-    knitr::kable(x = conserved_specimens,
-      caption = kable_caption, format = knitr_chunk, escape = FALSE,
-      row.names = FALSE, align=c("c", "c", "l", "l", "l")) %>%
-    kableExtra::kable_styling(
-      full_width = FALSE, font_size = 10,  latex_options= "hold_position"
+    knitr::kable(
+      x = conserved_specimens,
+      format = knitr_chunk,
+      align = "l",
+      escape = FALSE,
+      row.names = FALSE,
+      caption = kable_caption,
+      caption.short = kable_scap
     ) %>%
-    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    kableExtra::column_spec(1, border_left = TRUE) %>%
-    kableExtra::column_spec(5, border_right = TRUE, width = "1.8cm") %>%
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      latex_options= "hold_position",
+      position = "center"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>% 
+    kableExtra::column_spec(1, border_left = TRUE, width = "1.8cm") %>%
+    kableExtra::column_spec(2, width = "3.2cm") %>%
+    kableExtra::column_spec(3, width = "1.4cm") %>%
+    kableExtra::column_spec(4, width = "3.75cm") %>%
+    kableExtra::column_spec(5, border_right = TRUE, width = "1.6cm") %>%
     kableExtra::collapse_rows(columns = 1:3)
   return(kable_build)
 }
