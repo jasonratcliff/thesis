@@ -145,16 +145,16 @@ sampled from each taxa. For Wyoming state endemics *P. eburniflora* and
 *P. saximontana* subsp. *saximontana*, five individuals from each taxa were
 included. Four individuals of *P. saximontana* subsp. *dentata* were sampled
 broadly from Montana. Five specimens identified as *P. didymocarpa* subsp.
-*lanata* in Wyoming and three identified as *P. didymocarpa* subsp. *lyrata* in 
-Idaho were included. These two *P. didymocarpa* subspecies have narrow 
-distributions and are thought to be state endemics of Wyoming and Idaho, 
-respectively. Five individuals were sampled from *P. didymocarpa* subsp. 
+*lanata* in Wyoming and three identified as *P. didymocarpa* subsp. *lyrata* in
+Idaho were included. These two *P. didymocarpa* subspecies have narrow
+distributions and are thought to be state endemics of Wyoming and Idaho,
+respectively. Five individuals were sampled from *P. didymocarpa* subsp.
 *didymocarpa* in Wyoming and Montana. For the regional endemics
 *P. brassicoides* and *P. integrifolia*, six and five individuals were sampled,
 respectively. For *P. vitulifera*, three individuals from Colorado and four
 putative specimens with annotations as *P. vitulifera* from Carbon County,
-Wyoming were included. The Carbon County population is of interest due to the 
-questionable status of this species’ distribution in the state of Wyoming 
+Wyoming were included. The Carbon County population is of interest due to the
+questionable status of this species’ distribution in the state of Wyoming
 [@HeidelOKane2012]. Finally, twelve individuals of the widespread
 *P. acutifolia* from Utah, Colorado, and Wyoming were sampled.
 Sequence data were obtained from
@@ -182,6 +182,8 @@ individual specimen to minimize noise in the sequence data. Sequence data from
 a preliminary systematic analysis of *Physaria* sensu stricto by
 @Rethwisch2014 in addition to data previously obtained by O'Kane were
 also included in this study.
+
+\clearpage
 
 ```{r TableDnaSpecimens}
 
@@ -214,18 +216,23 @@ methods_variables$dna_footnote <-
 
 ```{r TableDnaSpecimensLatex}
 
-# LaTeX specimen table part 1
 if (knit_variables$pandoc == "latex") {
   methods_variables$collections %>% dplyr::slice(1:39) %>%
-    kable(x =., format = knit_variables$pandoc, escape = FALSE,
-          caption = "DNA Extraction Herbarium Specimens.") %>%
-    kable_styling(full_width = FALSE, font_size = 10,
-                  latex_options= "hold_position") %>%
-    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    column_spec(1, border_left = TRUE, width = "3.2cm") %>%
-    column_spec(3, border_right = TRUE) %>%
-    collapse_rows(columns = 1) %>%
-    footnote(
+    knitr::kable(x =.,
+      format = knit_variables$pandoc, escape = FALSE,
+      caption = "DNA extraction specimens.",
+      caption.short = "DNA extraction specimens"
+    ) %>%
+    kableExtra::kable_styling(
+      full_width = FALSE, font_size = 10,
+      latex_options= "hold_position"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE, width = "3.2cm") %>%
+    kableExtra::column_spec(2, width = "6cm") %>%
+    kableExtra::column_spec(3, border_right = TRUE, width = "3.5cm") %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(
       general = methods_variables$dna_footnote,
       general_title = "",
       threeparttable = TRUE,
@@ -243,19 +250,23 @@ if (knit_variables$pandoc == "latex") {
 <!--- Prevent automatic indexing of table entry in List of Tables -->
 \captionsetup[table]{list=no}
 
-```{r TableDnaSpecimensLatexCont, tab.cap = NULL}
+```{r TableDnaSpecimensLatexContinued}
 
-# LaTeX specimen table part 2
 if (knit_variables$pandoc == "latex") {
   methods_variables$collections %>% dplyr::slice(40:68) %>%
-    kable(x = ., format = knit_variables$pandoc, escape = FALSE,
-          caption = "Table 2. Continued.") %>%
-    kable_styling(full_width = FALSE, font_size = 10,
-                  latex_options= "hold_position") %>%
-    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    column_spec(1, border_left = TRUE, width = "3.2cm") %>%
-    column_spec(3, border_right = TRUE) %>%
-    collapse_rows(columns = 1)
+    knitr::kable(x = .,
+      format = knit_variables$pandoc, escape = FALSE,
+      caption = "Table 2. Continued."
+    ) %>%
+    kableExtra::kable_styling(
+      full_width = FALSE, font_size = 10,
+      latex_options= "hold_position"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE, width = "3.2cm") %>%
+    kableExtra::column_spec(2, width = "6cm") %>%
+    kableExtra::column_spec(3, border_right = TRUE, width = "3.5cm") %>%
+    kableExtra::collapse_rows(columns = 1)
 }
 
 ```
@@ -263,21 +274,20 @@ if (knit_variables$pandoc == "latex") {
 <!--- Reset caption options and table counter -->
 \captionsetup[table]{labelformat=default}
 \captionsetup[table]{list=yes}
-\setcounterref{newcount}{tab:TableDnaSpecimensLatex}
+\setcounter{table}{2}
 
 ```{r TableDnaSpecimensHtml}
 
-# HTML specimen table
-if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
+if (knit_variables$pandoc != "latex") {
   methods_variables$collections <- methods_variables$collections %>%
-    dplyr::mutate(taxa = sapply(Taxon, function(taxon) {
+    dplyr::mutate(taxa = purrr::map_chr(.data$Taxon, function(taxon) {
       gsub("\\\\textit\\{", "\\*", taxon) %>%
         gsub("\\}$", "\\*", x = .) %>%
         gsub("\\} subsp.", "\\*  subsp.", x = .)
     })) %>%
     dplyr::select(c(taxa, `Voucher Information`, Locality)) %>%
     dplyr::rename(Taxon = taxa) %>%
-    kable(
+    knitr::kable(
       longtable = TRUE, escape = FALSE,
       format = knit_variables$kable_format,
       caption = "DNA Extraction Herbarium Specimens"
@@ -286,25 +296,27 @@ if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
 
 if (knit_variables$pandoc == "html") {
     methods_variables$collections %>%
-    kable_styling(full_width = TRUE, font_size = 10) %>%
-    row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-    column_spec(1, border_left = TRUE, bold = TRUE) %>%
-    column_spec(2, width = "8cm") %>%
-    column_spec(3, width = "4cm", border_right = TRUE) %>%
-    collapse_rows(columns = 1) %>%
-    footnote(
+    kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 12) %>%
+    kableExtra::column_spec(1, border_left = TRUE, bold = TRUE) %>%
+    kableExtra::column_spec(2, width = "6cm") %>%
+    kableExtra::column_spec(3, width = "3.5cm", border_right = TRUE) %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(
       general = methods_variables$dna_footnote,
       general_title = "",
       threeparttable = TRUE,
       escape = FALSE
     )
-} 
+}
 
 if (knit_variables$pandoc == "docx") {
   methods_variables$collections
 }
 
 ```
+
+\vspace*{10pt}
 
 \paragraph{} Genomic DNA was purified using a Qiagen DNeasy Plant Mini Kit.
 Prior to the extraction protocol, leaf tissue was prepared using one of three
@@ -376,15 +388,19 @@ annealing, and DNA extension. Each cycle consisted of denaturation for 45s at
 extension for one minute at 72 $^{\circ}$C. After 30 cycles, a final extension
 of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
+\vspace*{20pt}
+
 ```{r TablePCRPrimers}
 
-# Table: PCR Primers
 methods_variables$primers <-
-  list.files(system.file("extdata/Methods", package = "Thesis"),
-             pattern = "DNA-primers", full.names = TRUE) %>%
+  system.file("extdata/Methods", package = "Thesis") %>%
+  list.files(
+    pattern = "DNA-primers",
+    full.names = TRUE
+  ) %>%
   readr::read_csv(file = ., col_names = TRUE, col_types = "ccc")
 
-if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
+if (knit_variables$pandoc != "latex") {
   methods_variables$primers <- methods_variables$primers %>%
     dplyr::mutate(
       Primer = stringr::str_replace_all(
@@ -396,21 +412,30 @@ if (knit_variables$pandoc == "html" | knit_variables$pandoc == "docx") {
 }
 
 methods_variables$primers <- methods_variables$primers %>%
-  kable(x = ., format = knit_variables$kable_format,
-        align = "l", escape = FALSE,
-        caption = "Primer Sequences for PCR Reactions.")
+  knitr::kable(x = .,
+    format = knit_variables$kable_format,
+    align = "l", escape = FALSE,
+    caption = "PCR reaction primer sequences.",
+    caption.short = "PCR reaction primer sequences"
+  )
 
-if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
+if (knit_variables$pandoc != "docx") {
   methods_variables$primers %>%
-    kable_styling(full_width = FALSE, font_size = 10) %>%
-    row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-    column_spec(1, border_left = TRUE) %>%
-    column_spec(3, border_right = TRUE)
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      latex_options= "hold_position",
+      position = "center"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE) %>%
+    kableExtra::column_spec(3, border_right = TRUE)
 } else {
   methods_variables$primers
 }
 
 ```
+
+\vspace*{10pt}
 
 ```{r sectionPCRrps}
 
@@ -602,7 +627,7 @@ data. The parameters for the distribution shape of among-site rate variation
 (shape), nucleotide state frequency (statefreq), and proportion of invariant
 sites (pinvar) were unlinked to allow separate estimation. All data were
 analyzed for 20,000,000 generations with a sample frequency of 10,000
-generations. Two parallel analyses were run, each with 4 chains and a 
+generations. Two parallel analyses were run, each with 4 chains and a
 temperature parameter of 0.04. A third of the trees were discarded as the
 burn-in fraction (0.33), and the stop value was set to 0.001.
 
@@ -676,7 +701,7 @@ posterior probability limit of 0.5.
 
 ```{r sectionSource}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Source Code",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -708,48 +733,89 @@ maintained for the R package source code
 (https://github.com/jasonratcliff/Thesis)
 and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
 
+\vspace*{20pt}
+
 ```{r TableSpeciesTreeHypotheses}
+
 methods_variables$star_beast <-
   system.file("extdata/BEAST", package = "Thesis") %>%
   list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
   readr::read_csv(file = ., col_types = 'ccccc') %>%
-  setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
-  arrange(`Hypothesis 1`, Sample)
+  stats::setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
+  dplyr::arrange(`Hypothesis 1`, Sample)
 
 if (knit_variables$pandoc == "latex") {
   methods_variables$star_beast <- methods_variables$star_beast %>%
-    mutate(
+    dplyr::mutate(
       Sample = gsub("_", "\\\\_", .data$Sample)
     ) %>%
-    mutate_at(
-      vars(matches("^Hypothesis")),
+    dplyr::mutate_at(
+      dplyr::vars(dplyr::matches("^Hypothesis")),
       ~ paste0("\\textit{", .x, "}") %>%
-        gsub(" ssp ", "} \n \\\\hspace{0.8em} ssp. \\\\textit{", x = ., ) %>%
+        gsub(" subsp. ", "}\nsubsp. \\\\textit{", x = ., ) %>%
         kableExtra::linebreak(x = .) %>%  # Fix latex linebreak cell alignment
         gsub("makecell\\[[rc]\\]", "makecell\\[l\\]", x = .)
     )
-  }
-
-methods_variables$star_beast <- methods_variables$star_beast %>%
-  kable(
-    x = ., format = knit_variables$kable_format,
-    align = "l", escape = FALSE,
-    caption = "Species tree hypotheses taxa assignments by sample ID."
-  )
-
-if (knit_variables$pandoc == "html" | knit_variables$pandoc == "latex") {
-  methods_variables$star_beast %>%
-    kable_styling(full_width = FALSE, font_size = 8,
-                  latex_options= "hold_position") %>%
-    row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    column_spec(1, border_left = TRUE) %>%
-    column_spec(5, border_right = TRUE) %>%
-    collapse_rows(columns = 2:5)
-} else {
-  methods_variables$star_beast
 }
 
 ```
+
+```{r TableSpeciesTreeHypothesesLatex}
+
+if (knit_variables$pandoc == "latex") {
+  methods_variables$star_beast %>%
+    dplyr::slice(1:32) %>%
+    knitr::kable(
+      x = .,
+      format = knit_variables$kable_format,
+      escape = FALSE,
+      caption = "*BEAST species tree hypotheses.",
+      caption.short = "*BEAST species tree hypotheses"
+    ) %>%
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      font_size = 8,
+      latex_options= "hold_position"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE) %>%
+    kableExtra::column_spec(5, border_right = TRUE) %>%
+    kableExtra::collapse_rows(columns = 2:5)
+}
+
+```
+
+\clearpage
+\captionsetup[table]{labelformat=empty}
+\captionsetup[table]{list=no}
+
+```{r TableSpeciesTreeHypothesesLatexContinued}
+
+if (knit_variables$pandoc == "latex") {
+  methods_variables$star_beast %>%
+    dplyr::slice(33:60) %>%
+    knitr::kable(
+      x = .,
+      format = knit_variables$kable_format,
+      escape = FALSE,
+      caption = "Table 4. Continued."
+    ) %>%
+    kableExtra::kable_styling(
+      full_width = FALSE,
+      font_size = 8,
+      latex_options= "hold_position"
+    ) %>%
+    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
+    kableExtra::column_spec(1, border_left = TRUE) %>%
+    kableExtra::column_spec(5, border_right = TRUE) %>%
+    kableExtra::collapse_rows(columns = 2:5)
+}
+
+```
+
+\captionsetup[table]{labelformat=default}
+\captionsetup[table]{list=yes}
+\setcounter{table}{4}
 
 ```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
