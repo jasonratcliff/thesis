@@ -23,7 +23,7 @@ abbreviate_spp <- function(label_vector, pandoc_conversion) {
   paste_latex <- function(label) {
     paste0("\\textit{", label, "}")
   }
-  
+
   purrr::map_chr(.x = label_vector, .f = function(label) {
     split_label <- gsub("^Physaria", "P.", label) %>%
       strsplit(x = ., split = " ") %>% unlist(x = .)
@@ -57,7 +57,7 @@ abbreviate_spp <- function(label_vector, pandoc_conversion) {
 }
 
 # Conservered Seqeuences ----
-conserved <- 
+conserved <-
   purrr::map(
   .x = c(
     "rITS-infile.nex.con.tre",
@@ -72,20 +72,25 @@ conserved <-
       Thesis::conserved_vouchers(
         tree_file = .,
         id_column = "prior_id",
-        id_name = "Priors"
+        id_name = "prior_id"
       ) %>%
       dplyr::mutate(
-        Priors = abbreviate_spp(
-          label_vector = .data$Priors,
+        prior_id = abbreviate_spp(
+          label_vector = .data$prior_id,
           pandoc_conversion = knit_variables$pandoc
         ),
-        `Node Group` = stringr::str_replace(
+        Genotype = stringr::str_replace(
           string = .data$`Node Group`,
           pattern = " (?=\\(n=[0-9]+\\))",
           replacement = " \\\\ "
         )
       ) %>%
-      dplyr::arrange(`Node Group`, Priors, State)
+      dplyr::rename(
+        Number = `Collection Number`,
+        `Annotation` = prior_id
+      ) %>%
+      dplyr::select(Genotype, Annotation, State, Collector, Number) %>%
+      dplyr::arrange(Genotype, Annotation, State)
   }) %>%
   stats::setNames(object = ., nm = c("rITS", "rps", "multilocus"))
 
@@ -117,7 +122,7 @@ four include interspecific specimens when considered by prior annotation
 (Table \@ref(tab:TableIdenticalSeqrITS)).
 The largest group of 20 specimens (**Genotype 1**) is comprised of southwestern
 Wyoming endemics *P. dornii* (n=4), *P. condensata* (n=4), and
-*P. integrifolia* (n=3); 6 individuals of *P. acutifolia* from 
+*P. integrifolia* (n=3); 6 individuals of *P. acutifolia* from
 southern Wyoming and western Colorado; and three specimens from the Big Horn
 Mountains (*Nelson 74315*, *O'Dea 32*, *Ratcliff and O'Kane 48*).
 **Genotype 2** includes three specimens of *P. vitulifera* from central Colorado
@@ -138,26 +143,24 @@ The polytomy include specimens previously annotated as *P. vitulifera*,
 *P. saximontana* subsp. *dentata*, *P. eburnifora*,
 *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*,
 *P. d.* subsp. *lyrata*, *P. dornii*, *P. condensata*, *P. brassicoides* and
-*P. acutifolia*. 
+*P. acutifolia*.
 
 \clearpage
 
 ```{r TableIdenticalSeqrITS}
 
 caption$TableIdenticalSeqrITS <-
-  paste(
-    physaria(knit_variables$pandoc),
-    "DNA specimens with identical genotypes for the rITS locus."
-  )
+  "Nuclear rITS identical genotypes"
 
 if (knit_variables$pandoc != "docx") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$rITS,
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = caption$TableIdenticalSeqrITS
+    kable_caption = paste0(caption$TableIdenticalSeqrITS, "."),
+    kable_scap = caption$TableIdenticalSeqrITS
   )
 } else {
-  kable(
+  knitr::kable(
     x = conserved$rITS,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqrITS
@@ -171,7 +174,7 @@ if (knit_variables$pandoc != "docx") {
 ```{r FigureBayesrITS, fig.cap=caption$FigureBayesrITS, fig.scap="rITS MrBayes gene tree"}
 
 caption$FigureBayesrITS <-
-  "MrBayes consensus tree of rITS locus. "
+  "MrBayes consensus tree of rITS locus."
 
 knitr::include_graphics(
   path = fs::path(
@@ -195,7 +198,7 @@ of *P. didymocarpa* subsp. *didymocarpa* (**Genotype 4** in part), two specimens
 *P. s.* subsp. *saximontana* (**Genotype 4** in part), three specimens of
 *P. saximontana* subsp. *dentata*, four specimens of *P. brassicoides*,
 and single specimens of *P. didymocarpa* subsp. *lanata*,
-*P. d.* subsp. *lyrata*, *P. acutifolia* from Utah 
+*P. d.* subsp. *lyrata*, *P. acutifolia* from Utah
 (*Holmgren and Holmgren 14222*), and putative *P. vitulifera* from Carbon County
 (*Ratcliff and O'Kane, Jr. 34*). An additional two clades recovered
 with high support included *P. saximontana* subsp. *saximontana* and
@@ -222,12 +225,10 @@ and Absaroka Range of Wyoming and Montana, with outliers in the Big Belt
 Mountains of Montana, northeastern Wyoming, and south-central Wyoming.
 Another grouping of identical sequences consists of specimens from
 western Montana and east-central Idaho (**Genotype 2**), with previous
-annotations as *P. didymocarpa* subsp. *didymocarpa* (n=2),
-*P. d.* subsp. *lyrata* (n=2), *P. saximontana* subsp. *dentata* (n=2),
-and *P. acutifolia* (n=1).
-
-\paragraph{} **Genotype 3** includes specimens annotated as *P. saximontana*
-subsp. *saximontana*, and *P. eburniflora* Fremont county near the Wind River
+annotations as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp.
+*lyrata* (n=2), *P. saximontana* subsp. *dentata* (n=2), and *P. acutifolia*
+(n=1). **Genotype 3** includes specimens annotated as *P. saximontana* subsp.
+*saximontana*, and *P. eburniflora* Fremont county near the Wind River
 Range, three specimens of *P. acutifolia* from Sublette and Sweetwater Counties
 of Wyoming and Rio Blanco County of Colorado, and one specimen (*Dorn 10105*)
 from the Medicine Bow Range with a previous annotation as *P. vitulifera*.
@@ -246,26 +247,30 @@ form **Genotype 7**. Lastly, two *P. eburniflora* collections from Fremont
 County, Wyoming (**Genotype 8**) and two *P. vitulifera* collections from
 Colorado (**Genotype 9**) constitute two additional identical genotypes.
 
+\vspace*{20pt}
+
 ```{r TableIdenticalSeqrps}
 
 caption$TableIdenticalSeqrps <-
-  paste(
-    physaria(knit_variables$pandoc),
-    "DNA specimens with identical genotypes for the",
-    ifelse(knit_variables$pandoc != "latex",
-           "*rps*", "\\textit{rps}"), "intron locus."
+  paste("Plastid",
+    ifelse(
+      test = knit_variables$pandoc == "latex",
+      yes = "\\textit{rps}",
+      no = "*rps*"
+    ), "intron identical genotypes"
   )
 
 if (knit_variables$pandoc == "html") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$rps,
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = caption$TableIdenticalSeqrps
+    kable_caption = paste0(caption$TableIdenticalSeqrps, "."),
+    kable_scap = caption$TableIdenticalSeqrps
   )
 }
 
 if (knit_variables$pandoc == "docx") {
-  kable(
+  knitr::kable(
     x = conserved$rps,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqrps
@@ -273,37 +278,37 @@ if (knit_variables$pandoc == "docx") {
 }
 
 if (knit_variables$pandoc == "latex") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$rps[1:27, ],
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = caption$TableIdenticalSeqrps
+    kable_caption = paste0(caption$TableIdenticalSeqrps, "."),
+    kable_scap = caption$TableIdenticalSeqrps
   )
 }
 
 ```
 
-<!--- Clear caption formatting to prevent automatic labeling -->
+\clearpage
 \captionsetup[table]{labelformat=empty}
-<!-- <!--- Prevent automatic indexing of table entry in List of Tables -->
 \captionsetup[table]{list=no}
 
-```{r TableIdenticalSeqrps2}
+```{r TableIdenticalSeqrpsContinued}
 
 if (knit_variables$pandoc == "latex") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$rps[28:nrow(conserved$rps), ],
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = "Table 5. Continued."
+    kable_caption = "Table 6. Continued."
   )
 }
 
-if (knit_variables$pandoc == "latex") {
-  cat("\\captionsetup[table]{labelformat=default}")
-  cat("\\captionsetup[table]{list=yes}")
-  cat("\\setcounter{table}{5}")
-}
-
 ```
+
+\captionsetup[table]{labelformat=default}
+\captionsetup[table]{list=yes}
+\setcounter{table}{6}
+
+\vspace*{10pt}
 
 \paragraph{} Individual gene tree analysis for the *rps* intron did not recover
 monophyletic groups of species as previously described
@@ -348,7 +353,7 @@ knitr::include_graphics(
 
 \clearpage
 
-\vspace*{-18pt}
+\vspace*{-24pt}
 
 ```{r subsectionycf1}
 
@@ -370,30 +375,55 @@ Those showing some degree of heterogeneity for this loci included specimens of
 and one specimen from the Medicine Bow Range (*Fertig 16713*). Due to the degree
 of sequence homogeneity, a gene tree analysis was not performed.
 
+\vspace*{20pt}
+
 ```{r TableIdenticalSeqycf1}
 
 conserved$ycf1 <-
-  list.files(system.file("extdata/MrBayes", package = "Thesis"),
-             full.names = TRUE, pattern = "ycf1-identical-seqs.csv") %>%
+  system.file("extdata/MrBayes", package = "Thesis") %>%
+  list.files(
+    pattern = "ycf1-identical-seqs.csv",
+    full.names = TRUE
+  ) %>%
   readr::read_csv(file = ., col_types = c("dcccd")) %>%
-  dplyr::mutate(., 
-    Collector = purrr::map_chr(.[["Collector"]], function(collector) {
+  dplyr::mutate(.,
+    Collector = purrr::map_chr(
+      .x = .data$Collector,
+      .f = function(collector) {
       gsub("[A-Z]\\. ?", "", collector) %>%
         gsub("&|with", "and", x = .)
       }),
-    Species = abbreviate_spp(label_vector = .data$Species, knit_variables$pandoc)
+    Species = abbreviate_spp(
+      label_vector = .data$Species,
+      pandoc_conversion =  knit_variables$pandoc
+    )
   ) %>%
-  dplyr::select(., Genotype, Species, State, Collector, `Collection Number`)
+  dplyr::add_count(.data$Genotype) %>%
+  dplyr::filter(.data$n > 1) %>%
+  dplyr::arrange(dplyr::desc(.data$n)) %>%
+  dplyr::group_by(.data = ., dplyr::desc(.data$n), .data$Genotype) %>%
+  dplyr::mutate(
+    Genotype = dplyr::cur_group_id() %>%
+      paste0("Genotype ", ., " (n=", .data$n, ")")
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::rename(
+    Annotation = Species,
+    Number = `Collection Number`
+  ) %>%
+  dplyr::select(Genotype, Annotation, State, Collector, Number)
 
 caption$TableIdenticalSeqycf1 <-
-  paste(
-    physaria(knit_variables$pandoc), 
-    "DNA specimens with identical genotypes for the",
-    ifelse(knit_variables$pandoc != "latex",
-           "*ycf1*", "\\textit{ycf1}"), "loci.")
+  paste("Plastid",
+    ifelse(
+      test = knit_variables$pandoc == "latex",
+      yes = "\\textit{ycf1}",
+      no = "*ycf1*"
+    ), "identical genotypes"
+  )
 
 if (knit_variables$pandoc == "html") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$ycf1,
     knitr_chunk = knit_variables$kable_format,
     kable_caption = caption$TableIdenticalSeqycf1
@@ -401,7 +431,7 @@ if (knit_variables$pandoc == "html") {
 }
 
 if (knit_variables$pandoc == "docx") {
-  kable(
+  knit::kable(
     x = conserved$ycf1,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqycf1
@@ -409,44 +439,42 @@ if (knit_variables$pandoc == "docx") {
 }
 
 if (knit_variables$pandoc == "latex") {
-    bayes_kable(
+    Thesis::bayes_kable(
       conserved_specimens = conserved$ycf1[1:28, ],
       knitr_chunk = knit_variables$kable_format,
-      kable_caption = caption$TableIdenticalSeqycf1
+      kable_caption = paste0(caption$TableIdenticalSeqycf1, "."),
+      kable_scap = caption$TableIdenticalSeqycf1
     )
 }
 
 ```
 
 \clearpage
-
-<!--- Clear caption formatting to prevent automatic labeling -->
 \captionsetup[table]{labelformat=empty}
-<!-- <!--- Prevent automatic indexing of table entry in List of Tables -->
 \captionsetup[table]{list=no}
 
-```{r TableIdenticalSeqycf12}
+```{r TableIdenticalSeqycf1Continued}
 
 if (knit_variables$pandoc == "latex") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$ycf1[29:nrow(conserved$ycf1), ],
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = "Table 6. Continued."
+    kable_caption = "Table 7. Continued."
   )
-}
-
-if (knit_variables$pandoc == "latex") {
-  cat("\\captionsetup[table]{labelformat=default}")
-  cat("\\captionsetup[table]{list=yes}")
-  cat("\\setcounter{table}{6}")
 }
 
 ```
 
+\captionsetup[table]{labelformat=default}
+\captionsetup[table]{list=yes}
+\setcounter{table}{7}
+
+\vspace*{10pt}
+
 ```{r subsectionMultiLocus}
 
 Thesis::knitr_section(
-  knitr_title = "Concatenated Multi-locus Analysis",
+  knitr_title = "Multilocus Analyses",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
 
@@ -464,36 +492,38 @@ include one with *P. didymocarpa* related species, another with the southwestern
 Wyoming endemics, and a third with two Medicine Bow Range specimens
 (Figure \@ref(fig:FigureBayesMultiLocus)).
 
+\vspace*{20pt}
+
 ```{r TableIdenticalSeqMultiLocus}
 
+caption$TableIdenticalSeqMultiLocus <-
+  "Concatenated multilocus identical genotypes"
+
 if (knit_variables$pandoc != "docx") {
-  bayes_kable(
+  Thesis::bayes_kable(
     conserved_specimens = conserved$multilocus,
     knitr_chunk = knit_variables$kable_format,
-    kable_caption = paste(
-      physaria(knit_variables$pandoc),
-      "DNA specimens with identical sequences after concatenation."
-    )
+    kable_caption = paste0(caption$TableIdenticalSeqMultiLocus, "."),
+    kable_scap = caption$TableIdenticalSeqMultiLocus
   )
 } else {
-  kable(
+  knitr::kable(
     x = conserved$multilocus,
     format = knit_variables$kable_format,
-    caption = paste(
-      physaria(knit_variables$pandoc),
-      "DNA specimens with identical sequences after concatenation."
-    )
+    caption = caption$TableIdenticalSeqMultiLocus
   )
 }
 
 ```
+
+\vspace*{10pt}
 
 \paragraph{} A supported but unresolved clade (P=0.837) includes individuals of
 *P. saximontana* subsp. *saximontana* (n=3), *P. s.* subsp. *dentata* (n=2),
 *P. didymocarpa* subsp. *lanata* (n=2), *P. brassicoides* (n=3),
 *P. acutifolia* (n=2), and one specimen of *P. condensata*. Another clade
 (P=0.966) includes individuals annotated as *P. condensata* (n=3), *P. dornii*
-(n=2), *P. integrifolia* (n=2), and one *P. acutifolia* individual. 
+(n=2), *P. integrifolia* (n=2), and one *P. acutifolia* individual.
 A third clade (P=0.966) includes two specimens from Carbon County, Wyoming
 (*Fertig and Welp 19075*, *Fertig 16713*), *P. acutifolia* (n=1) from Utah,
 *P. brassicoides* (n=1) from northeastern Wyoming, and *P. integrifolia* (n=1)
