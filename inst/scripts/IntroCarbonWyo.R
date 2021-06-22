@@ -270,10 +270,10 @@ carbon$figure_pdf <-
           unit = "in"
         ),
         legend.position = "none"
-      ),
+      ), NULL,
     carbon$legend_pdf,
     ncol = 1,
-    rel_heights = c(0.75, 0.25)
+    rel_heights = c(0.75, -0.01, 0.25)
   )
 
 # cowplot Grid ----
@@ -283,7 +283,7 @@ purrr::pwalk(
     ext = c("png", "pdf"),
     plot = list(carbon$figure_png, carbon$figure_pdf),
     width = c(6, 6),
-    height = c(8, 4),
+    height = c(8, 3.75),
     aspect = c(.167, 2.5),
     row = c(1, 2),
     col = c(2, 1)

@@ -511,9 +511,9 @@ and Jackson Counties.
 
 \clearpage
 
-```{r FigureIntroCarbon, fig.cap=caption$FigureIntroCarbon, fig.scap="Putative \\textit{Physaria vitulifera} specimens with SEINet occurrences of related species"}
-\vspace*{-48pt}
+\vspace*{-40pt}
 
+```{r FigureIntroCarbonWyo, fig.align = "center", fig.cap=caption$FigureIntroCarbon, fig.scap=" \\textit{Physaria} of the Colorado Basin, Front Range, and Medicine Bow Mountains"}
 
 caption$FigureIntroCarbon <-
   paste(
@@ -536,7 +536,10 @@ caption$FigureIntroCarbon <-
     ifelse(
       knit_variables$pandoc == "latex",
       "\\textit{P. vitulifera}", "*Physaria vitulifera*"
-    ), "along the eastern slope of the Front Range in Colorado."
+    ), "along the eastern slope of the Front Range in Colorado.",
+    "White diamonds indicate sampled DNA specimens",
+    "and yellow squares denote reviewed voucher specimens of interest.",
+    "SEINet specimens are otherwise indicated by smaller hollow shapes."
   )
 
 knitr::include_graphics(
