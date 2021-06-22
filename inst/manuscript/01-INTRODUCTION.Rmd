@@ -319,13 +319,12 @@ conservation priority by the Wyoming National Diversity Database with
 the G2G3/S2S3 heritage ranking (@HeidelOKane2012). *Physaria integrifolia* is a
 regional endemic of western Wyoming and eastern Idaho.
 
-```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors, fig.scap="Reviewed \\textit{Physaria} herbarium specimen records by prior annotation"}
+```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors, fig.scap="Distribution of \\textit{Physaria} herbarium specimen vouchers by prior annotation"}
 
 caption$FigureIntroPriors <-
-  paste(
-    "Distribution of reviewed ",
+  paste("Distribution of",
     physaria(knitr_chunk = knit_variables$kable_format),
-    "herbarium specimens by most recent annotation."
+    "herbarium specimen vouchers by prior annotation."
   )
 
 knitr::include_graphics(

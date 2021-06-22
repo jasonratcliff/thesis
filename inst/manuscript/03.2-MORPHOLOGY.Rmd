@@ -66,10 +66,10 @@ Other subspecies of *Physaria didymocarpa*, subsp. *lanata* and subsp.
 
 \vspace*{24pt}
 
-```{r FigResultsPhysariaOvules, fig.cap=caption$FigResultsPhysariaOvules, fig.scap="Counts of maximum ovules per locule"}
+```{r FigResultsPhysariaOvules, fig.cap=caption$FigResultsPhysariaOvules, fig.scap="Maximum ovule counts per locule"}
 
 caption$FigResultsPhysariaOvules <-
-  "Counts of maximum ovules per locule."
+  "Maximum ovule counts per locule."
 
 knitr::include_graphics(
   path = fs::path(
@@ -192,7 +192,7 @@ inflorescences barely exceeding basal rosettes and relatively shorter stems.
 
 \vspace*{24pt}
 
-```{r FigResultsPhysariaHabit, fig.cap=caption$FigResultsPhysariaHabit, fig.scap="Growth habit of \textit{physaria} species"}
+```{r FigResultsPhysariaHabit, fig.cap=caption$FigResultsPhysariaHabit, fig.scap="Growth habit of \\textit{Physaria} species"}
 
 caption$FigResultsPhysariaHabit <-
   physaria(knitr_chunk = knit_variables$pandoc) %>%

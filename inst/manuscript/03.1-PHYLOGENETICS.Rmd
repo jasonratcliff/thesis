@@ -174,7 +174,7 @@ if (knit_variables$pandoc != "docx") {
 ```{r FigureBayesrITS, fig.cap=caption$FigureBayesrITS, fig.scap="rITS MrBayes gene tree"}
 
 caption$FigureBayesrITS <-
-  "MrBayes consensus tree of rITS locus."
+  "rITS MrBayes gene tree."
 
 knitr::include_graphics(
   path = fs::path(
@@ -336,10 +336,11 @@ specimens (n=2) and another (P=0.996) with *P. brassicoides* (n=1),
 
 caption$FigureBayesrpsIntron <-
   paste(
-    "MrBayes consensus tree of",
-  ifelse(knit_variables$pandoc != "latex",
-           "*rps*", "\\textit{rps}"),
-  "intron gene tree."
+    ifelse(
+      test = knit_variables$pandoc != "latex",
+      yes = "*rps*",
+      no = "\\textit{rps}"
+    ), "intron MrBayes gene tree."
   )
 
 knitr::include_graphics(
@@ -431,7 +432,7 @@ if (knit_variables$pandoc == "html") {
 }
 
 if (knit_variables$pandoc == "docx") {
-  knit::kable(
+  knitr::kable(
     x = conserved$ycf1,
     format = knit_variables$kable_format,
     caption = caption$TableIdenticalSeqycf1
@@ -542,7 +543,7 @@ another specimen from Carbon County, Wyoming (*Dorn 10105*).
 ```{r FigureBayesMultiLocus, fig.cap=caption$FigureBayesMultiLocus, fig.scap="Multilocus concatenated MrBayes consensus tree"}
 
 caption$FigureBayesMultiLocus <-
-  "MrBayes consensus tree of concatenated multi-locus data."
+  "Multilocus concatenated MrBayes consensus tree."
 
 knitr::include_graphics(
   path = fs::path(
@@ -555,7 +556,7 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r FigureResultsBeastMultiLocus, fig.cap=caption$FigureResultsBeastMultiLocus, fig.scap="BEAST multilocus maximum clade credibility tree"}
+```{r FigureResultsBeastMultiLocus, fig.cap=caption$FigureResultsBeastMultiLocus, fig.scap="Multilocus partitioned BEAST maximum clade credibility tree"}
 
 caption$FigureResultsBeastMultiLocus <-
   "Multilocus partitioned BEAST maximum clade credibility tree."
@@ -574,7 +575,7 @@ knitr::include_graphics(
 ```{r FigureResultsBeastGeography, fig.cap=caption$FigureResultsBeastGeography, fig.scap="BEAST phylogeography maximum clade credibility tree"}
 
 caption$FigureResultsBeastGeography <-
-  "Continuous landscape phylogeography BEAST maximum clade credibility tree."
+  "BEAST phylogeography maximum clade credibility tree."
 
 knitr::include_graphics(
   path = fs::path(
@@ -590,7 +591,7 @@ knitr::include_graphics(
 ```{r FigureResultsBeastSpecies, fig.cap=caption$FigureResultsBeastSpecies, fig.scap="*BEAST species trees"}
 
 caption$FigureResultsBeastSpecies <-
-  "*BEAST species tree hypotheses."
+  "*BEAST species trees."
 
 knitr::include_graphics(
   path = fs::path(
