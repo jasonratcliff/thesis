@@ -13,7 +13,7 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 # DISCUSSION {#DISCUSSION}
 
 \paragraph{} How species are defined is a key issue in biology, the aptly named
-species problem.  Potential for amibguity in this problem was recognized early
+species problem. Potential for ambiguity in this problem was recognized early
 on by @Darwin1859 [p. 46] who surmised, "No one definition has
 satisfied all naturalists; yet every naturalist knows vaguely what he means when
 he speaks of a species." Over the years, much consideration has been given to
@@ -23,10 +23,10 @@ temporal dimension for the species concept debate, asserting an evolutionary
 criterion for species as, "...a phyletic lineage (ancestral-descendent sequence
 of interbreeding populations) evolving independently of others, with its own
 separate and unitary evolutionary role and tendencies is a basic unit of
-evolution" [@Simpson1951 p. 289].  @Mayden1997 argued that while the
+evolution" [@Simpson1951 p. 289]. @Mayden1997 argued that while the
 evolutionary species concept (ESC) described by @Simpson1951 was
 non-operational, it provided a robust theoretical framework and general
-applicability for use as a primary species concept.  With the ESC as a primary
+applicability for use as a primary species concept. With the ESC as a primary
 species concept, secondary species concepts provide mutually applicable and
 equally valid operational support for recognizing species entities
 [@Mayden1997].
@@ -55,17 +55,18 @@ described by the term "species" despite differences in the mechanistic
 hypotheses (i.e. secondary criteria) pertaining to the separation and
 maintenance of the population-level evolutionary lineage segments.
 
-```{r FigureDiscussionPosteriori, fig.cap=caption$FigureDiscussionPosteriori}
+```{r FigureDiscussionPosteriori, fig.cap=caption$FigureDiscussionPosteriori, fig.scap="Distribution of \\textit{Physaria} herbarium specimen vouchers by reviewed annotation"}
 
 caption$FigureDiscussionPosteriori <-
-  paste("Distribution of *Physaria* sensu stricto herbarium specimens",
-        "by reviewed annotations.")
+  paste("Distribution of",
+    physaria(knitr_chunk = knit_variables$kable_format),
+    "herbarium specimens by reviewed annotation."
+  )
 
 knitr::include_graphics(
-  path = system.file(
-    fs::path("figures/DiscussionPosteriori",
-             ext = knit_variables$graphics),
-    package = "Thesis"
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionPosteriori",
+    ext = knit_variables$graphics
   )
 )
 

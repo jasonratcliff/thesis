@@ -11,8 +11,11 @@ link-citations: yes
 subparagraph: true
 description: "R Bookdown build to compile MS Thesis."
 nocite: |
+  @R-ggExtra
   @R-rprojroot
+  @R-viridisLite
   @R-whisker
+  @R-RColorBrewer
   @enumerate
   @hanging
 ---
