@@ -135,7 +135,7 @@ Additional groupings include two specimens of *P. didymocarpa* subsp.
 *P. didymocarpa* subsp. *lyrata* (**Genotype 5**); and two sets of two
 *P. eburniflora* specimens with identical genotypes (**Genotypes 6** and **7**).
 As previously described, no species of were recovered as
-monophyletic groups in the rITS gene tree Figure \@ref(fig:FigureBayesrITS).
+monophyletic groups in the rITS gene tree Figure \@ref(fig:FigureResultsBayesrITS).
 *P. obcordata*, *P. fendlerii*, and *P. argyraea* were strongly supported as
 outgroup taxa (P=1.000). Overall, the rITS gene tree is not well resolved with
 a 19 node polytomy including 6 identical genotype groups (1, 2, 3, 5, 6, 7).
@@ -171,9 +171,9 @@ if (knit_variables$pandoc != "docx") {
 
 \clearpage
 
-```{r FigureBayesrITS, fig.cap=caption$FigureBayesrITS, fig.scap="rITS MrBayes gene tree"}
+```{r FigureResultsBayesrITS, fig.cap=caption$FigureResultsBayesrITS, fig.scap="rITS MrBayes gene tree"}
 
-caption$FigureBayesrITS <-
+caption$FigureResultsBayesrITS <-
   "rITS MrBayes gene tree."
 
 knitr::include_graphics(
@@ -312,7 +312,7 @@ if (knit_variables$pandoc == "latex") {
 
 \paragraph{} Individual gene tree analysis for the *rps* intron did not recover
 monophyletic groups of species as previously described
-(Figure \@ref(fig:FigureBayesrpsIntron)). *Physaria fendlerii* and *P. argyraea*
+(Figure \@ref(fig:FigureResultsBayesrpsIntron)). *Physaria fendlerii* and *P. argyraea*
 are recovered as outgroups while a 13 node polytomy includes *P. vitulifera*
 of Colorado and one specimen from the Medicine Bow Range (*Dorn 10105*),
 *P. eburniflora*, *P. acutifolia*, *P. saximontana* subsp. *saximontana*,
@@ -332,9 +332,9 @@ specimens (n=2) and another (P=0.996) with *P. brassicoides* (n=1),
 
 \clearpage
 
-```{r FigureBayesrpsIntron, fig.cap=caption$FigureBayesrpsIntron, fig.scap="\\textit{rps} intron MrBayes gene tree"}
+```{r FigureResultsBayesrpsIntron, fig.cap=caption$FigureResultsBayesrpsIntron, fig.scap="\\textit{rps} intron MrBayes gene tree"}
 
-caption$FigureBayesrpsIntron <-
+caption$FigureResultsBayesrpsIntron <-
   paste(
     ifelse(
       test = knit_variables$pandoc != "latex",
@@ -488,10 +488,10 @@ identified as *P. dornii* and *P. condensata*, and another comprising
 of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
 (Table \@ref(tab:TableIdenticalSeqMultiLocus))
 Despite higher overall resolution, 14 nodes were still unresolved as a polytomy
-(P=0.777, Figure \@ref(fig:FigureBayesMultiLocus)). Three supported clades
+(P=0.777, Figure \@ref(fig:FigureResultsBayesMultiLocus)). Three supported clades
 include one with *P. didymocarpa* related species, another with the southwestern
 Wyoming endemics, and a third with two Medicine Bow Range specimens
-(Figure \@ref(fig:FigureBayesMultiLocus)).
+(Figure \@ref(fig:FigureResultsBayesMultiLocus)).
 
 \vspace*{20pt}
 
@@ -540,9 +540,9 @@ another specimen from Carbon County, Wyoming (*Dorn 10105*).
 
 \clearpage
 
-```{r FigureBayesMultiLocus, fig.cap=caption$FigureBayesMultiLocus, fig.scap="Multilocus concatenated MrBayes consensus tree"}
+```{r FigureResultsBayesMultiLocus, fig.cap=caption$FigureResultsBayesMultiLocus, fig.scap="Multilocus concatenated MrBayes consensus tree"}
 
-caption$FigureBayesMultiLocus <-
+caption$FigureResultsBayesMultiLocus <-
   "Multilocus concatenated MrBayes consensus tree."
 
 knitr::include_graphics(

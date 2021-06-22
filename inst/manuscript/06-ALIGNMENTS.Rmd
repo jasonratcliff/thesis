@@ -10,7 +10,7 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 ```{r, child=if (WORD_DOC) '_setup.Rmd'}
 ```
 
-```{r alignmentAppendix, results = "asis"}
+```{r AppendixAlignments, results = "asis"}
 
 if (knit_variables$pandoc == "latex") {
   cat(
@@ -24,7 +24,7 @@ if (knit_variables$pandoc == "latex") {
 
 ```
 
-```{r ggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS}
+```{r FigureAppendixggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS}
 
 Thesis::knitr_section(
   knitr_title = "Nuclear rITS",
@@ -45,7 +45,7 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r ggMSArpsIntron, out.extra="angle=90", fig.cap=caption$msa_rps}
+```{r FigureAppendixggMSArpsIntron, out.extra="angle=90", fig.cap=caption$msa_rps}
 
 if (knit_variables$pandoc == "latex") {
   cat(
@@ -78,7 +78,7 @@ knitr::include_graphics(
 
 \clearpage
 
-```{r ggMSAycf1, out.extra="angle=90", fig.cap=caption$msa_ycf1}
+```{r FigureAppendixggMSAycf1, out.extra="angle=90", fig.cap=caption$msa_ycf1}
 
 if (knit_variables$pandoc == "latex") {
   cat(
@@ -113,7 +113,7 @@ knitr::include_graphics(
 
 # R SESSION INFO {-}
 
-```{r sessionInfo}
+```{r SessionInfo}
 
 pkg_session <-
   devtools::session_info(pkgs = "Thesis")[2] %>%

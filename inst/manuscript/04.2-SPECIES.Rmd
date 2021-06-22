@@ -1,7 +1,7 @@
 
 \clearpage
 
-```{r sectionNovelPhysaria}
+```{r SectionNovelPhysaria}
 
 knitr_section(
   knitr_title = paste("Wyoming", physaria(knit_variables$pandoc), "Lineage"),
@@ -14,9 +14,10 @@ knitr_section(
 Medicine Bow Mountains is considered here on the basis of phylogenetic,
 morphological, and ecological data. For the loci comprising individual gene
 trees, reciprocal monophyly was not observed in either rITS or *rps* intron
-(Figures \@ref(fig:FigureBayesrITS) and \@ref(fig:FigureBayesrpsIntron)).
+(Figures \@ref(fig:FigureResultsBayesrITS) and
+\@ref(fig:FigureResultsBayesrpsIntron)).
 Phylogenetic support in the concatenated MrBayes consensus tree
-(Figure \@ref(fig:FigureBayesMultiLocus)) and multi-locus BEAST maximum
+(Figure \@ref(fig:FigureResultsBayesMultiLocus)) and multi-locus BEAST maximum
 credibility clade tree (Figure \@ref(fig:FigureResultsBeastMultiLocus))
 does support divergence of these populations relative to *P. vitulifera* of
 Colorado. Modeling dispersal with contemporary geographic location similarly
@@ -44,16 +45,16 @@ While not fully resolved, evidence for lineage separation of the disputed
 *P. vitulifera* specimens as a new taxon was also observed in morphological and
 ecological traits. Reviewed specimens are found generally above 2,100m, at
 a higher elevation relative to nearby *P. acutifolia* and allopatric
-*P. vitulifera* of Colorado (Figures \@ref(fig:FigResultsPhysariaElevation)
-and \@ref(fig:speciesSEINet)). Globally, endemic plant species have been shown
+*P. vitulifera* of Colorado (Figures \@ref(fig:FigureResultsPhysariaElevation)
+and \@ref(fig:FigureDiscussionElevationSEINet)).
+Globally, endemic plant species have been shown
 to correlate with increases in elevation [@Steinbauer2016].
 
-```{r speciesSEINet, fig.cap=caption$FigDiscussionSEINet, fig.scap="SEINet Distribution Map."}
+```{r FigureDiscussionElevationSEINet, fig.cap=caption$FigureDiscussionElevationSEINet, fig.scap="SEINet Distribution Map."}
 
-# Plot of fruit dimensions by reviewed species ID and collection date.
-caption$FigDiscussionSEINet <-
-  paste(
-    "Distribution of regional", physaria(knit_variables$pandoc),
+caption$FigureDiscussionElevationSEINet <-
+  paste("Distribution of regional",
+    physaria(knit_variables$pandoc),
     "species from SEINet."
   )
 
@@ -78,7 +79,7 @@ Grand County, Colorado. Populations of questioned specimens examined are
 distributed from the Sierra Madre West of Encampment and East through the
 Medicine Bow Range. After accounting for collection date, these specimens
 show a marked reduction in average mature fruit length and width relative
-to other nearby species (Figure \@ref(fig:FigResultsPhysariaFruits)).
+to other nearby species (Figure \@ref(fig:FigureResultsPhysariaFruits)).
 Traditionally, *P. floribunda* have been differentiated by recurved, nearly
 pendant pedicels and pinnatifid basal leaves [@OKane2010]. Future phylogenetic
 and population genetic analysis should include both *P. floribunda* subspecies

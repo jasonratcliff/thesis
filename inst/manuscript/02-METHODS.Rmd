@@ -14,7 +14,7 @@ WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
 
 \vspace*{-18pt}
 
-```{r methodsVariables, echo=FALSE}
+```{r MethodsVariables, echo=FALSE}
 
 methods_variables <- list()  # Initialize list for assigned variables
 
@@ -42,7 +42,7 @@ names(methods_variables$fasta_msa) <-
 
 ```
 
-```{r sectionSpecimens}
+```{r SectionSpecimens}
 
 Thesis::knitr_section(
   knitr_title = "Herbarium Specimens",
@@ -115,7 +115,7 @@ and formatted with `kableExtra` [@R-kableExtra]. Plot figures were formatted
 using `cowplot` [@R-cowplot], `ggtext` [@R-ggtext], `scales` [@R-scales], and
 `ggnewscale` [@R-ggnewscale].
 
-```{r sectionTissue}
+```{r SectionTissue}
 
 Thesis::knitr_section(
   knitr_title = "Tissue Sources",
@@ -164,7 +164,7 @@ intron, and `r length(methods_variables$fasta_msa$ycf1)` for *ycf1*.
 Analyses of concatenated multi-locus or partitioned data were limited to
 specimens for which sequencing of all three loci was completed.
 
-```{r sectionExtractions}
+```{r SectionExtractions}
 
 Thesis::knitr_section(
   knitr_title = "DNA Extraction",
@@ -361,7 +361,7 @@ Additionally, the volume of AE buffer used to elute DNA from the spin column was
 reduced to 75 $\mu$L from 100 $\mu$L. The incubation time for column elution was
 also extended from five minutes to 10 minutes.
 
-```{r sectionPCRrITS}
+```{r SectionPCRrITS}
 
 Thesis::knitr_section(
   knitr_title = "rITS PCR",
@@ -437,7 +437,7 @@ if (knit_variables$pandoc != "docx") {
 
 \vspace*{10pt}
 
-```{r sectionPCRrps}
+```{r SectionPCRrps}
 
 Thesis::knitr_section(
   knitr_title = "*rps* Intron PCR",
@@ -459,7 +459,7 @@ for 10s at 98 $^{\circ}$C, annealing for 25s at 66.8 $^{\circ}$C, and extension
 for 30s at 72 $^{\circ}$C. A final extension for seven minutes at 72
 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
-```{r sectionPCRycf1}
+```{r SectionPCRycf1}
 
 Thesis::knitr_section(
   knitr_title = "*ycf1* PCR",
@@ -524,7 +524,7 @@ re-suspending in 18 mL ddH2O.
 
 \vspace*{-24pt}
 
-```{r sectionGel}
+```{r SectionGel}
 
 Thesis::knitr_section(
   knitr_title = "Gel Electrophoresis",
@@ -546,7 +546,7 @@ H2O for 5 minutes. A UV illuminator connected to a Kodak EDAS 290
 Electrophoresis Documentation and Analysis System was used to document digital
 images of the gels.
 
-```{r sectionSeqDNA}
+```{r SectionSeqDNA}
 
 Thesis::knitr_section(
   knitr_title = "DNA Sequencing",
@@ -575,7 +575,7 @@ Forward and reverse reads for each sample were aligned with Clustal X v2.0
 labeled using IUPAC ambiguity codes [@Cornish-Bowden1985]. The sequences were
 assembled from chromatograms into multi-FASTA format for downstream analysis.
 
-```{r sectionPhylogenetics}
+```{r SectionPhylogenetics}
 
 Thesis::knitr_section(
   knitr_title = "Phylogenetic Analysis",
@@ -699,7 +699,7 @@ Maximum clade credibility trees were summarized using TreeAnnotator
 from the output species trees discarding 10% of trees as burn-in with a
 posterior probability limit of 0.5.
 
-```{r sectionSource}
+```{r SectionSource}
 
 Thesis::knitr_section(
   knitr_title = "Source Code",
