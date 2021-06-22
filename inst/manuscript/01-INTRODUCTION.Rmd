@@ -319,12 +319,13 @@ conservation priority by the Wyoming National Diversity Database with
 the G2G3/S2S3 heritage ranking (@HeidelOKane2012). *Physaria integrifolia* is a
 regional endemic of western Wyoming and eastern Idaho.
 
-```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors, fig.scap="\\textit{Physaria} sensu stricto herbarium specimen records by prior annotation"}
+```{r FigureIntroPriors, fig.cap=caption$FigureIntroPriors, fig.scap="Reviewed \\textit{Physaria} herbarium specimen records by prior annotation"}
 
 caption$FigureIntroPriors <-
   paste(
-    "Distribution of", physaria(knitr_chunk = knit_variables$kable_format),
-    "sensu stricto herbarium specimens by most recent annotations."
+    "Distribution of reviewed ",
+    physaria(knitr_chunk = knit_variables$kable_format),
+    "herbarium specimens by most recent annotation."
   )
 
 knitr::include_graphics(
@@ -394,13 +395,14 @@ geographically separated from the Colorado Front range *P. vitulifera*
 
 ```{r TableIntroCarbon}
 
-# Table: Carbon county putative *P. vitulifera* annotations
 caption$TableIntroCarbon <-
-  ifelse(knit_variables$pandoc == "latex",
-         paste0("Putative Carbon County, Wyoming ",
-                "\\textit{Physaria vitulifera} specimens."),
-         paste0("Putative Carbon County, Wyoming ",
-                "*Physaria vitulifera* specimens."))
+  paste("Putative Carbon County, Wyoming",
+    ifelse(
+      test = knit_variables$pandoc == "latex",
+      yes = "\\textit{Physaria vitulifera}",
+      no = "*Physaria vitulifera*"
+    ), "specimens"
+  )
 
 # Subset data frame of WY specimens with previous *P. vitulifera* annotations.
 carbon <- list()
