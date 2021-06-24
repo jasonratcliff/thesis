@@ -12,20 +12,22 @@ specimens <- list()
 
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- Thesis::herbarium_specimens %>%
-  filter_reviewed(specimen_tbl = .) %>%
-  filter(
+  Thesis::filter_reviewed(specimen_tbl = .) %>%
+  dplyr::filter(
     !is.na(Mature_fruit_length_mm),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
-  bind_cols(range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm"))
+  dplyr::bind_cols(
+    Thesis::range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm")
+  )
 
 # Fruits ----
 
 traits <- list()
 
 traits$labels <-
-  spl_labels(
+  Thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -49,7 +51,7 @@ traits$legend_png <-
   )
 
 traits$fruits <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Mature_fruit_length_mm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -58,24 +60,22 @@ traits$fruits <-
     violin.params = list(scale = "width"),
     jitter.params = list(width = 0.25),
     theme.params = list(
-      axis.text.x = ggtext::element_markdown(
-        angle = 45,
-        hjust = 1
-      )
+      axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1),
+      axis.title.y = ggplot2::element_text(size = 10)
     )
   ) +
-  scale_x_discrete(labels = traits$labels) +
-  labs(y = "Fruit Length (mm)")
+  ggplot2::scale_x_discrete(labels = traits$labels) +
+  ggplot2::labs(y = "Fruit Length (mm)")
 
 traits$fruits <-
-  ggMarginal(
+  ggExtra::ggMarginal(
     p = traits$fruits,
     margins = "y",
     type = "violin"
   )
 
 traits$phenology <-
-  trait_phenology(
+  Thesis::trait_phenology(
     specimen_tbl = specimens$filtered,
     trait = "Mature_fruit_length_mm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -83,21 +83,22 @@ traits$phenology <-
     legend_title = "Reviewed Annotations",
     theme.params = list(
       legend.position = "none",
-      strip.text = ggtext::element_markdown(),  # Facet strip text
-      axis.text.x = element_text(size = 6)
+      strip.text = ggtext::element_markdown(size = 7),
+      axis.text.x = ggplot2::element_text(size = 6),
+      axis.title.y = ggplot2::element_text(size = 10)
     )
   ) +
-  scale_y_continuous(limits = c(0, 20)) +
-  facet_wrap(
+  ggplot2::scale_y_continuous(limits = c(0, 20)) +
+  ggplot2::facet_wrap(
     facets = ~ Taxon_a_posteriori, ncol = 3,
-    labeller = labeller(Taxon_a_posteriori = traits$labels)
+    labeller = ggplot2::labeller(Taxon_a_posteriori = traits$labels)
   ) +
-  labs(y = "Fruit Length (mm)", x = "Collection Date")
+  ggplot2::labs(y = "Fruit Length (mm)", x = "Collection Date")
 
 # Grid Plot ----
 
 traits$png_fruit <-
-  plot_grid(
+  cowplot::plot_grid(
     traits$fruits,
     traits$legend_png,
     ncol = 1,
@@ -105,16 +106,16 @@ traits$png_fruit <-
   )
 
 traits$png_phenology <-
-  plot_grid(
+  cowplot::plot_grid(
     traits$phenology,
     traits$legend_pdf,
     nrow = 1, rel_widths = c(2, 1)
   )
 
 traits$fruit_pdf <-
-  plot_grid(
+  cowplot::plot_grid(
     traits$fruits,
-    plot_grid(
+    cowplot::plot_grid(
       traits$phenology,
       traits$legend_pdf,
       nrow = 1, rel_widths = c(2, 1)

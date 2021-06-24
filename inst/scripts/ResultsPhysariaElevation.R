@@ -1,6 +1,7 @@
 library(Thesis)
 library(cowplot)
 library(dplyr)
+library(fs)
 library(ggExtra)
 library(ggplot2)
 library(ggridges)
@@ -17,32 +18,32 @@ specimens <- list()
 
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- Thesis::herbarium_specimens %>%
-  filter_reviewed(specimen_tbl = .) %>%
-  filter(
+  Thesis::filter_reviewed(specimen_tbl = .) %>%
+  dplyr::filter(
     !is.na(Elev_raw_max),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   )
 
 specimens$median <- specimens$filtered %>%
-  filter(!is.na(Taxon_a_posteriori)) %>%
-  select(Taxon_a_posteriori, Elev_raw_max) %>%
-  group_by(Taxon_a_posteriori) %>%
-  summarize(
+  dplyr::filter(!is.na(Taxon_a_posteriori)) %>%
+  dplyr::select(Taxon_a_posteriori, Elev_raw_max) %>%
+  dplyr::group_by(Taxon_a_posteriori) %>%
+  dplyr::summarize(
     Median = median(Elev_raw_max, na.rm = TRUE) %>% round(),
     MAD = mad(Elev_raw_max, na.rm = TRUE) %>% round(),
     n = n()
   ) %>%
-  filter(!is.nan(Median)) %>%
-  arrange(Median) %>%
-  rename("Species" = .data$Taxon_a_posteriori)
+  dplyr::filter(!is.nan(Median)) %>%
+  dplyr::arrange(Median) %>%
+  dplyr::rename("Species" = .data$Taxon_a_posteriori)
 
 # Elevation Violin ----
 
 traits <- list()
 
 traits$labels <-
-  spl_labels(
+  Thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -58,7 +59,7 @@ traits$legend <-
   )
 
 traits$elevation <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Elev_raw_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -69,14 +70,14 @@ traits$elevation <-
       axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1)
     )
   ) +
-  scale_x_discrete(
+  ggplot2::scale_x_discrete(
     limits = specimens$median$Species,
     labels = traits$labels
   ) +
-  labs(y = "Maximum Elevation (ft.)")
+  ggplot2::labs(y = "Maximum Elevation (ft.)")
 
 traits$elevation <-
-  ggMarginal(
+  ggExtra::ggMarginal(
     p = traits$elevation,
     margins = "y",
     type = "violin"
@@ -84,9 +85,9 @@ traits$elevation <-
 
 # Elevation Ridgeline ----
 
-traits$ridgeline <- ggplot(data = specimens$filtered) +
-  geom_density_ridges(
-    mapping = aes(
+traits$ridgeline <- ggplot2::ggplot(data = specimens$filtered) +
+  ggridges::geom_density_ridges(
+    mapping = ggplot2::aes(
       x = Elev_raw_max,
       y = Taxon_a_posteriori,
       fill = Taxon_a_posteriori
@@ -94,35 +95,35 @@ traits$ridgeline <- ggplot(data = specimens$filtered) +
     na.rm = TRUE,
     bandwidth = 500
   ) +
-  theme_classic() +
-  scale_x_continuous(name = "Maximum Elevation (ft.)") +
-  scale_y_discrete(
+  ggplot2::theme_classic() +
+  ggplot2::scale_x_continuous(name = "Maximum Elevation (ft.)") +
+  ggplot2::scale_y_discrete(
     labels = traits$labels,
     limits = rev(specimens$median$Species)) +
-  scale_fill_manual(
+  ggplot2::scale_fill_manual(
     name = "Reviewed Annotation",
     values = Thesis::spp_color,
     labels = desc(traits$labels)
   ) +
-  theme(
+  ggplot2::theme(
     legend.position = "none",
     legend.text = ggtext::element_markdown(),
     axis.text.y = ggtext::element_markdown(),
-    axis.title.y = element_blank()
+    axis.title.y = ggplot2::element_blank()
   )
 
 # Table ----
 
 specimens$table <- specimens$median %>%
-    mutate(  # Italicization
+    dplyr::mutate(  # Italicization
       Species = Thesis::parse_taxa(tree_tibble = ., id_column = "Species")
     ) %>%
-  rename_all(~ paste0("bold(", .x, ")"))
+  dplyr::rename_all(~ paste0("bold(", .x, ")"))
 
 traits$grob <-
-  tableGrob(
+  gridExtra::tableGrob(
     d = specimens$table, rows = NULL,
-    theme = ttheme_default(
+    theme = gridExtra::ttheme_default(
       parse = TRUE, # Parse expressions for column names and subspecies.
       core = list(
         fg_params = list(
@@ -175,7 +176,7 @@ for (i in 2:ncol(traits$grob)) {
 grids <- list()
 
 grids$bottom_right <-
-  plot_grid(
+  cowplot::plot_grid(
     traits$grob,
     labels = "C",
     label_x = 0.05,
@@ -183,9 +184,8 @@ grids$bottom_right <-
   )
 
 grids$bottom <-
-  plot_grid(
+  cowplot::plot_grid(
     traits$ridgeline,
-    # traits$grob,
     grids$bottom_right,
     rel_widths = c(1, 1),
     align = "h",
@@ -196,7 +196,7 @@ grids$bottom <-
   )
 
 grids$align <-
-  align_plots(
+  cowplot::align_plots(
     traits$elevation,
     traits$ridgeline,
     align = "v",
@@ -204,7 +204,7 @@ grids$align <-
   )
 
 grids$top <-
-  plot_grid(
+  cowplot::plot_grid(
     grids$align[[1]],
     labels = "A",
     label_x = 0.09,
@@ -212,7 +212,7 @@ grids$top <-
   )
 
 FigResultsPhysariaElevation <-
-  plot_grid(
+  cowplot::plot_grid(
     grids$top,
     grids$bottom,
     ncol = 1

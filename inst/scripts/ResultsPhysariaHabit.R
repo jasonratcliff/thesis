@@ -1,5 +1,6 @@
 library(Thesis)
 library(dplyr)
+library(fs)
 library(ggplot2)
 library(ggtext)
 library(ggExtra)
@@ -12,25 +13,25 @@ specimens <- list()
 
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- Thesis::herbarium_specimens %>%
-  filter_reviewed(specimen_tbl = .) %>%
-  filter(
+  Thesis::filter_reviewed(specimen_tbl = .) %>%
+  dplyr::filter(
     !is.na(Stem_length_dm),
     !is.na(Basal_leaf_length_cm),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
-  bind_cols(
-    range_split(trait_tbl = ., split_var = "Stem_length_dm"),
-    range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
+  dplyr::bind_cols(
+    Thesis::range_split(trait_tbl = ., split_var = "Stem_length_dm"),
+    Thesis::range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
   ) %>%
-  mutate(rosette_ratio = Stem_length_dm_max * 10 - Basal_leaf_length_cm_max)
+  dplyr::mutate(rosette_ratio = Stem_length_dm_max * 10 - Basal_leaf_length_cm_max)
 
 # Ovules ----
 
 traits <- list()
 
 traits$labels <-
-  spl_labels(
+  Thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -47,20 +48,20 @@ traits$legend <-
 
 # Basal leaf lengths
 traits$leaves <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Basal_leaf_length_cm_max",
     aesthetic_id = "Taxon_a_posteriori",
-    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
-    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    violin.params = list(scale = "width"),
+    jitter.params = list(width = 0.25, height = 0),
     theme.params = list(
-      axis.text.x = element_blank()
+      axis.text.x = ggplot2::element_blank()
     )
   ) +
-  labs(y = "Basal Leaf Length (cm)")
+  ggplot2::labs(y = "Basal Leaf Length (cm)")
 
 traits$leaves <-
-  ggMarginal(
+  ggExtra::ggMarginal(
     p = traits$leaves,
     margins = "y",
     type = "violin"
@@ -68,20 +69,20 @@ traits$leaves <-
 
 # Stem lengths
 traits$stems <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Stem_length_dm_max",
     aesthetic_id = "Taxon_a_posteriori",
-    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
-    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    violin.params = list(scale = "width"),
+    jitter.params = list(width = 0.25, height = 0),
     theme.params = list(
-      axis.text.x = element_blank()
+      axis.text.x = ggplot2::element_blank()
     )
   ) +
-  labs(y = "Stem Length (dm)")
+  ggplot2::labs(y = "Stem Length (dm)")
 
 traits$stems <-
-  ggMarginal(
+  ggExtra::ggMarginal(
     p = traits$stems,
     margins = "y",
     type = "violin"
@@ -89,22 +90,22 @@ traits$stems <-
 
 # Inflorence extension lengths
 traits$rosette <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "rosette_ratio",
     aesthetic_id = "Taxon_a_posteriori",
-    violin.params = list(scale = "width"),  # Scale geom_violin() to equal widths 
-    jitter.params = list(width = 0.25, height = 0),  # Jitter positions
+    violin.params = list(scale = "width"),
+    jitter.params = list(width = 0.25, height = 0),
     theme.params = list(
       axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1),
-      axis.title.x = element_blank()
+      axis.title.x = ggplot2::element_blank()
     )
   ) +
-  scale_x_discrete(labels = traits$labels) +
-  labs(y = "Inflorescence (cm)")
+  ggplot2::scale_x_discrete(labels = traits$labels) +
+  ggplot2::labs(y = "Inflorescence (cm)")
 
 traits$rosette <-
-  ggMarginal(
+  ggExtra::ggMarginal(
     p = traits$rosette,
     margins = "y",
     type = "violin"
@@ -115,7 +116,7 @@ traits$rosette <-
 grids <- list()
 
 grids$top <-
-  align_plots(
+  cowplot::align_plots(
     traits$leaves,
     traits$stems,
     traits$rosette,
@@ -124,9 +125,9 @@ grids$top <-
   )
 
 FigResultsPhysariaHabit <-
-  plot_grid(
-    grids$top[[1]], #labels = "A", label_y = 1,
-    grids$top[[2]],# labels = "B", label_y = 1,
+  cowplot::plot_grid(
+    grids$top[[1]],
+    grids$top[[2]],
     grids$top[[3]],
     ncol = 1,
     rel_heights = c(1, 1, 1.4),
