@@ -24,17 +24,17 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   )
 
-specimens$Mean <- specimens$filtered %>%
+specimens$median <- specimens$filtered %>%
   filter(!is.na(Taxon_a_posteriori)) %>%
   select(Taxon_a_posteriori, Elev_raw_max) %>%
   group_by(Taxon_a_posteriori) %>%
   summarize(
-    Mean = mean(Elev_raw_max, na.rm = TRUE) %>% round(),
-    SD = sd(Elev_raw_max, na.rm = TRUE) %>% round(),
+    Median = median(Elev_raw_max, na.rm = TRUE) %>% round(),
+    MAD = mad(Elev_raw_max, na.rm = TRUE) %>% round(),
     n = n()
   ) %>%
-  filter(!is.nan(Mean)) %>%
-  arrange(Mean) %>%
+  filter(!is.nan(Median)) %>%
+  arrange(Median) %>%
   rename("Species" = .data$Taxon_a_posteriori)
 
 # Elevation Violin ----
@@ -70,7 +70,7 @@ traits$elevation <-
     )
   ) +
   scale_x_discrete(
-    limits = specimens$Mean$Species,
+    limits = specimens$median$Species,
     labels = traits$labels
   ) +
   labs(y = "Maximum Elevation (ft.)")
@@ -98,7 +98,7 @@ traits$ridgeline <- ggplot(data = specimens$filtered) +
   scale_x_continuous(name = "Maximum Elevation (ft.)") +
   scale_y_discrete(
     labels = traits$labels,
-    limits = rev(specimens$Mean$Species)) +
+    limits = rev(specimens$median$Species)) +
   scale_fill_manual(
     name = "Reviewed Annotation",
     values = Thesis::spp_color,
@@ -113,35 +113,9 @@ traits$ridgeline <- ggplot(data = specimens$filtered) +
 
 # Table ----
 
-specimens$table <- specimens$Mean %>%
+specimens$table <- specimens$median %>%
     mutate(  # Italicization
-      Species = purrr::map_chr(.x = Species, function(taxon) {
-        taxon_split <- unlist(strsplit(taxon, " "))
-        if (length(taxon_split) < 3) {
-          parsed_label <-
-            paste0(
-              c("italic(", paste(taxon_split, collapse = " "), ")"),
-              collapse = ""
-            )
-        } else {
-          if (grepl("'medicinae'", x = taxon)) {
-            parsed_label <- "italic(Physaria) 'medicinae'"
-          } else {
-            parsed_label <-
-              paste0(
-                "italic(",
-                paste(taxon_split[1:2], collapse = " "),
-                ") subsp. italic(",
-                taxon_split[4],
-                ")",
-                collapse = ""
-              )
-          }
-        }
-        parsed_label <- unlist(parsed_label) %>%
-          gsub(" +", "~", x = .)  # Replace white space to parse by expression()
-        return(parsed_label)
-      })
+      Species = Thesis::parse_taxa(tree_tibble = ., id_column = "Species")
     ) %>%
   rename_all(~ paste0("bold(", .x, ")"))
 
