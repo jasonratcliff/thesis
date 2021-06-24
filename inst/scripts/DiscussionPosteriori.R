@@ -64,7 +64,7 @@ reviewed$map <-
 reviewed$legend_pdf <-
   get_legend(
     reviewed$ggplot +
-      guides(color = guide_legend(ncol = 3, byrow = TRUE)) +
+      guides(color = guide_legend(ncol = 3)) +
       theme(
         legend.background = element_rect(fill = "grey99"),
         legend.position = "bottom",

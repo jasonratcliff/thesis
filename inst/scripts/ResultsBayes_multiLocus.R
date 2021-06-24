@@ -156,7 +156,6 @@ tree$pdf <- tree$repel_pdf +
       override.aes = list(size = 3),
       title.position = "top",
       ncol = 3,
-      byrow = TRUE,
       keyheight = 0.15,
       default.unit = "inch"
     )
@@ -229,7 +228,10 @@ tree$png <- tree$repel_png +
     color = ggplot2::guide_legend(
       override.aes = list(size = 3),
       title.position = "top",
-      ncol = 1, byrow = TRUE, keyheight = 0.15, default.unit = "inch")
+      ncol = 1,
+      keyheight = 0.15,
+      default.unit = "inch"
+    )
   ) +
   ggplot2::theme(
     legend.position = "right",

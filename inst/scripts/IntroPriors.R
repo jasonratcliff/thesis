@@ -71,7 +71,7 @@ priors$map_pdf <- priors$map +
 priors$legend_pdf <-
   get_legend(
     priors$ggplot +
-      guides(color = guide_legend(ncol = 3, byrow = TRUE)) +
+      guides(color = guide_legend(ncol = 3)) +
       theme(
         legend.background = element_rect(fill = "grey99"),
         legend.position = "bottom",

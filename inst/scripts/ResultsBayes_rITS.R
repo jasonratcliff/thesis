@@ -135,13 +135,7 @@ tree$repel_pdf <-
       initial_ggtree = tree$ggtree,
       label_size = 2
     ) %>%
-    rlang::eval_tidy(expr = .) +
-
-  ggtree::geom_highlight(
-    node = 8,
-    fill = "red"
-  )
-
+    rlang::eval_tidy(expr = .)
 
 # Add node probabilities
 tree$repel_pdf <-
@@ -168,7 +162,6 @@ tree$pdf <- tree$repel_pdf +
       override.aes = list(size = 3),
       title.position = "top",
       ncol = 3,
-      byrow = TRUE,
       keyheight = 0.15,
       default.unit = "inch"
     )
@@ -221,12 +214,7 @@ tree$repel_png <-
       initial_ggtree = tree$ggtree,
       label_size = 3
     ) %>%
-    rlang::eval_tidy(expr = .) +
-
-  ggtree::geom_highlight(
-    node = 8,
-    fill = "red"
-  )
+    rlang::eval_tidy(expr = .)
 
 # Add node probabilities
 tree$repel_png <-
@@ -253,7 +241,6 @@ tree$png <- tree$repel_png +
       override.aes = list(size = 3),
       title.position = "top",
       ncol = 1,
-      byrow = TRUE,
       keyheight = 0.2,
       default.unit = "inch"
     )
