@@ -3,8 +3,11 @@
 #' Pair with [haplotype_labels()] and [species_plot()] to create plotmath
 #' expressions parsed as [ggplot2::ggplot()] labels.
 #'
-#' @param tree_tibble
-#' @param id_column
+#' Plotmath Reference
+#' - https://rdrr.io/r/grDevices/plotmath.html
+#'
+#' @param tree_tibble `tbl_tree` object with label vector `id_column`.
+#' @param id_column Character vector for indirect tidy evaluation.
 #' @family labels
 #' @export
 #'
@@ -101,7 +104,7 @@ parse_taxa <- function(tree_tibble, id_column) {
           }
         })
     ) %>%
-    dplyr::pull(label)
+    dplyr::pull("label")
 }
 
 abbreviate_taxa <- function(taxa_rank) {

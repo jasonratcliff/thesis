@@ -42,7 +42,11 @@ tree$labels <-
   )
 
 # Assign multi- and single-taxa node labels.
-tree$haplotypes <- Thesis::haplotype_labels(haplotypes = tree$joined)
+tree$haplotypes <-
+  Thesis::haplotype_labels(
+    haplotypes = tree$joined,
+    id_column = "Taxon_a_posteriori"
+  )
 tree$single <- tree$joined %>%
   dplyr::group_by(label) %>%
   dplyr::mutate(n = dplyr::n()) %>%
