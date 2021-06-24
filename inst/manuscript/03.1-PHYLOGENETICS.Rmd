@@ -13,9 +13,11 @@ Thesis::knitr_section(
 
 ```{r phylogeneticsData}
 
+# TODO See label.R to consolidate abbreviation functions
 # Function to abbreviate specimen annotations.
 abbreviate_spp <- function(label_vector, pandoc_conversion) {
 
+  # TODO See helpers.R for `italicize()` function
   paste_html <- function(label) {
     paste0("*", label, "*")
   }

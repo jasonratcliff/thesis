@@ -63,6 +63,7 @@ count_specimens <- function(spp_tibble) {
 #'
 #' @param character_vector Character vector to capitalize.
 #' @export
+#' @family text
 #'
 #' @examples
 #' traits <- c("oblong", "elliptic", "linear")
@@ -74,6 +75,23 @@ capitalize <- function(character_vector) {
     paste0(c(toupper(split_string[1]), split_string[2:length(split_string)]),
            collapse = "")
   })
+}
+
+#' LaTeX Italicization
+#'
+#' @param unitalicized Character vector to italicize.
+#' @inheritParams html_caption
+#' @export
+#' @family text
+#'
+#' @examples
+#' italicize(unitalicized = "Physaria floribunda", chunk_type = "latex")
+italicize <- function(unitalicized, chunk_type) {
+  if (chunk_type == "latex") {
+    paste0("\\textit{", unitalicized, "}")
+  } else {
+    paste0("*", unitalicized, "*")
+  }
 }
 
 #' Filter Reviewed Specimens
