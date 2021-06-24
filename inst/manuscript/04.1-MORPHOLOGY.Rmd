@@ -1,6 +1,4 @@
 
-\clearpage
-
 ```{r sectionMorphology}
 
 knitr::opts_chunk$set(fig.align = "center")
@@ -26,22 +24,6 @@ partition shape and the quantity of ovules as observed by funiculi per locule
 constitutes a primary feature in the dichotomous key of Wyoming *Physaria*
 provided by @Dorn2001.
 
-```{r FigureDiscussionReplumShape, fig.cap=caption$traitReplumShape, fig.scap="Distribution of fruit replums"}
-
-caption$traitReplumShape <-
-  "Distribution of discrete replum shapes by specimen location."
-
-knitr::include_graphics(
-  path = fs::path(
-    here::here(), "inst/figures/DiscussionTraitReplums",
-    ext = knit_variables$graphics
-  )
-)
-
-```
-
-\clearpage
-
 \paragraph{} Species consistently showing 2 ovules per locule include those with
 linear partitions: *Physaria acutifolia*, *P. brassicoides*, and *P. vitulifera*.
 @Rollins1984 described *P. saximontana* subsp. *saximontana* as having 2 ovules
@@ -56,7 +38,56 @@ subsp. *didymocarpa* joins the southwestern Wyoming endemics *P. integrifolia*,
 *P. dornii*, and *P. condensata* as consistently having more than 2 ovules per
 locule. Notably, *P. didymocarpa* subsp. *lanata* in Big Horn, Sheridan, and
 Johnson counties of Wyoming has a typically oblong replum with only 2 ovules
-per locule.
+per locule. The main charcter used by @Rollins1984 to differentiate
+*Physaria saximontana* from *P. didymocarpa* is the lack of a basal sinus in
+the mature siliques of the former. This traditional circumsription is followed
+by @Lesica2012 for Montana *Physaria* and @HeidelOKane2012 for Wyoming
+*Physaria*. While *P. didymocarpa* and *P. eburniflora* are described as having
+cordate basal sinuses [@Rollins1984; @Rollins1981], lack of a basal sinus
+is observed throughout Montana *P. didymocarpa* specimens and seen in some
+*P. eburniflora* individuals (Figure \@ref(fig:FigureDiscussionFruitApices)).
+In contrast, *P. integrifolia*, *P. dornii*, and *P. condensata* from Teton,
+Lincoln, Sublette, and Uinta counties of Wyoming typically have approximately
+equal sinuses similar to the widespread *P. acutifolia*.
+
+\paragraph{} @Rollins1939 noted of *Physaria didymocarpa* var. *integrifolia*
+Rollins (later, *Physaria integrifolia* (Rollins) @Lichvar1984) appressed
+stellate trichomes on the mature siliques and entire basal leaves as
+distinguishing characters from *P. d.* subsp. *didymocarpa*.
+These characters are shared by the southwestern endemics *P. dornii* and
+*P. condensata*, both of which are differentiated from *P. integrifolia*
+by their condensed rosette habit [@Lichvar1983]
+(Figure \@ref(fig:FigureDiscussionFruitTrichomes),
+Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
+In describing *P. saximontana*, @Rollins1984 noted the silique trichomes with
+rays spreading away from the valve, as similarly described for *P. didymocarpa*
+subsp. *didymocarpa* [@Rollins1939]. These observations are consistent with
+material reviewed here and in keeping with keys by @Dorn2001 and
+@HeidelOKane2012. Of the two *P. saximontana* varieties (var. *saximontana* and
+var. *dentata*) described by @Rollins1984, the former was distinguished by
+entire radical leaves and a relatively shorter style length from the latter
+having broadly dentate margins and a longer style. While this traditional
+distinction was followed by @OKane2010 and @Lesica2012, dentate margins can be
+observed throughout *P. saximontana* of Wyoming and *P. didymocarpa* of Montana
+(Figure \@ref(fig:FigureDiscussionBasalLeafMargins)). Though common in occurrence,
+dentate margins are not supported as a fixed trait in *P. didymocarpa*.
+In contrast, *P. acutifolia* and the southwestern endemics *P. integrifolia*,
+*P. dornii*, and *P. condensata* generally have entire basal leaves with the
+former distinguished from the endemics by replum shape and ovule count.
+
+```{r FigureDiscussionReplumShape, fig.cap=caption$traitReplumShape, fig.scap="Distribution of fruit replums"}
+
+caption$traitReplumShape <-
+  "Distribution of discrete replum shapes by specimen location."
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionTraitReplums",
+    ext = knit_variables$graphics
+  )
+)
+
+```
 
 ```{r FigureDiscussionOvules, fig.cap=caption$traitOvules, fig.scap="Distribution of fruit ovules"}
 
@@ -72,20 +103,6 @@ knitr::include_graphics(
 
 ```
 
-\clearpage
-
-\paragraph{} The main charcter used by @Rollins1984 to differentiate
-*Physaria saximontana* from *P. didymocarpa* is the lack of a basal sinus in
-the mature siliques of the former. This traditional circumsription is followed
-by @Lesica2012 for Montana *Physaria* and @HeidelOKane2012 for Wyoming
-*Physaria*. While *P. didymocarpa* and *P. eburniflora* are described as having
-cordate basal sinuses [@Rollins1984; @Rollins1981], lack of a basal sinus
-is observed throughout Montana *P. didymocarpa* specimens and seen in some
-*P. eburniflora* individuals (Figure \@ref(fig:FigureDiscussionFruitApices)).
-In contrast, *P. integrifolia*, *P. dornii*, and *P. condensata* from Teton,
-Lincoln, Sublette, and Uinta counties of Wyoming typically have approximately
-equal sinuses similar to the widespread *P. acutifolia*.
-
 ```{r FigureDiscussionFruitApices, fig.cap=caption$traitFruitApices, fig.scap="Distribution of mature silique sinuses"}
 
 caption$traitFruitApices <-
@@ -100,22 +117,6 @@ knitr::include_graphics(
 
 ```
 
-\clearpage
-
-\paragraph{} @Rollins1939 noted of *Physaria didymocarpa* var. *integrifolia*
-Rollins (later, *Physaria integrifolia* (Rollins) @Lichvar1984) appressed
-stellate trichomes on the mature siliques and entire basal leaves as
-distinguishing characters from *P. d.* subsp. *didymocarpa*.
-These characters are shared by the southwestern endemics *P. dornii* and
-*P. condensata*, both of which are differentiated from *P. integrifolia*
-by their condensed rosette habit [@Lichvar1983]
-(Figure \@ref(fig:FigureDiscussionFruitTrichomes), Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
-In describing *P. saximontana*, @Rollins1984 noted the silique trichomes with
-rays spreading away from the valve, as similarly described for *P. didymocarpa*
-subsp. *didymocarpa* [@Rollins1939]. These observations are consistent with
-material reviewed here and in keeping with keys by @Dorn2001 and
-@HeidelOKane2012.
-
 ```{r FigureDiscussionFruitTrichomes, fig.cap=caption$traitFruitTrichomes, fig.scap="Distribution of silique trichomes"}
 
 caption$traitFruitTrichomes <-
@@ -129,20 +130,6 @@ knitr::include_graphics(
 )
 
 ```
-
-\clearpage
-
-\paragraph{} Of the two *P. saximontana* varieties (var. *saximontana* and
-var. *dentata*) described by @Rollins1984, the former was distinguished by
-entire radical leaves and a relatively shorter style length from the latter
-having broadly dentate margins and a longer style. While this traditional
-distinction was followed by @OKane2010 and @Lesica2012, dentate margins can be
-observed throughout *P. saximontana* of Wyoming and *P. didymocarpa* of Montana
-(Figure \@ref(fig:FigureDiscussionBasalLeafMargins)). Though common in occurrence,
-dentate margins are not supported as a fixed trait in *P. didymocarpa*.
-In contrast, *P. acutifolia* and the southwestern endemics *P. integrifolia*,
-*P. dornii*, and *P. condensata* generally have entire basal leaves with the
-former distinguished from the endemics by replum shape and ovule count.
 
 ```{r FigureDiscussionBasalLeafMargins, fig.cap=caption$traitBasalLeafMargins, fig.scap="Distribution of basal leaf margins"}
 
