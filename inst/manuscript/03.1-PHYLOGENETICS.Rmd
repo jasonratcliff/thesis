@@ -136,12 +136,12 @@ Additional groupings include two specimens of *P. didymocarpa* subsp.
 (**Genotype 4**); two specimens from Idaho previously annotated as
 *P. didymocarpa* subsp. *lyrata* (**Genotype 5**); and two sets of two
 *P. eburniflora* specimens with identical genotypes (**Genotypes 6** and **7**).
-As previously described, no species of were recovered as
-monophyletic groups in the rITS gene tree Figure \@ref(fig:FigureResultsBayesrITS).
+As previously described, no species were recovered as monophyletic groups in
+the rITS gene tree Figure \@ref(fig:FigureResultsBayesrITS).
 *P. obcordata*, *P. fendlerii*, and *P. argyraea* were strongly supported as
 outgroup taxa (P=1.000). Overall, the rITS gene tree is not well resolved with
 a 19 node polytomy including 6 identical genotype groups (1, 2, 3, 5, 6, 7).
-The polytomy include specimens previously annotated as *P. vitulifera*,
+The polytomy includes specimens previously annotated as *P. vitulifera*,
 *P. saximontana* subsp. *dentata*, *P. eburnifora*,
 *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*,
 *P. d.* subsp. *lyrata*, *P. dornii*, *P. condensata*, *P. brassicoides* and
@@ -233,9 +233,9 @@ annotations as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp.
 *saximontana*, and *P. eburniflora* Fremont county near the Wind River
 Range, three specimens of *P. acutifolia* from Sublette and Sweetwater Counties
 of Wyoming and Rio Blanco County of Colorado, and one specimen (*Dorn 10105*)
-from the Medicine Bow Range with a previous annotation as *P. vitulifera*.
+from the Medicine Bow Mountains with a previous annotation as *P. vitulifera*.
 A fourth group (**Genotype 4**) includes two other specimens
-(*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range
+(*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Mountains
 in addition to *P. integrifolia* from Lincoln County, Wyoming; *P. acutifolia*
 from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.
 Five specimens with identical sequences from Lincoln County, Wyoming
@@ -316,7 +316,7 @@ if (knit_variables$pandoc == "latex") {
 monophyletic groups of species as previously described
 (Figure \@ref(fig:FigureResultsBayesrpsIntron)). *Physaria fendlerii* and *P. argyraea*
 are recovered as outgroups while a 13 node polytomy includes *P. vitulifera*
-of Colorado and one specimen from the Medicine Bow Range (*Dorn 10105*),
+of Colorado and one specimen from the Medicine Bow Mountains (*Dorn 10105*),
 *P. eburniflora*, *P. acutifolia*, *P. saximontana* subsp. *saximontana*,
 *P. s.* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*,
 *P. d.* subsp. *lyrata*, *P. d.* subsp. *lanata*, *P. integrifolia*, and
@@ -329,7 +329,7 @@ A separate highly supported clade (P=0.980) includes
 *P. brassicoides* (n=1), *P. acutifolia* (n=1) and *P. condensata* (n=1).
 Two additional clades include one (P=0.826) with Colorado *P. vitulifera*
 specimens (n=2) and another (P=0.996) with *P. brassicoides* (n=1),
-*P. integrifolia* (n=1), and three specimens from the Medicine Bow Range
+*P. integrifolia* (n=1), and three specimens from the Medicine Bow Mountains
 (*Fertig 16713*, *Fertig and Welp 19075*, *Ratcliff and O'Kane, Jr. 34*).
 
 \clearpage
@@ -375,7 +375,7 @@ Those showing some degree of heterogeneity for this loci included specimens of
 *P. acutifolia* (n=3), *P. brassicoides* (n=2), *P. integrifolia* (n=2),
 *P. eburniflora* (n=2), *P. condensata* (n=1),
 *P. didymocarpa* subsp. *didymocarpa* (n=1), *P. d.* subsp. *lanata* (n=1),
-and one specimen from the Medicine Bow Range (*Fertig 16713*). Due to the degree
+and one specimen from the Medicine Bow Mountains (*Fertig 16713*). Due to the degree
 of sequence homogeneity, a gene tree analysis was not performed.
 
 \vspace*{20pt}
@@ -487,12 +487,12 @@ Thesis::knitr_section(
 with more potentially informative characters than any individual gene alignment.
 Only two identical genotypes were observed, one with two specimens previously
 identified as *P. dornii* and *P. condensata*, and another comprising
-of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
+two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
 (Table \@ref(tab:TableIdenticalSeqMultiLocus))
 Despite higher overall resolution, 14 nodes were still unresolved as a polytomy
 (P=0.777, Figure \@ref(fig:FigureResultsBayesMultiLocus)). Three supported clades
 include one with *P. didymocarpa* related species, another with the southwestern
-Wyoming endemics, and a third with two Medicine Bow Range specimens
+Wyoming endemics, and a third with two Medicine Bow Mountains specimens
 (Figure \@ref(fig:FigureResultsBayesMultiLocus)).
 
 \vspace*{20pt}
@@ -519,7 +519,23 @@ if (knit_variables$pandoc != "docx") {
 
 ```
 
-\vspace*{10pt}
+\clearpage
+
+```{r FigureResultsBayesMultiLocus, fig.cap=caption$FigureResultsBayesMultiLocus, fig.scap="Multilocus concatenated MrBayes consensus tree"}
+
+caption$FigureResultsBayesMultiLocus <-
+  "Multilocus concatenated MrBayes consensus tree."
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/ResultsBayes_multiLocus",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
+\clearpage
 
 \paragraph{} A supported but unresolved clade (P=0.837) includes individuals of
 *P. saximontana* subsp. *saximontana* (n=3), *P. s.* subsp. *dentata* (n=2),
@@ -540,21 +556,26 @@ identified as *P. acutifolia* (n=4), *P. didymocarpa* subsp. *didymocarpa* (n=3)
 *P. eburniflora* (n=2), *P. saximontana* subsp. *dentata* (n=1), and
 another specimen from Carbon County, Wyoming (*Dorn 10105*).
 
-\clearpage
-
-```{r FigureResultsBayesMultiLocus, fig.cap=caption$FigureResultsBayesMultiLocus, fig.scap="Multilocus concatenated MrBayes consensus tree"}
-
-caption$FigureResultsBayesMultiLocus <-
-  "Multilocus concatenated MrBayes consensus tree."
-
-knitr::include_graphics(
-  path = fs::path(
-    here::here(), "inst/figures/ResultsBayes_multiLocus",
-    ext = knit_variables$graphics
-  )
-)
-
-```
+\paragraph{} The BEAST maximum clade credibility tree (n=53) contains four
+clades of more than 2 taxa with posterior probabilities greater than 0.5
+(Figure \@ref(fig:FigureResultsBayesMultiLocus)). The largest (P=0.974)
+includes specimens previously identified as *P. saximontana* subspecies
+(subsp. *saximontana*, n=3; subsp. *dentata*, n=2), *P. brassicoides* (n=3),
+*P. didymocarpa* subspecies (subsp. *lanata*, n=2; subsp. *didymocarpa*, n=1),
+*P. acutifolia* (n=2), and *P. condensata* (n=1). A second clade with high
+support (P=0.995) included a majority of the southwestern Wyoming endemics
+*P. condensata* (n=3), *P. integrifolia* (n=2), *P. dornii* (n=2), and a
+single *P. acutifolia* specimen from Colorado (*Moore 5199*). A third
+well-supported clade included two putative Carbon County, Wyoming specimens
+from the Medicine Bow Mountains (*Fertig 19075*) and Sierra Madre Range
+(*Fertig 16713*), *P. acutifolia* from Utah (*Holmgren 14222*),
+*P. brassicoides* from Converse County, Wyoming (*Salywon 3122*), and
+*P. integrifolia* from Lincoln County, Wyoming (*Fertig 17493*). Lastly,
+two specimens of *P didymocarpa* subsp. *lyrata* from Lemhi County, Idaho
+were supported as sister to a *P. brassicoides* specimen (P=0.879).
+Two additional supported clades with two taxa each included specimens of
+*P. vitulifera* from Colorado (P=1.00) and Beaver Rim, Wyoming (P=0.974)
+putative *P. saximontana* (Ratcliff 39) and *P. eburniflora* (*Fertig 14841*).
 
 \clearpage
 
@@ -571,6 +592,45 @@ knitr::include_graphics(
 )
 
 ```
+
+\clearpage
+
+\paragraph{} Continuous phylogeography modeling and the \*BEAST species tree
+included 60 specimens sampled for nuclear rITS and plastid rps loci.
+Inclusion of additional samples, excluding the *ycf1* locus with a low number
+of potentially informative sites, and inclusion of geographic dispersal
+modeling increased the overall resolution of the tree
+(Figure \@ref(fig:FigureResultsBeastGeography)).
+A clade comprising the southwest Wyoming endemics *P. condensata* (n=3),
+*P. dornii* (n=3), and *P. integrifolia* (n=2) was strongly supported (P=0.998).
+One additional Carbon County, Wyoming specimen (*Ratcliff 34*) was supported
+in a clade with the noted exception of a Sierra Madre specimen (*Dorn 10105*)
+while *P. vitulifera* of Colorado were supported as sister taxa.
+A less supported branch (P=0.527) comprised prior *P. saximontana* subspecies,
+*P. brassicoides*, *P. didymocarpa* subsp. *didymocarpa* and *lanata*, and
+*P. acutifolia* specimens largely matched the inference without geography
+(Figure \@ref(fig:FigureResultsBayesMultiLocus)). Phylogeographic modeling
+placed *P. eburniflora* (n=4) onto a weakly supported branch with *P. acutifolia*
+(n=2) and a single *P. saximontana* subsp. *saximontana* specimen. Lastly, a
+final branch contained northern Montana *P. saximontana* subsp. *dentata* (n=3),
+*P. didymocarpa* subspecies *didymocarpa* (n=2), *lanata* (n=2), and *lyrata*
+(n=2) with two specimens of *P.integrifolia* and *P. acutifolia*.
+
+\paragraph{} Assessment of species hypotheses with the multispecies coalescent
+showed consistent placement of a clade containing the southwestern Wyoming
+endemics *P. integrifolia*, *P. dornii*, and *P. condensata* with highest
+support for the latter two as sister taxa
+(Figure \@ref(fig:FigureResultsBeastSpecies)). The other group with consistent
+support places *P. acutifolia* and *P. didymocarpa* subsp. *lanata* as sister
+taxa. *P. didymocarpa* subsp. *lyrata* is placed outside of *P. didymocarpa*
+subsp. *didymocarpa* and *P. saximontana* subspecies in hypotheses one through
+three. Hypothesis four, with *P. saximontana* subspecies and *P. didymocarpa*
+subsp. *lyrata* combined as *P. didymocarpa* subsp. *didymocarpa* showed the
+highest support (P=0.35), placing this taxon as sister to *P. eburniflora* and
+separate from both *P. brassicoides* and a putative lineage from the Medicine
+Bow Mountains (*P.* 'medicinae'). Additionally, *P. vitulifera* is recovered
+with strong support as an outgroup to the rest of the *Physaria* sensu stricto
+species sampled here.
 
 \clearpage
 
