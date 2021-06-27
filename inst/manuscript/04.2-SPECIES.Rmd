@@ -1,10 +1,11 @@
 
-\clearpage
-
 ```{r SectionNovelPhysaria}
 
-knitr_section(
-  knitr_title = paste("Wyoming", physaria(knit_variables$pandoc), "Lineage"),
+Thesis::knitr_section(
+  knitr_title = paste(
+    "Southcentral Wyoming",
+    physaria(knit_variables$pandoc), "Lineage"
+  ),
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
@@ -36,7 +37,7 @@ subspecies were lumped with *P. didymocarpa* (Hypotheses 3 and 4, Figure
 \@ref(fig:FigureResultsBeastSpecies)). In considering species delimitation,
 the degree of gene exchange (e.g., immigration) and time since divergence
 provide potential measures for evolutionary independence of lineages
-[@HeyPinho2001]. Statistical delimitation methods based on the multispecies
+[@HeyPinho2012]. Statistical delimitation methods based on the multispecies
 coalescent may overestimate genetic structure as species lineages, which has
 implications for any method utilizing species as a unit of analysis
 [@SukumaranKnowles2017]. The phylogenies reported here consist of a modest
@@ -50,13 +51,10 @@ and \@ref(fig:FigureDiscussionElevationSEINet)).
 Globally, endemic plant species have been shown
 to correlate with increases in elevation [@Steinbauer2016].
 
-```{r FigureDiscussionElevationSEINet, fig.cap=caption$FigureDiscussionElevationSEINet, fig.scap="SEINet Distribution Map."}
+```{r FigureDiscussionElevationSEINet, fig.cap=caption$FigureDiscussionElevationSEINet, fig.scap="Colorado and south-central Wyoming elevation map"}
 
 caption$FigureDiscussionElevationSEINet <-
-  paste("Distribution of regional",
-    physaria(knit_variables$pandoc),
-    "species from SEINet."
-  )
+  paste("Colorado and south-central Wyoming elevation map.")
 
 knitr::include_graphics(
   path = fs::path(
@@ -82,7 +80,59 @@ show a marked reduction in average mature fruit length and width relative
 to other nearby species (Figure \@ref(fig:FigureResultsPhysariaFruits)).
 Traditionally, *P. floribunda* have been differentiated by recurved, nearly
 pendant pedicels and pinnatifid basal leaves [@OKane2010]. Future phylogenetic
-and population genetic analysis should include both *P. floribunda* subspecies
-and *P. bellii*.
+and population genetic analyses should include both *P. floribunda* subspecies
+of Middle Park and *P. bellii* of the eastern slope of the Front Range.
+
+```{r SectionSouthwesternEndemics}
+
+Thesis::knitr_section(
+  knitr_title = paste("Southwest Wyoming Endemics"),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} In the multilocus analyses, the southwestern Wyoming endemics
+*P. condensata* and *P. dornii* were consistently supported in a clade with
+individuals of *P. integrifolia*. @Rollins1939 initially recognized a
+west-central *Physaria* variety as distinct from northern *P. didymocarpa*
+populations, with similar fruit characteristics as subsp. *didymocarpa*
+(a broad replum with more than 2 ovules per locule), and transitional
+characteristics of *P. acutifolia* (entire basal leaves and appressed silique
+trichomes). These observations, @Rollins1983 note on the relatively inflated,
+thin-walled fruits of variety *integrifolia* adapted for wind dispersal, and
+additional SEM imaging formed the basis of a species description by @Lichvar1984.
+The first of three condensed rosette growth populations was described by
+@Rollins1939 as *P. condensata*, delineated by stems of $<$ 1cm and a rosette
+diameter of $<$ 5cm. @Lichvar1983 differentiated the condensed habit *P. dornii*
+from *P. condensata* by relatively enlarged basal leaves and fruits.
+Traditional morphological delineations for the southwestern Wyoming endemics
+are concordant with observations reported here: more than 2 ovules per locule
+(Figures \@ref(fig:FigureResultsPhysariaOvules) and
+\@ref(fig:FigureDiscussionOvules)),
+fruit size differences (Figure \@ref(fig:FigureResultsPhysariaFruits)),
+differences in growth habit (Figure \@ref(fig:FigureResultsPhysariaHabit)),
+a broad replum (Figure \@ref(fig:FigureDiscussionReplumShape)),
+appressed silique trichomes (Figure \@ref(fig:FigureDiscussionFruitTrichomes)),
+and entire leaf margins (Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
+These species are geographically separated from *P. didymocarpa* subsp.
+*didymocarpa* by the Wind River and Absaroka Ranges
+(Figure \@ref(fig:FigureDiscussionElevationSouthwestWY)).
+
+\clearpage
+
+```{r FigureDiscussionElevationSouthwestWY, fig.cap=caption$FigureDiscussionElevationSouthwestWY, fig.scap="Southwestern Wyoming elevation map"}
+
+caption$FigureDiscussionElevationSouthwestWY <-
+  paste("Southwestern Wyoming elevation map.")
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationSouthwestWY",
+    ext = knit_variables$graphics
+  )
+)
+
+```
 
 
