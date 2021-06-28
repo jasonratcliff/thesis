@@ -135,4 +135,84 @@ knitr::include_graphics(
 
 ```
 
+\clearpage
+
+\vspace*{-24pt}
+
+```{r SectionPhysariaDidymocarpaSubspecies}
+
+Thesis::knitr_section(
+  knitr_title = paste("*Physaria didymocarpa* subspecies"),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} @Rollins1984 described two new varieties of *P. saximontana*,
+*saximontana* and *dentata*, with a primary distribution south of the range
+of *P. didymocarpa*. These varieties were primarily differentiated from
+*P. didymocarpa* on the basis of silique morphology, where mature fruits of
+the *P. saximontana* varieties lack a basal sinus and the replum orifice
+attaches at the base of the valve. Variety *dentata*, described from collections
+in Glacier and Park Counties of Montana, was differentiated from variety
+*saximontana* on the basis of toothed margins and an elongated style.
+While this trait can be difficult to discern from herbarium specimens, review
+of Montana *Physaria didymocarpa* specimens suggests the silique morphology
+is common throughout the range of *P. didymocarpa*, putative *P. saximontana*
+subspecies, and fruiting specimens of *P. eburniflora* across the Beaver Rim
+Divide (Figure \@ref(fig:FigureDiscussionFruitApices)). Similarly, dentate
+or otherwise toothed margins can be observed throughout the range of
+*P. didymocarpa* in Montana and northwestern Wyoming
+(Figure \@ref(fig:FigureDiscussionBasalLeafMargins)), though entire margins
+have been observed in many Fremont County, Wyoming specimens.
+The species tree analyses showed relatively higher support for lumping
+*P. saximontana* subspecies with *P. didymocarpa* subspecies *didymocarpa*
+(Hypotheses 3 and 4, Figure \@ref(fig:FigureResultsBeastSpecies)).
+Phylogenetic analyses (Figures \@ref(fig:FigureResultsBeastMultiLocus) and
+\@ref(fig:FigureResultsBeastGeography) and silique morphology suggest a possible
+sister taxa relationship with *P. brassicoides*, though a gap in geographic
+distribution from the southern range of *P. didymocarpa* and nominal
+*P. saximontana* is apparent (Figure \@ref(fig:FigureDiscussionElevationBigHorn)).
+
+\paragraph{} Prior to the description of *P. saximontana* varieties,
+@Rollins1981 described the second condensed growth habit species as
+*P. eburniflora* from specimens collected in Carbon County, Wyoming.
+While flowering specimens are observed with pale-yellow petals, fruiting
+specimens were described as having shallow basal sinuses differentiated from
+the more-or-less equal above and below sinuses of *P. didymocarpa* and
+*P. acutifolia*. Additionally, the rosette leaves of *P. eburniflora* were
+described as nearly orbicular with entire margins. Fruiting specimens reviewed
+here suggest growth habit (Figure \@ref(fig:FigureResultsPhysariaHabit)) and
+to a degree mature fruit size (Figure \@ref(fig:FigureResultsPhysariaFruits))
+may be the best characters for differentiating *P. eburniflora* from
+fully resolved, species tree analyses indicate a possible sister taxa
+relationship between *P. eburniflora* and *P. didymocarpa* subspecies including
+*P. saximontana* (Hypothesis 4, Figure \@ref(fig:FigureResultsBeastSpecies))).
+The primary range of *P. eburniflora* extends east from the Green and Ferris
+Mountains to the western foothills of the Laramie Range
+(Figure \@ref(fig:FigureDiscussionElevationBigHorn)).
+
+\clearpage
+
+```{r FigureDiscussionElevationBigHorn, fig.cap=caption$FigureDiscussionElevationBigHorn, fig.scap="\\textit{Physaria} of the Bighorn Basin and Beaver Rim Divide", fig.pos="h"}
+
+caption$FigureDiscussionElevationBigHorn <-
+  paste(
+    ifelse(
+      test = knit_variables$pandoc == "latex",
+      yes = "\\textit{Physaria}",
+      no = "*Physaria*"
+    ),
+    "of the Bighorn Basin and Beaver Rim Divide."
+  )
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationBigHorn",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
 
