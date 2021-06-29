@@ -11,7 +11,7 @@ knitr_section(
 ```
 
 \paragraph{} Two key morphological features for distinguishing *Physaria*
-sensu stricto include the membranous parition separating fruit locules
+sensu stricto include the membranous partition separating fruit locules
 (i.e., replum; Figure \@ref(fig:FigureDiscussionReplumShape)) and the number of
 ovules per locule (Figure \@ref(fig:FigureDiscussionOvules)). Replum shape
 differs in species with a constricted replum noted as a linear appearance,
@@ -19,7 +19,7 @@ from those with a wider replum varying from oblong or elliptic to oblanceolate
 or obovate. Species in the former group include the widespread *P. acutifolia*,
 *P. vitulifera*, and *P. brassicoides*, while the latter group includes
 *P. didymocarpa* and *P. saximontana* subspecies, *P. eburniflora*,
-*P. integrifolia*, *P. dornii*, and *P. condensata*. The distininction of
+*P. integrifolia*, *P. dornii*, and *P. condensata*. The distinction of
 partition shape and the quantity of ovules as observed by funiculi per locule
 constitutes a primary feature in the dichotomous key of Wyoming *Physaria*
 provided by @Dorn2001.
@@ -38,9 +38,9 @@ subsp. *didymocarpa* joins the southwestern Wyoming endemics *P. integrifolia*,
 *P. dornii*, and *P. condensata* as consistently having more than 2 ovules per
 locule. Notably, *P. didymocarpa* subsp. *lanata* in Big Horn, Sheridan, and
 Johnson counties of Wyoming has a typically oblong replum with only 2 ovules
-per locule. The main charcter used by @Rollins1984 to differentiate
+per locule. The main character used by @Rollins1984 to differentiate
 *Physaria saximontana* from *P. didymocarpa* is the lack of a basal sinus in
-the mature siliques of the former. This traditional circumsription is followed
+the mature siliques of the former. This traditional circumscription is followed
 by @Lesica2012 for Montana *Physaria* and @HeidelOKane2012 for Wyoming
 *Physaria*. While *P. didymocarpa* and *P. eburniflora* are described as having
 cordate basal sinuses [@Rollins1984; @Rollins1981], lack of a basal sinus
@@ -50,10 +50,10 @@ In contrast, *P. integrifolia*, *P. dornii*, and *P. condensata* from Teton,
 Lincoln, Sublette, and Uinta counties of Wyoming typically have approximately
 equal sinuses similar to the widespread *P. acutifolia*.
 
-\paragraph{} @Rollins1939 noted of *Physaria didymocarpa* var. *integrifolia*
-Rollins (later, *Physaria integrifolia* (Rollins) @Lichvar1984) appressed
-stellate trichomes on the mature siliques and entire basal leaves as
-distinguishing characters from *P. d.* subsp. *didymocarpa*.
+\paragraph{} In describing *Physaria didymocarpa* var. *integrifolia*
+Rollins (later, *Physaria integrifolia* (Rollins) @Lichvar1984), @Rollins1939
+noted appressed stellate trichomes on the mature siliques and entire basal
+leaves as distinguishing characters from *P. d.* subsp. *didymocarpa*.
 These characters are shared by the southwestern endemics *P. dornii* and
 *P. condensata*, both of which are differentiated from *P. integrifolia*
 by their condensed rosette habit [@Lichvar1983]

@@ -99,8 +99,8 @@ west-central *Physaria* variety as distinct from northern *P. didymocarpa*
 populations, with similar fruit characteristics as subsp. *didymocarpa*
 (a broad replum with more than 2 ovules per locule), and transitional
 characteristics of *P. acutifolia* (entire basal leaves and appressed silique
-trichomes). These observations, @Rollins1983 note on the relatively inflated,
-thin-walled fruits of variety *integrifolia* adapted for wind dispersal, and
+trichomes). These observations, @Rollins1983 note that relatively inflated,
+thin-walled fruits of variety *integrifolia* were adapted for wind dispersal, and
 additional SEM imaging formed the basis of a species description by @Lichvar1984.
 The first of three condensed rosette growth populations was described by
 @Rollins1939 as *P. condensata*, delineated by stems of $<$ 1cm and a rosette
@@ -142,7 +142,7 @@ knitr::include_graphics(
 ```{r SectionPhysariaDidymocarpaSubspecies}
 
 Thesis::knitr_section(
-  knitr_title = paste("*Physaria didymocarpa* subspecies"),
+  knitr_title = paste("*Physaria didymocarpa* Subspecies"),
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
 
@@ -152,9 +152,9 @@ Thesis::knitr_section(
 *saximontana* and *dentata*, with a primary distribution south of the range
 of *P. didymocarpa*. These varieties were primarily differentiated from
 *P. didymocarpa* on the basis of silique morphology, where mature fruits of
-the *P. saximontana* varieties lack a basal sinus and the replum orifice
+*P. saximontana* varieties lack a basal sinus and the replum orifice
 attaches at the base of the valve. Variety *dentata*, described from collections
-in Glacier and Park Counties of Montana, was differentiated from variety
+in Glacier and Park Counties in Montana, was differentiated from variety
 *saximontana* on the basis of toothed margins and an elongated style.
 While this trait can be difficult to discern from herbarium specimens, review
 of Montana *Physaria didymocarpa* specimens suggests the silique morphology
@@ -169,7 +169,7 @@ The species tree analyses showed relatively higher support for lumping
 *P. saximontana* subspecies with *P. didymocarpa* subspecies *didymocarpa*
 (Hypotheses 3 and 4, Figure \@ref(fig:FigureResultsBeastSpecies)).
 Phylogenetic analyses (Figures \@ref(fig:FigureResultsBeastMultiLocus) and
-\@ref(fig:FigureResultsBeastGeography) and silique morphology suggest a possible
+\@ref(fig:FigureResultsBeastGeography)) and silique morphology suggest a possible
 sister taxa relationship with *P. brassicoides*, though a gap in geographic
 distribution from the southern range of *P. didymocarpa* and nominal
 *P. saximontana* is apparent (Figure \@ref(fig:FigureDiscussionElevationBigHorn)).
@@ -185,6 +185,7 @@ described as nearly orbicular with entire margins. Fruiting specimens reviewed
 here suggest growth habit (Figure \@ref(fig:FigureResultsPhysariaHabit)) and
 to a degree mature fruit size (Figure \@ref(fig:FigureResultsPhysariaFruits))
 may be the best characters for differentiating *P. eburniflora* from
+*P. didymocarpa* subsp. *didymocarpa*. While phylogenetic analyses were not
 fully resolved, species tree analyses indicate a possible sister taxa
 relationship between *P. eburniflora* and *P. didymocarpa* subspecies including
 *P. saximontana* (Hypothesis 4, Figure \@ref(fig:FigureResultsBeastSpecies))).

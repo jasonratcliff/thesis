@@ -192,7 +192,7 @@ variety otherwise tend to show replum structure and ovule number similar to
 *P. didymocarpa* (Hook.) A. Gray var. *normalis* Kuntze. Variety *integrifolia*
 was observed as sharing transitional characters with its southern analogue,
 *P. acutifolia*, where  *P. acutifolia* was hypothesized to have diverged more
-recently from *P. didymocarpa*.
+recently.
 
 \paragraph{} @Lichvar1984 elevated *Physaria didymocarpa* var. *integrifolia*
 to specific status on the basis of fruit, leaf, and trichome morphology. As
