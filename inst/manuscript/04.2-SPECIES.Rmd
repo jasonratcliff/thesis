@@ -215,4 +215,73 @@ knitr::include_graphics(
 
 ```
 
+\clearpage
+
+\paragraph{} The first of two *P. didymocarpa* infraspecific taxa was described
+from collections in the Big Horn Mountains by @Nelson1904 as variety *lanata*,
+distinguished by tomentose basal leaves and dense, simple (i.e., unbranched)
+pubescence. Elevation of this taxon to the rank of species as *Physaria lanata*
+by @Rydberg1912 was rejected by @Payson1918 and Rollins [-@Rollins1939;
+-@Rollins1993], retained by @Dorn2001, and recombined as a subspecies by
+O'Kane [-@OKane2007; -@OKane2010]. While previous treatments have recognized
+an infraspecific *P. didymocarpa* taxon, species tree analyses consistently
+placed *P. acutifolia* as a sister taxon
+(Figure \@ref(fig:FigureResultsBeastSpecies)).
+Recognized populations are geographically separated from *P. didymocarpa*
+subsp. *didymocarpa* by the Bighorn Basin
+(Figure \@ref(fig:FigureDiscussionElevationBigHorn); @HandleyHeidel2011).
+Morphologically, *P. didymocarpa* subsp. *lanata* is distinguished from
+*P. acutifolia* by a broad replum (Figure \@ref(fig:FigureDiscussionReplumShape)),
+spreading silique trichomes (Figure \@ref(fig:FigureDiscussionFruitTrichomes)),
+and often dentate leaf margins (Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
+In contrast to *P. didymocarpa* subsp. *didymocarpa*, reviewed subsp. *lanata*
+specimens consistently present a reduced ovule count as observed by
+the number of funiculi per locule
+(Figures \@ref(fig:FigureResultsPhysariaOvules) and
+\@ref(fig:FigureDiscussionOvules)).
+
+\paragraph{} A second *P. didymocarpa* infraspecific taxa was described
+from collections from tributaries of the Salmon River Valley in Idaho by
+@Hitchcock1964 as variety *lyrata*, distinguished by inflated silicle valves
+and generally lyrate basal leaves. Idaho populations were reviewed by
+@Mancuso2006, with reported occurrences known from Pattee Creek, Williams Creek,
+Agency Creek, and Basin Creek. Additional material reviewed here suggests
+this phenotype is also present in specimens from the Lemhi Range
+(*Henderson 2867 NY*), southern toe of the Beaverhead
+Mountains in Idaho (*Henderson 3196 NY*), as well as the Tendoy Mountains
+(*Lesica 8475 NY, MONTU*; *Lesica 6073 NY, MONTU*; *Lesica 3522 MONTU*),
+Beaverhead Mountains (*Lesica 3938 GH*), and Centennial Valley
+(*Lesica 9393 NY, MONTU*) of Montana. These populations are geographically
+separated from the distribution of *P. integrifolia* in Idaho and western
+Wyoming (Figure \@ref(fig:FigureDiscussionElevationIdaho)). As emphasized by
+@Moseley1990, individuals of this subspecies have enlarged fruits relative
+to subspecies *didymocarpa* (Figure \@ref(fig:FigureResultsPhysariaFruits)).
+Cytological investigations of Lemhi County *Physaria* have indicated hexaploid
+(2n=24) chromosome counts, differing from tetraploid (2n=16) counts in
+subsp. *didymocarpa* [@Mulligan1968]. The phylogenetic analyses considered
+here were mostly uninformative given the low number of potentially informative
+sites in the sampled specimens. Future work should consider the status of this
+taxon relative to nearby populations in Montana.
+
+\clearpage
+
+```{r FigureDiscussionElevationIdaho, fig.cap=caption$FigureDiscussionElevationIdaho, fig.scap="Idaho \\textit{Physaria didymocarpa} subsp. \\textit{lyrata}"}
+
+caption$FigureDiscussionElevationIdaho <-
+  paste(
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{Physaria didymocarpa} subsp. \\textit{lyrata}",
+      "of the Salmon River Valley."
+    )
+  )
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationIdaho",
+    ext = knit_variables$graphics
+  )
+)
+
+```
 
