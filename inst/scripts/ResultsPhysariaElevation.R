@@ -114,31 +114,9 @@ traits$ridgeline <- ggplot2::ggplot(data = specimens$filtered) +
 
 # Table ----
 
-specimens$table <- specimens$Mean %>%
-    mutate(  # Italicization
-      Species = purrr::map_chr(.x = Species, function(taxon) {
-        taxon_split <- unlist(strsplit(taxon, " "))
-        if (length(taxon_split) < 3) {
-          parsed_label <-
-            paste0(
-              c("italic(", paste(taxon_split, collapse = " "), ")"),
-              collapse = ""
-            )
-        } else {
-          parsed_label <-
-            paste0(
-              "italic(",
-              paste(taxon_split[1:2], collapse = " "),
-              ") ssp. italic(",
-              taxon_split[4],
-              ")",
-              collapse = ""
-            )
-        }
-        parsed_label <- unlist(parsed_label) %>%
-          gsub(" +", "~", x = .)  # Replace white space to parse by expression()
-        return(parsed_label)
-      })
+specimens$table <- specimens$median %>%
+    dplyr::mutate(  # Italicization
+      Species = Thesis::parse_taxa(tree_tibble = ., id_column = "Species")
     ) %>%
   dplyr::rename_all(~ paste0("bold(", .x, ")"))
 
