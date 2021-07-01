@@ -20,7 +20,7 @@
 #'   `label` aesthetics passed to [ggrepel::geom_label_repel()].
 #' @param initial_ggplot Base layer [ggplot2::ggplot()] for [purrr::map()] and
 #'   [purrr::reduce()] into [rlang::call2()] to build R call expressions.
-#' @family repel_labels
+#' @family labels
 #' @export
 #'
 #' @return List of R call expressions to layer repelled labels with coordinate
@@ -156,7 +156,7 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #'   [purrr::reduce()] into [rlang::call2()] to build R call expressions.
 #' @param label_size Numeric scalar to indicate `size` parameter for
 #'   the repelled geom layer.
-#' @family repel_labels
+#' @family labels
 #' @export
 #' @seealso haplotype_labels
 #'
@@ -177,7 +177,11 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #'       scale_vector = c(5, 10)
 #'     )
 #'
-#' bayes_haplotypes <- Thesis::haplotype_labels(haplotypes = bayes_joined)
+#' bayes_haplotypes <-
+#'   Thesis::haplotype_labels(
+#'     haplotypes = bayes_joined,
+#'     id_column = "Taxon_a_posteriori"
+#'   )
 #'
 #' bayes_ggtree <-
 #'   ggtree::ggtree(tr = bayes_joined, layout = "circular") +
@@ -275,7 +279,7 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
 #'   nodes with posterior probabilities.
 #' @inherit repel_map_labels description
 #' @inheritParams repel_haplotype_labels
-#' @family repel_labels
+#' @family labels
 #' @export
 #'
 #' @return List with [ggplot2::ggplot2()] `LayerInstance` for node repelled
@@ -370,6 +374,7 @@ repel_node_labels <- function(node_nudges, node_labels,
 #' Create labels of multiple taxa tip positions grouped by count.
 #'
 #' @param haplotypes Joined haplotypes with labels read in by [join_bayes()]
+#' @inheritParams parse_taxa
 #' @export
 #'
 #' @return [tibble::tibble()] of multi-taxa node labels with `x`, `y`, `label`,
@@ -387,72 +392,28 @@ repel_node_labels <- function(node_nudges, node_labels,
 #'     id_column = "Taxon_a_posteriori",
 #'     scale_vector = c(5, 10)
 #'   ) %>%
-#'   Thesis::haplotype_labels(haplotypes = .)
+#'   haplotype_labels(haplotypes = ., id_column = "Taxon_a_posteriori")
 #'
-haplotype_labels <- function(haplotypes) {
+haplotype_labels <- function(haplotypes, id_column) {
 
-  grouped_haplotypes <- haplotypes %>%
-
-    # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
-    dplyr::group_by(.data$node) %>%
-    dplyr::mutate(nodes = dplyr::n()) %>%
-    dplyr::filter(.data$nodes > 1 & !is.na(.data$label)) %>%
-    dplyr::group_by(.data$node, .data$Taxon_a_posteriori) %>%
-    dplyr::mutate(n = dplyr::n()) %>%
-    dplyr::ungroup() %>%
-    dplyr::select("node", "x", "y", "Taxon_a_posteriori", "n") %>%
-    dplyr::distinct(.keep_all = TRUE) %>%
-
-    # Create labels with plotmath expressions to parse expressions into text.
-    dplyr::mutate(
-      Label = paste(
-        .data$Taxon_a_posteriori,
-        ifelse(
-          # Add new line for taxa with subspecific designations.
-          test = grepl(pattern = "subsp.", x = .data$Taxon_a_posteriori),
-          yes = "", no = "\n"
-        ),
-        paste0("(n==", .data$n, ")")
-      ) %>%
-        purrr::map_chr(.x = ., .f = function(label) {
-          epithet <-
-            stringr::str_extract(
-              string = label,
-              pattern = "(?<=Physaria )[a-z]+"
-            )
-          subsp <-
-            ifelse(
-              test = grepl(pattern = "subsp\\.", x = label),
-              yes = stringr::str_extract(
-                string = label,
-                pattern = ("(?<=subsp. )[a-z]+")
-              ),
-              no = ""
-            )
-          plotmath <-
-            paste(
-              "italic(P.",
-              ifelse(
-                test = grepl(pattern = "didymocarpa", x = epithet),
-                yes = paste0("d.) subsp. italic(", subsp, ")"),
-                no = paste0(epithet, ")")
-              )
-            ) %>%
-              paste(.,
-                stringr::str_extract(
-                  string = label,
-                  pattern = "\\(n ?==.+$"
-                )
-              ) %>%
-              gsub(
-                pattern = " +",
-                replacement = "~",
-                x = .
-              )
-          return(plotmath)
-          })
+  # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
+  labelled_haplotypes <-  haplotypes %>%
+    dplyr::select(
+      .data$node, .data$x, .data$y,
+      .data[[id_column]], .data$label
     ) %>%
-    dplyr::arrange(.data$node)
-  return(grouped_haplotypes)
+    dplyr::add_count(.data$node, name = "n_nodes") %>%
+    dplyr::filter(.data$n_nodes > 1 & !is.na(.data$label)) %>%
+    dplyr::add_count(.data$node, .data[[id_column]], name = "n_taxa") %>%
+    dplyr::distinct(.keep_all = TRUE) %>%
+    dplyr::arrange(.data$node) %>%
+    dplyr::mutate(
+      Label = Thesis::parse_taxa(
+        tree_tibble = .,
+        id_column = {{ id_column }}
+      ) %>%
+        paste0(., "~(n==", .data$n_taxa, ")")
+    )
+  return(labelled_haplotypes)
 }
 
