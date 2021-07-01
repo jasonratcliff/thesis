@@ -8,7 +8,7 @@ spp_color <-
     "Physaria dornii" =  "#7FC97F",  # light green
     "Physaria eburniflora" =  "#56B4E9",  # picton blue
     "Physaria integrifolia" =  "#009E73",  # green haze
-    "Physaria medicinae" = "#BA55D3",  # orchid
+    "Physaria 'medicinae'" = "#BA55D3",  # orchid
     "Physaria vitulifera" = "#D8BFD8",  # thistle
     "Physaria didymocarpa subsp. didymocarpa" =  "#386CB0",  # azure
     "Physaria didymocarpa subsp. lanata" =  "#666666",  # dark gray
@@ -36,7 +36,7 @@ spp_shape <-
     "Physaria dornii" =  18,
     "Physaria eburniflora" =  18,
     "Physaria integrifolia" =  16,
-    "Physaria medicinae" = 17,
+    "Physaria 'medicinae'" = 17,
     "Physaria vitulifera" = 18,
     "Physaria didymocarpa subsp. didymocarpa" =  15,  # square
     "Physaria didymocarpa subsp. lanata" =  17,  # triangle

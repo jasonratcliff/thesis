@@ -92,7 +92,7 @@ capitalize <- function(character_vector) {
 #' - P. dornii
 #' - P. eburniflora
 #' - P. integrifolia
-#' - P. medicinae
+#' - P. 'medicinae'
 #' - P. vitulifera
 #'
 #' @inheritParams layer_specimens

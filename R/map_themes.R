@@ -21,8 +21,10 @@ spl_labels <- function(specimen_tbl, id_column) {
     purrr::map_chr(.x = label_vector, .f = function(label) {
       split_label <- unlist(strsplit(label, " "))
       if (length(split_label) %in% c(1, 2)) {
-        # Genus with or without specific epithet.
-        parsed_label <- paste0("*", label, "*")
+        parsed_label <- ifelse(
+          test = grepl("'medicinae'", x = label),
+          yes = "*Physaria* 'medicinae'",
+          no = paste0("*", label, "*"))
       } else {
         if (grepl("subsp\\.", x = label)) {
           # Add html formatting to split subsp. onto second line.

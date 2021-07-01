@@ -19,7 +19,7 @@ carbon$specimens <-
       grepl("vitulifera", x = .data$Taxon) & .data$Latitude > 40.5 ~
         "Physaria vitulifera - Carbon",
       grepl("acutifolia", x = .data$prior_id) &
-        grepl("medicinae", x = .data$Taxon_a_posteriori) ~
+        grepl("'medicinae'", x = .data$Taxon_a_posteriori) ~
         "Physaria acutifolia - vitulifera-like",
       TRUE ~ as.character(.data$Taxon_a_posteriori)
     )

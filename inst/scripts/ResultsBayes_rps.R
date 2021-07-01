@@ -110,7 +110,7 @@ tree$ggtree <- tree$joined %>%
 tree$repel_pdf <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.025, -1, 0, 5, "Physaria medicinae", "white",
+    0.025, -1, 0, 5, "Physaria 'medicinae'", "white",
     0.025, -1.5, 0, 5, "Physaria didymocarpa subsp. didymocarpa", "white",
     0.02525, -2, 0.0001, 5, "Physaria eburniflora", "white",
     0.02, -2, 0.001, 5, "Physaria acutifolia", "black",
@@ -127,7 +127,7 @@ tree$repel_pdf <-
     0.02, -0.625, 0, 4, "Physaria integrifolia", "white",
     0.02, -0.175, 0, 4, "Physaria brassicoides", "white",
     0.021, 0.225, 0, 4, "Physaria acutifolia", "black",
-    0.022, 0.6, 0, 4, "Physaria medicinae", "white",
+    0.022, 0.6, 0, 4, "Physaria 'medicinae'", "white",
     0.015, -1, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
     0.017, -0.75, 0.1, 8, "Physaria brassicoides", "white",
     0.019, -0.5, 0.1, 8, "Physaria acutifolia", "black",
@@ -200,7 +200,7 @@ tree$figure_pdf <-
 tree$repel_png <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.01825, -1.25, 0.1, 5, "Physaria medicinae", "white",
+    0.01825, -1.25, 0.1, 5, "Physaria 'medicinae'", "white",
     0.0175, -1.5, 0.1, 5, "Physaria didymocarpa subsp. didymocarpa", "white",
     0.015, -1.5, 0.1, 5, "Physaria eburniflora", "white",
     0.0125, -1.5, 0.1, 5, "Physaria acutifolia", "black",
@@ -217,7 +217,7 @@ tree$repel_png <-
     0.01, -0.66, -0.1, 4, "Physaria integrifolia", "white",
     0.01125, -0.33, -0.1, 4, "Physaria brassicoides", "white",
     0.01175, 0.0425, -0.1, 4, "Physaria acutifolia", "black",
-    0.01175, 0.425, -0.1, 4, "Physaria medicinae", "white",
+    0.01175, 0.425, -0.1, 4, "Physaria 'medicinae'", "white",
     0.00875, -1.25, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
     0.01, -1, 0.1, 8, "Physaria brassicoides", "white",
     0.01125, -0.75, 0.1, 8, "Physaria acutifolia", "black",
