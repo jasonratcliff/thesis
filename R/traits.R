@@ -395,12 +395,10 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
       ggplot2::guides(
         "color" = ggplot2::guide_legend(
           ncol = ncol,
-          byrow = TRUE,
           title.position = "top"
         ),
         "shape" = ggplot2::guide_legend(
           ncol = ncol,
-          byrow = TRUE,
           title.position = "top"
         )
       ),

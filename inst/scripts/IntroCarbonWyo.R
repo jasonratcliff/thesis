@@ -251,7 +251,7 @@ carbon$map_pdf <-
 carbon$legend_pdf <-
   get_legend(
     carbon$ggplot +
-      guides(color = guide_legend(ncol = 2, byrow = TRUE)) +
+      guides(color = guide_legend(ncol = 2)) +
       theme(
         legend.position = "bottom",
         legend.direction = "vertical"
