@@ -48,7 +48,7 @@ data/seinet_coords.rda: $(r_seinet) data-raw/SEINet/P*/occurrences.csv
 	Rscript $(r_seinet)
 
 # Write .png / .pdf image `inst/figures/` files.
-figures: $(pdf) $(png)
+figures: $(pdf) $(png) specimens
 inst/figures/%.pdf: inst/scripts/%.R
 	Rscript $(<D)/$(<F)
 inst/figures/%.png: inst/scripts/%.R
@@ -75,7 +75,7 @@ package:
 check:
 	Rscript -e 'devtools::check(args = c("--no-tests", "--no-examples"))'
 
-manuscript:
+manuscript: figures
 	make -C inst/manuscript all
 
 # `pkgdown` Package Website
