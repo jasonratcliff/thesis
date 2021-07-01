@@ -742,21 +742,58 @@ methods_variables$star_beast <-
   list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
   readr::read_csv(file = ., col_types = 'ccccc') %>%
   stats::setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
-  dplyr::arrange(`Hypothesis 1`, Sample)
+  dplyr::arrange(`Hypothesis 1`, Sample) %>%
+  dplyr::mutate(
+    dplyr::across(
+      .fns = ~ gsub("medicinae", "'medicinae'", x = .x)
+    )
+  )
 
 if (knit_variables$pandoc == "latex") {
-  methods_variables$star_beast <- methods_variables$star_beast %>%
+  methods_variables$star_beast <-
+    methods_variables$star_beast %>%
     dplyr::mutate(
-      Sample = gsub("_", "\\\\_", .data$Sample)
-    ) %>%
-    dplyr::mutate_at(
-      dplyr::vars(dplyr::matches("^Hypothesis")),
-      ~ paste0("\\textit{", .x, "}") %>%
-        gsub(" subsp. ", "}\nsubsp. \\\\textit{", x = ., ) %>%
-        kableExtra::linebreak(x = .) %>%  # Fix latex linebreak cell alignment
-        gsub("makecell\\[[rc]\\]", "makecell\\[l\\]", x = .)
+      Sample = gsub("_", "\\\\_", .data$Sample),
+      dplyr::across(
+        .cols = dplyr::matches("^Hypothesis"),
+        .fns = ~ purrr::map_chr(.x = .x, function(taxa) {
+          genus <- stringr::str_extract(
+            string = taxa,
+            pattern = "^[A-Z]\\."
+            )
+          species <- stringr::str_extract(
+            string = taxa,
+            pattern = "(?<=^[A-Z]\\. )'?[a-z]+'?"
+            )
+          subspecies <- stringr::str_extract(
+            string = taxa,
+            pattern = "(?<=subsp\\. )[a-z]+$"
+            )
+          taxon <- paste(
+            Thesis::italicize(genus, knit_variables$pandoc),
+            ifelse(
+              test = grepl(pattern = "'[a-z]+'", x = species),
+              yes = paste0("‘",
+                stringr::str_extract(
+                  string = species,
+                  pattern = "(?<=')[a-z]+(?=')"),
+                "’" 
+              ),
+              no = Thesis::italicize(species, knit_variables$pandoc)
+            ),
+            ifelse(
+              test = !is.na(subspecies),
+              yes = paste("\nsubsp.",
+                Thesis::italicize(subspecies,knit_variables$pandoc)
+                ),
+              no = ""
+            )
+          )
+          kableExtra::linebreak(x = taxon)
+        })
+      )
     )
-}
+  }
 
 ```
 

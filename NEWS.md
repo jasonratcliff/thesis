@@ -1,10 +1,29 @@
+# Thesis 0.2.2.9001
+    
+* New `parse_taxa()` creates plotmath expressions for `ggplot2` parsed labels.
+    - The following functions are refactored to generate expressions:
+        - `haplotype_labels()`
+        - `species_plot()`
+
+* New `italicize()` wraps text vector by `knitr` pandoc conversion.
+
+* `haplotype_labels()` gains `id_column` parameter.
+    - Specifies data variable for tidy evaluation
+
+* `species_plot()` gains `label_size` parameter.
+
+* Specific epithet of prospective lineage is now quoted 
+    - Table 2 \*BEAST hypotheses is formatted with `LaTeX` quotation
+
+<!-- TODO: See v0.2.2.9000-->
+
 # Thesis 0.2.2
 
 * Add `ggrepel` function wrappers to specify label position nudges leveraging
   `rlang` expression handling:
-  - `repel_map_labels()`
-  - `repel_tree_labels()`
-  - `repel_node_labels()`
+    - `repel_map_labels()`
+    - `repel_tree_labels()`
+    - `repel_node_labels()`
 
 * Use markdown for Roxygen documentation
 

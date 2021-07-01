@@ -157,9 +157,9 @@ beast_theme <- function(tree_data) {
 beast_plot <- function(tree_data, ggtree_layout = "circular") {
   beast_ggtree <-
     ggtree::ggtree(tree_data, layout = ggtree_layout) +
-    beast_posterior() +
-    beast_labels(tree_data = tree_data) +
-    beast_theme(tree_data = tree_data) +
+    Thesis::beast_posterior() +
+    Thesis::beast_labels(tree_data = tree_data) +
+    Thesis::beast_theme(tree_data = tree_data) +
     ggplot2::theme(
       legend.position = "none"
     )
@@ -209,61 +209,50 @@ beast_legend_probability <- function(tree_data) {
 #' Species tip labels are parsed to abbreviate genus and italicize using
 #' base expressions.
 #'
-#' @inheritParams node_labels
+#' On label expressions:
+#'   - https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
+#'
+#' @param label_size Numeric vector of length one for label size.
+#' @inheritParams parse_taxa
 #' @export
 #'
 #' @return `ggtree` built from *BEAST species tree
 #'
 #' @examples
 #' treeio::read.beast(
-#'   file = system.file("extdata/BEAST/spp-hypothesis-4.mcc",
+#'   file = system.file("extdata/BEAST/spp-hypothesis-1.mcc",
 #'                      package = "Thesis")
 #'   ) %>%
 #'   ggtree::fortify() %>%
-#'   species_plot(tree_data = .)
+#'   dplyr::mutate(
+#'     label = gsub("medicinae", "'medicinae'", x = .data$label)
+#'   ) %>%
+#'   species_plot(tree_tibble = .)
 #'
-species_plot <- function(tree_data) {
+species_plot <- function(tree_tibble, label_size = 2) {
 
   # Parse tip label expressions for species italicization.
-  tree_data <- tree_data %>%
+  labeled_tree <- tree_tibble %>%
     dplyr::mutate(
-      label = purrr::map_chr(.data$label, function(label) {
-        if (!is.na(label)) {
-          label <- gsub("_", " ", x = label) %>% gsub("Physaria", "P.", x = .)
-          species <- stringr::str_extract(
-            string = label,
-            pattern = "P\\. [a-z]+"
-          )
-          ifelse(grepl(" subsp ", label),
-                 paste0("italic(", species, ")", " subsp. ",
-                        stringr::str_extract(
-                          string = label,
-                          pattern = "(?<=subsp )[a-z]+$"
-                        ) %>%
-                          paste0("italic(", ., ")")),
-                 paste0("italic(", species, ")"))
-        } else {
-          NA
-        }
-      }) %>% gsub(" ", "~", x = .)
+      label = Thesis::parse_taxa(tree_tibble = ., id_column = "label")
     )
 
   # Build ggtree from species tree.
   spp_ggtree <-
-    ggtree::ggtree(tr = tree_data, ggplot2::aes(color = .data$posterior)) +
-    # https://guangchuangyu.github.io/2018/04/rename-phylogeny-tip-labels-in-treeio/
-    ggtree::geom_tiplab(size = 2, parse = T) +
+    ggtree::ggtree(tr = labeled_tree, ggplot2::aes(color = .data$posterior)) +
+    ggtree::geom_tiplab(size = label_size, parse = T) +
     ggrepel::geom_label_repel(
-      data = dplyr::filter(tree_data, !is.na(.data$posterior)),
-      ggplot2::aes(
-        x = .data$x, y = .data$y, label = round(x = .data$posterior, 2)),
+      data = dplyr::filter(tree_tibble, !is.na(.data$posterior)),
+      mapping = ggplot2::aes(
+        x = .data$x, y = .data$y,
+        label = round(x = .data$posterior, 2)),
       nudge_x = -0.00001,
       size = 2
     ) +
     ggplot2::scale_color_gradientn(
       colors = c("red", "orange", "green", "cyan", "blue")
     ) +
-    ggtree::xlim_expand(xlim = 0.001275, panel = "Tree") +
+    ggtree::xlim_expand(xlim = 0.0013, panel = "Tree") +
     ggtree::geom_treescale() +
     ggtree::theme_tree()
   return(spp_ggtree)
