@@ -25,13 +25,13 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   )
 
-specimens$Mean <- specimens$filtered %>%
-  filter(!is.na(Taxon_a_posteriori)) %>%
-  select(Taxon_a_posteriori, Elev_raw_max) %>%
-  group_by(Taxon_a_posteriori) %>%
-  summarize(
-    Mean = mean(Elev_raw_max, na.rm = TRUE) %>% round(),
-    SD = sd(Elev_raw_max, na.rm = TRUE) %>% round(),
+specimens$median <- specimens$filtered %>%
+  dplyr::filter(!is.na(Taxon_a_posteriori)) %>%
+  dplyr::select(Taxon_a_posteriori, Elev_raw_max) %>%
+  dplyr::group_by(Taxon_a_posteriori) %>%
+  dplyr::summarize(
+    Median = median(Elev_raw_max, na.rm = TRUE) %>% round(),
+    MAD = mad(Elev_raw_max, na.rm = TRUE) %>% round(),
     n = n()
   ) %>%
   dplyr::filter(!is.nan(Median)) %>%
