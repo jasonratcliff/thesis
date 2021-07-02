@@ -11,20 +11,22 @@ specimens <- list()
 
 # Set of reviewed annotations for species of interest.
 specimens$filtered <- Thesis::herbarium_specimens %>%
-  filter_reviewed(specimen_tbl = .) %>%
-  filter(
+  Thesis::filter_reviewed(specimen_tbl = .) %>%
+  dplyr::filter(
     !is.na(Ovule_number),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
-  bind_cols(range_split(trait_tbl = ., split_var = "Ovule_number"))
+  dplyr::bind_cols(
+    Thesis::range_split(trait_tbl = ., split_var = "Ovule_number")
+  )
 
 # Ovules ----
 
 traits <- list()
 
 traits$labels <-
-  spl_labels(
+  Thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -40,7 +42,7 @@ traits$legend <-
   )
 
 traits$ovules <-
-  jitter_violin(
+  Thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Ovule_number_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -50,31 +52,31 @@ traits$ovules <-
       axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1)
     )
   ) +
-  scale_x_discrete(labels = traits$labels) +
-  labs(y = "Ovules per Locule")
+  ggplot2::scale_x_discrete(labels = traits$labels) +
+  ggplot2::labs(y = "Ovules per Locule")
 
 # Physaria saximontana prior annotations
 specimens$saximontana <- specimens$filtered %>%
-  filter(grepl("saximontana", .data$prior_id))
+  dplyr::filter(grepl("saximontana", .data$prior_id))
 
 traits$labels_prior <-
-  spl_labels(
+  Thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "prior_id"
   ) %>%
   gsub("Physaria", "P.", x = .)
 
 traits$ovules_prior <-
-  ggplot(
+  ggplot2::ggplot(
     data = specimens$saximontana,
     mapping = aes(x = prior_id, y = Ovule_number_max)
   ) +
-  geom_violin(scale = "count", na.rm = TRUE) +
-  geom_jitter(
+  ggplot2::geom_violin(scale = "count", na.rm = TRUE) +
+  ggplot2::geom_jitter(
     mapping = aes(color = prior_id, shape = prior_id),
     height = 0.1, width = 0.1, na.rm = TRUE
   ) +
-  scale_x_discrete(labels = traits$labels_prior) +
+  ggplot2::scale_x_discrete(labels = traits$labels_prior) +
   ggplot2::scale_color_manual(
     name = "Prior Annotations",
     labels = traits$labels_prior,
@@ -87,32 +89,32 @@ traits$ovules_prior <-
     values = Thesis::spp_shape,
     na.value = 17
   ) +
-  theme_classic() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
+  ggplot2::theme_classic() +
+  ggplot2::theme(
+    axis.title.x = ggplot2::element_blank(),
+    axis.title.y = ggplot2::element_blank(),
     axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1),
     legend.text = ggtext::element_markdown()
   ) +
-  facet_wrap(facets = ~ State)
+  ggplot2::facet_wrap(facets = ~ State)
 
 # Grid Plot ----
 
 grids <- list()
 
 grids$top <-
-  plot_grid(
-    plot_grid(traits$ovules, labels = "A", vjust = 1),
-    plot_grid(traits$ovules_prior, labels = "B", hjust = 1, vjust = 1),
+  cowplot::plot_grid(
+    cowplot::plot_grid(traits$ovules, labels = "A", vjust = 1),
+    cowplot::plot_grid(traits$ovules_prior, labels = "B", hjust = 1, vjust = 1),
     nrow = 1,
     rel_widths = c(2, 1)
   )
 
 grids$bottom <-
-  plot_grid(traits$legend)
+  cowplot::plot_grid(traits$legend)
 
 grids$figure <-
-  plot_grid(
+  cowplot::plot_grid(
     grids$top, NULL, grids$bottom,
     ncol = 1, rel_heights = c(1, -0.025, 0.25)
   )

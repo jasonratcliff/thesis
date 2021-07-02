@@ -1,4 +1,4 @@
-# Thesis 0.2.2.9001
+# Thesis 0.2.2.9002
     
 * New `parse_taxa()` creates plotmath expressions for `ggplot2` parsed labels.
     - The following functions are refactored to generate expressions:
@@ -11,6 +11,13 @@
     - Specifies data variable for tidy evaluation
 
 * `species_plot()` gains `label_size` parameter.
+
+* Figure Revisions
+    - Add repelled taxa labels and node probabilities to phylogenetic trees
+    - Standardize `ggplot` guide legends
+    - Re-size discussion trait plot margins
+
+* Update `Makefile` target dependencies for building specimen `.rda`
 
 * Specific epithet of prospective lineage is now quoted 
     - Table 2 \*BEAST hypotheses is formatted with `LaTeX` quotation

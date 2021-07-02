@@ -10,7 +10,7 @@ set.seed(20210312)
 spp_lanata <- Thesis::herbarium_specimens %>%
   subset_coords(
     specimen_tbl = .,
-    Latitude = c(42.25, 46.25),
+    Latitude = c(41.5, 45.5),
     Longitude = c(-109.5, -104.5)
   )
 

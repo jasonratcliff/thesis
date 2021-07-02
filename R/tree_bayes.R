@@ -108,7 +108,7 @@ bayes_themes <- function(joined_ggtree, id_column) {
     ggplot2::guides(
       color = ggplot2::guide_legend(
         override.aes = list(size = 3),
-        ncol = 2, byrow = TRUE, keyheight = 0.15, default.unit = "inch")
+        ncol = 2, keyheight = 0.15, default.unit = "inch")
     ),
     ggtree::geom_treescale(offset = -1.5)
   )

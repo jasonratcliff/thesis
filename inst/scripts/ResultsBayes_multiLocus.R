@@ -1,7 +1,7 @@
-# Title     : MrBayes rITS `ggtree` Gene Tree
+# Title     : MrBayes *rps* intron `ggtree` gene tree
 # Objective : Update repelled tip labels for grouped haplotypes.
 # Created by: jasonratcliff
-# Created on: 5/19/21
+# Created on: 6/1/21
 
 library(Thesis)
 library(cowplot)
@@ -18,7 +18,7 @@ tree <- list()
 tree$joined <-
   list.files(
     path = system.file("extdata/MrBayes", package = "Thesis"),
-    pattern = "rITS-infile.nex.con.tre",
+    pattern = "ml-infile.nex.con.tre",
     full.names = TRUE
   ) %>%
     Thesis::read_tree(tree_file = .) %>%
@@ -96,7 +96,7 @@ tree$ggtree <- tree$joined %>%
     labels = tree$haplotypes$Label
   ) +
   ggtree::xlim_expand(xlim = 0.01, panel = "Tree") +
-  ggtree::geom_treescale(y = 44) +
+  ggtree::geom_treescale(y = 50) +
   ggtree::theme_tree() +
   ggplot2::theme(
     legend.background = ggplot2::element_blank(),
@@ -114,20 +114,9 @@ tree$ggtree <- tree$joined %>%
 tree$repel_pdf <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.0175, -0.5, -0.1, 3, "Physaria vitulifera", "black",
-    0.015, -1, -0.1, 3, "Physaria acutifolia", "black",
-    0.02, -2.25, 0.1, 8, "Physaria acutifolia", "black",
-    0.0225, -2, 0.1, 8, "Physaria condensata", "black",
-    0.02425, -1.6, 0.1, 8, "Physaria dornii", "black",
-    0.027, -1.5, 0.1, 8, "Physaria integrifolia", "white",
-    0.029, -1.25, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
-    0.031, -1, 0.1, 8, "Physaria 'medicinae'", "white",
-    0.0235, 1.5, -0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
-    0.02, 1, -0.1, 9, "Physaria acutifolia", "black",
-    0.0225, 2.5, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
-    0.02, 2, -0.1, 25, "Physaria eburniflora", "white",
-    0.0175, 2, -0.1, 26, "Physaria eburniflora", "white",
-    0.0175, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white"
+    0.015, -0.75, 0.1, 19, "Physaria condensata", "black",
+    0.0125, -1, 0.1, 19, "Physaria dornii", "black",
+    0.014, 0.5, 0.1, 27, "Physaria didymocarpa subsp. lyrata", "black"
   ) %>%
     Thesis::repel_haplotype_labels(
       tree_nudges = .,
@@ -141,12 +130,17 @@ tree$repel_pdf <-
 tree$repel_pdf <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
-    -0.005, 0, -0.01, 47,
-    -0.005, -1.5, -0.01, 48,
-    -0.0065, -1, -0.01, 49,
-    -0.0075, 1, 0.01, 50,
-    -0.0075, 2, 0.01, 51,
-    -0.0065, 0.25, -0.01, 52
+    -0.0035, 0, 0.1, 52,
+	-0.0035, 0, 0.1, 53,
+	-0.0035, 0, 0.1, 54,
+	-0.0035, 0, 0.1, 55,
+	-0.0035, 0, 0.1, 56,
+	-0.0035, 0, 0.1, 57,
+	-0.0035, 0, 0.1, 58,
+	-0.0035, 0, 0.1, 59,
+	-0.0035, 0, 0.1, 60,
+	-0.0035, 0, 0.1, 61,
+	-0.0035, 0, 0.1, 62
   ) %>%
     Thesis::repel_node_labels(
       node_nudges = .,
@@ -170,9 +164,9 @@ tree$pdf <- tree$repel_pdf +
     legend.position = "bottom",
     legend.text = ggtext::element_markdown(size = 6),
     plot.margin = ggplot2::margin(
-      t = 1.5,
-      r = 1,
-      b = 0.5,
+      t = 0.75,
+      r = 0.75,
+      b = 0.25,
       l = 0.75,
       unit = "in"
     )
@@ -184,7 +178,7 @@ tree$figure_pdf <-
     cowplot::get_legend(plot = tree$pdf),
     ncol = 1,
     nrow = 2,
-    rel_heights = c(0.75, 0.25)
+    rel_heights = c(0.7, 0.3)
   )
 
 # png ----
@@ -193,20 +187,9 @@ tree$figure_pdf <-
 tree$repel_png <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
-    0.015, -0.5, -0.1, 3, "Physaria vitulifera", "black",
-    0.014, -1, -0.1, 3, "Physaria acutifolia", "black",
-    0.0145, -2.25, 0.1, 8, "Physaria acutifolia", "black",
-    0.0175, -2.25, 0.1, 8, "Physaria condensata", "black",
-    0.0185, -1.7, 0.1, 8, "Physaria dornii", "black",
-    0.021, -1.65, 0.1, 8, "Physaria integrifolia", "white",
-    0.023, -1.5, 0.1, 8, "Physaria didymocarpa subsp. lanata", "white",
-    0.02465, -1.25, 0.1, 8, "Physaria 'medicinae'", "white",
-    0.0175, 1.25, -0.1, 9, "Physaria didymocarpa subsp. lanata", "white",
-    0.015, 0.75, -0.1, 9, "Physaria acutifolia", "black",
-    0.0135, 2, -0.1, 21, "Physaria didymocarpa subsp. lyrata", "black",
-    0.015, 2, -0.1, 25, "Physaria eburniflora", "white",
-    0.0125, 2, -0.1, 26, "Physaria eburniflora", "white",
-    0.012, 0.05, -0.1, 19, "Physaria didymocarpa subsp. didymocarpa", "white"
+    0.01, -0.75, 0.1, 19, "Physaria condensata", "black",
+    0.0075, -1, 0.1, 19, "Physaria dornii", "black",
+    0.01, 0.5, 0.1, 27, "Physaria didymocarpa subsp. lyrata", "black"
   ) %>%
     Thesis::repel_haplotype_labels(
       tree_nudges = .,
@@ -220,18 +203,23 @@ tree$repel_png <-
 tree$repel_png <-
   tibble::tribble(
     ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
-    -0.005, 0, -0.01, 47,
-    -0.005, -1.5, -0.01, 48,
-    -0.0065, -1, -0.01, 49,
-    -0.0075, 1, 0.01, 50,
-    -0.0075, 2, 0.01, 51,
-    -0.0065, 0.25, -0.01, 52
+    -0.005, 0, 0.1, 52,
+	-0.005, 0, 0.1, 53,
+	-0.005, 0, 0.1, 54,
+	-0.005, 0, 0.1, 55,
+	-0.005, 0, 0.1, 56,
+	-0.005, 0, 0.1, 57,
+	-0.005, 0, 0.1, 58,
+	-0.005, 0, 0.1, 59,
+	-0.005, 0, 0.1, 60,
+	-0.005, 0, 0.1, 61,
+	-0.005, 0, 0.1, 62
   ) %>%
     Thesis::repel_node_labels(
       node_nudges = .,
       node_labels = tree$nodes,
       initial_ggtree = tree$repel_png,
-      label_size = 2
+      label_size = 4
     ) %>%
       rlang::eval_tidy(expr = .)
 
@@ -241,7 +229,7 @@ tree$png <- tree$repel_png +
       override.aes = list(size = 3),
       title.position = "top",
       ncol = 1,
-      keyheight = 0.2,
+      keyheight = 0.15,
       default.unit = "inch"
     )
   ) +
@@ -249,10 +237,10 @@ tree$png <- tree$repel_png +
     legend.position = "right",
     legend.text = ggtext::element_markdown(size = 12),
     plot.margin = ggplot2::margin(
-      t = 1.5,
-      r = 1,
-      b = 0.5,
-      l = 0.75,
+      t = 0.25,
+      r = 0,
+      b = 0.25,
+      l = 0,
       unit = "in"
     )
   )
@@ -280,7 +268,7 @@ purrr::pwalk(
   ),
   .f = function(ext, plot, width, height, aspect, row, col) {
     cowplot::save_plot(
-      filename = fs::path("inst/figures/ResultsBayes_rITS", ext = ext),
+      filename = fs::path("inst/figures/ResultsBayes_multilocus", ext = ext),
       plot = plot,
       base_width = width,
       base_height = height,

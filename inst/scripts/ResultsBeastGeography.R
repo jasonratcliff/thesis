@@ -4,55 +4,89 @@ library(cowplot)
 
 # BEAST phylogeography ----
 
-ggtree_geo <- list()
-
-ggtree_geo$data <-
+beast <- list()
+beast$data <-
   system.file(
     "extdata/BEAST/phylogeography.mcc",
     package = "Thesis"
   ) %>%
   read_tree(tree_file = .)
 
-ggtree_geo$plot <-
-  beast_plot(tree_data = ggtree_geo$data, ggtree_layout = "circular") +
-  theme(plot.margin = margin(0.2, 0.2, 0.3, 0.2, "in"))
+beast$ggplot <-
+  ggtree::ggtree(beast$data, layout = "circular") +
+  Thesis::beast_posterior() +
+  ggtree::geom_tiplab(offset = 0.0005, align = TRUE, size = 3) +
+  ggnewscale::new_scale_color() +
+  ggplot2::geom_point(
+    data = dplyr::filter(beast$data, !is.na(.data$prior_id)),
+    mapping = ggplot2::aes(
+      color = .data$prior_id,
+      shape = .data$prior_id
+    ), size = 6, alpha = 0.5
+  ) +
+  ggplot2::geom_point(
+    data = dplyr::filter(beast$data, !is.na(.data$Taxon_a_posteriori)),
+    mapping = ggplot2::aes(
+      color = .data$Taxon_a_posteriori,
+      shape = .data$Taxon_a_posteriori
+    ), size = 3
+  ) +
+  ggrepel::geom_label_repel(
+    data = dplyr::filter(beast$data, .data$posterior > 0.5),
+    mapping = ggplot2::aes(label = round(.data$posterior, 3)),
+    nudge_x = -0.0005,
+    nudge_y = -1,
+    segment.linetype = 2,
+    segment.color = "black",
+    segment.curvature = 0.1,
+    segment.shape = 0.5,
+    size = 3,
+    alpha = 0.75
+  ) +
+  Thesis::beast_theme(tree_data = beast$data) +
+  ggtree::geom_treescale(y = 60) +
+  ggtree::theme_tree() +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.margin = margin(0.2, 0.2, 0.3, 0.2, "in")
+  )
 
 # png ----
 
-ggtree_geo$legend_png <-
-  plot_grid(
+beast$legend_png <-
+  cowplot::plot_grid(
     plotlist = list(
-      beast_legend_color(
-        tree_data = ggtree_geo$data,
+      Thesis::beast_legend_color(
+        tree_data = beast$data,
         ncol = 1
       ),
-      beast_legend_probability(tree_data = ggtree_geo$data)
+      Thesis::beast_legend_probability(tree_data = beast$data)
     ),
     nrow = 2, ncol = 1, rel_widths = c(0.5, 0.5)
   )
 
-ggtree_geo$png <-
-  plot_grid(
-    ggtree_geo$plot,
-    ggtree_geo$legend_png,
+beast$png <-
+  cowplot::plot_grid(
+    beast$ggplot,
+    beast$legend_png,
     nrow = 1, rel_widths = c(0.75, 0.25)
   )
 
 # pdf ----
 
-ggtree_geo$legend_pdf <-
-  plot_grid(
+beast$legend_pdf <-
+  cowplot::plot_grid(
     NULL,
-    beast_legend_color(tree_data = ggtree_geo$data),
-    beast_legend_probability(tree_data = ggtree_geo$data),
+    Thesis::beast_legend_color(tree_data = beast$data),
+    Thesis::beast_legend_probability(tree_data = beast$data),
     nrow = 1, ncol = 3, rel_widths = c(0.25, 1, .75)
   )
 
-ggtree_geo$pdf <-
-  plot_grid(
+beast$pdf <-
+  cowplot::plot_grid(
     NULL,
-    ggtree_geo$plot,
-    ggtree_geo$legend_pdf,
+    beast$ggplot,
+    beast$legend_pdf,
     nrow = 3, rel_heights = c(0.05, 0.65, 0.3)
   )
 
@@ -61,7 +95,7 @@ ggtree_geo$pdf <-
 purrr::pwalk(
   .l = list(
     ext = c("png", "pdf"),
-    plot = list(ggtree_geo$png, ggtree_geo$pdf),
+    plot = list(beast$png, beast$pdf),
     width = c(6, 6),
     height = c(8, 4),
     aspect = c(.167, 2.5),

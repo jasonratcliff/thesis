@@ -24,7 +24,7 @@ specimens <- list()
 
 # Map .xlsx sheetnames to read tibbles from .xlsx file..
 specimens$path <-
-  system.file("extdata/specimens.xlsx", package = "Thesis")
+  fs::path(here::here(), "inst/extdata/specimens", ext = "xlsx")
 specimens$raw <-
   readxl::excel_sheets(path = specimens$path) %>%
   purrr::keep(.x = ., ~ !grepl("excluded", x = .x)) %>%
