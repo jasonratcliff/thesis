@@ -139,7 +139,7 @@ the rITS gene tree Figure \@ref(fig:FigureResultsBayesrITS).
 *P. obcordata*, *P. fendlerii*, and *P. argyraea* were strongly supported as
 outgroup taxa (P=1.000). Overall, the rITS gene tree is not well resolved with
 a 19 node polytomy including 6 identical genotype groups (1, 2, 3, 5, 6, 7).
-The polytomy include specimens previously annotated as *P. vitulifera*,
+The polytomy includes specimens previously annotated as *P. vitulifera*,
 *P. saximontana* subsp. *dentata*, *P. eburnifora*,
 *P. didymocarpa* subsp. *didymocarpa*, *P. d.* subsp. *lanata*,
 *P. d.* subsp. *lyrata*, *P. dornii*, *P. condensata*, *P. brassicoides* and
@@ -231,9 +231,9 @@ annotations as *P. didymocarpa* subsp. *didymocarpa* (n=2), *P. d.* subsp.
 *saximontana*, and *P. eburniflora* Fremont county near the Wind River
 Range, three specimens of *P. acutifolia* from Sublette and Sweetwater Counties
 of Wyoming and Rio Blanco County of Colorado, and one specimen (*Dorn 10105*)
-from the Medicine Bow Range with a previous annotation as *P. vitulifera*.
+from the Medicine Bow Mountains with a previous annotation as *P. vitulifera*.
 A fourth group (**Genotype 4**) includes two other specimens
-(*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Range
+(*Ratcliff and O'Kane 34*, *Fertig and Welp 19075*) from the Medicine Bow Mountains
 in addition to *P. integrifolia* from Lincoln County, Wyoming; *P. acutifolia*
 from Grand County, Utah; and *P. brassicoides* from Converse County, Wyoming.
 Five specimens with identical sequences from Lincoln County, Wyoming
@@ -314,7 +314,7 @@ if (knit_variables$pandoc == "latex") {
 monophyletic groups of species as previously described
 (Figure \@ref(fig:FigureResultsBayesrpsIntron)). *Physaria fendlerii* and *P. argyraea*
 are recovered as outgroups while a 13 node polytomy includes *P. vitulifera*
-of Colorado and one specimen from the Medicine Bow Range (*Dorn 10105*),
+of Colorado and one specimen from the Medicine Bow Mountains (*Dorn 10105*),
 *P. eburniflora*, *P. acutifolia*, *P. saximontana* subsp. *saximontana*,
 *P. s.* subsp. *dentata*, *P. didymocarpa* subsp. *didymocarpa*,
 *P. d.* subsp. *lyrata*, *P. d.* subsp. *lanata*, *P. integrifolia*, and
@@ -327,7 +327,7 @@ A separate highly supported clade (P=0.980) includes
 *P. brassicoides* (n=1), *P. acutifolia* (n=1) and *P. condensata* (n=1).
 Two additional clades include one (P=0.826) with Colorado *P. vitulifera*
 specimens (n=2) and another (P=0.996) with *P. brassicoides* (n=1),
-*P. integrifolia* (n=1), and three specimens from the Medicine Bow Range
+*P. integrifolia* (n=1), and three specimens from the Medicine Bow Mountains
 (*Fertig 16713*, *Fertig and Welp 19075*, *Ratcliff and O'Kane, Jr. 34*).
 
 \clearpage
@@ -373,7 +373,7 @@ Those showing some degree of heterogeneity for this loci included specimens of
 *P. acutifolia* (n=3), *P. brassicoides* (n=2), *P. integrifolia* (n=2),
 *P. eburniflora* (n=2), *P. condensata* (n=1),
 *P. didymocarpa* subsp. *didymocarpa* (n=1), *P. d.* subsp. *lanata* (n=1),
-and one specimen from the Medicine Bow Range (*Fertig 16713*). Due to the degree
+and one specimen from the Medicine Bow Mountains (*Fertig 16713*). Due to the degree
 of sequence homogeneity, a gene tree analysis was not performed.
 
 \vspace*{20pt}
@@ -485,7 +485,7 @@ Thesis::knitr_section(
 with more potentially informative characters than any individual gene alignment.
 Only two identical genotypes were observed, one with two specimens previously
 identified as *P. dornii* and *P. condensata*, and another comprising
-of two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
+two specimens previously annotated as *P. didymocarpa* subsp. *lyrata*
 (Table \@ref(tab:TableIdenticalSeqMultiLocus))
 Despite higher overall resolution, 14 nodes were still unresolved as a polytomy
 (P=0.777, Figure \@ref(fig:FigureResultsBayesMultiLocus)). Three supported clades

@@ -541,7 +541,7 @@ This mixture was brought to a boil three times, mixing between boils, before
 pouring the agar onto a gel tray and refrigerating. Wells were loaded with a
 12 $\mu$L mixture of 2.4 $\mu$L SB loading dye (20mM EDTA, 6x SB buffer, 13.5%
 Ficoll-400, and 0.5% Orange-G), 8.6 $\mu$L ddH2O, and 1 $\mu$L sample DNA.
-Gels were run for 30 to 60 minutes at 130 volts, then washed with de-ionized
+Gels were run for 30 to 60 minutes at 130 volts, then washed with deionized
 H2O for 5 minutes. A UV illuminator connected to a Kodak EDAS 290
 Electrophoresis Documentation and Analysis System was used to document digital
 images of the gels.
@@ -675,7 +675,7 @@ unlinked, using TN93 for nuclear rITS and JC69 for plastid *rps* intron.
 Clock models were also unlinked, applying a strict clock model to each
 partition, and a constant population size coalescent prior was applied.
 The MCMC chain length was set to 100,000,000 and sampled every 10,000
-generation. A maximum credibility clade (MCC) tree was calculated from 8,000
+generations. A maximum credibility clade (MCC) tree was calculated from 8,000
 trees, discarding 20% as burn-in using TreeAnnotator v1.10.4.
 
 \paragraph{} To account for potential gene tree incongruence arising from
