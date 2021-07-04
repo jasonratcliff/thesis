@@ -1,4 +1,4 @@
-# Thesis 0.2.2.9003
+# Thesis 0.2.2.9004
     
 * New `parse_taxa()` creates plotmath expressions for `ggplot2` parsed labels.
     - The following functions are refactored to generate expressions:
@@ -11,6 +11,14 @@
     - Specifies data variable for tidy evaluation
 
 * `species_plot()` gains `label_size` parameter.
+
+* Manuscript Revisions
+    - Add multilocus phylogenetics results and species discussions
+    - Update dichotomous key, descriptions, and `.bib` references
+    - Typeset discussion and `.tex` appendices
+    - Standardize `.Rmd` chunk names, crosslinking, and captions.
+        - Differentiates `LaTeX` short captions for LoT & LoF
+    - General spelling and grammar check
 
 * Figure Revisions
     - Add repelled taxa labels and node probabilities to phylogenetic trees

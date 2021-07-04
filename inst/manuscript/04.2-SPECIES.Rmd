@@ -1,0 +1,288 @@
+
+```{r SectionNovelPhysaria}
+
+Thesis::knitr_section(
+  knitr_title = paste(
+    "Southcentral Wyoming",
+    physaria(knit_variables$pandoc), "Lineage"
+  ),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} Divergence of a novel *Physaria* lineage in the Sierra Madre and
+Medicine Bow Mountains is considered here on the basis of phylogenetic,
+morphological, and ecological data. For the loci comprising individual gene
+trees, reciprocal monophyly was not observed in either rITS or *rps* intron
+(Figures \@ref(fig:FigureResultsBayesrITS) and
+\@ref(fig:FigureResultsBayesrpsIntron)).
+Phylogenetic support in the concatenated MrBayes consensus tree
+(Figure \@ref(fig:FigureResultsBayesMultiLocus)) and multi-locus BEAST maximum
+credibility clade tree (Figure \@ref(fig:FigureResultsBeastMultiLocus))
+does support divergence of these populations relative to *P. vitulifera* of
+Colorado. Modeling dispersal with contemporary geographic location similarly
+supports divergence of these populations from *P. vitulifera*, with
+exception to a single specimen from Hog Park in the Sierra Madre Range
+(Dorn 10105, Figure \@ref(fig:FigureResultsBeastGeography)). While sampling bias
+has been recently indicated as potentially influencing Brownian motion
+continuous phylogeography [@Kalkauskas2021], population genetic studies of
+*Calochortus gunnisonii* have revealed genetic differentiation of high-elevation
+Medicine Bow and Sierra Madre populations relative to populations north of the
+Wyoming Basin [@FullerMcGalughlin2019].
+
+\paragraph{} Species delimitation under the multispecies coalescent via
+\*BEAST yielded the highest support for divergence when prior *P. saximontana*
+subspecies were lumped with *P. didymocarpa* (Hypotheses 3 and 4, Figure
+\@ref(fig:FigureResultsBeastSpecies)). In considering species delimitation,
+the degree of gene exchange (e.g., immigration) and time since divergence
+provide potential measures for evolutionary independence of lineages
+[@HeyPinho2012]. Statistical delimitation methods based on the multispecies
+coalescent may overestimate genetic structure as species lineages, which has
+implications for any method utilizing species as a unit of analysis
+[@SukumaranKnowles2017]. The phylogenies reported here consist of a modest
+number of specimens sampled from a relatively small number of genetic loci.
+While not fully resolved, evidence for lineage separation of the disputed
+*P. vitulifera* specimens as a new taxon was also observed in morphological and
+ecological traits. Reviewed specimens are found generally above 2,100m, at
+a higher elevation relative to nearby *P. acutifolia* and allopatric
+*P. vitulifera* of Colorado (Figures \@ref(fig:FigureResultsPhysariaElevation)
+and \@ref(fig:FigureDiscussionElevationSEINet)).
+Globally, endemic plant species have been shown
+to correlate with increases in elevation [@Steinbauer2016].
+
+```{r FigureDiscussionElevationSEINet, fig.cap=caption$FigureDiscussionElevationSEINet, fig.scap="Colorado and south-central Wyoming elevation map"}
+
+caption$FigureDiscussionElevationSEINet <-
+  paste("Colorado and south-central Wyoming elevation map.")
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationSEINet",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
+\paragraph{} Specimen occurrences obtained from SEINet for *P. floribunda*
+subspecies and *P. bellii* highlight the allopatric distribution of Colorado
+*Physaria* species from the Medicine Bow and Sierra Madre Range populations
+\@ref(fig:FigureIntroCarbonWyo). Notably, the Front Range provides a
+geographic barrier, with *P. vitulifera* and *P. bellii* limited to the
+eastern slope. Similarly, the *P. floribunda* subspecies from Middle Park
+to the southwest are separated from the hypothesized *Physaria* lineage by
+the Bears Ears Range with populations north and northwest of North Park in
+Grand County, Colorado. Populations of questioned specimens examined are
+distributed from the Sierra Madre West of Encampment and East through the
+Medicine Bow Range. After accounting for collection date, these specimens
+show a marked reduction in average mature fruit length and width relative
+to other nearby species (Figure \@ref(fig:FigureResultsPhysariaFruits)).
+Traditionally, *P. floribunda* have been differentiated by recurved, nearly
+pendant pedicels and pinnatifid basal leaves [@OKane2010]. Future phylogenetic
+and population genetic analyses should include both *P. floribunda* subspecies
+of Middle Park and *P. bellii* of the eastern slope of the Front Range.
+
+```{r SectionSouthwesternEndemics}
+
+Thesis::knitr_section(
+  knitr_title = paste("Southwest Wyoming Endemics"),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} In the multilocus analyses, the southwestern Wyoming endemics
+*P. condensata* and *P. dornii* were consistently supported in a clade with
+individuals of *P. integrifolia*. @Rollins1939 initially recognized a
+west-central *Physaria* variety as distinct from northern *P. didymocarpa*
+populations, with similar fruit characteristics as subsp. *didymocarpa*
+(a broad replum with more than 2 ovules per locule), and transitional
+characteristics of *P. acutifolia* (entire basal leaves and appressed silique
+trichomes). These observations, @Rollins1983 note that relatively inflated,
+thin-walled fruits of variety *integrifolia* were adapted for wind dispersal, and
+additional SEM imaging formed the basis of a species description by @Lichvar1984.
+The first of three condensed rosette growth populations was described by
+@Rollins1939 as *P. condensata*, delineated by stems of $<$ 1cm and a rosette
+diameter of $<$ 5cm. @Lichvar1983 differentiated the condensed habit *P. dornii*
+from *P. condensata* by relatively enlarged basal leaves and fruits.
+Traditional morphological delineations for the southwestern Wyoming endemics
+are concordant with observations reported here: more than 2 ovules per locule
+(Figures \@ref(fig:FigureResultsPhysariaOvules) and
+\@ref(fig:FigureDiscussionOvules)),
+fruit size differences (Figure \@ref(fig:FigureResultsPhysariaFruits)),
+differences in growth habit (Figure \@ref(fig:FigureResultsPhysariaHabit)),
+a broad replum (Figure \@ref(fig:FigureDiscussionReplumShape)),
+appressed silique trichomes (Figure \@ref(fig:FigureDiscussionFruitTrichomes)),
+and entire leaf margins (Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
+These species are geographically separated from *P. didymocarpa* subsp.
+*didymocarpa* by the Wind River and Absaroka Ranges
+(Figure \@ref(fig:FigureDiscussionElevationSouthwestWY)).
+
+\clearpage
+
+```{r FigureDiscussionElevationSouthwestWY, fig.cap=caption$FigureDiscussionElevationSouthwestWY, fig.scap="Southwestern Wyoming elevation map"}
+
+caption$FigureDiscussionElevationSouthwestWY <-
+  paste("Southwestern Wyoming elevation map.")
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationSouthwestWY",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
+\clearpage
+
+\vspace*{-24pt}
+
+```{r SectionPhysariaDidymocarpaSubspecies}
+
+Thesis::knitr_section(
+  knitr_title = paste("*Physaria didymocarpa* Subspecies"),
+  knitr_type = "section", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} @Rollins1984 described two new varieties of *P. saximontana*,
+*saximontana* and *dentata*, with a primary distribution south of the range
+of *P. didymocarpa*. These varieties were primarily differentiated from
+*P. didymocarpa* on the basis of silique morphology, where mature fruits of
+*P. saximontana* varieties lack a basal sinus and the replum orifice
+attaches at the base of the valve. Variety *dentata*, described from collections
+in Glacier and Park Counties in Montana, was differentiated from variety
+*saximontana* on the basis of toothed margins and an elongated style.
+While this trait can be difficult to discern from herbarium specimens, review
+of Montana *Physaria didymocarpa* specimens suggests the silique morphology
+is common throughout the range of *P. didymocarpa*, putative *P. saximontana*
+subspecies, and fruiting specimens of *P. eburniflora* across the Beaver Rim
+Divide (Figure \@ref(fig:FigureDiscussionFruitApices)). Similarly, dentate
+or otherwise toothed margins can be observed throughout the range of
+*P. didymocarpa* in Montana and northwestern Wyoming
+(Figure \@ref(fig:FigureDiscussionBasalLeafMargins)), though entire margins
+have been observed in many Fremont County, Wyoming specimens.
+The species tree analyses showed relatively higher support for lumping
+*P. saximontana* subspecies with *P. didymocarpa* subspecies *didymocarpa*
+(Hypotheses 3 and 4, Figure \@ref(fig:FigureResultsBeastSpecies)).
+Phylogenetic analyses (Figures \@ref(fig:FigureResultsBeastMultiLocus) and
+\@ref(fig:FigureResultsBeastGeography)) and silique morphology suggest a possible
+sister taxa relationship with *P. brassicoides*, though a gap in geographic
+distribution from the southern range of *P. didymocarpa* and nominal
+*P. saximontana* is apparent (Figure \@ref(fig:FigureDiscussionElevationBigHorn)).
+
+\paragraph{} Prior to the description of *P. saximontana* varieties,
+@Rollins1981 described the second condensed growth habit species as
+*P. eburniflora* from specimens collected in Carbon County, Wyoming.
+While flowering specimens are observed with pale-yellow petals, fruiting
+specimens were described as having shallow basal sinuses differentiated from
+the more-or-less equal above and below sinuses of *P. didymocarpa* and
+*P. acutifolia*. Additionally, the rosette leaves of *P. eburniflora* were
+described as nearly orbicular with entire margins. Fruiting specimens reviewed
+here suggest growth habit (Figure \@ref(fig:FigureResultsPhysariaHabit)) and
+to a degree mature fruit size (Figure \@ref(fig:FigureResultsPhysariaFruits))
+may be the best characters for differentiating *P. eburniflora* from
+*P. didymocarpa* subsp. *didymocarpa*. While phylogenetic analyses were not
+fully resolved, species tree analyses indicate a possible sister taxa
+relationship between *P. eburniflora* and *P. didymocarpa* subspecies including
+*P. saximontana* (Hypothesis 4, Figure \@ref(fig:FigureResultsBeastSpecies))).
+The primary range of *P. eburniflora* extends east from the Green and Ferris
+Mountains to the western foothills of the Laramie Range
+(Figure \@ref(fig:FigureDiscussionElevationBigHorn)).
+
+\clearpage
+
+```{r FigureDiscussionElevationBigHorn, fig.cap=caption$FigureDiscussionElevationBigHorn, fig.scap="\\textit{Physaria} of the Bighorn Basin and Beaver Rim Divide", fig.pos="h"}
+
+caption$FigureDiscussionElevationBigHorn <-
+  paste(
+    ifelse(
+      test = knit_variables$pandoc == "latex",
+      yes = "\\textit{Physaria}",
+      no = "*Physaria*"
+    ),
+    "of the Bighorn Basin and Beaver Rim Divide."
+  )
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationBigHorn",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
+\clearpage
+
+\paragraph{} The first of two *P. didymocarpa* infraspecific taxa was described
+from collections in the Big Horn Mountains by @Nelson1904 as variety *lanata*,
+distinguished by tomentose basal leaves and dense, simple (i.e., unbranched)
+pubescence. Elevation of this taxon to the rank of species as *Physaria lanata*
+by @Rydberg1912 was rejected by @Payson1918 and Rollins [-@Rollins1939;
+-@Rollins1993], retained by @Dorn2001, and recombined as a subspecies by
+O'Kane [-@OKane2007; -@OKane2010]. While previous treatments have recognized
+an infraspecific *P. didymocarpa* taxon, species tree analyses consistently
+placed *P. acutifolia* as a sister taxon
+(Figure \@ref(fig:FigureResultsBeastSpecies)).
+Recognized populations are geographically separated from *P. didymocarpa*
+subsp. *didymocarpa* by the Bighorn Basin
+(Figure \@ref(fig:FigureDiscussionElevationBigHorn); @HandleyHeidel2011).
+Morphologically, *P. didymocarpa* subsp. *lanata* is distinguished from
+*P. acutifolia* by a broad replum (Figure \@ref(fig:FigureDiscussionReplumShape)),
+spreading silique trichomes (Figure \@ref(fig:FigureDiscussionFruitTrichomes)),
+and often dentate leaf margins (Figure \@ref(fig:FigureDiscussionBasalLeafMargins)).
+In contrast to *P. didymocarpa* subsp. *didymocarpa*, reviewed subsp. *lanata*
+specimens consistently present a reduced ovule count as observed by
+the number of funiculi per locule
+(Figures \@ref(fig:FigureResultsPhysariaOvules) and
+\@ref(fig:FigureDiscussionOvules)).
+
+\paragraph{} A second *P. didymocarpa* infraspecific taxa was described
+from collections from tributaries of the Salmon River Valley in Idaho by
+@Hitchcock1964 as variety *lyrata*, distinguished by inflated silicle valves
+and generally lyrate basal leaves. Idaho populations were reviewed by
+@Mancuso2006, with reported occurrences known from Pattee Creek, Williams Creek,
+Agency Creek, and Basin Creek. Additional material reviewed here suggests
+this phenotype is also present in specimens from the Lemhi Range
+(*Henderson 2867 NY*), southern toe of the Beaverhead
+Mountains in Idaho (*Henderson 3196 NY*), as well as the Tendoy Mountains
+(*Lesica 8475 NY, MONTU*; *Lesica 6073 NY, MONTU*; *Lesica 3522 MONTU*),
+Beaverhead Mountains (*Lesica 3938 GH*), and Centennial Valley
+(*Lesica 9393 NY, MONTU*) of Montana. These populations are geographically
+separated from the distribution of *P. integrifolia* in Idaho and western
+Wyoming (Figure \@ref(fig:FigureDiscussionElevationIdaho)). As emphasized by
+@Moseley1990, individuals of this subspecies have enlarged fruits relative
+to subspecies *didymocarpa* (Figure \@ref(fig:FigureResultsPhysariaFruits)).
+Cytological investigations of Lemhi County *Physaria* have indicated hexaploid
+(2n=24) chromosome counts, differing from tetraploid (2n=16) counts in
+subsp. *didymocarpa* [@Mulligan1968]. The phylogenetic analyses considered
+here were mostly uninformative given the low number of potentially informative
+sites in the sampled specimens. Future work should consider the status of this
+taxon relative to nearby populations in Montana.
+
+\clearpage
+
+```{r FigureDiscussionElevationIdaho, fig.cap=caption$FigureDiscussionElevationIdaho, fig.scap="Idaho \\textit{Physaria didymocarpa} subsp. \\textit{lyrata}"}
+
+caption$FigureDiscussionElevationIdaho <-
+  paste(
+    ifelse(
+      knit_variables$pandoc == "latex",
+      "\\textit{Physaria didymocarpa} subsp. \\textit{lyrata}",
+      "of the Salmon River Valley."
+    )
+  )
+
+knitr::include_graphics(
+  path = fs::path(
+    here::here(), "inst/figures/DiscussionElevationIdaho",
+    ext = knit_variables$graphics
+  )
+)
+
+```
+
