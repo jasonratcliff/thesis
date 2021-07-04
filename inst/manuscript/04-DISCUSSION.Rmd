@@ -107,34 +107,37 @@ consequences for taxonomic treatments and alpha diversity [@Isaac2004].
 Accurate species assignment and determination of species boundaries has
 implications for downstream analyses. When different data support contradicting
 species boundaries, a single line of evidence may fail to recover a species.
-For species defined *a priori* by qualitatively combining genetic,
-morphological, geographical, and ecological data, individual species assignment
-using clustering and multivariate techniques recovered species more accurately
+For species defined *a priori* by qualitatively combining genetic, morphological, 
+geographical, and ecological data, individual species assignment using
+clustering and multivariate techniques recovered species more accurately
 when multiple types of data sets were included [@Edwards2014].
 An "integrative taxonomy" considers naming species when supported by broad
 biological evidence, where higher confidence is placed in a hypothesis supported
 by different kinds of data [@Dayrat2005]. In particular, caution is warranted
 for describing species on the basis of morphological diversity without support
 from additional lines of evidence given the possibility of homoplasy (*ibid.*).
+Utilizing multiple lines of evidence (e.g genealogical, morphological, and
+reproductive barriers) for delimitation may recover species that would otherwise
+be missed from only a single line of evidence [@Padial2009]. Broadly, two
+frameworks for an integrative taxonomy are possible: integration by congruence
+where a concordant pattern among several taxonomic characters indicates lineage
+separation, and integration by cumulation where a single character set may
+provide a good indication of lineage divergence [@Padial2010]. The former can
+result in higher confidence at the cost of decreased taxonomic resolving power,
+while uncritical application of the latter may contribute to over-splitting of
+species taxa (ibid.). In the case of recent radiations, integration by
+congruence may fail to recover species on the basis of a strict consensus
+approach due to a lack of gene monophyly [@Shaffer2007].
 
-\paragraph{} Utilizing multiple lines of evidence (e.g genealogical,
-morphological, and reproductive barriers) for delimitation may recover species
-that would otherwise be missed from only a single line of evidence
-[@Padial2009]. Broadly, two frameworks for an integrative taxonomy are possible:
-integration by congruence where a concordant pattern among several taxonomic
-characters indicates lineage separation, and integration by cumulation where a
-single character set may provide a good indication of lineage divergence
-[@Padial2010]. The former may result in higher confidence at the cost of
-decreased taxonomic resolving power, while uncritical application of the latter
-may contribute to over-splitting of species taxa (ibid.). In the case of recent
-radiations, integration by congruence may fail to recover species on the basis
-of a strict consensus approach due to a lack of gene monophyly [@Shaffer2007].
+```{r, child='04.1-MORPHOLOGY.Rmd'}
+```
 
-Considerations against a generalized lineage concept (GLC)
+\clearpage
 
-- Hausdorf 2011
-- Freudenstein 2017
-- Carstens 2013 (Box 3)
+\vspace*{-24pt}
+
+```{r, child='04.2-SPECIES.Rmd'}
+```
 
 \clearpage
 
@@ -142,7 +145,7 @@ Considerations against a generalized lineage concept (GLC)
 
 ```{r sectionDichotomousKey}
 
-knitr_section(
+Thesis::knitr_section(
   knitr_title = "Dichotomous Key",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
