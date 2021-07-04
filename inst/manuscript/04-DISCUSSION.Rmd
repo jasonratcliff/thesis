@@ -178,8 +178,8 @@ Thesis::knitr_section(
             \begin{enumerate}
 
   \item[4. ] Mature fruits > 8 mm; pedicels recurved, basal leaves
-  pinnatifid; north from Middle Park Colorado \dotfill
-  \textit{Physaria floribunda} Rydberg
+  pinnatifid; southwest from Middle Park Colorado
+  \dotfill \textit{Physaria floribunda} Rydberg
 
   \item[4. ] Mature fruits < 8 mm; pedicels ascending or sigmoidal.
 
@@ -190,7 +190,7 @@ Thesis::knitr_section(
   \dotfill \textit{Physaria vitulifera} Rydberg
 
   \item[5. ] Mature fruits < 5 mm; plants upper montane to subalpine;
-  Medicine Bow Mountains and Sierra Madre Range of SC Wyoming, NC Colorado
+  Medicine Bow Mountains and Sierra Madre Range
   \dotfill \textit{Physaria} ‘medicinae’
 
                 \end{enumerate}
@@ -224,11 +224,11 @@ Thesis::knitr_section(
 
             \begin{enumerate}
 
-  \item[8. ] Basal leaves $\geq$ 2cm; mature fruits generally $\geq$ 1 x 1 cm;
+  \item[8. ] Basal leaves $\geq$ 2 cm; mature fruits generally $\geq$ 1 x 1 cm;
   Wyoming state endemic of Lincoln and Uinta counties
   \dotfill \textit{Physaria dornii} Lichvar
 
-  \item[8. ] Basal leaves more often $\leq$ 2cm; mature fruits $\leq$ 1 x 1 cm;
+  \item[8. ] Basal leaves more often $\leq$ 2 cm; mature fruits $\leq$ 1 x 1 cm;
   Wyoming state endemic of Sublette, Lincoln and Uinta counties
   \dotfill \textit{Physaria condensata} Rollins
 
@@ -241,23 +241,37 @@ Thesis::knitr_section(
         \begin{enumerate}
 
   \item[9. ] Basal sinuses of fruits absent or less often shallow, apical
-  sinuses deeper; > 2 ovules per locule   %%% \newline \hspace*{0pt} %%%
-  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
-  subsp. \textit{didymocarpa}
-
-  \item[9. ]  Fruit sinuses generally equal, less often basally shallow;
+  sinuses deeper, (2-)4(-6) ovules per locule, mature fruit trichomes spreading.
 
             \begin{enumerate}
 
-  \item[10. ] Basal leaf margins generally dentate or toothed;
-  mature fruit trichomes spreading; 2 ovules per locule;
-  regional endemic of the Big Horn Mountains in Wyoming and Montana
-  \dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
+  \item[10. ] Basal leaf margins dentate, rarely entire; mature fruits
+  (5-)8-12 mm.
+  \newline\hspace*{0pt}\dotfill \textit{Physaria didymocarpa}
+  (Hooker) A. Gray subsp. \textit{didymocarpa}
+  \newline\hspace*{0pt}[\textit{Physaria saximontana} Rollins subsp. \textit{saximontana}]
+  \newline\hspace*{0pt}[\textit{Physaria saximontana} Rollins subsp. \textit{saximontana}]
+  
+  \item[10. ] Basal leaf margins generally lyrate; mature fruits inflated,
+  (12-)15-20 mm; regional endemic of the Salmon River Valley \dotfill
+  \newline\hspace*{0pt}\dotfill \textit{Physaria didymocarpa}
+  (Hooker) A. Gray subsp. \textit{lyrata} (C. L. Hitchcock) O'Kane
+
+            \end{enumerate}
+
+  \item[9. ]  Fruit sinuses generally equal, less often basally shallow.
+
+            \begin{enumerate}
+
+  \item[11. ] Basal leaf margins generally dentate or toothed;
+  mature fruit trichomes spreading; 2(-3) ovules per locule;
+  regional endemic of the Big Horn Mountains
+  \newline \hspace*{0pt}\dotfill \textit{Physaria didymocarpa} (Hooker) A. Gray
   subsp. \textit{lanata} (A. Nelson) O'Kane
 
-  \item[10. ] Basal leaf margins more often entire, occasionally toothed;
+  \item[11. ] Basal leaf margins generally entire, occasionally toothed;
   mature fruit trichomes appressed; > 2 ovules per locule;
-  regional endemic of SW Wyoming and eastern Idaho
+  regional endemic of southwest Wyoming and eastern Idaho
   \dotfill \textit{Physaria integrifolia} (Rollins) Lichvar
 
             \end{enumerate}
@@ -283,7 +297,32 @@ knitr_section(
 
 ```
 
-\vspace*{-18pt}
+\vspace*{-24pt}
+
+```{r subsectionDescriptionPhysariaSpNov}
+
+knitr_section(
+  knitr_title = "*Physaria* ‘medicinae’",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple, (branched);
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
+**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
+ margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
+**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
+**Racemes** elongated, (subumbellate).
+**Fruiting pedicels** erect to ascending, sigmoidal.
+**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
+ sepals lanceolate, 4-6(-7) mm.
+**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
+ sinuses more or less equal; valves pubescent with trichomes appressed,
+ rays furcate to less often bifurcate; replum linear, (constricted),
+ (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
+**Seeds** brown, flattened, 2(-3) mm.
 
 ```{r subsectionDescriptionPacutifolia}
 
@@ -397,6 +436,72 @@ knitr_section(
  ovules (2-)4(-6) per locule; style 5-7(-10) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
+\clearpage
+
+\vspace*{-24pt}
+
+```{r subsectionDescriptionPdidymocarpaSspLanata}
+
+knitr_section(
+  knitr_title = paste(
+    "*Physaria didymocarpa* (Hooker) A. Gray subsp. *lanata*",
+    "(A. Nelson) O'Kane"
+  ),  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+ 
+\paragraph{} **Perennials**; caudex simple, rarely branched;
+ densely pubescent, with spreading trichomes, rays generally furcate.
+**Stems** several to numerous, 0.4-1.0(-1.5) dm, exceeding a basal rosette,
+ decumbent to ascending.
+**Basal leaves**: obovate or rhombic, 2-5(-8) cm,
+ margins dentate or toothed, rarely entire, apex acute,
+ petioles slender, tapering from blade,
+**Cauline leaves**: oblanceolate, 1-2(-2.5) cm, margins entire, acute.
+**Racemes** elongated or congested.
+**Fruiting pedicels** erect or ascending, often sigmoidal, 8-12 mm.
+**Flowers**: petals yellow, spatulate, 6-8(-10) mm;
+ sepals lanceolate, 4-7 mm.
+**Fruits** didymous, inflated, reniform to suborbicular,
+ 4-8(-12) x 5-12(-15) mm, sinuses generally equal;
+ valves pubescent with spreading trichomes, rays simple, furcate;
+ replum oblong to elliptic;
+ ovules 2(-3) per locule; style 4-6(-7) mm.
+**Seeds** brown, flattened; 2-3 mm.
+
+```{r subsectionDescriptionPdidymocarpaSspLyrata}
+
+knitr_section(
+  knitr_title = paste(
+    "*Physaria didymocarpa* (Hooker) A. Gray subsp. *lyrata*",
+    "(C. L. Hitchcock) O'Kane"
+  ),
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+  
+\paragraph{} **Perennials**; caudex simple, rarely branched; densely pubescent,
+ with appressed stellate trichomes, rays furcate or bifurcate, (umbonate).
+**Stems** several to numerous, (few), 0.4-1.2(-1.5) dm,
+ exceeding a basal rosette, decumbent to ascending.
+**Basal leaves**: obovate, less often rhombic, 2-4(-7) cm,
+ margins dentate, rarely entire,
+ petioles slender, tapering from blade, generally lyrate or winged.
+**Cauline leaves**: oblanceolate, 1-2(-2.5) cm,
+  margins entire, occasionally toothed.
+**Racemes** congested to subumbellate.
+**Fruiting pedicels** ascending, rarely curved, 8-12 mm.
+**Flowers**: petals yellow, spatulate, 8-12 mm;
+ sepals lanceolate, 6-7(-8) mm; styles 4-7(-8) mm.
+**Fruits** didymous, highly inflated, reniform to suborbicular,
+ (12-)15-20 x 15-20(-25) mm, basal sinus shallow or absent, apical sinus deep;
+ valves pubescent with spreading trichomes, rays simple or branched, furcate;
+ replum oblong-elliptic to oblanceolate or obovate;
+ ovules (2-)4-6 per locule; style 4-7(-8) mm.
+**Seeds** brown, flattened; 2-3(-4) mm.
+
 ```{r subsectionDescriptionPdornii}
 
 knitr_section(
@@ -422,6 +527,32 @@ knitr_section(
  style 3-5(-7) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
+```{r subsectionDescriptionPeburniflora}
+
+knitr_section(
+  knitr_title = "*Physaria eburniflora* Rollins",
+  knitr_type = "subsection", chunk_type = knit_variables$pandoc
+)
+
+```
+
+\paragraph{} **Perennials**; caudex simple; plants compact, rosulate;
+ densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
+**Stems** several, 0.3-0.5(-0.9) dm, barely exceeding a basal rosette,
+ prostrate to less often decumbent.
+**Basal leaves**: suborbicular to obovate, 2-3(-4.5) cm,
+ margins entire, tapering from basal leaf.
+**Cauline leaves**: oblanceolate, 0.9-1.2(-1.5) cm, margins entire, acute.
+**Racemes** congested to subumbellate.
+**Fruiting pedicels** erect to ascending, 6-10 mm.
+**Flowers**: petals ochroleucous, spatulate, 7-9(-10) mm;
+ sepals lanceolate, 6-7 mm.
+**Fruits** didymous, inflated, reniform to suborbicular,
+ 7-9(-12) x 8-11(-14) mm, apical sinus deep, basal sinus absent to shallow;
+ valves pubescent with spreading trichomes, furcate, (umbonate);
+ replum elliptic to obovate; ovules (2-)3-4 per locule;
+ style 4-6(-7) mm.
+**Seeds** brown, flattened; 2-3 mm.
 
 ```{r subsectionDescriptionPintegrifolia}
 
@@ -449,32 +580,6 @@ knitr_section(
  replum oblanceolate to obovate, elliptic or oblong; ovules 2-4(-6) per locule;
  style 5-7(-9) mm.
 **Seeds** brown, flattened; 2-3 mm.
-
-```{r subsectionDescriptionPhysariaSpNov}
-
-knitr_section(
-  knitr_title = "*Physaria* ‘medicinae’",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
-
-\paragraph{} **Perennials**; caudex simple, (branched);
- densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
-**Stems** several, 0.3-1(-1.5) dm, prostrate to decumbent, less often ascending.
-**Basal leaves**: rhombic to suborbicular, obovate or ovate; 2-5(-6) cm,
- margins entire, less often dentate; petiole slender, abruptly narrowing from blade.
-**Cauline leaves**: oblanceolate to spatulate, 0.8-2(-2.5) cm, margins entire.
-**Racemes** elongated, (subumbellate).
-**Fruiting pedicels** erect to ascending, sigmoidal.
-**Flowers**: petals yellow, spatulate, 6-9(-11) mm;
- sepals lanceolate, 4-6(-7) mm.
-**Fruits** didymous, angular, often truncate; 3-4(-6) mm x 3-6(-7) mm,
- sinuses more or less equal; valves pubescent with trichomes appressed,
- rays furcate to less often bifurcate; replum linear, (constricted),
- (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
-**Seeds** brown, flattened, 2(-3) mm.
-
 
 ```{r subsectionDescriptionPvitulifera}
 
