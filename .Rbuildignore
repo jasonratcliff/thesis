@@ -6,24 +6,16 @@
 ^README\.Rmd$
 ^README_files$
 ^Rplots\.pdf$
+^_pkgdown\.yml$
 ^app\.R$
+^codecov\.yml$
 ^renv\.lock$
 ^data-raw$
-^inst/issues$
-^inst/literature$
+^docs$
+^issues$
 ^inst/log$
+^literature$
+^public$
 ^renv$
 ^tools$
-
-# TODO re-org top-level dirs
-^_descriptions$
-^_word$
-^Appendix$
-
-# TODO code test coverage
-^codecov\.yml$
-^public$
 ^vignettes/articles$
-^_pkgdown\.yml$
-^docs$
-^pkgdown$
