@@ -1,5 +1,26 @@
-# Thesis 0.2.2.9004
-    
+# Thesis 0.2.3.9002
+
+* New R6 superclass `Specimen` data structure consolidates specimen record
+  tibbles with previously exported functions for subsetting and theme options.
+
+## Breaking Changes
+
+* A number of previously exported functions are refactored into a specimen
+  container using the R6 OOP system. Despite the non-(R)-idiomatic style of R6,
+  the reference semantics present a useful implementation for the various
+  subsetting and plotting operations covered by these functions.
+
+| method                    | function            | status                 |
+|---------------------------|---------------------|------------------------| 
+| `Specimen$census()`       | `count_specimens()` | `R/deprec-specimens.R` |
+| `Specimen$limit()`        | `subset_coords()`   | `R/deprec-specimens.R` |
+| `Specimen$taxa()`         | `filter_reviewed()` | `R/deprec-specimens.R` |
+| `Specimen$collections()`  | `find_spp()`        | `R/deprec-specimens.R` |
+| `Specimen$annotations()`  | `spl_labels()`      | `R/deprec-themes.R`    |
+| `Specimen$labels()`       | `parse_taxa()`      | `R/deprec-themes.R`    |
+
+# Thesis 0.2.3
+
 * New `parse_taxa()` creates plotmath expressions for `ggplot2` parsed labels.
     - The following functions are refactored to generate expressions:
         - `haplotype_labels()`
