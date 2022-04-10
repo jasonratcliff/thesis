@@ -1,57 +1,5 @@
 # Themes | Scales ----
 
-#' Generate HTML vector for
-#' [element_markdown()][ggtext::element_markdown]
-#'
-#' Requires installation of [ggtext] as follows:
-#'   remotes::install_github("clauswilke/ggtext")
-#'
-#' @inheritParams layer_specimens
-#' @export
-#'
-#' @return Character vector of html markup named by specimen identification.
-#'
-#' @examples
-#' spl_labels(specimen_tbl = spp_co_front_range,
-#'            id_column = "prior_id")
-#'
-spl_labels <- function(specimen_tbl, id_column) {
-
-  label_markdown <- function(label_vector) {
-    purrr::map_chr(.x = label_vector, .f = function(label) {
-      split_label <- unlist(strsplit(label, " "))
-      if (length(split_label) %in% c(1, 2)) {
-        parsed_label <- ifelse(
-          test = grepl("'medicinae'", x = label),
-          yes = "*Physaria* 'medicinae'",
-          no = paste0("*", label, "*"))
-      } else {
-        if (grepl("subsp\\.", x = label)) {
-          # Add html formatting to split subsp. onto second line.
-          parsed_label <-
-            paste0("*", paste0(split_label[1:2], collapse = " "),
-                   "*", collapse = "") %>%
-            paste0(., gsub(pattern = "s(ub)?sp\\.|var\\.", x = split_label[3],
-              replacement = "<br><span>&nbsp;&nbsp;&nbsp;</span>  subsp\\. *"),
-              split_label[4:length(split_label)], "*")
-        } else {  # Any other cases
-          parsed_label <- paste0("*", label, "*")
-        }
-      }
-      return(parsed_label)
-    })
-  }
-
-  # Add italics, html line break and non-breaking space characters.
-  labels_vector <- specimen_tbl %>%
-    dplyr::select(., !!id_column) %>% dplyr::pull() %>% unique()
-  labels_html <- label_markdown(labels_vector)
-  names(labels_html) <- labels_vector
-
-  # Return named vector of final identifications and markdown expression.
-  return(labels_html)
-}
-
 #' Add map ggplot scales and themes
 #'
 #' Add manual values to specimen identification discrete scales in map ggplots

@@ -9,6 +9,7 @@
 #' and filtering operations by either annotation or collector / collection.
 #'
 #' @param records Specimen voucher records [`tibble`][tibble::tibble()].
+#' @param identifier Character scalar for voucher annotation label variable.
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
@@ -18,16 +19,24 @@ Specimen <- R6::R6Class(
     #'  with set of specimen vouchers.
     records = "tbl_df",
 
+    #' @field identifier Annotation variable in a [`Specimen$records`][Specimen]
+    #'  tibble. Used to designate [ggplot2::ggplot()] scale labels.
+    identifier = NULL,
+
     #' @description Construct a `Specimen` container
     #' @examples
     #' # Construct object instance with `$new()` method
-    #' voucher <- Specimen$new(records = Thesis::herbarium_specimens)
+    #' voucher <- Specimen$new(
+    #'   records = Thesis::herbarium_specimens,
+    #'   identifier = "Taxon_a_posteriori"
+    #' )
     #'
     #' # Basic access to the public `records` field tibble
     #' class(voucher$records)
     #' dim(voucher$records)
-    initialize = function(records) {
+    initialize = function(records, identifier) {
       self$records <- records
+      self$identifier <- identifier
     },
 
     #' @description Record census accounting of voucher specimens.
@@ -199,6 +208,109 @@ Specimen <- R6::R6Class(
         purrr::keep(~ !is.null(.x))
       self$records <- entries
       invisible(self)
+    },
+
+    #' @description Create markdown-formatted specimen annotations.
+    #' Used for plotting [ggplot2::ggplot()] manual scale values with italicized
+    #' fonts via the [ggtext::element_markdown()] extension.
+    #'
+    #' @return Named list of markdown- (i.e., HTML) formatted annotations.
+    #'  Length equals number of unique values in the `identifier` field.
+    #' @examples
+    #' limits$annotations()
+    annotations = function() {
+      annotations <- unique(self$records[[self$identifier]]) %>%
+        rlang::set_names() %>%
+        purrr::map(
+          .x = .,
+          .f = function(taxon) {
+            stringr::str_squish(taxon) %>%
+              stringr::str_split(string = ., pattern = " ") %>%
+              purrr::map_chr(
+                .x = .,
+                .f = function(rank) {
+                  dplyr::case_when(
+                    grepl(pattern = "^[A-z][a-z-]+$", x = rank) ~
+                      paste0("*", rank, "*"),
+                    grepl(pattern = "^\\'[A-z]+\\'$", x = rank) ~ rank, # quoted
+                    grepl(pattern = "^[-?]$", x = rank) ~ rank, # questioned
+                    grepl(pattern = "^(subsp|ssp|var)\\.?$", x = rank) ~
+                      paste(
+                        "<br><span>",
+                        paste0(rep("&nbsp;", 3), collapse = ""),
+                        "</span>", rank
+                      ),
+                    TRUE ~ as.character(glue::glue("Unmatched case for: {rank}"))
+                  ) %>%
+                    paste(., collapse = " ")
+                }
+              )
+          }
+        )
+      return(annotations)
+    },
+
+    #' @description Create base expression specimen labels.
+    #'
+    #' @return Character vector of expressions for parsed font labels.
+    #'  Length equivalent to length of the records `label` variable.
+    #' @examples
+    #' dna_vouchers <- dplyr::select(Thesis::dna_specimens, ID_final) %>%
+    #'  dplyr::rename(label = ID_final) %>%
+    #'  Specimen$new(
+    #'    records = .,
+    #'    identifier = "ID_final"
+    #'  )
+    #'
+    #' # Note length of the returned label vector equals the record row number.
+    #' length(dna_vouchers$labels())
+    #' unique(dna_vouchers$labels())
+    labels = function() {
+      labels <- self$records[["label"]] %>%
+        stringr::str_squish() %>%
+        stringr::str_replace_all(
+          string = .,
+          pattern = "[ _]+(?=[A-z\\.\\'])",
+          replacement = " "
+        ) %>%
+        purrr::map_chr(
+          .x = .,
+          .f = function(label) {
+            if (!is.na(label)) {
+              taxa_ranks <-
+                unlist(stringr::str_split(string = label, pattern = " "))
+              if (length(taxa_ranks) == 2) {
+                if (grepl(pattern = "^\\'[A-z]+\\'$", x = taxa_ranks[2])) {
+                  glue::glue(
+                    "italic(",
+                    abbreviate(taxa_ranks[1], dot = TRUE, minlength = 1),
+                    ")~\"{ taxa_ranks[2] }\""
+                  )
+                } else {
+                  glue::glue(
+                    "italic(",
+                    abbreviate(taxa_ranks[1], dot = TRUE, minlength = 1),
+                    "~{ taxa_ranks[2] })"
+                  )
+                }
+              } else {
+                if (length(taxa_ranks) == 4 &
+                  grepl(pattern = "^(subsp|ssp|var)\\.?$", x = taxa_ranks[3])) {
+                  glue::glue(
+                    "italic(",
+                    abbreviate(taxa_ranks[1], dot = TRUE, minlength = 1),
+                    "~",
+                    abbreviate(taxa_ranks[2], dot = TRUE, minlength = 1),
+                    ")~{ taxa_ranks[3] }~italic({ taxa_ranks[4] })"
+                  )
+                }
+              }
+            } else {
+              return(NA_character_)
+            }
+          }
+        )
+      return(labels)
     }
   )
 )

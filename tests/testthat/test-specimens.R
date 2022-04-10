@@ -2,9 +2,9 @@ test_that("Specimen R6 Superclass", {
   vouchers <- tibble::tibble(
     Taxon = c(
       paste("Custodis", rep("impavidus", 2)),
-      paste("Custodis", rep("mundus", 2)),
+      paste("Custodis", rep("'mundus'", 2)),
       paste("Medicari", rep("iugerum", 2)),
-      "Medicari profundus"
+      "Medicari profundus ssp. longaevus"
     ),
     Collector = c(rep("A", 4), rep("B", 2), "C"),
     Collection_Number = 1:7,
@@ -14,11 +14,21 @@ test_that("Specimen R6 Superclass", {
     Latitude = seq(from = 41, to = 44, length.out = 7),
     Longitude = seq(from = -107, to = -105, length.out = 7)
   ) %>%
-    Specimen$new(records = .)
+    dplyr::mutate(
+      label = dplyr::case_when(
+        Collection_Number == 1 ~ NA_character_,
+        TRUE ~ .data$Taxon
+      )
+    ) %>%
+    Specimen$new(
+      records = .,
+      identifier = "Taxon"
+    )
 
   expect_is(vouchers, class = c("Specimen", "R6"))
   expect_is(vouchers$records, class = c("tbl_df", "tbl", "data.frame"))
   purrr::walk(
+    # TODO Check public functions class - metaprogramming with R6 `$` closure?
     .x = list(
       vouchers$census,
       vouchers$limit,
@@ -50,4 +60,28 @@ test_that("Specimen R6 Superclass", {
   voucher_collections <- vouchers$clone()
   voucher_collections$collections("A", "B" = c(5, 6), "C" = 7)
   expect_equal(nrow(voucher_collections$records), 7)
+
+  # Annotaions Labels ----------------------------------------------------------
+  expect_equal(
+    vouchers$annotations(),
+    list(
+      "Custodis impavidus" = "*Custodis* *impavidus*",
+      "Custodis 'mundus'" = "*Custodis* 'mundus'",
+      "Medicari iugerum" = "*Medicari* *iugerum*",
+      "Medicari profundus ssp. longaevus" = paste(
+        "*Medicari* *profundus*",
+        "<br><span> &nbsp;&nbsp;&nbsp; </span>",
+        "ssp. *longaevus*"
+      )
+    )
+  )
+  expect_equal(
+    vouchers$labels(),
+    c(
+      NA_character_, "italic(C.~impavidus)",
+      rep("italic(C.)~\"'mundus'\"", 2),
+      rep("italic(M.~iugerum)", 2),
+      "italic(M.~p.)~ssp.~italic(longaevus)"
+    )
+  )
 })
