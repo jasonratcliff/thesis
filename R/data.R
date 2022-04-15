@@ -128,8 +128,24 @@
 
 # ggplot Scales ----
 
+#' `ggplot2` Manual Scale Values
+#'
+#' [tibble::tibble()] of manual scale values for [ggplot2::ggplot()].
+#'
+#' \describe{
+#'   \item{species}{Taxonomic annotation matching value in [Thesis::Specimen]}
+#'   \item{color}{Color value character scalar}
+#'   \item{shape}{Shape value numeric scalar}
+#'   \item{text-color}{Descriptive text of color aesthetic}
+#'   \item{text-shape}{Descriptive text of shape aesthetic}
+#' }
+#'
+"aesthetics"
+
 #' Species Color Aesthetics
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' \describe{
 #'   \item{spp_color}{Vector with values for ggplot color aesthetics}
 #' }
@@ -137,8 +153,9 @@
 
 #' Species Shape Aesthetics
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' \describe{
 #'   \item{spp_shape}{Vector with values for ggplot shape aesthetics}
 #' }
 "spp_shape"
-

@@ -1,4 +1,3 @@
-
 spp_color <-
   c(
     "Physaria" = "#C0C0C0",  # silver
@@ -48,8 +47,8 @@ spp_shape <-
     "Physaria floribunda subsp. floribunda" = 0,  # hollow square
     "Physaria floribunda subsp. osterhoutii" = 5,
     "Physaria rollinsii" = 1,  # hollow circle
-    "Physaria acutifolia - vitulifera-like" = 17,
     "Physaria vitulifera - Carbon" = 18,
+    "Physaria acutifolia - vitulifera-like" = 17,
     "Physaria argyraea" = 5,
     "Physaria fendleri" = 0,
     "Physaria obcordata" = 1
