@@ -1,5 +1,7 @@
 #' Count Specimens
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
 #' Tabulate the total number of distinct specimen collections by collector,
 #' colleciton number and date while accounting for herbarium duplicates.
 #'
@@ -21,16 +23,20 @@ count_specimens <- function(spp_tibble) {
       Herbarium = stringr::str_remove_all(
         string = .data$Herbarium,
         pattern = "\\[|\\]"
-      )  %>%
+      ) %>%
         stringr::str_split(string = ., pattern = ", +") %>%
         purrr::map_chr(., function(herbarium) {
-          herbarium_split <- unlist(herbarium) %>% sort() %>%
+          herbarium_split <- unlist(herbarium) %>%
+            sort() %>%
             stringr::str_c(., collapse = " ")
           ifelse(length(herbarium_split) == 1, herbarium_split, "NA")
-          })
-      ) %>%
+        })
+    ) %>%
     dplyr::distinct(., .data$Collector, .data$Collection_Number,
-                    .data$Date, .data$Herbarium, .keep_all = TRUE) %>% nrow()
+      .data$Date, .data$Herbarium,
+      .keep_all = TRUE
+    ) %>%
+    nrow()
   return(specimen_count)
 }
 
