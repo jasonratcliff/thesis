@@ -14,27 +14,53 @@
 #' (Teucher and Russell 2020) to simplify border polygons via the
 #' Visvalingam algorithm.
 #'
+#' @details
+#'
+#' * **`ggmap`**
+#'
+#' The \href{#method-map}{\code{SpecimenMap$map()}}
+#' method exposes an option to include satellite or
+#' terrain rasters image from [ggmap::get_map()] as a baselayer to the specimen
+#' distribution map. Access to the static maps requires API key registration.
+#' Verify a key is set to the environment variable `GGMAP_GOOGLE_API_KEY`
+#' using [ggmap::has_google_key()]. For options to register a key, see
+#' [ggmap::register_google()] – *ensure private keys are kept confidential*.
+#' See the `README` at <https://github.com/dkahle/ggmap> for more info.
+#'
 #' @param records Specimen voucher records [tibble::tibble()].
-#' @param identifier Name of [`Specimen$records`][Specimen] tibble
-#'  variable to designate annotation type for filtering, annotations,
-#'  and [ggplot2::ggplot()] aesthetics.
+#' @param identifier Name of [`Specimen$records`][Specimen] tibble variable for
+#'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
 #' @param sf_border Character scalar to set color of
 #'  county and state borders.
 #' @param legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
+#' @param baselayer Specify map baselayer underlying county borders.
+#'  One of: `base` or `ggmap`.
+#' @param zoom Integer passed to [ggmap::get_map()] argument `zoom`.
+#' @param center Numeric vector of length 2 specifying x,y lon/lat centroid.
+#'  Default `NULL` centers map by [`Specimen$records`][Specimen] coordinate
+#'  range midpoints.
+#' @param maptype Choice of [ggmap::get_map()] `maptype` argument.
 #'
 #' @include specimens.R
 #' @export
 #'
 #' @references
-#' Pebesma E. 2018. Simple feature for R: Standardized support for spatial
-#'   vector data. The R Journal. 10(1):438-446.
+#' Kahle D and Wickham H. `ggmap`: Spatial Visualization with `ggplot2`.
+#' The R Journal. 5(1):144-161.
+#' <https://doi.org/10.32614/RJ-2013-014>
 #'
-#' Teucher A, Russell K. 2021. rmapshaper: Client for 'mapshaper' for
-#'   'Geospatial' operations. R package version 0.4.5.
+#' Pebesma E. 2018. Simple Features for R: Standardized Support for Spatial
+#' Vector Data. The R Journal. 10(1):438-446.
+#' <https://doi.org/10.32614/RJ-2018-009>
+#'
+#' Teucher A, Russell K. 2021. `rmapshaper`: Client for 'mapshaper' for
+#' 'Geospatial' operations. R package version 0.4.5.
 #'
 #' Walker K. 2016. tigris: An R package to access and work with
-#'   geographic data from the US census bureau. The R Journal. 8(2):231-242.
+#' geographic data from the US census bureau.
+#' The R Journal. 8(2):231-242.
+#' <https://doi.org/10.32614/RJ-2016-043>
 #'
 #' @examples
 #' voucher_map <- SpecimenMap$new(
@@ -42,12 +68,25 @@
 #'   identifier = "Taxon_a_posteriori"
 #' )
 #'
-#' voucher_map$taxa(
-#'   c("medicinae", "vitulifer", "floribunda"),
-#'   identifier = "Taxon_a_posteriori"
+#' voucher_map$limit(
+#'   west = -108, east = -105,
+#'   north = 42, south = 39
 #' )
 #'
-#' voucher_map$map()
+#' # Base map type
+#' voucher_map$map(
+#'   legend = "Reviewed Annotation",
+#'   sf_border = "black"
+#' )
+#'
+#' # Example `ggmap` wrapper
+#' voucher_map$map(
+#'   legend = "Reviewed Annotation",
+#'   sf_border = "white",
+#'   baselayer = "ggmap",
+#'   zoom = 7,
+#'   maptype = "terrain"
+#' )
 SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
   inherit = Specimen,
@@ -66,7 +105,7 @@ SpecimenMap <- R6::R6Class(
     #' [tigris::states()] and [tigris::counties()] simple features.
     #' Data layers for simple feature (sf) objects are enabled by
     #' [ggplot2::geom_sf()]. Coordinate limits are set by the range of
-    #' lon/lat values in the [records] tibble.
+    #' lon/lat values in the [`Specimen$records`][Specimen] tibble.
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
@@ -98,6 +137,7 @@ SpecimenMap <- R6::R6Class(
     specimens = function() {
       list(
         ggplot2::geom_jitter(
+          data = self$records,
           mapping = ggplot2::aes_string(
             x = "Longitude",
             y = "Latitude",
@@ -166,20 +206,36 @@ SpecimenMap <- R6::R6Class(
     },
 
     #' @description
-    #' Build [ggplot2::ggplot()] distribution map from  `records` field
-    #' specimens. Color and shape aesthetics are set by the `identifier` field.
+    #' Build [ggplot2::ggplot()] distribution map from the
+    #' [`Specimen$records`][Specimen] field tibble. Color and shape aesthetics
+    #' are set by the [`Specimen$identifier`][Specimen] field.
     #' Combines the public methods exposed by [Thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier, sf_border = "black") {
-
+    map = function(legend = self$identifier,
+                   sf_border = "black",
+                   baselayer = c("base", "ggmap"),
+                   zoom = 7,
+                   center = NULL,
+                   maptype = "satellite") {
       # Order specimens to account for plot density
       specimens <- self$records %>%
         dplyr::add_count(.data[[self$identifier]]) %>%
         dplyr::arrange(dplyr::desc(.data$n)) %>%
         dplyr::filter(!is.na(.data$Longitude) & !is.na(.data$Latitude))
 
-      species_map <- ggplot2::ggplot(data = specimens) +
+      baselayer <- match.arg(baselayer, choices = c("base", "ggmap"))
+      baselayer <-
+        switch(baselayer,
+          base = ggplot2::ggplot(),
+          ggmap = private$base_ggmap(
+            zoom = zoom,
+            center = center,
+            maptype = maptype
+          )
+        )
+
+      species_map <- baselayer +
         self$features(sf_border) +
         self$specimens() +
         self$scales() +
@@ -188,6 +244,43 @@ SpecimenMap <- R6::R6Class(
     }
   ),
   private = list(
+
+    # Base Layer `ggmap` -------------------------------------------------------
+    base_ggmap = function(zoom, center, maptype) {
+      if (ggmap::has_google_key() == FALSE) {
+        stop(paste(
+          "Register an API key with Google.",
+          "See: https://github.com/dkahle/ggmap"
+        ))
+      }
+      maptype <-
+        match.arg(
+          arg = maptype,
+          choices = as.character(formals(ggmap::get_map)[["maptype"]])
+        )
+      if (is.null(center)) {
+        bound <- ggmap::make_bbox(
+          lon = self$records[["Longitude"]],
+          lat = self$records[["Latitude"]]
+        )
+        center <- c(
+          lon = (bound[["left"]] + bound[["right"]]) / 2,
+          lat = (bound[["bottom"]] + bound[["top"]]) / 2
+        )
+      } else {
+        rlang::is_bare_numeric(center, n = 2) || rlang::abort(
+          message = c(
+            "Map centroid requires numeric vector of length 2.",
+            "*" = glue::glue("`center` has a length of {length(center)}."),
+            "i" = glue::glue("Set values for for lon (x) / lat (y) coordinates.")
+          )
+        )
+      }
+      ggmap_raster <-
+        ggmap::get_map(location = center, zoom = zoom, maptype = maptype)
+      ggmap_ggplot <- ggmap::ggmap(ggmap = ggmap_raster)
+      return(ggmap_ggplot)
+    },
 
     # `tigris` State Borders ---------------------------------------------------
     states = function() {

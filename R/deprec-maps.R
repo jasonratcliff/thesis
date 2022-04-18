@@ -225,6 +225,89 @@ layer_themes <- function(specimen_tbl, id_column, legend_title) {
   return(theme_layer)
 }
 
+# Map Base ---------------------------------------------------------------------
+
+#' Layer ggmap base for specimen plot.
+#'
+#' Build base ggplot layer for specimen mapping over satellite or terrain
+#' rasters images. Access to the static maps requires API key registration. To
+#' check if the key has been set in the users `.Renviron` file, see
+#' `ggmap::has_google_key()` \cr
+#' For more information, see the `README` at: https://github.com/dkahle/ggmap
+#'
+#' @param zoom_lvl Integer passed to `ggmap::get_map()` argument `zoom`.
+#' @param gg_map_type Type of map to return from `ggmap::get_map()` function
+#'   call. One of: "terrain", "satellite", "roadmap" or "hybrid".
+#' @param gg_longitude Numeric vector of length one to optionally center call
+#' of `get_map()` longitude coordinates.
+#' @param gg_latitude Numeric vector of length one to optionally center call
+#' of `get_map()` latitude coordinates.
+#' @param ... Forwarded arguments from [build_map]
+#' @inheritParams layer_specimens
+#' @export
+#'
+#' @return Base ggplot layer from [ggmap] raster object.
+#'
+#' @references
+#'  D. Kahle and H. Wickham. ggmap: Spatial Visualization with ggplot2. The R
+#'  Journal, 5(1), 144-161. URL
+#'  http://journal.r-project.org/archive/2013-1/kahle-wickham.pdf
+#'
+#' @examples
+#' ggmap_ggplot <- layer_ggmap(
+#'   specimen_tbl = Thesis::spp_co_front_range,
+#'   gg_map_type = "satellite", zoom_lvl = 8
+#' )
+#' ggmap_ggplot +
+#'   layer_borders(spl_extent = spl_bbox(ggmap_ggplot)) +
+#'   layer_specimens(
+#'     specimen_tbl = spp_co_front_range, shape_aes = TRUE,
+#'     id_column = "Taxon_a_posteriori"
+#'   ) +
+#'   layer_themes(
+#'     specimen_tbl = spp_co_front_range,
+#'     id_column = "Taxon_a_posteriori",
+#'     legend_title = "Reviewed Annotations"
+#'   )
+#'
+layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
+                        gg_map_type = c(
+                          "terrain", "satellite",
+                          "roadmap", "hybrid"
+                        ),
+                        gg_longitude = NULL, gg_latitude = NULL, ...) {
+
+  # Check registration of Google API key.
+  if (ggmap::has_google_key() == FALSE) {
+    stop(paste(
+      "Register an API key with Google.",
+      "See: https://github.com/dkahle/ggmap"
+    ))
+  }
+
+  # Retrieve ggmap raster from specified coordinates or specimen midrange.
+  get_ggmap <- function(locations) {
+    ggmap::get_map(
+      location = locations,
+      maptype = gg_map_type, zoom = zoom_lvl,
+      source = "google", messaging = FALSE
+    )
+  }
+  if (!is.null(gg_longitude) && !is.null(gg_latitude)) {
+    ggmap_raster <- get_ggmap(locations = c(gg_longitude, gg_latitude))
+  } else if (!is.null(gg_longitude) || !is.null(gg_latitude)) {
+    stop("Enter numeric vector for both longitude and latitude coordinates.")
+  } else {
+    ggmap_raster <- specimen_tbl %>%
+      dplyr::select(.data$Longitude, .data$Latitude) %>%
+      purrr::map_dbl(.x = ., ~ (range(.x)[1] + range(.x)[2]) / 2) %>%
+      get_ggmap(locations = .)
+  }
+  ggmap_ggplot <- ggmap::ggmap(ggmap = ggmap_raster)
+  return(ggmap_ggplot)
+}
+
+
 # Helpers ----------------------------------------------------------------------
 
 #' Bounding box State intersect
