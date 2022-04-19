@@ -27,6 +27,14 @@
 #' [ggmap::register_google()] – *ensure private keys are kept confidential*.
 #' See the `README` at <https://github.com/dkahle/ggmap> for more info.
 #'
+#' * **`elevatr`**
+#'
+#' Build base ggplot layer from digital elevation model data from AWS Open Data
+#' Terrain Tiles via the [elevatr](https://github.com/jhollist/elevatr) package.
+#' Map terrain tiles pulled from:
+#'
+#' - <https://registry.opendata.aws/terrain-tiles/>
+#'
 #' @param records Specimen voucher records [tibble::tibble()].
 #' @param identifier Name of [`Specimen$records`][Specimen] tibble variable for
 #'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
@@ -35,7 +43,7 @@
 #' @param legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
 #' @param baselayer Specify map baselayer underlying county borders.
-#'  One of: `base` or `ggmap`.
+#'  One of: `base`, `ggmap`, or `elevatr`.
 #' @param zoom Integer passed to [ggmap::get_map()] argument `zoom`.
 #' @param center Numeric vector of length 2 specifying x,y lon/lat centroid.
 #'  Default `NULL` centers map by [`Specimen$records`][Specimen] coordinate
@@ -46,7 +54,12 @@
 #' @export
 #'
 #' @references
-#' Kahle D and Wickham H. `ggmap`: Spatial Visualization with `ggplot2`.
+#' Hollister J, Shah T, Robitaille A, Beck M, Johnson M. 2021. `elevatr`:
+#' Access Elevation Data from Various APIs. doi: 10.5281/zenodo.5809645.
+#' R package version 0.4.2.
+#' <https://github.com/jhollist/elevatr/>
+#'
+#' Kahle D and Wickham H. 2013. `ggmap`: Spatial Visualization with `ggplot2`.
 #' The R Journal. 5(1):144-161.
 #' <https://doi.org/10.32614/RJ-2013-014>
 #'
@@ -56,6 +69,7 @@
 #'
 #' Teucher A, Russell K. 2021. `rmapshaper`: Client for 'mapshaper' for
 #' 'Geospatial' operations. R package version 0.4.5.
+#' <https://github.com/ateucher/rmapshaper>
 #'
 #' Walker K. 2016. tigris: An R package to access and work with
 #' geographic data from the US census bureau.
@@ -86,6 +100,13 @@
 #'   baselayer = "ggmap",
 #'   zoom = 7,
 #'   maptype = "terrain"
+#' )
+#'
+#' # Example `elevatr` wrapper
+#' voucher_map$map(
+#'   legend = "Reviewed Annotation",
+#'   sf_border = "grey",
+#'   baselayer = "elevatr"
 #' )
 SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
@@ -123,7 +144,8 @@ SpecimenMap <- R6::R6Class(
         ),
         ggplot2::coord_sf(
           xlim = base::range(self$records[["Longitude"]], na.rm = TRUE),
-          ylim = base::range(self$records[["Latitude"]], na.rm = TRUE)
+          ylim = base::range(self$records[["Latitude"]], na.rm = TRUE),
+          expand = FALSE
         )
       )
     },
@@ -144,8 +166,9 @@ SpecimenMap <- R6::R6Class(
             color = self$identifier,
             shape = self$identifier
           ),
-          size = 3, alpha = 0.75,
-          width = 0.1, height = 0.1
+          size = 3,
+          width = 0.1,
+          height = 0.1
         )
       )
     },
@@ -214,7 +237,7 @@ SpecimenMap <- R6::R6Class(
     #' @return Grid graphics / ggplot object to print specimen distribution.
     map = function(legend = self$identifier,
                    sf_border = "black",
-                   baselayer = c("base", "ggmap"),
+                   baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
                    center = NULL,
                    maptype = "satellite") {
@@ -224,7 +247,7 @@ SpecimenMap <- R6::R6Class(
         dplyr::arrange(dplyr::desc(.data$n)) %>%
         dplyr::filter(!is.na(.data$Longitude) & !is.na(.data$Latitude))
 
-      baselayer <- match.arg(baselayer, choices = c("base", "ggmap"))
+      baselayer <- match.arg(baselayer, choices = c("base", "ggmap", "elevatr"))
       baselayer <-
         switch(baselayer,
           base = ggplot2::ggplot(),
@@ -232,7 +255,8 @@ SpecimenMap <- R6::R6Class(
             zoom = zoom,
             center = center,
             maptype = maptype
-          )
+          ),
+          elevatr = private$base_elevatr(zoom = zoom)
         )
 
       species_map <- baselayer +
@@ -280,6 +304,32 @@ SpecimenMap <- R6::R6Class(
         ggmap::get_map(location = center, zoom = zoom, maptype = maptype)
       ggmap_ggplot <- ggmap::ggmap(ggmap = ggmap_raster)
       return(ggmap_ggplot)
+    },
+
+    # Base Layer `elevatr` -----------------------------------------------------
+    base_elevatr = function(zoom) {
+      # Define projection and get AWS Open Data terrain tiles.
+      prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+      elev_raster <-
+        elevatr::get_elev_raster(
+          locations = as.data.frame(self$records[, c("Longitude", "Latitude")]),
+          z = zoom, prj = prj_dd, clip = "bbox", src = "aws", verbose = FALSE
+        )
+      elev_df <-
+        as.data.frame(
+          methods::as(object = elev_raster, Class = "SpatialPixelsDataFrame")
+        )
+      elev_ggplot <-
+        ggplot2::ggplot(
+          data = elev_df,
+          mapping = ggplot2::aes(x = .data$x, y = .data$y)
+        ) +
+        ggplot2::geom_tile(mapping = ggplot2::aes(fill = elev_df[, 1])) +
+        ggplot2::scale_fill_gradientn("Elevation (m)",
+          colours = grDevices::terrain.colors(7),
+          guide = ggplot2::guide_colourbar(order = 1)
+        )
+      return(elev_ggplot)
     },
 
     # `tigris` State Borders ---------------------------------------------------
