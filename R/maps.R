@@ -156,10 +156,15 @@ SpecimenMap <- R6::R6Class(
     #' [`Specimen$identifier`][Specimen] public field.
     #'
     #' @return List with [ggplot2::geom_jitter()] ggproto object.
-    specimens = function() {
+    specimens = function(seed) {
+      # Order specimens to account for plot density
+      specimens <- self$records %>%
+        dplyr::add_count(.data[[self$identifier]]) %>%
+        dplyr::arrange(dplyr::desc(.data$n)) %>%
+        dplyr::filter(!is.na(.data$Longitude) & !is.na(.data$Latitude))
       list(
         ggplot2::geom_jitter(
-          data = self$records,
+          data = specimens,
           mapping = ggplot2::aes_string(
             x = "Longitude",
             y = "Latitude",
@@ -241,12 +246,6 @@ SpecimenMap <- R6::R6Class(
                    zoom = 7,
                    center = NULL,
                    maptype = "satellite") {
-      # Order specimens to account for plot density
-      specimens <- self$records %>%
-        dplyr::add_count(.data[[self$identifier]]) %>%
-        dplyr::arrange(dplyr::desc(.data$n)) %>%
-        dplyr::filter(!is.na(.data$Longitude) & !is.na(.data$Latitude))
-
       baselayer <- match.arg(baselayer, choices = c("base", "ggmap", "elevatr"))
       baselayer <-
         switch(baselayer,
