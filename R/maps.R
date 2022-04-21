@@ -93,15 +93,6 @@
 #'   sf_border = "black"
 #' )
 #'
-#' # Example `ggmap` wrapper
-#' voucher_map$map(
-#'   legend = "Reviewed Annotation",
-#'   sf_border = "white",
-#'   baselayer = "ggmap",
-#'   zoom = 7,
-#'   maptype = "terrain"
-#' )
-#'
 #' # Example `elevatr` wrapper
 #' voucher_map$map(
 #'   legend = "Reviewed Annotation",
@@ -156,7 +147,7 @@ SpecimenMap <- R6::R6Class(
     #' [`Specimen$identifier`][Specimen] public field.
     #'
     #' @return List with [ggplot2::geom_jitter()] ggproto object.
-    specimens = function(seed) {
+    specimens = function() {
       # Order specimens to account for plot density
       specimens <- self$records %>%
         dplyr::add_count(.data[[self$identifier]]) %>%
@@ -171,9 +162,7 @@ SpecimenMap <- R6::R6Class(
             color = self$identifier,
             shape = self$identifier
           ),
-          size = 3,
-          width = 0.1,
-          height = 0.1
+          size = 3
         )
       )
     },
@@ -259,11 +248,61 @@ SpecimenMap <- R6::R6Class(
         )
 
       species_map <- baselayer +
-        self$features(sf_border) +
+        self$features(sf_border = sf_border) +
         self$specimens() +
         self$scales() +
         self$theme(legend = legend)
       return(species_map)
+    },
+
+    #' @description
+    #' Layer botanist collection tags, wrapping over
+    #' [ggrepel::geom_label_repel()] to plot repelled labels.
+    #' Design pattern to forward multiple plot arguments modelled after:
+    #'
+    #' * <https://ggplot2-book.org/programming.html#additional-arguments>
+    #'
+    #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Collector / collection
+    #'  sets passed to [`Specimen$collections()`][Specimen].
+    #' @param repel.params Arg/value pairs passed on to
+    #'  [ggrepel::geom_label_repel()] to modify repelled labels.
+    #'
+    #' @examples
+    #' voucher_map$map(
+    #'   baselayer = "ggmap",
+    #'   sf_border = "white"
+    #' ) +
+    #' voucher_map$repel(
+    #'   Nelson = c(49286, 49478),
+    #'   Kastning = c(1462, 1725),
+    #'   repel.params = list(
+    #'     xlim = c(-Inf, NA),
+    #'     ylim = c(-Inf, NA),
+    #'     segment.color = "#FFFFBF",
+    #'     segment.size = 0.75,
+    #'     segment.alpha = 1,
+    #'     arrow = grid::arrow(length = grid::unit(0.01, "npc")),
+    #'     box.padding = 0.5
+    #'   )
+    #' )
+    repel = function(..., repel.params = list()) {
+      records <- botanist(records = self$collections(...)$records)
+      id <- do.call(what = ggrepel::geom_label_repel, utils::modifyList(
+        list(
+          data = records,
+          mapping = ggplot2::aes(x = Longitude, y = Latitude, label = label),
+          alpha = 0.5,
+          max.overlaps = Inf,
+          point.size = 3,
+          box.padding = 0.5,
+          min.segment.length = 0,
+          segment.color = "black",
+          segment.curvature = 0.25,
+          segment.shape = 0.75
+        ),
+        val = repel.params
+      ))
+      return(id)
     }
   ),
   private = list(
@@ -374,3 +413,40 @@ SpecimenMap <- R6::R6Class(
     }
   )
 )
+
+# Extract collector / collection label from records
+botanist <- function(records) {
+  collections <- records %>%
+    dplyr::select(
+      dplyr::all_of(
+        c("Collector", "Collection_Number", "Longitude", "Latitude")
+      )
+    ) %>%
+    dplyr::mutate(
+      label = purrr::pmap_chr(
+        .l = list(.data$Collector, .data$Collection_Number),
+        .f = function(collector, collection) {
+          extract <- stringr::str_extract_all(
+            string = collector,
+            pattern = "[A-Z][A-z']+(, Jr\\.)?"
+          ) %>%
+            unlist()
+          botanist <- dplyr::case_when(
+            length(extract) == 1 ~ list(as.character(extract)),
+            length(extract) == 2 ~ list(paste(extract, collapse = " & ")),
+            length(extract) >= 3 ~
+              list(
+                paste0(
+                  paste(extract[1:(length(extract) - 1)], collapse = ", "),
+                  ", & ", extract[length(extract)]
+                )
+              ),
+            TRUE ~ list(NA_character_)
+          )
+          label <- paste(botanist[[1]], collection, sep = "\n")
+          return(label)
+        }
+      )
+    )
+  return(collections)
+}
