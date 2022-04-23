@@ -25,8 +25,8 @@ test_that("Specimen R6 Superclass", {
       identifier = "Taxon"
     )
 
-  expect_is(vouchers, class = c("Specimen", "R6"))
-  expect_is(vouchers$records, class = c("tbl_df", "tbl", "data.frame"))
+  expect_identical(class(vouchers), c("Specimen", "R6"))
+  expect_identical(class(vouchers$records), c("tbl_df", "tbl", "data.frame"))
   purrr::walk(
     # TODO Check public functions class - metaprogramming with R6 `$` closure?
     .x = list(
@@ -36,7 +36,7 @@ test_that("Specimen R6 Superclass", {
       vouchers$collections
     ),
     .f = function(public) {
-      expect_is(public, class = "function")
+      expect_type(public, "closure")
     }
   )
 
