@@ -147,7 +147,7 @@ test_that("SpecimenMap R6 Subclass", {
   expect_s3_class(vouchers$map(baselayer = "ggmap"), class = c("gg", "ggplot"))
   expect_s3_class(vouchers$map(baselayer = "elevatr"), class = c("gg", "ggplot"))
 
-  if (dir.exists("tests/testthat/.mustashe")) {
-    unlink("tests/testthat/.mustashe", recursive = TRUE)
+  if (dir.exists(".mustashe")) {
+    unlink(".mustashe", recursive = TRUE)
   }
 })
