@@ -1,7 +1,9 @@
-# Thesis 0.2.3.9002
+# Thesis 0.2.3.9009
 
 * New R6 superclass `Specimen` data structure consolidates specimen record
   tibbles with previously exported functions for subsetting and theme options.
+  * The `SpecimenMap` inherits methods from the superclass, and defines
+    public and private methods to consolidate previously exported functions.
 
 ## Breaking Changes
 
@@ -9,6 +11,8 @@
   container using the R6 OOP system. Despite the non-(R)-idiomatic style of R6,
   the reference semantics present a useful implementation for the various
   subsetting and plotting operations covered by these functions.
+
+### `Specimen`
 
 | method                    | function            | status                 |
 |---------------------------|---------------------|------------------------| 
@@ -18,6 +22,25 @@
 | `Specimen$collections()`  | `find_spp()`        | `R/deprec-specimens.R` |
 | `Specimen$annotations()`  | `spl_labels()`      | `R/deprec-themes.R`    |
 | `Specimen$labels()`       | `parse_taxa()`      | `R/deprec-themes.R`    |
+
+### `SpecimenMap`
+
+| method                    | function            | status              |
+|---------------------------|---------------------|---------------------|
+| `SpecimenMap$map()`       | `build_map()`       | `R/deprec-maps.R`   |
+| `SpecimenMap$features()`  | `layer_borders()`   | `R/deprec-maps.R`   |
+| `SpecimenMap$specimens()` | `layer_specimens()` | `R/deprec-maps.R`   |
+| `SpecimenMap$scales()`    | `layer_themes()`    | `R/deprec-maps.R`   |
+| `SpecimenMap$theme()`     | `layer_themes()`    | `R/deprec-maps.R`   |
+| `SpecimenMap$repel()`     | `spl_id()`          | `R/deprec-maps.R`   |
+| `private$base_ggmap()`    | `layer_ggmap()`     | `R/deprec-maps.R`   |
+| `private$base_elevatr()`  | `layer_elevation()` | `R/deprec-maps.R`   |
+
+- Superseded helper functions:
+  - `spl_states()`
+  - `spl_order()`
+  - `spl_bbox()`
+  - `spl_legend()`
 
 # Thesis 0.2.3
 
