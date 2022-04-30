@@ -1,7 +1,7 @@
 Package: Thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.2.3.9003
+Version: 0.2.3.9009
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling Thesis Bookdown document. Includes
@@ -11,9 +11,10 @@ Description: Data and code for compiling Thesis Bookdown document. Includes
 Encoding: UTF-8
 LazyData: true
 SystemRequirements: GNU make
-License: CC BY 4.0
+License: CC BY 4.0 + file LICENSE
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
 Depends:
     R (>= 4.0)
 Imports:
@@ -37,8 +38,10 @@ Imports:
     magrittr,
     methods,
     msa,
+    mustashe,
     plyr,
     purrr,
+    R6,
     raster,
     readr,
     rlang,
@@ -50,8 +53,7 @@ Imports:
     tibble,
     tigris,
     treeio,
-    tidyr,
-    R6
+    tidyr
 Suggests:
     ape,
     broom,
@@ -64,6 +66,7 @@ Suggests:
     grDevices,
     here,
     kableExtra,
+    lifecycle,
     lubridate,
     pander,
     readxl,
@@ -73,11 +76,11 @@ Suggests:
     rmarkdown,
     rstudioapi,
     shiny,
-    testthat,
+    testthat (>= 3.0.0),
     tesseract,
     tinytex,
     usethis,
     utils,
     whisker,
-    xaringan,
-    lifecycle
+    withr,
+    xaringan

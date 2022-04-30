@@ -8,7 +8,7 @@
 #' duplicate records, subsetting specimen records by geographic coordinate,
 #' and filtering operations by either annotation or collector / collection.
 #'
-#' @param records Specimen voucher records [`tibble`][tibble::tibble()].
+#' @param records Specimen voucher records [tibble::tibble()].
 #' @param identifier Character scalar for voucher annotation label variable.
 #' @export
 Specimen <- R6::R6Class(
