@@ -2,7 +2,7 @@
 
 # Assign list of raw FASTA files from project subdirectory.
 fasta_files <-
-  list.files(system.file("extdata/FASTA", package = "Thesis"),
+  list.files(system.file("extdata/FASTA", package = "thesis"),
              full.names = TRUE)
 
 ## Read FASTA into R ----
@@ -80,4 +80,3 @@ purrr::pwalk(list(fasta_matches, fasta_list, fasta_loci),
                  filepath = paste0("data-raw/sequencing/2.subset-fastas/",
                                    locus, "-subset.fasta"))
              })
-

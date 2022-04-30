@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(eval.after = 'fig.cap')
 
 library(magrittr)
-library(Thesis)
+library(thesis)
 
 # Note: phantomjs required for HTML rendering of of Diagrammer::mermaid()
 # - To install v2.1.1 via Homebrew:
@@ -22,9 +22,9 @@ library(Thesis)
 ```
 
 ```{r linkSpecimens, echo=FALSE}
-link_github <- "https://github.com/jasonratcliff/Thesis/"
+link_github <- "https://github.com/jasonratcliff/thesis/"
 
-link_spp_xlsx <- 
+link_spp_xlsx <-
   paste0(link_github, "blob/master/inst/extdata/specimens.xlsx")
 
 link_spp_script <-
@@ -71,17 +71,17 @@ unique collections were reviewed.
 
 ```{r specimenData}
 # Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "Thesis") %>%
+system.file("extdata/specimens.xlsx", package = "thesis") %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
 The [`herbarium_specimens.R`](`r link_spp_script`) script creates an *.Rda* 
 from `specimens.xlsx`, formatting specimen data for downstream phylogenetic,
 distribution, and morphological analyses to define a tibble
-`herbarium_specimens` in the `Thesis` namespace.
+`herbarium_specimens` in the `thesis` namespace.
 
 ```{r}
-Thesis::herbarium_specimens
+thesis::herbarium_specimens
 ```
 
 Briefly, the script does the following:
@@ -93,7 +93,7 @@ Briefly, the script does the following:
         - Brassicaceae
     - Standardize dates with `lubridate` [@R-lubridate]
         - New variable `Date_md` with month and day for phenology
-        - Log records mismatched with the date format `YYYY-MM-DD` 
+        - Log records mismatched with the date format `YYYY-MM-DD`
 
 - Split comma-separated prior annotations as separate variables
     - Identification agreements denoted by "!" are substituted with ID
@@ -106,7 +106,7 @@ Briefly, the script does the following:
     - Split minimum and maximum values and convert m to ft.
 
 - Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    - Create *dna_specimens.Rda* with tibble in the `Thesis` namespace
+    - Create *dna_specimens.Rda* with tibble in the `thesis` namespace
 
 # DNA Map
 
@@ -137,7 +137,7 @@ where the locus is indicated in the second field of the `FASTA` headers.
 ```{r fastaFiles}
 # Assign list of raw FASTA files from installed external package data.
 list.files(
-  path = system.file("extdata/FASTA", package = "Thesis"),
+  path = system.file("extdata/FASTA", package = "thesis"),
   full.names = TRUE
   ) %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
@@ -258,16 +258,15 @@ graph TD
 ')
 ```
 
-
 ## Evolutionary Models
 
 - https://github.com/ddarriba/modeltest/wiki/Models-of-Evolution
 
-| Locus  | Partition | jModelTest | MEGA  | Par. Finder | MrBayes    | BEAST       |
-| :----- | :-------- | :--------- | :---- | :---------- | :--------- | :---------- |
-| rITS   | 1-659     | TrNef      | HKY   | K80         | nst=1      | TN93        |
-| rps    | 660-1605  | F81        | T92   | F81 + i     | nst=1      | JC69        |
-| ycf1   | 1606-2162 | F81        | T92   | F81 + i     | nst=1      | JC69        |
+| Locus | Partition | jModelTest | MEGA | Par. Finder | MrBayes | BEAST |
+|:------|:----------|:-----------|:-----|:------------|:--------|:------|
+| rITS  | 1-659     | TrNef      | HKY  | K80         | nst=1   | TN93  |
+| rps   | 660-1605  | F81        | T92  | F81 + i     | nst=1   | JC69  |
+| ycf1  | 1606-2162 | F81        | T92  | F81 + i     | nst=1   | JC69  |
 
 ## FASTA Summaries
 
@@ -306,7 +305,7 @@ fasta_summaries <- function(fasta_path) {
 ### Raw FASTAs
 
 ```{r summarizeRaw, echo=FALSE}
-fasta_summaries(system.file("extdata/FASTA", package = "Thesis"))
+fasta_summaries(system.file("extdata/FASTA", package = "thesis"))
 ```
 
 ### Subset FASTAs

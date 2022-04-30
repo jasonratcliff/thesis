@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(readr)
 library(dplyr)
 library(purrr)
@@ -21,7 +21,7 @@ dna_specimens <- purrr::pmap_dfr(
   .f = function(label, Collector, Collection_Number, ...) {
 
     # Subset total herbarium record data frame by collector and collection.
-    record_match <- Thesis::herbarium_specimens %>%
+    record_match <- thesis::herbarium_specimens %>%
       dplyr::filter(., Collector == !!Collector &
                       Collection_Number == !!Collection_Number)  %>%
       dplyr::mutate(Collection_Number = as.numeric(Collection_Number)) %>%

@@ -1,4 +1,6 @@
-# Thesis 0.2.3.9009
+# thesis 0.2.3.9010
+
+* Rename package from `Thesis` to lowercase `thesis`.
 
 * New R6 superclass `Specimen` data structure consolidates specimen record
   tibbles with previously exported functions for subsetting and theme options.
@@ -42,7 +44,7 @@
   - `spl_bbox()`
   - `spl_legend()`
 
-# Thesis 0.2.3
+# thesis 0.2.3
 
 * New `parse_taxa()` creates plotmath expressions for `ggplot2` parsed labels.
     - The following functions are refactored to generate expressions:
@@ -72,7 +74,7 @@
 * Update `Makefile` target dependencies for building specimen `.rda`
 
 * `LaTeX` Edits
-    - Add Thesis abstract
+    - Add thesis abstract
     - Proof specimen appendices
     - Remove window margins
 
@@ -81,7 +83,7 @@
 
 <!-- TODO: See v0.2.2.9000-->
 
-# Thesis 0.2.2
+# thesis 0.2.2
 
 * Add `ggrepel` function wrappers to specify label position nudges leveraging
   `rlang` expression handling:
@@ -93,7 +95,7 @@
 
 * Add `pkgdown` infrastructure
 
-# Thesis 0.2.1
+# thesis 0.2.1
 
 * Medicine Bow and CO Front Range satellite map proofs.
 
@@ -110,7 +112,7 @@
 
 * Fix join of DNA specimens by specifying collection coordinate variables.
 
-# Thesis 0.2.0
+# thesis 0.2.0
 
 * Merge `ThesisPackage` into single `Thesis` R package repository.
     - Compartmentalize `bookdown` manuscript and `xaringan` slide rendering.

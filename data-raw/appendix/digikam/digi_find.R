@@ -12,7 +12,7 @@ if (Sys.getenv(x = "USER") != "jasonratcliff") {
 }
 
 specimens_xlsx <- # Specimens external data file path.
-  system.file("extdata/specimens.xlsx", package = "Thesis")
+  system.file("extdata/specimens.xlsx", package = "thesis")
 
 if (!file_exists(specimens_xlsx)) stop("Verify `specimens_xlsx` path variable.")
 
@@ -30,7 +30,7 @@ if (!file_exists(specimens_xlsx)) stop("Verify `specimens_xlsx` path variable.")
 #' @examples
 #' digi_search(
 #'   sheetname = "P. Remaining",
-#'   specimens = Thesis::herbarium_specimens,
+#'   specimens = thesis::herbarium_specimens,
 #'   digi_path = digikam_path
 #' )
 #'
@@ -76,10 +76,9 @@ readxl::excel_sheets(path = specimens_xlsx) %>%
   purrr::map_dfr(., function(sheet) {
     digi_paths <-
       digi_search(sheetname = sheet,
-                  specimens = Thesis::herbarium_specimens,
+                  specimens = thesis::herbarium_specimens,
                   digi_path = digikam_path)
     dplyr::bind_cols(excel_sheet = rep(sheet, times = nrow(digi_paths)),
                      digi_paths)
   }) %>%
   writexl::write_xlsx(x = ., path = "digikam/digikam.xlsx")
-

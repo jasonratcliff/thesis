@@ -7,10 +7,10 @@ library(purrr)
 library(lubridate)
 library(stringr)
 library(tibble)
-library(Thesis)
+library(thesis)
 
-if (basename(getwd()) != "Thesis") {
-  stop("Source from top level of `Thesis`.")
+if (basename(getwd()) != "thesis") {
+  stop("Source from top level of `thesis`.")
 }
 
 # Read Specimens ----
@@ -201,7 +201,7 @@ specimens$elevation <- specimens$raw %>%
   ) %>%
 
   dplyr::bind_cols(
-    Thesis::range_split(
+    thesis::range_split(
       trait_tbl = .,
       split_var = "Elev_raw"
     )
@@ -245,4 +245,3 @@ herbarium_specimens <-
 # Write Data .Rda ----
 
 usethis::use_data(herbarium_specimens, overwrite = TRUE)
-

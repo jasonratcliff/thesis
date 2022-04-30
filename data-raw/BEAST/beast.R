@@ -32,7 +32,7 @@ list.files("data-raw/sequencing/3.alignments-subset",
 # *BEAST ----
 
 # Write subset of specimen IDs for species tree taxa labels.
-spp_combined <- Thesis::dna_specimens %>%
+spp_combined <- thesis::dna_specimens %>%
   dplyr::select(1:11, dplyr::matches("header_")) %>%
 
   # Exclude outgroup and duplicated sample localities.
@@ -195,4 +195,3 @@ tibble::tibble(
   readr::write_csv(x = .,
     file = "inst/extdata/BEAST/spp_hypotheses.csv"
   )
-
