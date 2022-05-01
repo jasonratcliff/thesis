@@ -7,8 +7,8 @@ library(rmarkdown)
 dir_check <-
   rprojroot::find_root(criterion = rprojroot::has_file(".git/index")) %>%
   fs::path_file()  # Extract end of file path to match against project name.
-if (dir_check != "Thesis") {
-  stop("Verify working directory is set to 'Thesis/' root project directory.")
+if (dir_check != "thesis") {
+  stop("Verify working directory is set to 'thesis/' root project directory.")
 }
 
 if (!fs::dir_exists("inst/word")) {
@@ -30,4 +30,3 @@ c(
       output_dir = "inst/word"
     )
   })
-
