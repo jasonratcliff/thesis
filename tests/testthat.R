@@ -1,5 +1,5 @@
 library(testthat)
 library(withr)
-library(Thesis)
+library(thesis)
 
-test_check("Thesis")
+test_check("thesis")

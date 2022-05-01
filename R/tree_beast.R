@@ -10,12 +10,12 @@
 #'
 #' @examples
 #' list.files(
-#'   path = system.file("extdata/BEAST", package = "Thesis"),
+#'   path = system.file("extdata/BEAST", package = "thesis"),
 #'   pattern = "multi-locus.combined.mcc", full.names = TRUE
-#'   ) %>%
+#' ) %>%
 #'   read_tree(tree_file = .) %>%
 #'   ggtree::ggtree(tr = .) +
-#'     beast_posterior()
+#'   beast_posterior()
 #'
 beast_posterior <- function() {
   posterior_list <-
@@ -43,13 +43,13 @@ beast_posterior <- function() {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "Thesis"),
+#'     path = system.file("extdata/BEAST", package = "thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
-#'     ) %>%
-#'     read_tree(tree_file = .)
+#'   ) %>%
+#'   read_tree(tree_file = .)
 #'
-#'  ggtree::ggtree(tr = tree_data) +
-#'    beast_labels(tree_data = tree_data)
+#' ggtree::ggtree(tr = tree_data) +
+#'   beast_labels(tree_data = tree_data)
 #'
 beast_labels <- function(tree_data) {
   label_list <-
@@ -95,12 +95,12 @@ beast_labels <- function(tree_data) {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "Thesis"),
+#'     path = system.file("extdata/BEAST", package = "thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
-#'     ) %>%
-#'     read_tree(tree_file = .)
+#'   ) %>%
+#'   read_tree(tree_file = .)
 #'
-#'  ggtree::ggtree(tr = tree_data) +
+#' ggtree::ggtree(tr = tree_data) +
 #'   beast_labels(tree_data = tree_data) +
 #'   beast_theme(tree_data = tree_data)
 #'
@@ -116,10 +116,12 @@ beast_theme <- function(tree_data) {
   theme_list <-
     list(
       ggplot2::scale_color_manual(
-        "Annotations", values = Thesis::spp_color, labels = id_labels
+        "Annotations",
+        values = thesis::spp_color, labels = id_labels
       ),
       ggplot2::scale_shape_manual(
-        "Annotations", values = Thesis::spp_shape, labels = id_labels
+        "Annotations",
+        values = thesis::spp_shape, labels = id_labels
       ),
       ggplot2::theme(
         legend.text = ggtext::element_markdown(),
@@ -147,7 +149,7 @@ beast_theme <- function(tree_data) {
 #' @examples
 #' tree_data <-
 #'   list.files(
-#'     path = system.file("extdata/BEAST", package = "Thesis"),
+#'     path = system.file("extdata/BEAST", package = "thesis"),
 #'     pattern = "multi-locus.combined.mcc", full.names = TRUE
 #'   ) %>%
 #'   read_tree(tree_file = .)
@@ -157,9 +159,9 @@ beast_theme <- function(tree_data) {
 beast_plot <- function(tree_data, ggtree_layout = "circular") {
   beast_ggtree <-
     ggtree::ggtree(tree_data, layout = ggtree_layout) +
-    Thesis::beast_posterior() +
-    Thesis::beast_labels(tree_data = tree_data) +
-    Thesis::beast_theme(tree_data = tree_data) +
+    thesis::beast_posterior() +
+    thesis::beast_labels(tree_data = tree_data) +
+    thesis::beast_theme(tree_data = tree_data) +
     ggplot2::theme(
       legend.position = "none"
     )
@@ -221,8 +223,9 @@ beast_legend_probability <- function(tree_data) {
 #' @examples
 #' treeio::read.beast(
 #'   file = system.file("extdata/BEAST/spp-hypothesis-1.mcc",
-#'                      package = "Thesis")
-#'   ) %>%
+#'     package = "thesis"
+#'   )
+#' ) %>%
 #'   ggtree::fortify() %>%
 #'   dplyr::mutate(
 #'     label = gsub("medicinae", "'medicinae'", x = .data$label)
@@ -234,7 +237,7 @@ species_plot <- function(tree_tibble, label_size = 2) {
   # Parse tip label expressions for species italicization.
   labeled_tree <- tree_tibble %>%
     dplyr::mutate(
-      label = Thesis::parse_taxa(tree_tibble = ., id_column = "label")
+      label = thesis::parse_taxa(tree_tibble = ., id_column = "label")
     )
 
   # Build ggtree from species tree.
@@ -245,7 +248,8 @@ species_plot <- function(tree_tibble, label_size = 2) {
       data = dplyr::filter(tree_tibble, !is.na(.data$posterior)),
       mapping = ggplot2::aes(
         x = .data$x, y = .data$y,
-        label = round(x = .data$posterior, 2)),
+        label = round(x = .data$posterior, 2)
+      ),
       nudge_x = -0.00001,
       size = 2
     ) +
@@ -257,4 +261,3 @@ species_plot <- function(tree_tibble, label_size = 2) {
     ggtree::theme_tree()
   return(spp_ggtree)
 }
-

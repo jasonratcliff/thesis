@@ -127,7 +127,7 @@ test_that("SpecimenMap R6 Subclass", {
 
   # Map Plots ------------------------------------------------------------------
   expect_type(vouchers$map, type = "closure")
-  map_vouchers <- Thesis::herbarium_specimens %>%
+  map_vouchers <- thesis::herbarium_specimens %>%
     dplyr::filter(State == "Wyoming") %>%
     SpecimenMap$new(records = ., identifier = "Taxon_a_posteriori")
 

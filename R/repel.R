@@ -36,16 +36,16 @@
 #'     -105, 41.75
 #'   )
 #'
-#' specimens <- Thesis::herbarium_specimens %>%
+#' specimens <- thesis::herbarium_specimens %>%
 #'   subset_coords(
 #'     specimen_tbl = .,
 #'     Longitude = c(-108, -105),
 #'     Latitude = c(39.75, 41.75)
-#'      )
+#'   )
 #'
 #' jackson <-
-#'   Thesis::find_spp(
-#'     specimen_tbl = Thesis::herbarium_specimens,
+#'   thesis::find_spp(
+#'     specimen_tbl = thesis::herbarium_specimens,
 #'     collector = "Kastning|Nelson",
 #'     collection = "1462|1725|49286|49478"
 #'   ) %>%
@@ -66,7 +66,7 @@
 #'   )
 #'
 #' map <- ggplot2::ggplot() +
-#'   Thesis::layer_specimens(
+#'   thesis::layer_specimens(
 #'     specimen_tbl = specimens,
 #'     id_column = "Taxon_a_posteriori"
 #'   ) +
@@ -83,12 +83,12 @@
 #'
 #' tibble::tribble(
 #'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"Key",
-#'     0.4, -0.05, 0.1,  "Nelson_49286",
-#'     -1, -0.25, 0.1, "Kastning_Kastning_1462",
-#'     -1, -0.25, 0.1, "Kastning_Culp_1725",
-#'     -0.4, -0.1, -0.1, "Nelson_49478",
-#'   ) %>%
-#'   Thesis::repel_map_labels(
+#'   0.4, -0.05, 0.1, "Nelson_49286",
+#'   -1, -0.25, 0.1, "Kastning_Kastning_1462",
+#'   -1, -0.25, 0.1, "Kastning_Culp_1725",
+#'   -0.4, -0.1, -0.1, "Nelson_49478",
+#' ) %>%
+#'   thesis::repel_map_labels(
 #'     map_nudges = .,
 #'     map_labels = jackson,
 #'     initial_ggplot = map
@@ -104,10 +104,8 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
   ) %>%
     purrr::pmap(
       .l = .,
-      .f = function(
-        Longitude, Latitude, Label,
-        nudge_x, nudge_y, segment.curvature, ...
-      ) {
+      .f = function(Longitude, Latitude, Label,
+                    nudge_x, nudge_y, segment.curvature, ...) {
         rlang::call2(
           .fn = ggrepel::geom_label_repel,
           data = tibble::tibble(
@@ -127,7 +125,8 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
           alpha = 0.66,
           segment.color = "white"
         )
-      }) %>%
+      }
+    ) %>%
     purrr::reduce(
       .x = .,
       .f = ~ rlang::expr(!!.x + !!.y),
@@ -166,26 +165,26 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #' @examples
 #' bayes_joined <-
 #'   list.files(
-#'     path = system.file("extdata/MrBayes", package = "Thesis"),
+#'     path = system.file("extdata/MrBayes", package = "thesis"),
 #'     pattern = "rps-infile.nex.con.tre",
 #'     full.names = TRUE
 #'   ) %>%
-#'     Thesis::read_tree(tree_file = .) %>%
-#'     Thesis::join_bayes(
-#'       tree_data = .,
-#'       id_column = "Taxon_a_posteriori",
-#'       scale_vector = c(5, 10)
-#'     )
+#'   thesis::read_tree(tree_file = .) %>%
+#'   thesis::join_bayes(
+#'     tree_data = .,
+#'     id_column = "Taxon_a_posteriori",
+#'     scale_vector = c(5, 10)
+#'   )
 #'
 #' bayes_haplotypes <-
-#'   Thesis::haplotype_labels(
+#'   thesis::haplotype_labels(
 #'     haplotypes = bayes_joined,
 #'     id_column = "Taxon_a_posteriori"
 #'   )
 #'
 #' bayes_ggtree <-
 #'   ggtree::ggtree(tr = bayes_joined, layout = "circular") +
-#'     ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
+#'   ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
 #'
 #' tibble::tribble(
 #'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node", ~"Taxon_a_posteriori", ~"color",
@@ -194,13 +193,13 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #'   0.005, -1.5, 0.1, 5, "Physaria eburniflora", "white",
 #'   0.0025, -1.5, 0.1, 5, "Physaria acutifolia", "black"
 #' ) %>%
-#'   Thesis::repel_haplotype_labels(
+#'   thesis::repel_haplotype_labels(
 #'     tree_nudges = .,
 #'     tree_labels = bayes_haplotypes,
 #'     initial_ggtree = bayes_ggtree,
 #'     label_size = 3
 #'   ) %>%
-#'     rlang::eval_tidy(expr = .)
+#'   rlang::eval_tidy(expr = .)
 #'
 repel_haplotype_labels <- function(tree_nudges, tree_labels,
                                    initial_ggtree, label_size = 2) {
@@ -220,41 +219,39 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
       y = tree_labels,
       by = c("node", "Taxon_a_posteriori")
     ) %>%
-      purrr::pmap(
-        .l = .,
-        .f = function(
-          x, y, Label, Taxon_a_posteriori, color,
-          nudge_x, nudge_y, segment.curvature, ...
-        ) {
-          rlang::call2(
-           .fn = ggrepel::geom_label_repel,
-            data = tibble::tibble(
-              x = x,
-              y = y,
-              Label = Label
-           ),
-           mapping = ggplot2::aes(
-             x = x,
-             y = y,
-             label = Label,
-             fill = Taxon_a_posteriori
-           ),
-           xlim = c(-Inf, Inf),
-           ylim = c(-Inf, Inf),
-           nudge_x = nudge_x,
-           nudge_y = nudge_y,
-           alpha = 1,
-           box.padding = 0.65,
-           color = color,
-           parse = TRUE,
-           segment.color = "black",
-           segment.curvature = segment.curvature,
-           segment.shape = 0.5,
-           show.legend = FALSE,
-           size = label_size
-          )
-       }
-      ) %>%
+    purrr::pmap(
+      .l = .,
+      .f = function(x, y, Label, Taxon_a_posteriori, color,
+                    nudge_x, nudge_y, segment.curvature, ...) {
+        rlang::call2(
+          .fn = ggrepel::geom_label_repel,
+          data = tibble::tibble(
+            x = x,
+            y = y,
+            Label = Label
+          ),
+          mapping = ggplot2::aes(
+            x = x,
+            y = y,
+            label = Label,
+            fill = Taxon_a_posteriori
+          ),
+          xlim = c(-Inf, Inf),
+          ylim = c(-Inf, Inf),
+          nudge_x = nudge_x,
+          nudge_y = nudge_y,
+          alpha = 1,
+          box.padding = 0.65,
+          color = color,
+          parse = TRUE,
+          segment.color = "black",
+          segment.curvature = segment.curvature,
+          segment.shape = 0.5,
+          show.legend = FALSE,
+          size = label_size
+        )
+      }
+    ) %>%
     purrr::reduce(
       .x = .,
       .f = ~ rlang::expr(!!.x + !!.y),
@@ -288,22 +285,22 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
 #' @examples
 #' haplotypes <-
 #'   list.files(
-#'     path = system.file("extdata/MrBayes", package = "Thesis"),
+#'     path = system.file("extdata/MrBayes", package = "thesis"),
 #'     pattern = "rps-infile.nex.con.tre",
 #'     full.names = TRUE
-#'  ) %>%
-#'    Thesis::read_tree(tree_file = .) %>%
-#'    Thesis::join_bayes(
-#'      tree_data = .,
-#'      id_column = "Taxon_a_posteriori"
-#'    )
+#'   ) %>%
+#'   thesis::read_tree(tree_file = .) %>%
+#'   thesis::join_bayes(
+#'     tree_data = .,
+#'     id_column = "Taxon_a_posteriori"
+#'   )
 #'
 #' probabilities <- haplotypes %>%
-#'     dplyr::filter(.data$prob != 1)  # Exclude MrBayes polytomies
+#'   dplyr::filter(.data$prob != 1) # Exclude MrBayes polytomies
 #'
 #' bayes_ggtree <-
 #'   ggtree::ggtree(tr = haplotypes, layout = "circular") +
-#'     ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
+#'   ggplot2::geom_point(mapping = ggplot2::aes(color = prior_id), size = 3)
 #'
 #' tibble::tribble(
 #'   ~"nudge_x", ~"nudge_y", ~"segment.curvature", ~"node",
@@ -313,13 +310,13 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
 #'   -0.004, 0, 0.01, 34,
 #'   -0.005, 0, 0.01, 35
 #' ) %>%
-#'   Thesis::repel_node_labels(
+#'   thesis::repel_node_labels(
 #'     node_nudges = .,
 #'     node_labels = probabilities,
 #'     initial_ggtree = bayes_ggtree,
 #'     label_size = 4
 #'   ) %>%
-#'     rlang::eval_tidy(expr = .)
+#'   rlang::eval_tidy(expr = .)
 #'
 repel_node_labels <- function(node_nudges, node_labels,
                               initial_ggtree, label_size = 3) {
@@ -332,35 +329,33 @@ repel_node_labels <- function(node_nudges, node_labels,
       y = node_labels,
       by = c("node")
     ) %>%
-      purrr::pmap(
-        .l = .,
-        .f = function(
-          x, y, prob, segment.curvature,
-          nudge_x, nudge_y, ...
-        ) {
-          rlang::call2(
-           .fn = ggrepel::geom_label_repel,
-            data = tibble::tibble(
-              x = x,
-              y = y,
-              prob = prob
-           ),
-           mapping = ggplot2::aes(
-             x = x,
-             y = y,
-             label = sprintf(fmt ="%0.3f", as.numeric(prob), digits = 3)
-           ),
-           xlim = c(-Inf, Inf),
-           ylim = c(-Inf, Inf),
-           nudge_x = nudge_x,
-           nudge_y = nudge_y,
-           fontface = "bold",
-           size = label_size,
-           segment.linetype = 2,
-           segment.curvature = segment.curvature
-          )
-       }
-      ) %>%
+    purrr::pmap(
+      .l = .,
+      .f = function(x, y, prob, segment.curvature,
+                    nudge_x, nudge_y, ...) {
+        rlang::call2(
+          .fn = ggrepel::geom_label_repel,
+          data = tibble::tibble(
+            x = x,
+            y = y,
+            prob = prob
+          ),
+          mapping = ggplot2::aes(
+            x = x,
+            y = y,
+            label = sprintf(fmt = "%0.3f", as.numeric(prob), digits = 3)
+          ),
+          xlim = c(-Inf, Inf),
+          ylim = c(-Inf, Inf),
+          nudge_x = nudge_x,
+          nudge_y = nudge_y,
+          fontface = "bold",
+          size = label_size,
+          segment.linetype = 2,
+          segment.curvature = segment.curvature
+        )
+      }
+    ) %>%
     purrr::reduce(
       .x = .,
       .f = ~ rlang::expr(!!.x + !!.y),
@@ -382,12 +377,12 @@ repel_node_labels <- function(node_nudges, node_labels,
 #'
 #' @examples
 #' list.files(
-#'   path = system.file("extdata/MrBayes", package = "Thesis"),
+#'   path = system.file("extdata/MrBayes", package = "thesis"),
 #'   pattern = "rps-infile.nex.con.tre",
 #'   full.names = TRUE
 #' ) %>%
-#'   Thesis::read_tree(tree_file = .) %>%
-#'   Thesis::join_bayes(
+#'   thesis::read_tree(tree_file = .) %>%
+#'   thesis::join_bayes(
 #'     tree_data = .,
 #'     id_column = "Taxon_a_posteriori",
 #'     scale_vector = c(5, 10)
@@ -397,7 +392,7 @@ repel_node_labels <- function(node_nudges, node_labels,
 haplotype_labels <- function(haplotypes, id_column) {
 
   # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
-  labelled_haplotypes <-  haplotypes %>%
+  labelled_haplotypes <- haplotypes %>%
     dplyr::select(
       .data$node, .data$x, .data$y,
       .data[[id_column]], .data$label
@@ -408,7 +403,7 @@ haplotype_labels <- function(haplotypes, id_column) {
     dplyr::distinct(.keep_all = TRUE) %>%
     dplyr::arrange(.data$node) %>%
     dplyr::mutate(
-      Label = Thesis::parse_taxa(
+      Label = thesis::parse_taxa(
         tree_tibble = .,
         id_column = {{ id_column }}
       ) %>%
@@ -416,4 +411,3 @@ haplotype_labels <- function(haplotypes, id_column) {
     )
   return(labelled_haplotypes)
 }
-
