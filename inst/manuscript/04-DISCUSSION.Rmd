@@ -145,7 +145,7 @@ approach due to a lack of gene monophyly [@Shaffer2007].
 
 ```{r sectionDichotomousKey}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Dichotomous Key",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -610,4 +610,3 @@ knitr_section(
 
 ```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
-

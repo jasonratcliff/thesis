@@ -73,7 +73,7 @@ phylogenetic status of these taxa.
 
 ```{r SectionTaxaHistory}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Systematic and Taxonomic History",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -274,7 +274,7 @@ while variety *saximontana* typically had 2 ovules per locule present.
 
 ```{r SectionDistribution}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Geographical Distribution and Ecology",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -356,7 +356,7 @@ Wyoming *Physaria*.
 
 ```{r SubsectionCarbonVitulifera}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Status of *Physaria vitulifera* in Wyoming",
   knitr_type = "subsection", chunk_type = knit_variables$pandoc
 )
@@ -558,7 +558,7 @@ knitr::include_graphics(
 
 ```{r SectionMorphologicalTraits}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Morphology and Phylogeny",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -642,4 +642,3 @@ information about genetic history, cytology, or reproductive mechanisms
 
 ```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
-

@@ -25,7 +25,7 @@ methods_variables$seinet <-
 # Read in raw FASTA system files.
 methods_variables$fasta_paths <-
   list.files(
-    path = system.file("extdata/FASTA", package = "Thesis"),
+    path = system.file("extdata/FASTA", package = "thesis"),
     full.names = TRUE
   )
 
@@ -44,7 +44,7 @@ names(methods_variables$fasta_msa) <-
 
 ```{r SectionSpecimens}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Herbarium Specimens",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -117,7 +117,7 @@ using `cowplot` [@R-cowplot], `ggtext` [@R-ggtext], `scales` [@R-scales], and
 
 ```{r SectionTissue}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Tissue Sources",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -166,7 +166,7 @@ specimens for which sequencing of all three loci was completed.
 
 ```{r SectionExtractions}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "DNA Extraction",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -189,7 +189,7 @@ also included in this study.
 
 # Read in DNA collection localities for methods table.
 methods_variables$collections <-
-  list.files(system.file("extdata/Methods", package = "Thesis"),
+  list.files(system.file("extdata/Methods", package = "thesis"),
              pattern = "DNA-collections", full.names = TRUE) %>%
   readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
 
@@ -363,7 +363,7 @@ also extended from five minutes to 10 minutes.
 
 ```{r SectionPCRrITS}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "rITS PCR",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -393,7 +393,7 @@ of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 ```{r TablePCRPrimers}
 
 methods_variables$primers <-
-  system.file("extdata/Methods", package = "Thesis") %>%
+  system.file("extdata/Methods", package = "thesis") %>%
   list.files(
     pattern = "DNA-primers",
     full.names = TRUE
@@ -439,7 +439,7 @@ if (knit_variables$pandoc != "docx") {
 
 ```{r SectionPCRrps}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "*rps* Intron PCR",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -461,7 +461,7 @@ $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
 ```{r SectionPCRycf1}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "*ycf1* PCR",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -526,7 +526,7 @@ re-suspending in 18 mL ddH2O.
 
 ```{r SectionGel}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Gel Electrophoresis",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -548,7 +548,7 @@ images of the gels.
 
 ```{r SectionSeqDNA}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "DNA Sequencing",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -577,7 +577,7 @@ assembled from chromatograms into multi-FASTA format for downstream analysis.
 
 ```{r SectionPhylogenetics}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Phylogenetic Analysis",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -701,7 +701,7 @@ posterior probability limit of 0.5.
 
 ```{r SectionSource}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Source Code",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -730,15 +730,15 @@ to automate figure generation and document compilation.
 References were maintained using Zotero v5.0.93 [@Zotero] with the
 Better BibTeX v5.2.86 [@BetterBibTeX] add-on. GitHub repositories were
 maintained for the R package source code
-(https://github.com/jasonratcliff/Thesis)
-and `bookdown` manuscript (https://github.com/jasonratcliff/Thesis).
+(https://github.com/jasonratcliff/thesis)
+and `bookdown` manuscript (https://github.com/jasonratcliff/thesis).
 
 \vspace*{20pt}
 
 ```{r TableSpeciesTreeHypotheses}
 
 methods_variables$star_beast <-
-  system.file("extdata/BEAST", package = "Thesis") %>%
+  system.file("extdata/BEAST", package = "thesis") %>%
   list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
   readr::read_csv(file = ., col_types = 'ccccc') %>%
   stats::setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
@@ -770,7 +770,7 @@ if (knit_variables$pandoc == "latex") {
             pattern = "(?<=subsp\\. )[a-z]+$"
             )
           taxon <- paste(
-            Thesis::italicize(genus, knit_variables$pandoc),
+            thesis::italicize(genus, knit_variables$pandoc),
             ifelse(
               test = grepl(pattern = "'[a-z]+'", x = species),
               yes = paste0("‘",
@@ -779,12 +779,12 @@ if (knit_variables$pandoc == "latex") {
                   pattern = "(?<=')[a-z]+(?=')"),
                 "’" 
               ),
-              no = Thesis::italicize(species, knit_variables$pandoc)
+              no = thesis::italicize(species, knit_variables$pandoc)
             ),
             ifelse(
               test = !is.na(subspecies),
               yes = paste("\nsubsp.",
-                Thesis::italicize(subspecies,knit_variables$pandoc)
+                thesis::italicize(subspecies,knit_variables$pandoc)
                 ),
               no = ""
             )
@@ -856,4 +856,3 @@ if (knit_variables$pandoc == "latex") {
 
 ```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
 ```
-
