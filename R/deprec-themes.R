@@ -81,7 +81,7 @@ spl_labels <- function(specimen_tbl, id_column) {
 #' @export
 #'
 #' @examples
-#' system.file("extdata/BEAST/spp-hypothesis-1.mcc", package = "Thesis") %>%
+#' system.file("extdata/BEAST/spp-hypothesis-1.mcc", package = "thesis") %>%
 #'   treeio::read.beast(file = .) %>%
 #'   ggtree::fortify() %>%
 #'   dplyr::mutate(

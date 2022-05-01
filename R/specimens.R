@@ -27,7 +27,7 @@ Specimen <- R6::R6Class(
     #' @examples
     #' # Construct object instance with `$new()` method
     #' voucher <- Specimen$new(
-    #'   records = Thesis::herbarium_specimens,
+    #'   records = thesis::herbarium_specimens,
     #'   identifier = "Taxon_a_posteriori"
     #' )
     #'
@@ -255,7 +255,7 @@ Specimen <- R6::R6Class(
     #' @return Character vector of expressions for parsed font labels.
     #'  Length equivalent to length of the records `label` variable.
     #' @examples
-    #' dna_vouchers <- dplyr::select(Thesis::dna_specimens, ID_final) %>%
+    #' dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) %>%
     #'  dplyr::rename(label = ID_final) %>%
     #'  Specimen$new(
     #'    records = .,

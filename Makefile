@@ -63,8 +63,8 @@ descriptions:
 	Rscript data-raw/descriptions/descriptions.R
 
 # Render project README files.
-readme:
-	Rscript tools/render_readme.R
+readme: README.Rmd data-raw/README.Rmd
+	Rscript scripts/render_readme.R
 
 # R CMD INSTALL
 package:
@@ -87,4 +87,3 @@ site: README.Rmd
 clean:
 	rm Rplots.pdf
 	rm inst/figures/*
-

@@ -3,7 +3,7 @@
 #' @title Specimen Mapping
 #'
 #' @description
-#' This R6 subclass inherits the [Thesis::Specimen] superclass,
+#' This R6 subclass inherits the [thesis::Specimen] superclass,
 #' providing public methods to plot records by geographic coordinate.
 #' Boundary shapefiles are downloaded from the US Census Bureau
 #' Topologically Integrated Geographic Encoding and Referencing (TIGER)
@@ -78,7 +78,7 @@
 #'
 #' @examples
 #' voucher_map <- SpecimenMap$new(
-#'   records = Thesis::herbarium_specimens,
+#'   records = thesis::herbarium_specimens,
 #'   identifier = "Taxon_a_posteriori"
 #' )
 #'
@@ -172,12 +172,12 @@ SpecimenMap <- R6::R6Class(
     #' Legend limits are subset to name values in
     #' [`Specimen$annotations()`][Specimen] for
     #' the set of species values indicated by [`Specimen$identifier`][Specimen].
-    #' See [Thesis::aesthetics] for scale value specifications.
+    #' See [thesis::aesthetics] for scale value specifications.
     #'
     #' @return List with [ggplot2::scale_color_manual()] and
     #'  [ggplot2::scale_shape_manual()] ggproto objects.
     scales = function() {
-      manual_scales <- Thesis::aesthetics %>%
+      manual_scales <- thesis::aesthetics %>%
         dplyr::filter(species %in% names(self$annotations()))
       list(
         ggplot2::scale_color_manual(
@@ -226,7 +226,7 @@ SpecimenMap <- R6::R6Class(
     #' Build [ggplot2::ggplot()] distribution map from the
     #' [`Specimen$records`][Specimen] field tibble. Color and shape aesthetics
     #' are set by the [`Specimen$identifier`][Specimen] field.
-    #' Combines the public methods exposed by [Thesis::SpecimenMap].
+    #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
     map = function(legend = self$identifier,

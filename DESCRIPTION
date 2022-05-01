@@ -1,10 +1,10 @@
-Package: Thesis
+Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.2.3.9009
+Version: 0.2.3.9010
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
-Description: Data and code for compiling Thesis Bookdown document. Includes
+Description: Data and code for compiling a thesis manuscript. Includes
     functions for importing and parsing herbarium and DNA specimen information,
     distribution mapping, phylogenetic tree annotation, and quantitative trait
     comparisons.

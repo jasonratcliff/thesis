@@ -31,7 +31,7 @@ anovaPhysariaStems <- herbarium_specimens %>%
 
 ```{r sectionTraitPlots}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Trait Distributions",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -104,8 +104,8 @@ knitr::include_graphics(
 
 results <- list()
 
-results$elevation$specimens <- Thesis::herbarium_specimens %>%
-  Thesis::filter_reviewed(specimen_tbl = .) %>%
+results$elevation$specimens <- thesis::herbarium_specimens %>%
+  thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Elev_raw_max),
     !is.na(Taxon_a_posteriori),

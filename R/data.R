@@ -133,7 +133,7 @@
 #' [tibble::tibble()] of manual scale values for [ggplot2::ggplot()].
 #'
 #' \describe{
-#'   \item{species}{Taxonomic annotation matching value in [Thesis::Specimen]}
+#'   \item{species}{Taxonomic annotation matching value in [thesis::Specimen]}
 #'   \item{color}{Color value character scalar}
 #'   \item{shape}{Shape value numeric scalar}
 #'   \item{text-color}{Descriptive text of color aesthetic}

@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(dplyr)
 library(fs)
@@ -9,7 +9,7 @@ set.seed(20210311)
 
 # Introduction: Build ggplot distribution map with prior annotations.
 priors <- list()
-priors$specimens <- Thesis::herbarium_specimens %>%
+priors$specimens <- thesis::herbarium_specimens %>%
   select("prior_id", "Latitude", "Longitude") %>%
   filter(prior_id %in%
     paste("Physaria",
@@ -30,7 +30,7 @@ priors$specimens <- Thesis::herbarium_specimens %>%
 
 priors$ggplot <- ggplot() +
   layer_borders(
-    spl_extent = Thesis::spl_bbox(priors$specimens),
+    spl_extent = thesis::spl_bbox(priors$specimens),
     sf_county_color = "black"
   ) +
   layer_specimens(
@@ -47,8 +47,8 @@ priors$ggplot <- ggplot() +
     legend_title = "Prior Annotations"
   ) +
   coord_sf(
-    xlim = range(Thesis::spl_bbox(priors$specimens)[["Longitude"]]),
-    ylim = range(Thesis::spl_bbox(priors$specimens)[["Latitude"]])
+    xlim = range(thesis::spl_bbox(priors$specimens)[["Longitude"]]),
+    ylim = range(thesis::spl_bbox(priors$specimens)[["Latitude"]])
   )
 
 # Map ----
@@ -134,4 +134,3 @@ purrr::pwalk(
       ncol = col
     )
 })
-

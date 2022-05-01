@@ -1,21 +1,19 @@
 Appendix README
 ================
 
-``` r
-library(magrittr)
-library(ggplot2)
-```
-
 To facilitate formatting appendix files for specimens reviewed, an
 Rscript was used to read in a column subset from each sheetname in the
 `specimens.xlsx` external data from
-[`Thesis`](https://github.com/jasonratcliff/Thesis). A *.tsv* file for
+[`thesis`](https://github.com/jasonratcliff/thesis). A *.tsv* file for
 each sheetnem in `specimens.xlsx` is written from entries without
 appendix completion (missing values in variable `App.A`).
 
 ``` bash
 Rscript appendix_script.R
 ```
+
+    ## Warning message:
+    ## One or more parsing issues, see `problems()` for details
 
 <details>
 <summary>
@@ -35,7 +33,12 @@ missing_appendixes <- purrr::map_dfr(
                          x = appendix)
       )
   })
+```
 
+    ## Warning: One or more parsing issues, see `problems()`
+    ## for details
+
+``` r
 appendix_counts <- ggplot(data = missing_appendixes) +
   geom_bar(aes(x = sheetname, fill = sheetname)) +
   scale_fill_brewer("Sheetname", type = "qual") +
@@ -61,35 +64,17 @@ Summarized Dates
 <p>
 
 ``` r
-library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
-library(ggplot2)
-library(Thesis)
-
-id_dates <- herbarium_specimens %>%
-  select(ID) %>%
-  mutate(
+id_dates <- thesis::herbarium_specimens %>%
+  dplyr::select(ID) %>%
+  dplyr::mutate(
     Date = stringr::str_extract(
       string = .data$ID,
       pattern = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{2}"
     ) %>% as.Date(x = ., format = "%m/%d/%y")
   ) %>%
-  filter(!is.na(Date)) %>%
-  group_by(Date) %>%
-  add_count(name = "Count")
+  dplyr::filter(!is.na(Date)) %>%
+  dplyr::group_by(Date) %>%
+  dplyr::add_count(name = "Count")
 
 id_plot <- ggplot(data = id_dates) +
   geom_count(aes(x = Date, y = Count, color = Date)) +
@@ -199,5 +184,3 @@ by:
 
     ##   Searching for filename string: 'MO-3093900'
     ##   /Physaria/Wyoming/Big Horn, WY/Unknown Locality/Hayden_sn_MO-3093900_v1.tiff
-
-    ## [1] "appendix_counts"

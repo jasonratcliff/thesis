@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(ggplot2)
 library(ggtext)
@@ -10,15 +10,15 @@ set.seed(20210320)
 specimens <- list()
 
 # Set of reviewed annotations for species of interest.
-specimens$filtered <- Thesis::herbarium_specimens %>%
-  Thesis::filter_reviewed(specimen_tbl = .) %>%
+specimens$filtered <- thesis::herbarium_specimens %>%
+  thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Ovule_number),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
   dplyr::bind_cols(
-    Thesis::range_split(trait_tbl = ., split_var = "Ovule_number")
+    thesis::range_split(trait_tbl = ., split_var = "Ovule_number")
   )
 
 # Ovules ----
@@ -26,7 +26,7 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
 traits <- list()
 
 traits$labels <-
-  Thesis::spl_labels(
+  thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -34,7 +34,7 @@ traits$labels <-
 
 # Extract ggplot legend for cowplot grid.
 traits$legend <-
-  Thesis::annotation_legend(
+  thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -42,7 +42,7 @@ traits$legend <-
   )
 
 traits$ovules <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Ovule_number_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -60,7 +60,7 @@ specimens$saximontana <- specimens$filtered %>%
   dplyr::filter(grepl("saximontana", .data$prior_id))
 
 traits$labels_prior <-
-  Thesis::spl_labels(
+  thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "prior_id"
   ) %>%
@@ -80,13 +80,13 @@ traits$ovules_prior <-
   ggplot2::scale_color_manual(
     name = "Prior Annotations",
     labels = traits$labels_prior,
-    values = Thesis::spp_color,
+    values = thesis::spp_color,
     na.value = "black"
   ) +
   ggplot2::scale_shape_manual(
     name = "Prior Annotations",
     labels = traits$labels_prior,
-    values = Thesis::spp_shape,
+    values = thesis::spp_shape,
     na.value = 17
   ) +
   ggplot2::theme_classic() +
@@ -139,4 +139,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

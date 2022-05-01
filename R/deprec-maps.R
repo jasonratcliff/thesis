@@ -39,7 +39,7 @@
 #' # Sys.getenv('TIGRIS_CACHE_DIR')
 #' # options(tigris_class = "sf", tigris_use_cache = TRUE)
 #' ggplot2::ggplot() +
-#'   layer_borders(spl_extent = spl_bbox(Thesis::spp_co_front_range))
+#'   layer_borders(spl_extent = spl_bbox(thesis::spp_co_front_range))
 #'
 layer_borders <- function(spl_extent, sf_crs = NULL,
                           sf_state_color = "black",
@@ -110,7 +110,7 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #' @examples
 #' ggplot2::ggplot() +
 #'   layer_specimens(
-#'     specimen_tbl = Thesis::spp_co_front_range,
+#'     specimen_tbl = thesis::spp_co_front_range,
 #'     id_column = "Taxon_a_posteriori", shape_aes = FALSE,
 #'     jitter_width = 0.033, jitter_height = 0.033
 #'   )
@@ -182,7 +182,7 @@ layer_themes <- function(specimen_tbl, id_column, legend_title) {
 
   # Assign HTML markdown label vector.
   markdown_labels <-
-    Thesis::spl_labels(
+    thesis::spl_labels(
       specimen_tbl = specimen_tbl,
       id_column = id_column
     )
@@ -193,14 +193,14 @@ layer_themes <- function(specimen_tbl, id_column, legend_title) {
       name = legend_title,
       labels = markdown_labels,
       limits = names(markdown_labels),
-      values = Thesis::spp_color,
+      values = thesis::spp_color,
       na.value = "black", drop = TRUE
     ),
     ggplot2::scale_shape_manual(
       name = legend_title,
       labels = markdown_labels,
       limits = names(markdown_labels),
-      values = Thesis::spp_shape,
+      values = thesis::spp_shape,
       na.value = 17, drop = TRUE
     ),
     ggplot2::theme(
@@ -257,7 +257,7 @@ layer_themes <- function(specimen_tbl, id_column, legend_title) {
 #'
 #' @examples
 #' ggmap_ggplot <- layer_ggmap(
-#'   specimen_tbl = Thesis::spp_co_front_range,
+#'   specimen_tbl = thesis::spp_co_front_range,
 #'   gg_map_type = "satellite", zoom_lvl = 8
 #' )
 #' ggmap_ggplot +
@@ -336,7 +336,7 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #' library(ggplot2)
 #' elev_ggplot <-
 #'   layer_elevation(
-#'     specimen_tbl = Thesis::spp_co_front_range,
+#'     specimen_tbl = thesis::spp_co_front_range,
 #'     raster_zoom = 7, raster_factor = 1
 #'   )
 #' elev_ggplot +
@@ -467,7 +467,7 @@ spl_order <- function(specimen_tbl, id_column) {
 #' spl_bbox(herbarium_specimens)
 #'
 #' ggmap_ggplot <- layer_ggmap(
-#'   specimen_tbl = Thesis::spp_co_front_range,
+#'   specimen_tbl = thesis::spp_co_front_range,
 #'   gg_map_type = "satellite"
 #' )
 #' spl_bbox(ggmap_ggplot)
@@ -588,7 +588,7 @@ spl_id <- function(specimen_tbl, id_column, collector, collection,
                    h_adjust = 0.25, v_adjust = -0.15) {
 
   # Call `find_spp()` function to get specimen annotation data.
-  spp_id <- Thesis::find_spp(
+  spp_id <- thesis::find_spp(
     specimen_tbl = specimen_tbl,
     collector = collector,
     collection = collection

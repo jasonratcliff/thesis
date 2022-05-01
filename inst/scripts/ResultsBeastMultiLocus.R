@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(ggplot2)
 library(ggtree)
 library(cowplot)
@@ -9,13 +9,13 @@ beast <- list()
 beast$data <-
   system.file(
     "extdata/BEAST/multi-locus.combined.mcc",
-    package = "Thesis"
+    package = "thesis"
   ) %>%
-  Thesis::read_tree(tree_file = .)
+  thesis::read_tree(tree_file = .)
 
 beast$ggplot <-
   ggtree::ggtree(beast$data, layout = "circular") +
-  Thesis::beast_posterior() +
+  thesis::beast_posterior() +
   ggtree::geom_tiplab(offset = 0.0005, align = TRUE, size = 3) +
   ggnewscale::new_scale_color() +
   ggplot2::geom_point(
@@ -44,7 +44,7 @@ beast$ggplot <-
     size = 3,
     alpha = 0.75
   ) +
-  Thesis::beast_theme(tree_data = beast$data) +
+  thesis::beast_theme(tree_data = beast$data) +
   ggtree::geom_treescale(y = 48) +
   ggtree::theme_tree() +
   ggplot2::theme(
@@ -57,11 +57,11 @@ beast$ggplot <-
 beast$legend_png <-
   cowplot::plot_grid(
     plotlist = list(
-      Thesis::beast_legend_color(
+      thesis::beast_legend_color(
         tree_data = beast$data,
         ncol = 1
       ),
-      Thesis::beast_legend_probability(tree_data = beast$data)
+      thesis::beast_legend_probability(tree_data = beast$data)
     ),
     nrow = 2, ncol = 1, rel_widths = c(0.5, 0.5)
   )
@@ -78,8 +78,8 @@ beast$png <-
 beast$legend_pdf <-
   cowplot::plot_grid(
     NULL,
-    Thesis::beast_legend_color(tree_data = beast$data),
-    Thesis::beast_legend_probability(tree_data = beast$data),
+    thesis::beast_legend_color(tree_data = beast$data),
+    thesis::beast_legend_probability(tree_data = beast$data),
     nrow = 1, ncol = 3, rel_widths = c(0.25, 1, .75)
   )
 
@@ -114,4 +114,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

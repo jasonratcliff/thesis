@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
@@ -9,8 +9,8 @@ carbon <- list()
 
 # Specimens ----
 carbon$specimens <-
-  Thesis::subset_coords(
-    specimen_tbl = Thesis::herbarium_specimens,
+  thesis::subset_coords(
+    specimen_tbl = thesis::herbarium_specimens,
     Longitude = c(-109, -105),
     Latitude = c(39.1, 41.9)
   ) %>%
@@ -28,12 +28,12 @@ carbon$specimens <-
 # Aesthetic values from combined herbarium and SEINet records.
 carbon$aesthetics <-
   c(
-    Thesis::spl_labels(
+    thesis::spl_labels(
       specimen_tbl = carbon$specimens,
       id_column = "Taxon_a_posteriori"
     ),
-    Thesis::spl_labels(
-      specimen_tbl = Thesis::seinet_coords,
+    thesis::spl_labels(
+      specimen_tbl = thesis::seinet_coords,
       id_column = "scientificName"
     )
   )
@@ -43,8 +43,8 @@ carbon$aesthetics <-  # Drop duplicate aesthetics values from named vector
 
 # Subset of DNA specimens from Medicine Bow National Forest and CO Front Range.
 carbon$dna <-
-  Thesis::subset_coords(
-    specimen_tbl = Thesis::dna_specimens,
+  thesis::subset_coords(
+    specimen_tbl = thesis::dna_specimens,
     Longitude = c(-108.5, -105),
     Latitude = c(39, 42)
   ) %>%
@@ -60,8 +60,8 @@ carbon$dna <-
   )
 
 carbon$jackson <-
-  Thesis::find_spp(
-    specimen_tbl = Thesis::herbarium_specimens,
+  thesis::find_spp(
+    specimen_tbl = thesis::herbarium_specimens,
     collector = "Kastning|Nelson",
     collection = "1462|1725|49286|49478"
   ) %>%
@@ -93,16 +93,16 @@ carbon$labels <-
 
 # Satellite map of Carbon, WY specimens.
 carbon$ggplot <-
-  Thesis::layer_ggmap(
+  thesis::layer_ggmap(
     specimen_tbl = carbon$specimens,
     gg_map_type = "satellite", zoom_lvl = 8,
     gg_longitude = -106.75, gg_latitude = 40.4
   ) +
-  Thesis::layer_borders(
-    spl_extent = Thesis::spl_bbox(carbon$specimens),
+  thesis::layer_borders(
+    spl_extent = thesis::spl_bbox(carbon$specimens),
     sf_county_color = "black"
   ) +
-  Thesis::layer_specimens(
+  thesis::layer_specimens(
     specimen_tbl = carbon$specimens,
     shape_aes = TRUE,
     id_column = "Taxon_a_posteriori",
@@ -126,7 +126,7 @@ carbon$ggplot <-
     color = "white", alpha = 0.5, size = 3
   ) +
   geom_point(
-    data = Thesis::seinet_coords,
+    data = thesis::seinet_coords,
     mapping = aes(
       x = Longitude, y = Latitude,
       color = scientificName, shape = scientificName
@@ -145,11 +145,11 @@ carbon$ggplot <-
   ) +
   scale_color_manual(
     name = "Annotation", labels = carbon$aesthetics,
-    values = Thesis::spp_color, na.value = "black"
+    values = thesis::spp_color, na.value = "black"
   ) +
   scale_shape_manual(
     name = "Annotation", labels = carbon$aesthetics,
-    values = Thesis::spp_shape, na.value = 17
+    values = thesis::spp_shape, na.value = 17
   ) +
   theme(
     legend.background = element_rect(color = "black"),
@@ -181,7 +181,7 @@ carbon$map_png <-
     -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
     -0.3, -0.225, 0.1,  "Dorn_9837"
   ) %>%
-  Thesis::repel_map_labels(
+  thesis::repel_map_labels(
     map_nudges = .,
     map_labels = carbon$labels,
     initial_ggplot = carbon$ggplot
@@ -241,7 +241,7 @@ carbon$map_pdf <-
     -0.275, -0.25, 0.1,  "O_Kane_Jr_3754",
     -0.3, -0.225, 0.1,  "Dorn_9837"
   ) %>%
-  Thesis::repel_map_labels(
+  thesis::repel_map_labels(
     map_nudges = .,
     map_labels = carbon$labels,
     initial_ggplot = carbon$ggplot
@@ -299,4 +299,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

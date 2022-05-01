@@ -1,9 +1,11 @@
-# Verify installation of Thesis data
-if (!"Thesis" %in% installed.packages()) {
-  stop("Make sure Thesis data are installed:",
-       "https://github.com/jasonratcliff/Thesis")
+# Verify installation of thesis data
+if (!"thesis" %in% installed.packages()) {
+  stop(
+    "Make sure thesis data are installed:",
+    "https://github.com/jasonratcliff/thesis"
+  )
 } else {
-  library(Thesis)
+  library(thesis)
   library(dplyr)
   library(purrr)
   library(fs)
@@ -12,10 +14,10 @@ if (!"Thesis" %in% installed.packages()) {
   library(bookdown)
 }
 
-setwd(proj_get())  # Verify working directory set to ~/Thesis/
+setwd(proj_get()) # Verify working directory set to ~/thesis/
 
 # Generate tibble of reviewed specimen identification counts.
-specimen_counts <- herbarium_specimens %>%
+specimen_counts <- thesis::herbarium_specimens %>%
   select(Taxon_a_posteriori) %>%
   add_count(Taxon_a_posteriori) %>%
   distinct() %>%
@@ -26,6 +28,7 @@ specimen_counts <- herbarium_specimens %>%
 spp_file <- function(taxon) {
   stopifnot(is.character(taxon))
   gsub("Physaria", "P", taxon) %>%
+    gsub("\\'", "", x = .) %>%
     gsub("\\.", "", x = .) %>%
     gsub(" ", "-", x = .)
 }
@@ -35,17 +38,19 @@ specimen_counts %>%
   filter(
     !is.na(Taxon_a_posteriori),
     n > 20,
-    grepl(pattern = "Physaria [a-z]+", x = Taxon_a_posteriori)
+    grepl(pattern = "Physaria '?[a-z]+'?", x = Taxon_a_posteriori)
   ) %>%
-  pull("Taxon_a_posteriori") %>%
+  pull(var = "Taxon_a_posteriori") %>%
   purrr::walk(.x = ., function(taxon) {
     template_description <-
-      base::readLines("data-raw/descriptions/_description.Rmd",
+      base::readLines(
+        con = "data-raw/descriptions/_description.Rmd",
         n = -1L, encoding = "UTF-8", warn = FALSE
       )
 
     chunk <- gsub(pattern = "Physaria", replacement = "P", x = taxon) %>%
-      gsub(pattern = " ", replacement = "", x = .)
+      gsub(pattern = " ", replacement = "", x = .) %>%
+      gsub(pattern = "\\'", replacement = "", x = .)
 
     # Whisker {{Mustache}} implementation in R for logicless templating.
     # - https://github.com/edwindj/whisker

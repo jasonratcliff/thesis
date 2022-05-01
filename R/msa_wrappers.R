@@ -14,7 +14,8 @@
 #' \dontrun{
 #' ml_fasta <-
 #'   list.files("data-raw/sequencing/3.alignments-subset",
-#'              full.names = TRUE)
+#'     full.names = TRUE
+#'   )
 #' potentially_informative_sites(fasta_file = ml_fasta[[1]])
 #' }
 #'
@@ -32,7 +33,8 @@ potentially_informative_sites <- function(fasta_file, ...) {
       index <- alignment_matrix[, site]
     }) %>%
     purrr::keep(.x = ., ~ length(unique(.x)) > 1) %>%
-    plyr::ldply(.data = .) %>% t(x = .)
+    plyr::ldply(.data = .) %>%
+    t(x = .)
 
   # Create DNAStringSet from vector of informative alignments.
   aligned_variants <-
@@ -100,15 +102,17 @@ msa_wrapper <- function(msa_fasta, msa_output,
 
   # Assign DNA multiple alignment object from external package data:
   dna_align <-
-    list.files(system.file("extdata/Alignments", package = "Thesis"),
-               full.names = TRUE, pattern = msa_fasta) %>%
+    list.files(system.file("extdata/Alignments", package = "thesis"),
+      full.names = TRUE, pattern = msa_fasta
+    ) %>%
     Biostrings::readDNAMultipleAlignment(filepath = ., format = "fasta")
 
   # Write an MSA .tex file for each subset in the list of alignment intervals.
-  interval_list <- Thesis::msa_intervals(msa_alignment = dna_align)
+  interval_list <- thesis::msa_intervals(msa_alignment = dna_align)
   purrr::iwalk(interval_list, function(interval, index) {
     tex_file <- fs::path(alignment_dir, paste0(msa_output, "_msa_", index),
-                         ext = "tex")
+      ext = "tex"
+    )
 
     # Write subset .tex file based on alignment interval and list index.
     msa::msaPrettyPrint(
@@ -116,9 +120,9 @@ msa_wrapper <- function(msa_fasta, msa_output,
       alFile = fs::path(alignment_dir, msa_output, ext = "fasta"),
       file = tex_file, showLogo = "none",
       askForOverwrite = FALSE, showLegend = FALSE,
-      furtherCode = "\\showruler{1}{top}", output = "tex")
+      furtherCode = "\\showruler{1}{top}", output = "tex"
+    )
   })
-
 }
 
 #' Format TexShade Environment
@@ -148,25 +152,31 @@ msa_texshade <- function(tex_path, landscape = FALSE) {
   tex_env <- raw_tex[texshade_start:texshade_end]
 
   # Vector of additional .tex formatting
-  tex_formatting <- c("\\setsize{numbering}{tiny}",
-                      "\\setsize{names}{tiny}",
-                      "\\setsize{residues}{tiny}",
-                      "\\setsize{consensus}{tiny}")
+  tex_formatting <- c(
+    "\\setsize{numbering}{tiny}",
+    "\\setsize{names}{tiny}",
+    "\\setsize{residues}{tiny}",
+    "\\setsize{consensus}{tiny}"
+  )
 
   # Format first page of TEXshade sequence alignment:
   if (landscape == FALSE) {
-    texshade_out <- c("\\vfill", "\\centering",
-                      "\\begin{rotate}{90}", "\\begin{minipage}{7in}",
-                      tex_env[1], tex_formatting, tex_env[2:length(tex_env)],
-                      "\\end{minipage}", "\\end{rotate}")
+    texshade_out <- c(
+      "\\vfill", "\\centering",
+      "\\begin{rotate}{90}", "\\begin{minipage}{7in}",
+      tex_env[1], tex_formatting, tex_env[2:length(tex_env)],
+      "\\end{minipage}", "\\end{rotate}"
+    )
   }
 
   # Format subsequent alignment pages as landscape orientation.
   if (landscape == TRUE) {
-    texshade_out <- c("\\begin{landscape}", tex_env[1],
-                      "\\alignment{left}", "\\residuesperline*{165}",
-                      tex_formatting, tex_env[2:length(tex_env)],
-                      "\\end{landscape}")
+    texshade_out <- c(
+      "\\begin{landscape}", tex_env[1],
+      "\\alignment{left}", "\\residuesperline*{165}",
+      tex_formatting, tex_env[2:length(tex_env)],
+      "\\end{landscape}"
+    )
   }
 
   cat(texshade_out, file = tex_path, sep = "\n")

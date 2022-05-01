@@ -6,62 +6,51 @@ data-raw README
 Records of voucher specimens on loan from lending herbaria (RM, NY, MO,
 F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled
 into an excel file,
-[`specimens.xlsx`](https://github.com/jasonratcliff/Thesis/blob/master/inst/extdata/specimens.xlsx).
+[`specimens.xlsx`](https://github.com/jasonratcliff/thesis/blob/master/inst/extdata/specimens.xlsx).
 Data recorded from vouchers include locality, identification history,
 collector, collection number, date, institution, geographic coordinates,
 elevation, any ecological descriptions, and measurements of continuous
-and discrete specimen traits. In total, 1707 unique collections were
+and discrete specimen traits. In total, 1722 unique collections were
 reviewed.
 
 ``` r
 # Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "Thesis") %>%
+system.file("extdata/specimens.xlsx", package = "thesis") %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
 ```
 
     ## [1] "extdata/specimens.xlsx"
 
 The
-[`herbarium_specimens.R`](https://github.com/jasonratcliff/Thesis/blob/master/data-raw/specimens/herbarium_specimens.R)
+[`herbarium_specimens.R`](https://github.com/jasonratcliff/thesis/blob/master/data-raw/specimens/herbarium_specimens.R)
 script creates an *.Rda* from `specimens.xlsx`, formatting specimen data
 for downstream phylogenetic, distribution, and morphological analyses to
-define a tibble `herbarium_specimens` in the `Thesis` namespace.
+define a tibble `herbarium_specimens` in the `thesis` namespace.
 
 ``` r
-Thesis::herbarium_specimens
+thesis::herbarium_specimens
 ```
 
-    ## # A tibble: 1,712 x 66
-    ##    excel_sheet prior_id prior_1 prior_2 prior_3 prior_4 Taxon Taxon_a_posteri…
-    ##    <chr>       <chr>    <chr>   <chr>   <chr>   <chr>   <chr> <chr>           
-    ##  1 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ##  2 P. Remaini… Physari… Physar… Physar… Physar… Physar… Phys… <NA>            
-    ##  3 P. Remaini… Physari… Physar… Physar… Physar… Physar… Phys… <NA>            
-    ##  4 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ##  5 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ##  6 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ##  7 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ##  8 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ##  9 P. Remaini… Physari… Physar… <NA>    <NA>    <NA>    Phys… <NA>            
-    ## 10 P. Remaini… Physari… Physar… Physar… <NA>    <NA>    Phys… <NA>            
-    ## # … with 1,702 more rows, and 58 more variables: Collector <chr>,
-    ## #   Collection_Number <chr>, Date <chr>, Date_parsed <date>, Date_md <date>,
-    ## #   Herbarium <chr>, State <chr>, County <chr>, Location <chr>, Latitude <dbl>,
-    ## #   Longitude <dbl>, ID <chr>, App.A <chr>, Imaged <chr>, Elev_m <chr>,
-    ## #   Elev_ft <chr>, Elev_var <chr>, Elev_raw <chr>, Elev_raw_min <dbl>,
-    ## #   Elev_raw_max <dbl>, TRS1 <chr>, TRS2 <chr>, Rosulate <chr>, Caudex <chr>,
-    ## #   Pubescence <chr>, Basal_leaf_trichomes <chr>, Fruit_trichomes <chr>,
-    ## #   Stem_count <chr>, Stem_shape <chr>, Stem_length_dm <chr>, Petiole <chr>,
-    ## #   Basal_leaf_length_cm <chr>, Basal_leaf_shape <chr>,
-    ## #   Basal_leaf_margins <chr>, Cauline_leaf_length_mm <chr>,
-    ## #   Cauline_leaf_shape <chr>, Cauline_leaf_margins <chr>, Racemes <chr>,
-    ## #   Pedicel_shape <chr>, Pedicels_secund <chr>, Sepal_length_mm <chr>,
-    ## #   Sepal_shape <chr>, Petal_color <chr>, Petal_length_mm <chr>,
-    ## #   Petal_shape <chr>, Style_length_mm <chr>, Mature_fruit_length_mm <chr>,
-    ## #   Mature_fruit_width_mm <chr>, Fruit <chr>, Mature_fruit_apices <chr>,
-    ## #   Replum_pubescence <chr>, Inner_valve_pubescence <chr>, Ovule_number <chr>,
-    ## #   Replum_shape <chr>, Seed_color <chr>, Seed_shape <chr>,
-    ## #   Mature_seed_length_mm <chr>, Chromosomes <chr>
+    ## # A tibble: 1,727 × 66
+    ##    excel_sheet   prior_id      prior_1 prior_2 prior_3
+    ##    <chr>         <chr>         <chr>   <chr>   <chr>  
+    ##  1 P. acutifolia Physaria did… Physar… Physar… <NA>   
+    ##  2 P. acutifolia Physaria acu… Physar… Physar… <NA>   
+    ##  3 P. acutifolia Physaria did… Physar… <NA>    <NA>   
+    ##  4 P. acutifolia Physaria acu… Physar… Physar… <NA>   
+    ##  5 P. acutifolia Physaria did… Physar… <NA>    <NA>   
+    ##  6 P. acutifolia Physaria acu… Physar… <NA>    <NA>   
+    ##  7 P. acutifolia Physaria acu… Physar… Physar… <NA>   
+    ##  8 P. acutifolia Physaria acu… Physar… Physar… Physar…
+    ##  9 P. acutifolia Physaria did… Physar… Physar… <NA>   
+    ## 10 P. acutifolia Physaria bra… Physar… Physar… <NA>   
+    ## # … with 1,717 more rows, and 61 more variables:
+    ## #   prior_4 <chr>, Taxon <chr>,
+    ## #   Taxon_a_posteriori <chr>, Collector <chr>,
+    ## #   Collection_Number <chr>, Date <chr>,
+    ## #   Date_parsed <date>, Date_md <date>,
+    ## #   Herbarium <chr>, State <chr>, County <chr>,
+    ## #   Location <chr>, Longitude <dbl>, …
 
 Briefly, the script does the following:
 
@@ -86,7 +75,7 @@ Briefly, the script does the following:
     -   Combine variables with m / ft. elevation data
     -   Split minimum and maximum values and convert m to ft.
 -   Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    -   Create *dna\_specimens.Rda* with tibble in the `Thesis`
+    -   Create *dna\_specimens.Rda* with tibble in the `thesis`
         namespace
 
 # DNA Map
@@ -107,7 +96,7 @@ identifications and locations of DNA samples.
 
 Multi-FASTA files for sequenced loci were assembled from sequence
 chromatograms and deposited in the
-[`inst/extdata/FASTA`](https://github.com/jasonratcliff/Thesis/blob/master/inst/extdata/FASTA)
+[`inst/extdata/FASTA`](https://github.com/jasonratcliff/thesis/blob/master/inst/extdata/FASTA)
 subdirectory. Here, `FASTA` headers are formatted with two fields
 `accession` and `locus` following “&gt;.” A single whitespace separates
 the sample accession from the name of the locus, for example:
@@ -118,7 +107,7 @@ indicated in the second field of the `FASTA` headers.
 ``` r
 # Assign list of raw FASTA files from installed external package data.
 list.files(
-  path = system.file("extdata/FASTA", package = "Thesis"),
+  path = system.file("extdata/FASTA", package = "thesis"),
   full.names = TRUE
   ) %>%
   stringr::str_extract(string = ., pattern = "extdata.+")
@@ -138,23 +127,24 @@ subsets for each locus were indexed by the set of specimens sequenced
 for all loci. Untrimmed, single locus `FASTA` files from
 [`inst/extdata/FASTA`]() and `FASTA` files filtered to common specimens
 in
-[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/2.subset-fastas)
+[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/2.subset-fastas)
 were aligned using MAFFT version 7.306B ([Katoh and Standley
 2013](#ref-Katoh2013)). The G-INS-i alignment ([Katoh et al.
 2005](#ref-Katoh2005)) with iterative refinement and 1PAM / k=2
 nucleotide scoring matrix were set as alignment parameters. Aligned
 `FASTA` files were deposited in the
-[`data-raw/sequencing/3.alignments-single/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.alignments-single)
+[`data-raw/sequencing/3.alignments-single/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.alignments-single)
 and
-[`data-raw/sequencing/3.alignments-subset/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.alignments-subset)
+[`data-raw/sequencing/3.alignments-subset/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.alignments-subset)
 subdirectories. For the subset of samples with DNA sequence data from
 all three sample loci, a concatenated multi-FASTA file was compiled
 using the
-[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/Thesis/blob/master/data-raw/sequencing/fasta-concat.R)
+[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/thesis/blob/master/data-raw/sequencing/fasta-concat.R)
 Rscript, written to
-[`data-raw/sequencing/3.multi-locus/`](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/sequencing/3.multi-locus).
+[`data-raw/sequencing/3.multi-locus/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.multi-locus).
 
-![](README_files/figure-gfm/diagFASTA-1.png)<!-- -->
+<div id="htmlwidget-ea1fbfc004dcf4dd7387" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea1fbfc004dcf4dd7387">{"x":{"diagram":"\ngraph TD\n  %% Sequencing Workflow\n  S1[\"inst/extdata/FASTA\"]-->S2(fasta-subsets.R)\n  S2-->S3[\"sequencing/2.subset-fastas/\"]\n  S1-->S4{MAAFT}\n  S3-->S4\n  S4-->S5[\"sequencing/3.alignments-single/\"]\n  S4-->S6[\"sequencing/3.alignments-subset/\"]\n  S6-->S7(fasta-concat.R)\n  S7-->S8[\"sequencing/3.multi-locus/\"]\n"},"evals":[],"jsHooks":[]}</script>
 
 ## MEGA / MrBayes
 
@@ -165,7 +155,7 @@ using MEGA version 10.1.8 ([Kumar et al. 2018](#ref-Kumar2018);
 were calculated by p-distance treating gaps as pairwise deletions.
 Distance matrices and FASTA (*.fas*) files with combined headers for
 duplicate DNA sequences were deposited in
-[Bayes/MEGA/](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/Bayes/MEGA).
+[Bayes/MEGA/](https://github.com/jasonratcliff/thesis/tree/master/data-raw/Bayes/MEGA).
 Non-identical single locus (rITS, *rps*, *ycf1*) and concatenated
 multi-locus FASTA files were used as input for jModelTest ([Posada
 2008](#ref-Posada2008)) to assess evolutionary model fit. Lastly,
@@ -174,9 +164,10 @@ alignment gaps were coded using 2matrix ([Salinas and Little
 coding” as described by [Simmons and Ochoterena](#ref-Simmons2000)
 ([2000](#ref-Simmons2000)). Partitioned NEXUS (*.nex*) files with
 defined command blocks were deposited in
-[Bayes/Runs/](https://github.com/jasonratcliff/Thesis/tree/master/data-raw/Bayes/Runs).
+[Bayes/Runs/](https://github.com/jasonratcliff/thesis/tree/master/data-raw/Bayes/Runs).
 
-![](README_files/figure-gfm/diagMEGA-1.png)<!-- -->
+<div id="htmlwidget-6f358baac00b048de77f" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6f358baac00b048de77f">{"x":{"diagram":"\ngraph TD\n  S1[\"sequencing/3.alignments-single/\"]\n  S2[\"sequencing/3.multi-locus/\"]\n  %% MEGA files\n  S1-->D1{MEGA}\n  S2-->D1\n  D1-->D2(Distance matrices)\n  D1-->D3(De-duplicated multi-FASTAs)\n  D2-->D4[\"Bayes/MEGA/\"]\n  D3-->D4\n  %% jModelTest\n  D4-->J1{jModelTest}\n  J1-->J2[\"Bayes/jmodeltest/\"]\n  %% 2Matrix / Bayes Nexus\n  D4-->M1{2Matrix}\n  M1-->M2[\"Bayes/Runs/\"]\n  M2-->M4{MrBayes}\n  J2-->M4\n"},"evals":[],"jsHooks":[]}</script>
 
 ## BEAST
 
@@ -187,7 +178,8 @@ all three loci (rITS, *rps*, *ycf1*), alignments were imported into
 `BEAUti` v2.6.3 ([Bouckaert et al. 2019](#ref-Bouckaert2019)) to
 configure BEAST *.xml* files.
 
-![](README_files/figure-gfm/BEAUTi-1.png)<!-- -->
+<div id="htmlwidget-0f7ca1b0bc94ffbe207a" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0f7ca1b0bc94ffbe207a">{"x":{"diagram":"\ngraph TD\n  S1[\"sequencing/3.alignments-subset/\"]\n  S1-->B1(data-raw/BEAST/beast.R)\n  B1-->B2[\"BEAST/NEXUS/\"]\n  B2-->B3(BEAUTi)\n  B3-->B4(data-raw/BEAST/*.xml)\n"},"evals":[],"jsHooks":[]}</script>
 
 BEAST v2.6.3 ([Bouckaert et al. 2019](#ref-Bouckaert2019)) results from
 3 independed runs of 50M states were combined with `LogCombiner` v2.6.3
@@ -196,7 +188,8 @@ was summarized using `TreeAnnotator` v2.6.3 (*ibid.*) and visualized
 using the `ggplot2` ([Wickham 2020](#ref-R-ggplot2)) extension `ggtree`
 ([Yu et al. 2017](#ref-R-ggtree)).
 
-![](README_files/figure-gfm/BEAST-1.png)<!-- -->
+<div id="htmlwidget-a86a7b562d0e36f2d1b7" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a86a7b562d0e36f2d1b7">{"x":{"diagram":"\ngraph TD\n  B1(data-raw/BEAST/*.xml)-->B2\n  subgraph \"\"\n    B2[BEAST2]\n    B2-->B3[LogCombiner]\n    B3-->B4[TreeAnnotator]\n  end\n  B4-->B5(/inst/extdata/BEAST/*.mcc)\n  B5-->B6[R `ggtree`]\n"},"evals":[],"jsHooks":[]}</script>
 
 ## Evolutionary Models
 

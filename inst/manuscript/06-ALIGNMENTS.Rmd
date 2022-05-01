@@ -26,7 +26,7 @@ if (knit_variables$pandoc == "latex") {
 
 ```{r FigureAppendixggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS, fig.scap="Nuclear rITS mutliple sequence alignment"}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Nuclear rITS",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -53,7 +53,7 @@ if (knit_variables$pandoc == "latex") {
   )
 }
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Plastid *rps* Intron",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -86,7 +86,7 @@ if (knit_variables$pandoc == "latex") {
   )
 }
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = "Plastid *ycf1* ",
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -116,7 +116,7 @@ knitr::include_graphics(
 ```{r SessionInfo}
 
 pkg_session <-
-  devtools::session_info(pkgs = "Thesis")[2] %>%
+  devtools::session_info(pkgs = "thesis")[2] %>%
   plyr::ldply(.data = .) %>%
   dplyr::select(package, ondiskversion, date, source) %>%
   setNames(object = ., nm = c("Package", "Version", "Date", "Source"))
@@ -138,4 +138,3 @@ if (knit_variables$pandoc == "latex") {
 }
 
 ```
-

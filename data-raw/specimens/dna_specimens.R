@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(readr)
 library(dplyr)
 library(purrr)
@@ -21,9 +21,9 @@ dna_specimens <- purrr::pmap_dfr(
   .f = function(label, Collector, Collection_Number, ...) {
 
     # Subset total herbarium record data frame by collector and collection.
-    record_match <- Thesis::herbarium_specimens %>%
+    record_match <- thesis::herbarium_specimens %>%
       dplyr::filter(., Collector == !!Collector &
-                      Collection_Number == !!Collection_Number)  %>%
+        Collection_Number == !!Collection_Number) %>%
       dplyr::mutate(Collection_Number = as.numeric(Collection_Number)) %>%
       dplyr::select(-c(State, County))
 
@@ -33,9 +33,11 @@ dna_specimens <- purrr::pmap_dfr(
       y = record_match,
       by = c("Collector", "Collection_Number", "Longitude", "Latitude")
     )
-  }) %>%
-
+  }
+) %>%
   # Account for duplicate label matches from joining.
-  dplyr::group_by(.data$label) %>% dplyr::slice(1) %>% dplyr::ungroup()
+  dplyr::group_by(.data$label) %>%
+  dplyr::slice(1) %>%
+  dplyr::ungroup()
 
 usethis::use_data(dna_specimens, overwrite = TRUE)

@@ -1,11 +1,11 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Basal Leaf Margins.
 traits <- list()
-traits$counts <- Thesis::herbarium_specimens %>%
-  Thesis::separate_discrete_trait(
+traits$counts <- thesis::herbarium_specimens %>%
+  thesis::separate_discrete_trait(
     specimen_tbl = .,
     trait_selection = "Basal_leaf_margins"
   ) %>%
@@ -14,11 +14,11 @@ traits$counts <- Thesis::herbarium_specimens %>%
            x = .data$Trait)
   ) %>%
   dplyr::mutate(
-    Trait = Thesis::capitalize(character_vector = .data$Trait)
+    Trait = thesis::capitalize(character_vector = .data$Trait)
   )
 
 traits$ggplot <- traits$counts %>%
-  Thesis::map_trait_distribution(tidy_trait = .) +
+  thesis::map_trait_distribution(tidy_trait = .) +
   ggplot2::scale_color_viridis_d(option = "A") +
   ggplot2::labs(color = "Basal Leaf Margins")
 
@@ -82,4 +82,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

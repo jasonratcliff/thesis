@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(ggplot2)
 library(ggtext)
@@ -11,15 +11,15 @@ set.seed(20210319)
 specimens <- list()
 
 # Set of reviewed annotations for species of interest.
-specimens$filtered <- Thesis::herbarium_specimens %>%
-  Thesis::filter_reviewed(specimen_tbl = .) %>%
+specimens$filtered <- thesis::herbarium_specimens %>%
+  thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Mature_fruit_length_mm),
     !is.na(Taxon_a_posteriori),
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
   dplyr::bind_cols(
-    Thesis::range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm")
+    thesis::range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm")
   )
 
 # Fruits ----
@@ -27,7 +27,7 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
 traits <- list()
 
 traits$labels <-
-  Thesis::spl_labels(
+  thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -35,7 +35,7 @@ traits$labels <-
 
 # Extract ggplot legend for cowplot grid.
 traits$legend_pdf <-
-  Thesis::annotation_legend(
+  thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -43,7 +43,7 @@ traits$legend_pdf <-
   )
 
 traits$legend_png <-
-  Thesis::annotation_legend(
+  thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -51,7 +51,7 @@ traits$legend_png <-
   )
 
 traits$fruits <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Mature_fruit_length_mm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -75,7 +75,7 @@ traits$fruits <-
   )
 
 traits$phenology <-
-  Thesis::trait_phenology(
+  thesis::trait_phenology(
     specimen_tbl = specimens$filtered,
     trait = "Mature_fruit_length_mm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -150,4 +150,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

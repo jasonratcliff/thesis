@@ -46,7 +46,7 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
   if (chunk_type == "latex") {
     # Check regular expression pattern in `knitr_title` string for italics.
     if (grepl(" ?\\*[^\\*].+[^\\*]\\* ", knitr_title) &&
-        grepl("\\*{2}", knitr_title) == FALSE) {
+      grepl("\\*{2}", knitr_title) == FALSE) {
       split_title <- unlist(strsplit(knitr_title, ""))
       split_index <- grep("\\*", split_title)
       split_fix <- as.logical(seq_along(split_index) %% 2)
@@ -58,7 +58,6 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
   } else {
     cat(paste(knitr_chunk_list[knitr_type], knitr_title))
   }
-
 }
 
 #' Table 2 Bookdown
@@ -77,4 +76,3 @@ knitr_table_dna <- function(chunk_type) {
     paste0("\\@ref(tab:TableDnaSpecimensHtml)")
   }
 }
-

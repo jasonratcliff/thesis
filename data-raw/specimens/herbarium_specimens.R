@@ -7,10 +7,10 @@ library(purrr)
 library(lubridate)
 library(stringr)
 library(tibble)
-library(Thesis)
+library(thesis)
 
-if (basename(getwd()) != "Thesis") {
-  stop("Source from top level of `Thesis`.")
+if (basename(getwd()) != "thesis") {
+  stop("Source from top level of `thesis`.")
 }
 
 # Read Specimens ----
@@ -39,11 +39,10 @@ specimens$raw <-
         rep("text", 2),
         rep("skip", 1),
         rep("text", 36)
-        )
-      ) %>%
+      )
+    ) %>%
       tibble::add_column(excel_sheet = excel_sheet, .before = TRUE)
-    }) %>%
-
+  }) %>%
   # bind row-wise and remove rows not matching Genera / Family of interest.
   dplyr::filter(
     grepl(
@@ -51,13 +50,13 @@ specimens$raw <-
       x = .data$Taxon
     )
   ) %>%
-
   # Parse dates with lubridate, create vector for month / day and reorder.
   dplyr::mutate(
     Date_parsed = lubridate::mdy(Date),
     Date_md = gsub(
       pattern = "/[0-9]{4}", "",
-      x = .data$Date) %>%
+      x = .data$Date
+    ) %>%
       as.Date(
         x = .,
         format = "%m/%d"
@@ -84,12 +83,18 @@ if (!dir.exists("inst/log")) {
 
 # Select date columns, filter by format, and write mismatches to a .csv log.
 specimens$raw %>%
-  dplyr::select(excel_sheet, Collector, Collection_Number, Date,
-                Date_parsed, ID) %>%
-  dplyr::filter(.,
-    !grepl(pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
-           x = as.character(Date_parsed)) & !is.na(Date) |
-      !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)) %>%
+  dplyr::select(
+    excel_sheet, Collector, Collection_Number, Date,
+    Date_parsed, ID
+  ) %>%
+  dplyr::filter(
+    .,
+    !grepl(
+      pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
+      x = as.character(Date_parsed)
+    ) & !is.na(Date) |
+      !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)
+  ) %>%
   readr::write_excel_csv(x = ., file = "inst/log/remaining_dates.csv")
 
 # Parse Prior ID ----
@@ -101,14 +106,13 @@ prior_ids <- function(prior_vector) {
     id_match <- grep(pattern = "!", x = prior_vector) %>% min()
     prior_vector[id_match] <- prior_vector[id_match - 1]
     return(prior_ids(prior_vector))
-    } else {
-      return(prior_vector)
-    }
+  } else {
+    return(prior_vector)
+  }
 }
 
 # Built tibble from prior annotation history.
 specimens$split <- specimens$raw$Taxon %>%
-
   # Map list of comma-separated annotations to replace synonyms and concurrence.
   stringr::str_split(string = ., pattern = ", ?") %>%
   purrr::map(.x = ., function(split_ids) {
@@ -116,33 +120,37 @@ specimens$split <- specimens$raw$Taxon %>%
   })
 
 specimens$priors <- specimens$split %>%
-
   # Subset most recent identification from list of annotation vectors.
   purrr::map_chr(.x = ., .f = function(annotations) {
     annotations[length(annotations)]
   }) %>%
-
   # Remove author names and replace variety with subsp. abbreviations.
-  stringr::str_replace_all(string = ., replacement = "",
-    pattern =  " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins") %>%
-  stringr::str_replace_all(string = .,
-    pattern = "var\\.?|var\\.$|(ssp|subsp).?(?= )", replacement = "subsp.") %>%
-
+  stringr::str_replace_all(
+    string = ., replacement = "",
+    pattern = " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins"
+  ) %>%
+  stringr::str_replace_all(
+    string = .,
+    pattern = "var\\.?|var\\.$|(ssp|subsp).?(?= )", replacement = "subsp."
+  ) %>%
   # Replace identification synonyms.
   ifelse(grepl("australis|purpurea|stylosa", x = .),
-         yes = "Physaria acutifolia", no = .) %>%
+    yes = "Physaria acutifolia", no = .
+  ) %>%
   ifelse(grepl("integrifolia", x = .),
-         yes = "Physaria integrifolia", no = .) %>%
+    yes = "Physaria integrifolia", no = .
+  ) %>%
   ifelse(grepl("Physaria didymocarpa( ssp\\.$)?$|normalis", x = .),
-         yes = "Physaria didymocarpa subsp. didymocarpa", no = .) %>%
+    yes = "Physaria didymocarpa subsp. didymocarpa", no = .
+  ) %>%
   ifelse(grepl("lanata", x = .),
-         yes = "Physaria didymocarpa subsp. lanata", no = .) %>%
+    yes = "Physaria didymocarpa subsp. lanata", no = .
+  ) %>%
   ifelse(grepl("Physaria saximontana$", x = .),
-         yes = "Physaria saximontana subsp. saximontana", no = .) %>%
-
+    yes = "Physaria saximontana subsp. saximontana", no = .
+  ) %>%
   # Enframe character vector as tibble.
   tibble::enframe(value = "prior_id", name = NULL) %>%
-
   # Combine recent ID and
   dplyr::bind_cols(
     plyr::ldply(
@@ -168,16 +176,14 @@ specimens$geography <- specimens$raw %>%
 
 # Convert geographic coordinate column classes from character to numeric.
 specimens$elevation <- specimens$raw %>%
-
   dplyr::select(dplyr::matches("Elev")) %>%
   dplyr::rename_at(
     .vars = dplyr::vars(dplyr::matches("Elev")),
-    .funs =  ~  paste0(
+    .funs = ~ paste0(
       "Elev_",
       stringr::str_extract(string = .x, pattern = "m|ft")
     )
   ) %>%
-
   dplyr::mutate_at(
     .vars = dplyr::vars(dplyr::matches("Elev")),
     .funs =
@@ -186,7 +192,6 @@ specimens$elevation <- specimens$raw %>%
         pattern = "[A-Za-z\\.,'~ ]"
       )
   ) %>%
-
   dplyr::mutate(
     Elev_var = dplyr::case_when(
       !is.na(Elev_ft) ~ "Elev_ft",
@@ -199,14 +204,12 @@ specimens$elevation <- specimens$raw %>%
       TRUE ~ NA_character_
     )
   ) %>%
-
   dplyr::bind_cols(
-    Thesis::range_split(
+    thesis::range_split(
       trait_tbl = .,
       split_var = "Elev_raw"
     )
-  )  %>%
-
+  ) %>%
   dplyr::mutate(
     Elev_var = dplyr::case_when(
       !is.na(Elev_ft) ~ "Elev_ft",
@@ -219,7 +222,6 @@ specimens$elevation <- specimens$raw %>%
       TRUE ~ NA_character_
     )
   ) %>%
-
   dplyr::mutate_at(
     .vars = dplyr::vars(dplyr::matches("Elev_raw_(min|max)")),
     .funs = ~ dplyr::case_when(
@@ -245,4 +247,3 @@ herbarium_specimens <-
 # Write Data .Rda ----
 
 usethis::use_data(herbarium_specimens, overwrite = TRUE)
-

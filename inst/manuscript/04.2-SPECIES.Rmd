@@ -1,7 +1,7 @@
 
 ```{r SectionNovelPhysaria}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = paste(
     "Southcentral Wyoming",
     physaria(knit_variables$pandoc), "Lineage"
@@ -85,7 +85,7 @@ of Middle Park and *P. bellii* of the eastern slope of the Front Range.
 
 ```{r SectionSouthwesternEndemics}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = paste("Southwest Wyoming Endemics"),
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -141,7 +141,7 @@ knitr::include_graphics(
 
 ```{r SectionPhysariaDidymocarpaSubspecies}
 
-Thesis::knitr_section(
+thesis::knitr_section(
   knitr_title = paste("*Physaria didymocarpa* Subspecies"),
   knitr_type = "section", chunk_type = knit_variables$pandoc
 )
@@ -285,4 +285,3 @@ knitr::include_graphics(
 )
 
 ```
-

@@ -26,8 +26,8 @@ library(knitr)
 library(kableExtra)
 library(dplyr)
 
-# Load specimen data and Thesis functions.
-library(Thesis)
+# Load specimen data and thesis functions.
+library(thesis)
 
 # Initialize list for figure captions.
 caption <- list()

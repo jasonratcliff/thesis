@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(dplyr)
 library(ggplot2)
@@ -13,28 +13,28 @@ specimens <- list()
 # Join coordinate nudges by sample label ID.
 specimens$dna <-
   dplyr::left_join(
-    x = Thesis::dna_specimens,
+    x = thesis::dna_specimens,
     y = readxl::read_excel(
       path = "data-raw/mapping/map-labels.xlsx",
-      col_types = c("text", "numeric", "numeric"), na = c("", "NA")),
+      col_types = c("text", "numeric", "numeric"), na = c("", "NA")
+    ),
     by = "label"
   ) %>%
   dplyr::mutate(
     x_nudge = ifelse(is.na(x_nudge), 0.25, x_nudge),
-    y_nudge= ifelse(is.na(y_nudge), -0.15, y_nudge)
+    y_nudge = ifelse(is.na(y_nudge), -0.15, y_nudge)
   ) %>%
   dplyr::filter(!is.na(Latitude) & !is.na(Longitude))
 
 # Prior Annotations ----
 
-specimens$prior <- Thesis::herbarium_specimens %>%
+specimens$prior <- thesis::herbarium_specimens %>%
   dplyr::select(prior_id, Latitude, Longitude) %>%
-  Thesis::subset_coords(
+  thesis::subset_coords(
     specimen_tbl = .,
     Longitude = c(-115.2, -103),
     Latitude = c(37, 49.1)
   ) %>%
-  
   # Filter out Lesquerella / Physaria sensu lato spp.
   dplyr::filter(
     !grepl(
@@ -42,29 +42,31 @@ specimens$prior <- Thesis::herbarium_specimens %>%
         "Lesquerella", "cnema", "alpina", "cordiformis", "macrantha",
         sep = "|", collapse = ""
       ),
-      x = .data$prior_id) &
+      x = .data$prior_id
+    ) &
       !grepl("\\?|Brassicaceae", x = .data$prior_id)
   )
 
 # Build ggplot ----
 
 specimens$ggplot <- ggplot2::ggplot() +
-  Thesis::layer_borders(
-    spl_extent = Thesis::spl_bbox(specimens$prior),
-    sf_county_color = "black") +
-  Thesis::layer_specimens(
+  thesis::layer_borders(
+    spl_extent = thesis::spl_bbox(specimens$prior),
+    sf_county_color = "black"
+  ) +
+  thesis::layer_specimens(
     specimen_tbl = specimens$prior,
     id_column = "prior_id",
     shape_aes = TRUE
   ) +
-  Thesis::layer_themes(
+  thesis::layer_themes(
     specimen_tbl = specimens$prior,
     id_column = "prior_id",
     legend_title = "prior_id"
   ) +
   ggplot2::coord_sf(
-    xlim = range(Thesis::spl_bbox(specimens$prior)[["Longitude"]]),
-    ylim = range(Thesis::spl_bbox(specimens$prior)[["Latitude"]])
+    xlim = range(thesis::spl_bbox(specimens$prior)[["Longitude"]]),
+    ylim = range(thesis::spl_bbox(specimens$prior)[["Latitude"]])
   ) +
   ggplot2::labs(legend = "Prior Annotations")
 
@@ -75,7 +77,7 @@ specimens$map <-
     .l = specimens$dna,
     .f = function(Collector, Collection_Number, x_nudge, y_nudge, ...) {
       rlang::call2(
-        .fn = rlang::expr(Thesis::spl_id),
+        .fn = rlang::expr(thesis::spl_id),
         specimen_tbl = rlang::expr(specimens$dna),
         collector = Collector,
         collection = Collection_Number,
@@ -85,8 +87,8 @@ specimens$map <-
         h_adjust = x_nudge,
         v_adjust = y_nudge
       )
-    }) %>%
-  
+    }
+  ) %>%
   # Reduce the expression to collapse species id label call objects into chain.
   purrr::reduce(
     .x = .,

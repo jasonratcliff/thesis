@@ -16,8 +16,9 @@
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
-#'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
+#'   list.files(system.file("extdata/MrBayes", package = "thesis"),
+#'     full.names = TRUE, pattern = "rITS-infile.nex.con.tre"
+#'   ) %>%
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id")
 #'
@@ -43,7 +44,8 @@ bayes_ggtree <- function(joined_ggtree, id_column,
         dplyr::filter(.data$prob != 1 & !is.na(.data$prob)),
       nudge_x = nudge_xlim,
       ggplot2::aes(
-        label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)),
+        label = sprintf("%0.3f", as.numeric(.data$prob), digits = 3)
+      ),
       fontface = "bold", fill = "lightgoldenrod", size = 4, alpha = 0.35
     ) +
     ggplot2::geom_text(
@@ -74,11 +76,14 @@ bayes_ggtree <- function(joined_ggtree, id_column,
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
-#'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
+#'   list.files(system.file("extdata/MrBayes", package = "thesis"),
+#'     full.names = TRUE, pattern = "rITS-infile.nex.con.tre"
+#'   ) %>%
 #'   read_tree(tree_file = .) %>%
-#'   join_bayes(tree_data = ., id_column = "prior_id",
-#'              scale_vector = c(4, 12))
+#'   join_bayes(
+#'     tree_data = ., id_column = "prior_id",
+#'     scale_vector = c(4, 12)
+#'   )
 #'
 #' # Add theme layers to ggtree plot.
 #' bayes_ggtree(joined_ggtree, id_column = "prior_id") +
@@ -87,28 +92,30 @@ bayes_ggtree <- function(joined_ggtree, id_column,
 bayes_themes <- function(joined_ggtree, id_column) {
 
   # Assign HTML markdown label vector.
-  markdown_labels <- Thesis::spl_labels(
+  markdown_labels <- thesis::spl_labels(
     specimen_tbl = joined_ggtree,
     id_column = id_column
   )
 
   theme_layer <- list(
     ggplot2::scale_color_manual(
-      values = Thesis::spp_color, labels = markdown_labels
+      values = thesis::spp_color, labels = markdown_labels
     ),
     ggplot2::scale_shape_manual(
-      values = Thesis::spp_shape, labels = markdown_labels
+      values = thesis::spp_shape, labels = markdown_labels
     ),
     ggplot2::theme(
       legend.text = ggtext::element_markdown(size = 8),
       legend.background = ggplot2::element_blank(),
       legend.title = ggplot2::element_text(
-        hjust = 0.5, size = 14, face = "bold")
-      ),
+        hjust = 0.5, size = 14, face = "bold"
+      )
+    ),
     ggplot2::guides(
       color = ggplot2::guide_legend(
         override.aes = list(size = 3),
-        ncol = 2, keyheight = 0.15, default.unit = "inch")
+        ncol = 2, keyheight = 0.15, default.unit = "inch"
+      )
     ),
     ggtree::geom_treescale(offset = -1.5)
   )
@@ -134,22 +141,29 @@ bayes_themes <- function(joined_ggtree, id_column) {
 #'
 #' @examples
 #' joined_ggtree <-
-#'   list.files(system.file("extdata/MrBayes", package = "Thesis"),
-#'              full.names = TRUE, pattern = "rITS-infile.nex.con.tre") %>%
+#'   list.files(system.file("extdata/MrBayes", package = "thesis"),
+#'     full.names = TRUE, pattern = "rITS-infile.nex.con.tre"
+#'   ) %>%
 #'   read_tree(tree_file = .) %>%
-#'   join_bayes(tree_data = ., id_column = "prior_id",
-#'              scale_vector = c(4, 12))
+#'   join_bayes(
+#'     tree_data = ., id_column = "prior_id",
+#'     scale_vector = c(4, 12)
+#'   )
 #'
 #' # Build ggtree plot grid.
-#' bayes_plot(joined_ggtree, x_expand = 0.025, plot_y = 0.45,
-#'            id_column = "prior_id", scale_name = "Priors")
+#' bayes_plot(joined_ggtree,
+#'   x_expand = 0.025, plot_y = 0.45,
+#'   id_column = "prior_id", scale_name = "Priors"
+#' )
 #'
 bayes_plot <- function(joined_ggtree, id_column, scale_name,
                        x_expand = 0.02, plot_x = 0.1, plot_y = 0.5,
                        plot_width = 0.25, plot_height = 0.5, ...) {
   bayes_plot <-
-    bayes_ggtree(joined_ggtree = joined_ggtree, id_column = id_column,
-                 ggtree_layout = "rectangular") +
+    bayes_ggtree(
+      joined_ggtree = joined_ggtree, id_column = id_column,
+      ggtree_layout = "rectangular"
+    ) +
     bayes_themes(joined_ggtree = joined_ggtree, id_column = id_column) +
     ggplot2::expand_limits(x = x_expand) +
     ggplot2::labs(colour = scale_name, shape = scale_name)
@@ -161,7 +175,9 @@ bayes_plot <- function(joined_ggtree, id_column, scale_name,
   ggtree_legend <- cowplot::get_legend(bayes_plot)
 
   ggtree_grid <- cowplot::ggdraw(bayes_build) +
-    cowplot::draw_plot(plot = ggtree_legend, x = plot_x, y = plot_y,
-                       width = plot_width, height = plot_height, ...)
+    cowplot::draw_plot(
+      plot = ggtree_legend, x = plot_x, y = plot_y,
+      width = plot_width, height = plot_height, ...
+    )
   return(ggtree_grid)
 }

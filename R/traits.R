@@ -16,8 +16,9 @@
 #'
 #' @examples
 #' herbarium_specimens %>%
-#'   dplyr::select(Ovule_number) %>% dplyr::filter(!is.na(Ovule_number)) %>%
-#'    range_split(trait_tbl = ., split_var = "Ovule_number")
+#'   dplyr::select(Ovule_number) %>%
+#'   dplyr::filter(!is.na(Ovule_number)) %>%
+#'   range_split(trait_tbl = ., split_var = "Ovule_number")
 #' @export
 #'
 range_split <- function(trait_tbl, split_var) {
@@ -29,7 +30,8 @@ range_split <- function(trait_tbl, split_var) {
     }) %>%
     purrr::walk2(.x = ., .y = seq_along(.), function(element, index) {
       ifelse(element > 1,
-             warning("Multiple '-' detected at index: ", index),  element)
+        warning("Multiple '-' detected at index: ", index), element
+      )
     })
 
   # Split character vector of "-" separated range into list of sorted numerics.
@@ -37,21 +39,24 @@ range_split <- function(trait_tbl, split_var) {
     purrr::map(function(element) {
       if (grepl(pattern = "-", x = element)) {
         stringr::str_split(string = element, pattern = "-") %>%
-          unlist() %>% as.numeric() %>% sort()
-      } else { as.numeric(c(element, element)) }
+          unlist() %>%
+          as.numeric() %>%
+          sort()
+      } else {
+        as.numeric(c(element, element))
+      }
     }) %>%
-
     # Cast list of split range data into tibble and add column of original data.
     plyr::ldply(fun = rbind) %>%
     tibble::as_tibble(.name_repair = "minimal") %>%
     dplyr::mutate(!!split_var := dplyr::pull(trait_tbl, split_var)) %>%
     dplyr::select(1:2) %>%
-
     # Rename tibble variables wth minimum and maximum range data.
     # https://dplyr.tidyverse.org/articles/programming.html#different-input-and-output-variable
-    dplyr::rename(!!paste0(split_var, "_min") := "V1",
-                  !!paste0(split_var, "_max") := "V2")
-
+    dplyr::rename(
+      !!paste0(split_var, "_min") := "V1",
+      !!paste0(split_var, "_max") := "V2"
+    )
 }
 
 # Discrete Traits ----
@@ -92,7 +97,8 @@ separate_discrete_trait <- function(specimen_tbl, trait_selection,
             pattern = "[\\(\\)]"
           ) %>%
             stringr::str_to_lower(string = .)
-        })
+        }
+      )
     ) %>%
     tidyr::separate_rows(data = ., .data$Trait, sep = "[,; -]") %>%
     dplyr::add_count(.data$Trait) %>%
@@ -117,9 +123,10 @@ separate_discrete_trait <- function(specimen_tbl, trait_selection,
 #' @return A `ggplot` with specimen trait distribution mapping.
 #'
 #' @examples
-#' Thesis::herbarium_specimens %>%
+#' thesis::herbarium_specimens %>%
 #'   dplyr::filter(!is.na(.data$Ovule_number)) %>%
-#'   dplyr::bind_cols(., 
+#'   dplyr::bind_cols(
+#'     .,
 #'     range_split(trait_tbl = ., split_var = "Ovule_number")
 #'   ) %>%
 #'   dplyr::rename(Trait = "Ovule_number_max") %>%
@@ -132,17 +139,21 @@ map_trait_distribution <- function(tidy_trait,
                                    bb_xlim = c(-114, -102.5),
                                    bb_ylim = c(37.5, 48.75)) {
   trait_map <- ggplot2::ggplot(data = tidy_trait) +
-    layer_borders(spl_extent = spl_bbox(tidy_trait),
-                  sf_county_color = "black") +
+    layer_borders(
+      spl_extent = spl_bbox(tidy_trait),
+      sf_county_color = "black"
+    ) +
     ggplot2::geom_jitter(
-      ggplot2::aes(x = .data$Longitude, y = .data$Latitude,
-                   color = .data$Trait),
+      ggplot2::aes(
+        x = .data$Longitude, y = .data$Latitude,
+        color = .data$Trait
+      ),
       na.rm = TRUE
     ) +
     ggplot2::coord_sf(xlim = bb_xlim, ylim = bb_ylim) +
     ggplot2::theme(
       panel.background = ggplot2::element_blank(),
-      panel.border = ggplot2::element_rect(fill = NA, color =  "black"),
+      panel.border = ggplot2::element_rect(fill = NA, color = "black"),
       legend.key = ggplot2::element_blank()
     )
   return(trait_map)
@@ -156,7 +167,7 @@ map_trait_distribution <- function(tidy_trait,
 #' point jitters.
 #'
 #' @param trait Variable with trait observation in
-#'   [Thesis::herbarium_specimens].
+#'   [thesis::herbarium_specimens].
 #' @param aesthetic_id Variable to set color and shape aesthetics of jitters.
 #' @param aesthetic_labels Named vector of labels for manual scale values.
 #' @param violin.params List of arguments passed to [ggplot2::geom_violin().
@@ -178,7 +189,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      Thesis::spl_labels(
+      thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -187,9 +198,10 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
   violins <- do.call("geom_violin", utils::modifyList(
     list(
       mapping = aes_(x = quote(Taxon_a_posteriori), y = as.name(trait)),
-      na.rm = TRUE),
-    val = violin.params)
-  )
+      na.rm = TRUE
+    ),
+    val = violin.params
+  ))
 
   jitters <- do.call("geom_jitter", utils::modifyList(
     list(
@@ -198,11 +210,11 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
         y = as.name(trait),
         color = as.name(aesthetic_id),
         shape = as.name(aesthetic_id)
-        ),
+      ),
       na.rm = TRUE
     ),
-    val = jitter.params)
-  )
+    val = jitter.params
+  ))
 
   themes <- do.call("theme", utils::modifyList(
     list(
@@ -210,8 +222,8 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
       axis.title.x = ggplot2::element_blank(),
       legend.position = "none"
     ),
-    val = theme.params)
-  )
+    val = theme.params
+  ))
 
   ggplot(data = specimen_tbl) +
     ggplot2::theme_classic() +
@@ -219,11 +231,11 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
     jitters +
     ggplot2::scale_color_manual(
       name = legend_title, labels = aesthetic_labels,
-      values = Thesis::spp_color, na.value = "black"
+      values = thesis::spp_color, na.value = "black"
     ) +
     ggplot2::scale_shape_manual(
       name = legend_title, labels = aesthetic_labels,
-      values = Thesis::spp_shape, na.value = 17
+      values = thesis::spp_shape, na.value = 17
     ) +
     themes
 }
@@ -250,7 +262,8 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #' @examples
 #' herbarium_specimens %>%
 #'   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42)) %>%
-#'   dplyr::bind_cols(.,
+#'   dplyr::bind_cols(
+#'     .,
 #'     range_split(trait_tbl = ., split_var = "Mature_fruit_length_mm")
 #'   ) %>%
 #'   trait_phenology(
@@ -264,14 +277,15 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
                             aesthetic_labels = NULL, legend_title = NULL,
                             jitter.params = list(),
                             theme.params = list()) {
-
-  specimen_tbl <- dplyr::filter(specimen_tbl,
-                                !is.na(.data$Date_md) & !is.na(.data[[trait]]))
+  specimen_tbl <- dplyr::filter(
+    specimen_tbl,
+    !is.na(.data$Date_md) & !is.na(.data[[trait]])
+  )
 
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      Thesis::spl_labels(
+      thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -279,8 +293,8 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
 
   jitters <- do.call("geom_point", utils::modifyList(
     list(na.rm = TRUE),
-    val = jitter.params)
-  )
+    val = jitter.params
+  ))
 
   scales <- list(
     ggplot2::scale_x_date(
@@ -291,21 +305,21 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
     ggplot2::scale_color_manual(
       name = legend_title,
       labels = aesthetic_labels,
-      values = Thesis::spp_color,
+      values = thesis::spp_color,
       na.value = "black"
     ),
     ggplot2::scale_shape_manual(
       name = legend_title,
       labels = aesthetic_labels,
-      values = Thesis::spp_shape,
+      values = thesis::spp_shape,
       na.value = 17
     )
   )
 
   themes <- do.call("theme", utils::modifyList(
     list(legend.text = ggtext::element_markdown()),
-    val = theme.params)
-  )
+    val = theme.params
+  ))
 
   ggplot2::ggplot(
     data = specimen_tbl,
@@ -314,9 +328,9 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
       y = as.name(trait),
       color = as.name(aesthetic_id),
       shape = as.name(aesthetic_id)
-      )
-    ) +
-    ggplot2::geom_smooth(method = 'lm', na.rm = TRUE, formula = y ~ x) +
+    )
+  ) +
+    ggplot2::geom_smooth(method = "lm", na.rm = TRUE, formula = y ~ x) +
     ggplot2::theme_classic() +
     jitters +
     scales +
@@ -350,7 +364,7 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
-      Thesis::spl_labels(
+      thesis::spl_labels(
         specimen_tbl = specimen_tbl,
         id_column = aesthetic_id
       )
@@ -366,8 +380,8 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
       legend.position = "bottom",
       legend.text = ggtext::element_markdown()
     ),
-    val = theme.params)
-  )
+    val = theme.params
+  ))
 
   plot_layers <-
     list(
@@ -383,13 +397,13 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
       ggplot2::scale_color_manual(
         name = legend_title,
         labels = aesthetic_labels,
-        values = Thesis::spp_color,
+        values = thesis::spp_color,
         na.value = "black"
       ),
       ggplot2::scale_shape_manual(
         name = legend_title,
         labels = aesthetic_labels,
-        values = Thesis::spp_shape,
+        values = thesis::spp_shape,
         na.value = 17
       ),
       ggplot2::guides(
@@ -413,4 +427,3 @@ annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
   ggplot_legend <- cowplot::get_legend(built_ggplot)
   return(ggplot_legend)
 }
-

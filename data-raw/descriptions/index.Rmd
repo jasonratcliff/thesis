@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r}
 suppressMessages({
-  library(Thesis)
+  library(thesis)
   library(ggplot2)
   library(cowplot)
   library(dplyr)
@@ -45,7 +45,7 @@ summarize_continuous <- function(specimen_tbl, trait) {
   split_ranges <- specimen_tbl %>%
     select(all_of(trait)) %>%
     filter(!is.na(.data[[trait]])) %>%
-    Thesis::range_split(trait_tbl = ., split_var = trait) %>%
+    thesis::range_split(trait_tbl = ., split_var = trait) %>%
     rename_at(.tbl = ., .vars = vars(matches("_min")), ~ paste("Minimum")) %>%
     rename_at(.tbl = ., .vars = vars(matches("_max")), ~ paste("Maximum"))
 
@@ -64,7 +64,7 @@ summarize_continuous <- function(specimen_tbl, trait) {
     tidyr::pivot_longer(
       data = split_ranges,
       cols = c("Minimum", "Maximum"),
-      names_to = c("limit")
+      names_to = "limit"
     ) %>% ggplot(data = .) +
     geom_violin(aes(x = limit, y = value)) +
     scale_x_discrete(limits = c("Minimum", "Maximum")) +
@@ -85,4 +85,3 @@ summarize_continuous <- function(specimen_tbl, trait) {
 ```{r}
 pander::pander(specimen_counts)  # Pandoc markdown data table
 ```
-
