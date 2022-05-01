@@ -3,7 +3,7 @@
 # Created by: jasonratcliff
 # Created on: 5/25/21
 
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(dplyr)
 library(ggrepel)
@@ -17,12 +17,12 @@ tree <- list()
 
 tree$joined <-
   list.files(
-    path = system.file("extdata/MrBayes", package = "Thesis"),
+    path = system.file("extdata/MrBayes", package = "thesis"),
     pattern = "rps-infile.nex.con.tre",
     full.names = TRUE
   ) %>%
-    Thesis::read_tree(tree_file = .) %>%
-    Thesis::join_bayes(
+    thesis::read_tree(tree_file = .) %>%
+    thesis::join_bayes(
       tree_data = .,
       id_column = "Taxon_a_posteriori",
       scale_vector = c(5, 10)
@@ -31,11 +31,11 @@ tree$joined <-
 # Assign HTML markdown label vector.
 tree$labels <-
   c(
-    Thesis::spl_labels(
+    thesis::spl_labels(
       specimen_tbl = tree$joined,
       id_column = "prior_id"
     ),
-    Thesis::spl_labels(
+    thesis::spl_labels(
       specimen_tbl = tree$joined,
       id_column = "Taxon_a_posteriori"
     )
@@ -43,7 +43,7 @@ tree$labels <-
 
 # Assign multi- and single-taxa node labels.
 tree$haplotypes <-
-  Thesis::haplotype_labels(
+  thesis::haplotype_labels(
     haplotypes = tree$joined,
     id_column = "Taxon_a_posteriori"
   )
@@ -84,15 +84,15 @@ tree$ggtree <- tree$joined %>%
   ) +
   ggtree::geom_tiplab(hjust = -0.175, size = 3) +
   ggplot2::scale_color_manual(
-    values = Thesis::spp_color,
+    values = thesis::spp_color,
     labels = tree$labels
   ) +
   ggplot2::scale_shape_manual(
-    values = Thesis::spp_shape,
+    values = thesis::spp_shape,
     labels = tree$labels
   ) +
   ggplot2::scale_fill_manual(
-    values = Thesis::spp_color,
+    values = thesis::spp_color,
     labels = tree$haplotypes$Label
   ) +
   ggtree::xlim_expand(xlim = 0.01, panel = "Tree") +
@@ -140,7 +140,7 @@ tree$repel_pdf <-
     0.0165, 1.75, -0.1, 11, "Physaria condensata", "black",
     0.0155, 1.15, -0.1, 11, "Physaria integrifolia", "white"
   ) %>%
-    Thesis::repel_haplotype_labels(
+    thesis::repel_haplotype_labels(
       tree_nudges = .,
       tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
@@ -158,7 +158,7 @@ tree$repel_pdf <-
     -0.004, 0, 0.01, 34,
     -0.005, -0.5, 0.01, 35
   ) %>%
-    Thesis::repel_node_labels(
+    thesis::repel_node_labels(
       node_nudges = .,
       node_labels = tree$nodes,
       initial_ggtree = tree$repel_pdf,
@@ -229,7 +229,7 @@ tree$repel_png <-
     0.0115, 1.5, -0.1, 11, "Physaria condensata", "black",
     0.0105, 1, -0.1, 11, "Physaria integrifolia", "white"
   ) %>%
-    Thesis::repel_haplotype_labels(
+    thesis::repel_haplotype_labels(
       tree_nudges = .,
       tree_labels = tree$haplotypes,
       initial_ggtree = tree$ggtree,
@@ -247,7 +247,7 @@ tree$repel_png <-
     -0.00375, 0.5, 0.01, 34,
     -0.00375, -1, 0.01, 35
   ) %>%
-    Thesis::repel_node_labels(
+    thesis::repel_node_labels(
       node_nudges = .,
       node_labels = tree$nodes,
       initial_ggtree = tree$repel_png,
@@ -309,4 +309,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

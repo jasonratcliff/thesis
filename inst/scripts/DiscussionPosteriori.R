@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
@@ -7,7 +7,7 @@ set.seed(20210311)
 
 # Discussion: Build ggplot distribution map with reviewed annotations.
 reviewed <- list()
-reviewed$specimens <- Thesis::herbarium_specimens %>%
+reviewed$specimens <- thesis::herbarium_specimens %>%
   select("Taxon_a_posteriori", "Latitude", "Longitude") %>%
   filter(Taxon_a_posteriori %in%
     paste("Physaria",

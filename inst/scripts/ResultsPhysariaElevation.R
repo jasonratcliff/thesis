@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(dplyr)
 library(fs)
@@ -17,8 +17,8 @@ set.seed(20210320)
 specimens <- list()
 
 # Set of reviewed annotations for species of interest.
-specimens$filtered <- Thesis::herbarium_specimens %>%
-  Thesis::filter_reviewed(specimen_tbl = .) %>%
+specimens$filtered <- thesis::herbarium_specimens %>%
+  thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Elev_raw_max),
     !is.na(Taxon_a_posteriori),
@@ -43,7 +43,7 @@ specimens$median <- specimens$filtered %>%
 traits <- list()
 
 traits$labels <-
-  Thesis::spl_labels(
+  thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -51,7 +51,7 @@ traits$labels <-
 
 # Extract ggplot legend for cowplot grid.
 traits$legend <-
-  Thesis::annotation_legend(
+  thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -59,7 +59,7 @@ traits$legend <-
   )
 
 traits$elevation <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Elev_raw_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -102,7 +102,7 @@ traits$ridgeline <- ggplot2::ggplot(data = specimens$filtered) +
     limits = rev(specimens$median$Species)) +
   ggplot2::scale_fill_manual(
     name = "Reviewed Annotation",
-    values = Thesis::spp_color,
+    values = thesis::spp_color,
     labels = desc(traits$labels)
   ) +
   ggplot2::theme(
@@ -116,7 +116,7 @@ traits$ridgeline <- ggplot2::ggplot(data = specimens$filtered) +
 
 specimens$table <- specimens$median %>%
     dplyr::mutate(  # Italicization
-      Species = Thesis::parse_taxa(tree_tibble = ., id_column = "Species")
+      Species = thesis::parse_taxa(tree_tibble = ., id_column = "Species")
     ) %>%
   dplyr::rename_all(~ paste0("bold(", .x, ")"))
 
@@ -230,4 +230,3 @@ purrr::walk(
       ncol = 1
     )
   })
-

@@ -1,11 +1,11 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Fruit Trichomes.
 traits <- list()
-traits$counts <- Thesis::herbarium_specimens %>%
-  Thesis::separate_discrete_trait(
+traits$counts <- thesis::herbarium_specimens %>%
+  thesis::separate_discrete_trait(
     specimen_tbl = .,
     trait_selection = "Fruit_trichomes"
   ) %>%
@@ -21,7 +21,7 @@ traits$counts <- Thesis::herbarium_specimens %>%
   )
 
 traits$ggplot <- traits$counts %>%
-  Thesis::map_trait_distribution(tidy_trait = .) +
+  thesis::map_trait_distribution(tidy_trait = .) +
   ggplot2::scale_color_brewer(palette = "Paired") +
   ggplot2::labs(color = "Fruit Trichomes")
 
@@ -85,4 +85,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

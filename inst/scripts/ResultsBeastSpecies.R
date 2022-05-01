@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(dplyr)
 library(fs)
@@ -12,13 +12,13 @@ starBeast <-
     .y = 1:4,
     .f = function(mcc, title) {
       treeio::read.beast(
-        file = system.file(mcc, package = "Thesis")
+        file = system.file(mcc, package = "thesis")
       ) %>%
         ggtree::fortify() %>%
         dplyr::mutate(
           label = gsub("medicinae", "'medicinae'", x = .data$label)
         ) %>%
-        Thesis::species_plot(tree_tibble = .) +
+        thesis::species_plot(tree_tibble = .) +
         ggplot2::ggtitle(label = paste("Hypothesis", title))
     }) %>%
   stats::setNames(object = ., nm = paste0("hyp", 1:4))
@@ -69,4 +69,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

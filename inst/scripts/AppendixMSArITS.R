@@ -1,11 +1,11 @@
-library(Thesis)
+library(thesis)
 library(ggplot2)
 library(cowplot)
 
 # rITS Alignment ----
 ggMSArITS <-
   system.file("extdata/Alignments/rITS-single.fasta",
-              package = "Thesis") %>%
+              package = "thesis") %>%
   potentially_informative_sites(
     fasta_file = .,
     seq_name = TRUE,
@@ -26,4 +26,3 @@ purrr::walk(
       plot = AppendixMSArITS
     )
   })
-

@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
@@ -8,7 +8,7 @@ library(cowplot)
 # Results: Combined SEINet / herbarium specimen CO floribunda
 spp_colorado <-
   subset_coords(
-    specimen_tbl = Thesis::herbarium_specimens,
+    specimen_tbl = thesis::herbarium_specimens,
     Latitude = c(36.79328, 42.21372),
     Longitude = c(-110.3819, -103.3507)
   ) %>%
@@ -56,11 +56,11 @@ ggplot_specimens <- function() {
     ),
     ggplot2::scale_color_manual(
       name = "Annotations", labels = specimen_labels,
-      values = Thesis::spp_color, na.value = "black"
+      values = thesis::spp_color, na.value = "black"
     ),
     ggplot2::scale_shape_manual(
       name = "Annotations", labels = specimen_labels,
-      values = Thesis::spp_shape, na.value = 17
+      values = thesis::spp_shape, na.value = 17
     ),
     theme(
       legend.box = "horizontal",
@@ -167,4 +167,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

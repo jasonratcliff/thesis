@@ -1,10 +1,10 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Basal Fruit Apices.
 traits <- list()
-traits$counts <- Thesis::herbarium_specimens %>%
+traits$counts <- thesis::herbarium_specimens %>%
   dplyr::mutate(
     Mature_fruit_apices = purrr::map_chr(
       .x = .data$Mature_fruit_apices,
@@ -12,7 +12,7 @@ traits$counts <- Thesis::herbarium_specimens %>%
         gsub("-", "_", x = apex)
       })
   ) %>%
-  Thesis::separate_discrete_trait(
+  thesis::separate_discrete_trait(
     specimen_tbl = .,
     trait_selection = "Mature_fruit_apices"
   ) %>%
@@ -38,7 +38,7 @@ traits$counts <- Thesis::herbarium_specimens %>%
   ) %>% dplyr::filter(!is.na(.data$Trait))
 
 traits$ggplot <- traits$counts %>%
-  Thesis::map_trait_distribution(tidy_trait = .) +
+  thesis::map_trait_distribution(tidy_trait = .) +
   ggplot2::scale_color_brewer(type = "qual", palette = "Set1") +
   ggplot2::labs(color = "Mature Fruit Apices")
 
@@ -103,4 +103,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

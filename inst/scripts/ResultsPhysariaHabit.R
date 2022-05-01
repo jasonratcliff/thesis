@@ -1,4 +1,4 @@
-library(Thesis)
+library(thesis)
 library(dplyr)
 library(fs)
 library(ggplot2)
@@ -12,8 +12,8 @@ set.seed(20210320)
 specimens <- list()
 
 # Set of reviewed annotations for species of interest.
-specimens$filtered <- Thesis::herbarium_specimens %>%
-  Thesis::filter_reviewed(specimen_tbl = .) %>%
+specimens$filtered <- thesis::herbarium_specimens %>%
+  thesis::filter_reviewed(specimen_tbl = .) %>%
   dplyr::filter(
     !is.na(Stem_length_dm),
     !is.na(Basal_leaf_length_cm),
@@ -21,8 +21,8 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
     !grepl("^Physaria$", .data$Taxon_a_posteriori)
   ) %>%
   dplyr::bind_cols(
-    Thesis::range_split(trait_tbl = ., split_var = "Stem_length_dm"),
-    Thesis::range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
+    thesis::range_split(trait_tbl = ., split_var = "Stem_length_dm"),
+    thesis::range_split(trait_tbl = ., split_var = "Basal_leaf_length_cm")
   ) %>%
   dplyr::mutate(rosette_ratio = Stem_length_dm_max * 10 - Basal_leaf_length_cm_max)
 
@@ -31,7 +31,7 @@ specimens$filtered <- Thesis::herbarium_specimens %>%
 traits <- list()
 
 traits$labels <-
-  Thesis::spl_labels(
+  thesis::spl_labels(
     specimen_tbl = specimens$filtered,
     id_column = "Taxon_a_posteriori"
   ) %>%
@@ -39,7 +39,7 @@ traits$labels <-
 
 # Extract ggplot legend for cowplot grid.
 traits$legend <-
-  Thesis::annotation_legend(
+  thesis::annotation_legend(
     specimen_tbl = specimens$filtered,
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations",
@@ -48,7 +48,7 @@ traits$legend <-
 
 # Basal leaf lengths
 traits$leaves <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Basal_leaf_length_cm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -69,7 +69,7 @@ traits$leaves <-
 
 # Stem lengths
 traits$stems <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "Stem_length_dm_max",
     aesthetic_id = "Taxon_a_posteriori",
@@ -90,7 +90,7 @@ traits$stems <-
 
 # Inflorence extension lengths
 traits$rosette <-
-  Thesis::jitter_violin(
+  thesis::jitter_violin(
     specimen_tbl = specimens$filtered,
     trait = "rosette_ratio",
     aesthetic_id = "Taxon_a_posteriori",
@@ -147,4 +147,3 @@ purrr::walk(
       ncol = 1
     )
   })
-

@@ -1,12 +1,12 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Replum Shape.
 traits <- list()
 traits$counts <-
-  Thesis::separate_discrete_trait(
-    specimen_tbl = Thesis::herbarium_specimens,
+  thesis::separate_discrete_trait(
+    specimen_tbl = thesis::herbarium_specimens,
     trait_selection = "Replum_shape"
   ) %>%
   dplyr::filter(
@@ -18,12 +18,12 @@ traits$counts <-
       trait %>%
         gsub("oblanceolate|obovate", "Oblanceolate | Obovate", x = .) %>%
         gsub("elliptic|oblong", "Elliptic | Oblong", x = .) %>%
-        Thesis::capitalize(character_vector = .)
+        thesis::capitalize(character_vector = .)
     })
   ) %>% dplyr::distinct()
 
 traits$ggplot <- traits$counts %>%
-  Thesis::map_trait_distribution(tidy_trait = .) +
+  thesis::map_trait_distribution(tidy_trait = .) +
   ggplot2::scale_color_brewer(type = "qual", palette = "Dark2") +
   ggplot2::labs(color = "Replum Shape")
 
@@ -87,4 +87,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-

@@ -1,10 +1,10 @@
-library(Thesis)
+library(thesis)
 library(cowplot)
 library(ggplot2)
 
 # Results: ggplot distribution of specimen Ovule Number (per locule).
 traits <- list()
-traits$counts <- Thesis::herbarium_specimens %>%
+traits$counts <- thesis::herbarium_specimens %>%
   dplyr::select(
     "prior_id", "Taxon_a_posteriori", "Ovule_number",
     "Latitude", "Longitude", "Collector", "Collection_Number"
@@ -18,7 +18,7 @@ traits$counts <- Thesis::herbarium_specimens %>%
   )
 
 traits$ggplot <- traits$counts %>%
-  Thesis::map_trait_distribution(tidy_trait = .) +
+  thesis::map_trait_distribution(tidy_trait = .) +
   ggplot2::scale_color_viridis_d(option = "D") +
   ggplot2::labs(color = "Ovules per Locule")
 
@@ -83,4 +83,3 @@ purrr::pwalk(
       ncol = col
     )
   })
-
