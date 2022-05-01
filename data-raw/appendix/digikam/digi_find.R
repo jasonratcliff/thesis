@@ -5,10 +5,12 @@ library(fs)
 # Script assumes digiKam database is located in users' home directory.
 digikam_path <- c("jPhoto/Physaria")
 if (Sys.getenv(x = "USER") != "jasonratcliff") {
-  stop("Set `digikam_path` for local execution by user: ",
-       Sys.getenv(x = "USER"),
-       "\n  See path variable in: ",
-       rstudioapi::getActiveDocumentContext()[["path"]])
+  stop(
+    "Set `digikam_path` for local execution by user: ",
+    Sys.getenv(x = "USER"),
+    "\n  See path variable in: ",
+    rstudioapi::getActiveDocumentContext()[["path"]]
+  )
 }
 
 specimens_xlsx <- # Specimens external data file path.
@@ -19,7 +21,7 @@ if (!file_exists(specimens_xlsx)) stop("Verify `specimens_xlsx` path variable.")
 #' Search digiKam Directory
 #'
 #' Identify relative paths to specimen voucher photos in digiKam database.
-#' 
+#'
 #' @param sheetname Name of *.xlsx* file sheet name
 #' @param specimens Data frame of specimen vouchers
 #'
@@ -37,32 +39,43 @@ if (!file_exists(specimens_xlsx)) stop("Verify `specimens_xlsx` path variable.")
 digi_search <- function(sheetname, specimens, digi_path) {
 
   # Extract surnames and build patterns for file search.
-  collection_data <- specimens %>% dplyr::filter(excel_sheet == sheetname) %>%
-    dplyr::select(Collector, Collection_Number,
-                  State, County) %>%
+  collection_data <- specimens %>%
+    dplyr::filter(excel_sheet == sheetname) %>%
+    dplyr::select(
+      Collector, Collection_Number,
+      State, County
+    ) %>%
     dplyr::mutate(
       # Extract first matched surname for approximate pattern matching.
-      surname = stringr::str_extract(string = Collector,
-                                     pattern = "[A-Z][a-z]+"),
+      surname = stringr::str_extract(
+        string = Collector,
+        pattern = "[A-Z][a-z]+"
+      ),
       search_pattern = ifelse(!is.na(Collection_Number),
-                              paste0(surname, "_", Collection_Number), NA)
+        paste0(surname, "_", Collection_Number), NA
       )
+    )
 
   # Character vector to index recursive file paths from digiKam subdirectory.
   filepath_index <-
-    list.files(path = path_home(digi_path),
-               recursive = TRUE,  full.names = TRUE)
-  
+    list.files(
+      path = path_home(digi_path),
+      recursive = TRUE, full.names = TRUE
+    )
+
   # Recursive search of digKam photo subdirectory
   search_data <- collection_data$search_pattern %>%
-    purrr::keep(~ !is.na(.x)) %>% unique() %>%
+    purrr::keep(~ !is.na(.x)) %>%
+    unique() %>%
     purrr::map_dfr(function(search_pattern) {
       search_results <-
         grep(pattern = search_pattern, x = filepath_index, value = TRUE) %>%
-        gsub(pattern = path_dir(path_home(digi_path)),
-             replacement = "", x = .)
+        gsub(
+          pattern = path_dir(path_home(digi_path)),
+          replacement = "", x = .
+        )
       tibble::tibble(search_pattern = search_pattern, path = search_results)
-      })
+    })
 
   # Join search results back to collection metadata by search pattern
   joined_data <- dplyr::distinct(collection_data) %>%
@@ -75,10 +88,14 @@ readxl::excel_sheets(path = specimens_xlsx) %>%
   purrr::keep(.x = ., ~ !grepl(pattern = "excluded", x = .x)) %>%
   purrr::map_dfr(., function(sheet) {
     digi_paths <-
-      digi_search(sheetname = sheet,
-                  specimens = thesis::herbarium_specimens,
-                  digi_path = digikam_path)
-    dplyr::bind_cols(excel_sheet = rep(sheet, times = nrow(digi_paths)),
-                     digi_paths)
+      digi_search(
+        sheetname = sheet,
+        specimens = thesis::herbarium_specimens,
+        digi_path = digikam_path
+      )
+    dplyr::bind_cols(
+      excel_sheet = rep(sheet, times = nrow(digi_paths)),
+      digi_paths
+    )
   }) %>%
   writexl::write_xlsx(x = ., path = "digikam/digikam.xlsx")

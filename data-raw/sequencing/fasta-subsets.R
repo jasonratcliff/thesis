@@ -3,7 +3,8 @@
 # Assign list of raw FASTA files from project subdirectory.
 fasta_files <-
   list.files(system.file("extdata/FASTA", package = "thesis"),
-             full.names = TRUE)
+    full.names = TRUE
+  )
 
 ## Read FASTA into R ----
 
@@ -53,12 +54,14 @@ purrr::walk2(header_list, fasta_loci, function(headers, locus) {
 specimen_list <- purrr::map(header_list, function(locus_headers) {
   purrr::map_chr(locus_headers, function(header) {
     stringr::str_extract(string = header, pattern = "^.+(?= )")
-    })
   })
+})
 
 # Check for string extract error by comparing length of list elements.
-if (!identical(lapply(header_list, length),
-               lapply(specimen_list, length))) {
+if (!identical(
+  lapply(header_list, length),
+  lapply(specimen_list, length)
+)) {
   stop("Error in FASTA header splitting.")
 }
 
@@ -74,9 +77,15 @@ fasta_matches <- purrr::map(header_list, function(locus_headers) {
 
 # Subset the DNAStringSets by the header indexes and the common sequences from
 # each locus to a new .fasta file.
-purrr::pwalk(list(fasta_matches, fasta_list, fasta_loci),
-              function(index, fasta, locus) {
-               Biostrings::writeXStringSet(x = fasta[index], width = 50,
-                 filepath = paste0("data-raw/sequencing/2.subset-fastas/",
-                                   locus, "-subset.fasta"))
-             })
+purrr::pwalk(
+  list(fasta_matches, fasta_list, fasta_loci),
+  function(index, fasta, locus) {
+    Biostrings::writeXStringSet(
+      x = fasta[index], width = 50,
+      filepath = paste0(
+        "data-raw/sequencing/2.subset-fastas/",
+        locus, "-subset.fasta"
+      )
+    )
+  }
+)

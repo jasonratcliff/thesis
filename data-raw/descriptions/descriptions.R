@@ -1,7 +1,9 @@
 # Verify installation of thesis data
 if (!"thesis" %in% installed.packages()) {
-  stop("Make sure thesis data are installed:",
-       "https://github.com/jasonratcliff/thesis")
+  stop(
+    "Make sure thesis data are installed:",
+    "https://github.com/jasonratcliff/thesis"
+  )
 } else {
   library(thesis)
   library(dplyr)
@@ -12,7 +14,7 @@ if (!"thesis" %in% installed.packages()) {
   library(bookdown)
 }
 
-setwd(proj_get())  # Verify working directory set to ~/thesis/
+setwd(proj_get()) # Verify working directory set to ~/thesis/
 
 # Generate tibble of reviewed specimen identification counts.
 specimen_counts <- thesis::herbarium_specimens %>%
@@ -41,7 +43,8 @@ specimen_counts %>%
   pull(var = "Taxon_a_posteriori") %>%
   purrr::walk(.x = ., function(taxon) {
     template_description <-
-      base::readLines(con = "data-raw/descriptions/_description.Rmd",
+      base::readLines(
+        con = "data-raw/descriptions/_description.Rmd",
         n = -1L, encoding = "UTF-8", warn = FALSE
       )
 

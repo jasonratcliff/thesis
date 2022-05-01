@@ -16,12 +16,13 @@ specimens$dna <-
     x = thesis::dna_specimens,
     y = readxl::read_excel(
       path = "data-raw/mapping/map-labels.xlsx",
-      col_types = c("text", "numeric", "numeric"), na = c("", "NA")),
+      col_types = c("text", "numeric", "numeric"), na = c("", "NA")
+    ),
     by = "label"
   ) %>%
   dplyr::mutate(
     x_nudge = ifelse(is.na(x_nudge), 0.25, x_nudge),
-    y_nudge= ifelse(is.na(y_nudge), -0.15, y_nudge)
+    y_nudge = ifelse(is.na(y_nudge), -0.15, y_nudge)
   ) %>%
   dplyr::filter(!is.na(Latitude) & !is.na(Longitude))
 
@@ -34,7 +35,6 @@ specimens$prior <- thesis::herbarium_specimens %>%
     Longitude = c(-115.2, -103),
     Latitude = c(37, 49.1)
   ) %>%
-  
   # Filter out Lesquerella / Physaria sensu lato spp.
   dplyr::filter(
     !grepl(
@@ -42,7 +42,8 @@ specimens$prior <- thesis::herbarium_specimens %>%
         "Lesquerella", "cnema", "alpina", "cordiformis", "macrantha",
         sep = "|", collapse = ""
       ),
-      x = .data$prior_id) &
+      x = .data$prior_id
+    ) &
       !grepl("\\?|Brassicaceae", x = .data$prior_id)
   )
 
@@ -51,7 +52,8 @@ specimens$prior <- thesis::herbarium_specimens %>%
 specimens$ggplot <- ggplot2::ggplot() +
   thesis::layer_borders(
     spl_extent = thesis::spl_bbox(specimens$prior),
-    sf_county_color = "black") +
+    sf_county_color = "black"
+  ) +
   thesis::layer_specimens(
     specimen_tbl = specimens$prior,
     id_column = "prior_id",
@@ -85,8 +87,8 @@ specimens$map <-
         h_adjust = x_nudge,
         v_adjust = y_nudge
       )
-    }) %>%
-  
+    }
+  ) %>%
   # Reduce the expression to collapse species id label call objects into chain.
   purrr::reduce(
     .x = .,
