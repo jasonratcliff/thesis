@@ -1,18 +1,20 @@
-# thesis 0.2.3.9010
+# thesis 0.3.0
+
+## Breaking changes
 
 * Rename package from `Thesis` to lowercase `thesis`.
 
-* New R6 superclass `Specimen` data structure consolidates specimen record
-  tibbles with previously exported functions for subsetting and theme options.
-  * The `SpecimenMap` inherits methods from the superclass, and defines
-    public and private methods to consolidate previously exported functions.
-
-## Breaking Changes
+## New features
 
 * A number of previously exported functions are refactored into a specimen
   container using the R6 OOP system. Despite the non-(R)-idiomatic style of R6,
   the reference semantics present a useful implementation for the various
   subsetting and plotting operations covered by these functions.
+
+* New R6 superclass `Specimen` data structure consolidates specimen record
+  tibbles with previously exported functions for subsetting and theme options.
+  * The `SpecimenMap` inherits methods from the superclass, and defines
+    public and private methods to consolidate previously exported functions.
 
 ### `Specimen`
 
