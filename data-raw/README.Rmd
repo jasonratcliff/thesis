@@ -18,17 +18,10 @@ library(thesis)
 # - To install v2.1.1 via Homebrew:
 # $ brew tap homebrew/cask
 # $ brew cask install phantomjs
-
 ```
 
 ```{r linkSpecimens, echo=FALSE}
 link_github <- "https://github.com/jasonratcliff/thesis/"
-
-link_spp_xlsx <-
-  paste0(link_github, "blob/master/inst/extdata/specimens.xlsx")
-
-link_spp_script <-
-  paste0(link_github, "blob/master/data-raw/specimens/herbarium_specimens.R")
 
 link_fasta <-
   paste0(link_github, "blob/master/inst/extdata/FASTA")
@@ -56,70 +49,6 @@ link_bayes_nexus <-
 
 link_beast_nexus <-
   paste0(link_github, "tree/master/data-raw/BEAST/")
-```
-
-# Specimen Data
-
-Records of voucher specimens on loan from lending herbaria
-(RM, NY, MO, F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were
-compiled into an excel file, [`specimens.xlsx`](`r link_spp_xlsx`).
-Data recorded from vouchers include locality, identification history,
-collector, collection number, date, institution, geographic coordinates,
-elevation, any ecological descriptions, and measurements of continuous and
-discrete specimen traits. In total, `r count_specimens(herbarium_specimens)`
-unique collections were reviewed.
-
-```{r specimenData}
-# Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "thesis") %>%
-  stringr::str_extract(string = ., pattern = "extdata.+")
-```
-
-The [`herbarium_specimens.R`](`r link_spp_script`) script creates an *.Rda* 
-from `specimens.xlsx`, formatting specimen data for downstream phylogenetic,
-distribution, and morphological analyses to define a tibble
-`herbarium_specimens` in the `thesis` namespace.
-
-```{r}
-thesis::herbarium_specimens
-```
-
-Briefly, the script does the following:
-
-- Read data into R using `readxl` [@R-readxl]
-    - Filter records with `dplyr` [@R-dplyr] to annotations with:
-        - *Physaria*
-        - *Lesquerella*
-        - Brassicaceae
-    - Standardize dates with `lubridate` [@R-lubridate]
-        - New variable `Date_md` with month and day for phenology
-        - Log records mismatched with the date format `YYYY-MM-DD`
-
-- Split comma-separated prior annotations as separate variables
-    - Identification agreements denoted by "!" are substituted with ID
-    - Extract most recent annotations into a new column
-        - Replace recent annotations by synonym according to @OKane2010
-
-- Parse elevation data
-    - Cast as numeric and remove special characters
-    - Combine variables with m / ft. elevation data
-    - Split minimum and maximum values and convert m to ft.
-
-- Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    - Create *dna_specimens.Rda* with tibble in the `thesis` namespace
-
-# DNA Map
-
-```{r dnaSpecimenMap, out.width='750px', dpi=300, echo=FALSE, fig.cap=cap_map}
-cap_map <-
-  paste0("Sampled DNA Specimens. ",
-         "Distribution of specimens with prior identifications and ",
-         "locations of DNA samples.")
-dna_map <- "mapping/map-dna.png"
-if (!file.exists(dna_map)) {
-  source(dna_map)
-}
-knitr::include_graphics(dna_map)
 ```
 
 # DNA Sequence Analysis
