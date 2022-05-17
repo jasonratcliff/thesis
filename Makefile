@@ -2,7 +2,7 @@
 #
 # 1) Create `data/*.rda` files
 #
-# Each `.rda` file contains an exported R data object in the Thesis
+# Each `.rda` file contains an exported R data object in the thesis
 # NAMESPACE. Scripts and raw data are contained in `data-raw/` subdirectories.
 #
 # Includes:
@@ -34,7 +34,7 @@ all: specimens themes seinet figures package check manuscript site # slides
 
 # Write .rda binary `data/` files.
 specimens: $(rda_specimens)
-data/herbarium_specimens.rda: $(r_spp) inst/extdata/specimens.xlsx
+data/herbarium_specimens.rda: $(r_spp) data-raw/specimens/specimens.xlsx
 	Rscript $(r_spp)
 data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna_specimens.csv
 	Rscript $(r_dna)
