@@ -18,7 +18,7 @@
 # `data-raw/` R scripts to render binary `.Rda` files.
 r_spp	:= data-raw/specimens/herbarium_specimens.R
 r_dna	:= data-raw/specimens/dna_specimens.R
-r_themes	:= data-raw/mapping/map_themes.R
+r_themes	:= data-raw/specimens/aesthetics.R
 r_seinet	:= data-raw/SEINet/SEINet.R
 rda_specimens	:= $(wildcard data/*specimens.rda)
 rda_themes	:= $(wildcard data/spp*.rda)
