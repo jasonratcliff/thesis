@@ -158,7 +158,7 @@ filter_reviewed <- function(specimen_tbl) {
 #' `r lifecycle::badge("deprecated")`
 #'
 #' @param specimen_tbl Tibble of herbarium specimens built from
-#'  `herbarium_specimens.R` script.
+#'  `vouchers.R` script.
 #' @param collector Character scalar to filter specimen by collector name.
 #' @param collection Numeric vector to filter specimens by collection number.
 #'

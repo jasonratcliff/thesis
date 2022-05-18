@@ -16,8 +16,8 @@
 # - File stems are matched by R scripts in `inst/scripts/*.R`
 #
 # `data-raw/` R scripts to render binary `.Rda` files.
-r_spp	:= data-raw/specimens/herbarium_specimens.R
-r_dna	:= data-raw/specimens/dna_specimens.R
+r_spp	:= data-raw/specimens/vouchers.R
+r_dna	:= data-raw/specimens/dna.R
 r_themes	:= data-raw/specimens/aesthetics.R
 r_seinet	:= data-raw/SEINet/SEINet.R
 rda_specimens	:= $(wildcard data/*specimens.rda)
@@ -34,9 +34,9 @@ all: specimens themes seinet figures package check manuscript site # slides
 
 # Write .rda binary `data/` files.
 specimens: $(rda_specimens)
-data/herbarium_specimens.rda: $(r_spp) data-raw/specimens/specimens.xlsx
+data/herbarium_specimens.rda: $(r_spp) data-raw/specimens/vouchers.xlsx
 	Rscript $(r_spp)
-data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna_specimens.csv
+data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna.csv
 	Rscript $(r_dna)
 
 themes: $(rda_themes)

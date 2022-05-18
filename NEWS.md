@@ -191,7 +191,7 @@
 
 * Species Tree *BEAST
     * `beast.R` script to write taxa assignments for species hypotheses.
-    * Update final `dna_specimens.csv` annotations.
+    * Update final `dna.csv` annotations.
     * Include `.mcc`, `.xml`, and `.txt` files for BEAST2 runs.
 
 * Update binary *.xlsx* and *.rda* files with herbarium and DNA specimen data.
@@ -277,7 +277,7 @@
 
 * Add Shiny app for mapping specimen data.
 
-* Move *specimens.xlsx* file to `inst/extdata/` for external availability.
+* Move *vouchers.xlsx* file to `inst/extdata/` for external availability.
 
 * New `save_plot()` to facilitate `Makefile` *.pdf* / *.png* figure builds.
 
