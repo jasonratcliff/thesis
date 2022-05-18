@@ -1,6 +1,12 @@
 # thesis (development version)
 
-## Minor improvements and fixes
+## New features
+
+* `SpecimenMap$features()` gains two new parameters:
+    + `sf_states` passes a character vector to `tigris::counties()`
+       for layering county borders from additional states.
+    + `expand` controls limit expansion by `ggplot2::coord_sf()` to account
+      for clipping raster layers with satellite or elevation data.
 
 * `SpecimenMap$repel()` gains a `vouchers` parameter to specify arbitrary
   labels given a tibble with collector, collection, longitude, and latitude. 

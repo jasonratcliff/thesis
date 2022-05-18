@@ -40,6 +40,11 @@
 #'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
 #' @param sf_border Character scalar to set color of
 #'  county and state borders.
+#' @param sf_states Additional character vector of states to layer
+#'  county borders onto map base.
+#' @param expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
+#'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
+#'  base layers.
 #' @param legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
 #' @param baselayer Specify map baselayer underlying county borders.
@@ -121,10 +126,10 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(sf_border) {
+    features = function(sf_border, sf_states = NULL, expand = FALSE) {
       list(
         ggplot2::geom_sf(
-          data = private$counties(),
+          data = private$counties(sf_states),
           inherit.aes = FALSE, size = 0.5, alpha = 0.75,
           color = sf_border, fill = NA
         ),
@@ -136,7 +141,7 @@ SpecimenMap <- R6::R6Class(
         ggplot2::coord_sf(
           xlim = base::range(self$records[["Longitude"]], na.rm = TRUE),
           ylim = base::range(self$records[["Latitude"]], na.rm = TRUE),
-          expand = FALSE
+          expand = expand
         )
       )
     },
@@ -229,8 +234,8 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier,
-                   sf_border = "black",
+    map = function(legend = self$identifier, expand = FALSE,
+                   sf_border = "black", sf_states = NULL,
                    baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
                    center = NULL,
@@ -248,7 +253,11 @@ SpecimenMap <- R6::R6Class(
         )
 
       species_map <- baselayer +
-        self$features(sf_border = sf_border) +
+        self$features(
+          sf_border = sf_border,
+          sf_states = sf_states,
+          expand = expand
+        ) +
         self$specimens() +
         self$scales() +
         self$theme(legend = legend)
@@ -398,8 +407,11 @@ SpecimenMap <- R6::R6Class(
     },
 
     # `tigris` County Borders --------------------------------------------------
-    counties = function() {
-      tigris_counties <- unique(self$records[["State"]]) %>%
+    counties = function(sf_states = NULL) {
+      if (!is.null(sf_states)) {
+        stopifnot(is.character(sf_states))
+      }
+      tigris_counties <- c(sf_states, unique(self$records[["State"]])) %>%
         purrr::keep(
           .x = .,
           .p = ~ !(is.na(.x) | .x %in% c("Canada", "Unknown"))
