@@ -57,9 +57,10 @@ test_that("Specimen R6 Superclass", {
   expect_equal(nrow(voucher_taxa$records), 5)
 
   # Voucher Collections --------------------------------------------------------
-  voucher_collections <- vouchers$clone()
-  voucher_collections$collections("A", "B" = c(5, 6), "C" = 7)
-  expect_equal(nrow(voucher_collections$records), 7)
+  voucher_collections <- vouchers$collections("A" = c(1, 2), 5, "C")
+  expect_identical(class(voucher_collections), c("tbl_df", "tbl", "data.frame"))
+  expect_equal(nrow(voucher_collections), 4)
+  expect_equal(nrow(vouchers$records), 7)
 
   # Annotaions Labels ----------------------------------------------------------
   expect_equal(

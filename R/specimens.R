@@ -166,6 +166,8 @@ Specimen <- R6::R6Class(
     #' * Numeric vector of collection numbers named by collector
     #' * Character scalar specifying a single collector string
     #' * Numeric scalar specifying a single collection number
+    #' @return A [`tbl_df`][tibble::tbl_df-class] subset of matched
+    #'  collector / collection specimen records.
     #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Any number of collector
     #'  collections (i.e., numeric vector named by collector), collectors
     #'  (character scalars) or collection numbers (numeric scalars).
@@ -206,8 +208,7 @@ Specimen <- R6::R6Class(
         }
       ) %>%
         purrr::keep(~ !is.null(.x))
-      self$records <- entries
-      invisible(self)
+      return(entries)
     },
 
     #' @description Create markdown-formatted specimen annotations.
