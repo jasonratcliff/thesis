@@ -286,7 +286,7 @@ SpecimenMap <- R6::R6Class(
     #'   )
     #' )
     repel = function(..., repel.params = list()) {
-      records <- botanist(records = self$collections(...)$records)
+      records <- botanist(records = self$collections(...))
       id <- do.call(what = ggrepel::geom_label_repel, utils::modifyList(
         list(
           data = records,
