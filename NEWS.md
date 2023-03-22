@@ -1,4 +1,9 @@
-# thesis (development version)
+# thesis 0.3.1
+
+## Minor improvements and fixes
+
+* `Specimens$collections()` returns a tibble without modifying the `records`
+  field, allowing for use within other public methods.
 
 # thesis 0.3.0
 
