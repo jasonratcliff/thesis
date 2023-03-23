@@ -1,3 +1,10 @@
+# thesis (development version)
+
+## Minor improvements and fixes
+
+* `SpecimenMap$repel()` gains a `vouchers` parameter to specify arbitrary
+  labels given a tibble with collector, collection, longitude, and latitude. 
+
 # thesis 0.3.1
 
 ## Minor improvements and fixes

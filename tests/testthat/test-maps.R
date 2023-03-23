@@ -125,6 +125,30 @@ test_that("SpecimenMap R6 Subclass", {
     expected = c("LayerInstance", "Layer", "ggproto", "gg")
   )
 
+  # Optionally set specific specimen records in addition to collection search.
+  voucher_labels <-
+    tibble::tribble(
+      ~"Collector", ~"Collection_Number", ~"Longitude", ~"Latitude",
+      "A. Gray", 5, 46, -111
+    )
+  expect_identical(
+    dplyr::select(vouchers$repel(vouchers = voucher_labels)$data, -"label"),
+    voucher_labels
+  )
+  expect_identical(
+    vouchers$repel(vouchers = voucher_labels)$data$label,
+    expected = "Gray\n5"
+  )
+  expect_equal(
+    nrow(
+      vouchers$repel(
+        "Hooker" = 1:4,
+        vouchers = voucher_labels
+      )$data
+    ),
+    expected = 5
+  )
+
   # Map Plots ------------------------------------------------------------------
   expect_type(vouchers$map, type = "closure")
   map_vouchers <- thesis::herbarium_specimens %>%

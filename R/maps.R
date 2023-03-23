@@ -264,6 +264,9 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Collector / collection
     #'  sets passed to [`Specimen$collections()`][Specimen].
+    #' @param vouchers Specimen records [`tbl_df`][tibble::tbl_df-class] to
+    #'  specify subset of record collections. Requires columns `Collector`,
+    #'  `Collection_Number`, `Longitude`, and `Latitude` to construct labels.
     #' @param repel.params Arg/value pairs passed on to
     #'  [ggrepel::geom_label_repel()] to modify repelled labels.
     #'
@@ -285,11 +288,20 @@ SpecimenMap <- R6::R6Class(
     #'     box.padding = 0.5
     #'   )
     #' )
-    repel = function(..., repel.params = list()) {
-      records <- botanist(records = self$collections(...))
+    repel = function(..., vouchers = NULL, repel.params = list()) {
+      if (length(rlang::list2(...)) > 0) {
+        collectors <- botanist(records = self$collections(...))
+      }
+      if (!is.null(vouchers)) {
+        collectors <- tryCatch(
+          dplyr::bind_rows(botanist(records = vouchers), collectors),
+          error = function(e) botanist(records = vouchers)
+        )
+      }
+
       id <- do.call(what = ggrepel::geom_label_repel, utils::modifyList(
         list(
-          data = records,
+          data = collectors,
           mapping = ggplot2::aes(x = Longitude, y = Latitude, label = label),
           alpha = 0.5,
           max.overlaps = Inf,
