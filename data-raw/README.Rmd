@@ -1,54 +1,78 @@
 ---
 title: "data-raw README"
-output: github_document
-bibliography: "references.bib"
+output: rmarkdown::github_document
+bibliography: "`r fs::path_package(package = 'thesis', 'manuscript/references.bib')`"
 link-citations: true
 always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE
+)
 
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(eval.after = 'fig.cap')
+knitr::opts_knit$set(
+  eval.after = "fig.cap"
+)
 
-library(magrittr)
-library(thesis)
+suppressPackageStartupMessages({
+  library(thesis)
+  library(Biostrings)
+  library(DiagrammeR)
+  library(fs)
+  library(glue)
+  library(knitr)
+  library(magrittr)
+  library(pkgdown)
+  library(purrr)
+  library(rprojroot)
+  library(stringr)
+  library(tibble)
+})
 
 # Note: phantomjs required for HTML rendering of of Diagrammer::mermaid()
 # - To install v2.1.1 via Homebrew:
 # $ brew tap homebrew/cask
 # $ brew cask install phantomjs
+
+# TODO IDEA .Rmd flag
 ```
 
-```{r linkSpecimens, echo=FALSE}
-link_github <- "https://github.com/jasonratcliff/thesis/"
+[//]: # (TODO <3/27/23>: Optimize FASTA splitting pipeline | Nextflow)
 
-link_fasta <-
-  paste0(link_github, "blob/master/inst/extdata/FASTA")
+```{r links}
+links <- list()
+links$url <-
+  pkgdown::as_pkgdown(
+    pkg = find_root(criteria$is_pkgdown_project)
+  )$repo$url$source
 
-link_seq_subset <-
-  paste0(link_github, "tree/master/data-raw/sequencing/2.subset-fastas")
+links$extdata <- glue::glue("{links$url}inst/extdata/FASTA")
 
-link_aln_single <-
-  paste0(link_github, "tree/master/data-raw/sequencing/3.alignments-single")
+links$fasta <-
+  list(
+    subset = "2.subset-fastas",
+    single = "3.alignments-single",
+    multi = "3.alignments-subset",
+    loci = "3.multi-locus",
+    script = "fasta-concat.R"
+  ) %>%
+    purrr::map(
+      .x = .,
+      .f = function(x)
+        glue::glue("{links$url}data-raw/sequencing/{x[[1]]}")
+    )
 
-link_aln_concat <-
-  paste0(link_github, "tree/master/data-raw/sequencing/3.alignments-subset")
-
-link_script_concat <-
-  paste0(link_github, "blob/master/data-raw/sequencing/fasta-concat.R")
-
-link_multilocus <-
-  paste0(link_github, "tree/master/data-raw/sequencing/3.multi-locus")
-
-link_bayes_mega <-
-  paste0(link_github, "tree/master/data-raw/Bayes/MEGA")
-
-link_bayes_nexus <-
-  paste0(link_github, "tree/master/data-raw/Bayes/Runs")
-
-link_beast_nexus <-
-  paste0(link_github, "tree/master/data-raw/BEAST/")
+links$data <-
+  list(
+    mega = "MEGA",
+    runs = "Runs"
+  ) %>%
+    purrr::map(
+      .x = .,
+      .f = function(x)
+        glue::glue("{links$url}data-raw/Bayes/{x[[1]]}")
+    )
 ```
 
 # DNA Sequence Analysis
@@ -56,7 +80,7 @@ link_beast_nexus <-
 ## Fasta Concatenation
 
 Multi-FASTA files for sequenced loci were assembled from sequence
-chromatograms and deposited in the [`inst/extdata/FASTA`](`r link_fasta`) 
+chromatograms and deposited in the [`inst/extdata/FASTA`](`r links$extdata`)
 subdirectory. Here, `FASTA` headers are formatted with two fields `accession`
 and `locus` following ">". A single whitespace separates the sample accession
 from the name of the locus, for example: `>PACUT_48 rITS` or `>PACUT_12821 rps`.
@@ -64,12 +88,10 @@ Each `FASTA` file contains sequences sampled from a single genetic locus,
 where the locus is indicated in the second field of the `FASTA` headers.
 
 ```{r fastaFiles}
-# Assign list of raw FASTA files from installed external package data.
+#| echo: true
 list.files(
-  path = system.file("extdata/FASTA", package = "thesis"),
-  full.names = TRUE
-  ) %>%
-  stringr::str_extract(string = ., pattern = "extdata.+")
+  path = fs::path_package(package = "thesis", "extdata/FASTA")
+)
 ```
 
 The `Biostrings` package [@R-Biostrings] was used to read in `FASTA` files as
@@ -79,23 +101,22 @@ each `FASTA` file. The intersecting set of sequence headers among all `FASTA`
 files is identified from the extracted `DNAStringSet` names attributes.
 New subsets for each locus were indexed by the set of specimens sequenced
 for all loci. Untrimmed, single locus `FASTA` files from
-[`inst/extdata/FASTA`]()
+[`inst/extdata/FASTA`](`r links$extdata`)
 and `FASTA` files filtered to common specimens in
-[`data-raw/sequencing/sequencing/2.subset-fastas`](`r link_seq_subset`)
+[`data-raw/sequencing/sequencing/2.subset-fastas`](`r links$fasta$subset`)
 were aligned using MAFFT version 7.306B [@Katoh2013].
 The G-INS-i alignment [@Katoh2005] with iterative refinement and
 1PAM / k=2 nucleotide scoring matrix were set as alignment
 parameters. Aligned `FASTA` files were deposited in the
-[`data-raw/sequencing/3.alignments-single/`](`r link_aln_single`) and
-[`data-raw/sequencing/3.alignments-subset/`](`r link_aln_concat`) subdirectories.
-For the subset of samples with DNA sequence data from all three sample loci,
-a concatenated multi-FASTA file was compiled using the
-[`data-raw/sequencing/fasta-concat.R`](`r link_script_concat`) Rscript, 
-written to [`data-raw/sequencing/3.multi-locus/`](`r link_multilocus`).
+[`data-raw/sequencing/3.alignments-single`](`r links$fasta$single`) and
+[`data-raw/sequencing/3.alignments-subset`](`r links$fasta$multi`)
+subdirectories. For the subset of samples with DNA sequence data from all three
+sample loci, a concatenated multi-FASTA file was compiled using the
+[`data-raw/sequencing/fasta-concat.R`](`r links$fasta$script`) R script,
+written to [`data-raw/sequencing/3.multi-locus`](`r links$fasta$loci`).
 
-```{r diagFASTA, echo=FALSE}
-# DiagrammeR::mermaid(diagram = "workflow.mmd")
-diag_fasta <- DiagrammeR::mermaid('
+```{r diagFASTA}
+DiagrammeR::mermaid('
 graph TD
   %% Sequencing Workflow
   S1["inst/extdata/FASTA"]-->S2(fasta-subsets.R)
@@ -107,7 +128,6 @@ graph TD
   S6-->S7(fasta-concat.R)
   S7-->S8["sequencing/3.multi-locus/"]
 ')
-diag_fasta
 ```
 
 ## MEGA / MrBayes
@@ -117,16 +137,16 @@ multi-locus alignment FASTA files to identify identical DNA sequences using
 MEGA version 10.1.8 [@Kumar2018; @Stecher2020]. Pairwise distances were
 calculated by p-distance treating gaps as pairwise deletions. Distance matrices
 and FASTA (*.fas*) files with combined headers for duplicate DNA sequences were
-deposited in [Bayes/MEGA/](`r link_bayes_mega`). Non-identical single locus
+deposited in [data-raw/Bayes/MEGA](`r links$data$mega`). Non-identical single locus
 (rITS, *rps*, *ycf1*) and concatenated multi-locus FASTA files were used as
 input for jModelTest [@Posada2008] to assess evolutionary model fit.
 Lastly, alignment gaps were coded using 2matrix [@Salinas2014], a Perl script
 that implements “simple indel coding” as described by @Simmons2000.
 Partitioned NEXUS (*.nex*) files with defined command blocks were deposited in
-[Bayes/Runs/](`r link_bayes_nexus`).
+[data-raw/Bayes/Runs](`r links$data$runs`).
 
-```{r diagMEGA, echo=FALSE}
-diag_mega <- DiagrammeR::mermaid('
+```{r diagMEGA}
+DiagrammeR::mermaid('
 graph TD
   S1["sequencing/3.alignments-single/"]
   S2["sequencing/3.multi-locus/"]
@@ -146,7 +166,6 @@ graph TD
   M2-->M4{MrBayes}
   J2-->M4
 ')
-diag_mega
 ```
 
 ## BEAST
@@ -156,7 +175,7 @@ specimen alignments from the concatenated analysis and write `NEXUS` formatted
 alignment files. For all three loci (rITS, *rps*, *ycf1*), alignments were
 imported into `BEAUti` v2.6.3 [@Bouckaert2019] to configure BEAST *.xml* files.
 
-```{r BEAUTi, echo=FALSE}
+```{r BEAUTi}
 DiagrammeR::mermaid('
 graph TD
   S1["sequencing/3.alignments-subset/"]
@@ -167,13 +186,13 @@ graph TD
 ')
 ```
 
-BEAST v2.6.3 [@Bouckaert2019] results from 3 independed runs of 50M states were
+BEAST v2.6.3 [@Bouckaert2019] results from 3 independent runs of 50M states were
 combined with `LogCombiner` v2.6.3 (*ibid.*) with 10,000 resampled states. 
 A maximum clade credibility tree was summarized using `TreeAnnotator` v2.6.3
 (*ibid.*) and visualized using the `ggplot2` [@R-ggplot2] extension `ggtree`
 [@R-ggtree].
 
-```{r BEAST, echo=FALSE}
+```{r BEAST}
 DiagrammeR::mermaid('
 graph TD
   B1(data-raw/BEAST/*.xml)-->B2
@@ -201,9 +220,12 @@ graph TD
 
 Define a function to read *.fasta* extension files from a given file path as
 `DNAStringSet` objects, then calculate the number of unique sequence headers
-and minimum / maxium sequence lengths.
+and minimum / maximum sequence lengths.
 
-```{r fastaSummary, echo=FALSE}
+[//]: # (TODO <3/27/23>: Optimize FASTA summary function | function export)
+
+```{r fastaSummary}
+#| echo: true
 # Print aligned FASTA file, number of sequences, and range of alignments
 fasta_summaries <- function(fasta_path) {
 
@@ -217,16 +239,23 @@ fasta_summaries <- function(fasta_path) {
     purrr::map(., function(locus_headers) {
       purrr::map_chr(locus_headers, function(header) {
         stringr::str_extract(string = header, pattern = "(?<= ).+$")
-        }) %>% unique()
-      }) %>% unlist()
+      }) %>% unique()
+    }) %>%
+    unlist()
 
   # Return summary tibble from DNAStringSet object.
-  tibble::tibble(Locus = unlist(fasta_loci),
-                 Sequences = purrr::map_int(fasta_list, length),
-                 `Min Length` = purrr::map_int(fasta_list,
-                    function(fastas) min(Biostrings::width(fastas))),
-                 `Max Length` = purrr::map_int(fasta_list,
-                    function(fastas) max(Biostrings::width(fastas)))) %>%
+  tibble::tibble(
+    Locus = unlist(fasta_loci),
+    Sequences = purrr::map_int(fasta_list, length),
+    `Min Length` = purrr::map_int(
+      fasta_list,
+      function(fastas) min(Biostrings::width(fastas))
+    ),
+    `Max Length` = purrr::map_int(
+      fasta_list,
+      function(fastas) max(Biostrings::width(fastas))
+    )
+  ) %>%
     knitr::kable(format = "html")
 }
 ```
