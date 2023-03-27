@@ -1,0 +1,35 @@
+destination: _site/pkgdown
+
+url:
+  home: https://jasonratcliff.github.io/thesis/
+
+template:
+  bootstrap: 5
+  bootswatch: lux
+  theme: ayu-mirage
+
+home:
+  links:
+  - text: ScholarWorks
+    href: https://scholarworks.uni.edu/etd/1108/
+
+repo:
+  url:
+    home: https://github.com/jasonratcliff/thesis/
+    source: https://github.com/jasonratcliff/thesis/tree/main/
+    issues: https://github.com/jasonratcliff/issues/
+
+reference:
+- title: Specimens
+- desc: |
+    S4 class and methods for representing voucher specimens.
+- subtitle: R6 OOP
+  contents:
+  - Specimen
+  - SpecimenMap
+- subtitle: Data
+  contents:
+  - herbarium_specimens
+  - dna_specimens
+  - seinet_coords
+  - aesthetics

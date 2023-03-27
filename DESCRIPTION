@@ -69,6 +69,7 @@ Suggests:
     lifecycle,
     lubridate,
     pander,
+    pkgdown,
     readxl,
     remotes,
     renv,
