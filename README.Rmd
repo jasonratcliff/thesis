@@ -11,125 +11,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Thesis
+# The systematics of *Physaria* sensu stricto from Wyoming and surrounding areas
 
 <!-- badges: start -->
-<!-- # https://usethis.r-lib.org/reference/badges.html -->
-<!-- # https://lifecycle.r-lib.org/articles/communicate.html -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-<!-- Resources -->
-<!-- - Rmarkdown Thesis | Dissertation Examples -->
-<!--     - https://ulyngs.github.io/oxforddown/index.html -->
-<!--     - https://bookdown.org/thea_knowles/dissertating_rmd_presentation/ -->
+This repository includes the source code, data, and manuscript contents for
+thesis work related to the systematic botany and molecular phylogenetics for
+a subset of *Physaria* (Brassicaceae) from the western Great Plains and
+Intermountain West.
 
-```{r punchCard, echo=FALSE, fig.width=10, htmlcap="Midnight oil at the eleventh hour."}
-
-suppressPackageStartupMessages({
-  library(dplyr)
-  library(forcats)
-  library(git2r)
-  library(ggplot2)
-  library(ggtext)
-  library(lubridate)
-  library(magrittr)
-  library(purrr)
-  library(tibble)
-})
-
-# Clean commit data to extract time info
-commit_data <- git2r::commits(repo = '.') %>%
-  purrr::map_dfr(.x = ., .f = function(commit_obj) {
-    datetime <-  # Adjust commit time against GMT
-      lubridate::as_datetime(commit_obj$author$when$time) - lubridate::hours(5)
-    date <- lubridate::as_date(datetime)
-    hour <- lubridate::hour(datetime)
-    day <- weekdays(datetime)
-    tibble::tibble(
-      SHA = commit_obj$sha,
-      Datetime = datetime,
-      Day = day,
-      Date = date,
-      Hour = hour)
-  }) %>%
-
-  dplyr::mutate(
-    Day = factor(
-      x = .data$Day,
-      levels = c(
-        "Sunday", "Monday", "Tuesday", "Wednesday",
-        "Thursday", "Friday", "Saturday"
-      ),
-      ordered = TRUE
-    ) %>%
-      forcats::fct_rev(f = .)
-  ) %>%
-
-  # Add size geom for commits within hour
-  dplyr::group_by(.data$Day, .data$Hour) %>%
-  dplyr::arrange(.data$Date) %>%
-  dplyr::mutate(Size = dplyr::row_number()) %>%
-  dplyr::ungroup() %>%
-
-  # Add color geom scale for commit recency
-  dplyr::arrange(dplyr::desc(.data$Date)) %>%
-  dplyr::mutate(Commit = dplyr::row_number())
-
-ggplot(data = commit_data) +
-  geom_point(
-    mapping = aes(x = Hour, y = Day, colour = Commit),
-    size = commit_data$Size
-  ) +
-  scale_color_viridis_c(option = "D") +
-  scale_x_continuous(
-    limits = c(0, 24),
-    breaks = c(0, 6, 12, 18, 24),
-    expand = expansion(mult = c(0.1, 0.1))
-  ) +
-  labs(title = "git **Punchcard**") +
-  theme_classic() +
-  theme(
-    plot.title = ggtext::element_markdown(
-      hjust = 0.33,
-      family = "Courier"
-    ),
-  )
-
-```
-
-## `Makefile` Targets
-
-GNU [make](- https://www.gnu.org/software/make/) is used for rendering
-`pdf` and `HTML` output files.
-The project `Makefile` calls `bookdown::render_book()` and requires
-a valid [Pandoc](https://pandoc.org/) installation.
-For RStudio users, an installation is bundled with the IDE.
-To identify the install path, try `rmarkdown::find_pandoc()`.
-
-- Update figure *.png* & *.pdf* files via `inst/script`
-
-```
-make figures
-```
-
-- Install package via `devtools::install_local("~/Thesis")`
-    - Force update without `DESCRIPTION` version 
-
-```
-make package
-```
-
-- Render `xaringan` slides to *.html* output
-
-```
-make -C inst/slides all
-```
-
-- Render `LaTeX` *.pdf* and `gitbook` *.png*
-
-```
-make -C inst/manuscript pdf
-make -C inst/manuscript html
+```{r voucher}
+#| echo: false
+knitr::include_graphics(
+  path = "man/figures/physaria.jpg",
+  dpi = 300
+)
 ```
 

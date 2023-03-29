@@ -1,0 +1,107 @@
+---
+title: "Project Data"
+bibliography: "`r fs::path_package(package = 'thesis', 'manuscript/references.bib')`"
+link-citations: true
+nocite: >
+    @R-readxl, @R-dplyr
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+source_url <- "https://github.com/jasonratcliff/thesis/tree/master/"
+```
+
+[//]: # (TODO <3/26/23>: Error from magrittr pipe export in thesis NAMESPACE)
+
+```{r setup}
+library(thesis)
+library(magrittr) # TODO
+```
+
+# Voucher Specimens
+
+```{r specimens}
+# Assign R6 `SpecimenMap` object from voucher specimens
+vouchers <- SpecimenMap$new(
+    records = thesis::herbarium_specimens,
+    identifier = 'prior_id'
+  )
+```
+
+Herbarium specimens borrowed from lending institutions (RM, NY, MO, F, ISTC,
+MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled into the document
+[`vouchers.xlsx`](`r fs::path(source_url, "data-raw/specimens/vouchers.xlsx")`).
+Recorded voucher data include locality, identification history,
+collector, collection number, date, institution, geographic coordinates,
+elevation, ecological description, and measurements of continuous and
+discrete morphological traits. In total, `r vouchers$census()[['distinct']]`
+unique collections were reviewed. The R script
+[`vouchers.R`](`r fs::path(source_url, "data-raw/specimens/vouchers.R")`)
+formats specimen data for downstream distribution, morphological, and
+phylogenetic analysis. Briefly, this script filters records by genus,
+standardizes collection dates with `lubridate` [@R-lubridate],
+extracts voucher annotation history, and converts locality elevation units.
+Annotation synonyms are substituted according to @OKane2010.
+Specimens can be accessed as an exported `tibble::tibble`
+object from the package namespace.
+
+## DNA Sampling
+
+<details>
+  <summary>Code</summary>
+  <p>
+
+```{r specimenSamples}
+#| message: false
+vouchers$limit(
+  west = -115.2,
+  east = -103,
+  south = 37,
+  north = 49.1
+)
+
+dna_records <- vouchers$map(
+  legend = "Prior\nAnnotation",
+  expand = TRUE,
+  sf_states = c("New Mexico", "Arizona", "Nevada")
+) +
+  vouchers$repel(
+    vouchers = thesis::dna_specimens,
+    repel.params = list(
+      na.rm = TRUE,
+      alpha = 0.85,
+      size = 2.75,
+      xlim = c(-Inf, NA),
+      ylim = c(-Inf, NA),
+      segment.size = 0.5,
+      segment.alpha = 1,
+      arrow = grid::arrow(length = grid::unit(0.01, "npc")),
+      box.padding = 0.5
+    )
+  )
+
+cowplot::save_plot(
+  plot = dna_records,
+  file = "dna.png",
+  base_height = 16, base_width = 12
+)
+```
+
+  </p>
+</details>
+
+```{r fig-specimenMap}
+#| echo: false
+#| fig.cap: Distribution of sampled DNA specimens.
+#| out.width: 100%
+knitr::include_graphics(
+  path = "dna.png",
+  dpi = 400
+)
+```
+
+# References

@@ -1,121 +1,28 @@
 data-raw README
 ================
 
-# Specimen Data
-
-Records of voucher specimens on loan from lending herbaria (RM, NY, MO,
-F, ISTC, MONTU, MONT, RSA-POM, UC, UTC, GH, US, CAS, IDS) were compiled
-into an excel file,
-[`specimens.xlsx`](https://github.com/jasonratcliff/thesis/blob/master/inst/extdata/specimens.xlsx).
-Data recorded from vouchers include locality, identification history,
-collector, collection number, date, institution, geographic coordinates,
-elevation, any ecological descriptions, and measurements of continuous
-and discrete specimen traits. In total, 1722 unique collections were
-reviewed.
-
-``` r
-# Path to installed file with specimens annotations.
-system.file("extdata/specimens.xlsx", package = "thesis") %>%
-  stringr::str_extract(string = ., pattern = "extdata.+")
-```
-
-    ## [1] "extdata/specimens.xlsx"
-
-The
-[`herbarium_specimens.R`](https://github.com/jasonratcliff/thesis/blob/master/data-raw/specimens/herbarium_specimens.R)
-script creates an *.Rda* from `specimens.xlsx`, formatting specimen data
-for downstream phylogenetic, distribution, and morphological analyses to
-define a tibble `herbarium_specimens` in the `thesis` namespace.
-
-``` r
-thesis::herbarium_specimens
-```
-
-    ## # A tibble: 1,727 × 66
-    ##    excel_sheet   prior_id      prior_1 prior_2 prior_3
-    ##    <chr>         <chr>         <chr>   <chr>   <chr>  
-    ##  1 P. acutifolia Physaria did… Physar… Physar… <NA>   
-    ##  2 P. acutifolia Physaria acu… Physar… Physar… <NA>   
-    ##  3 P. acutifolia Physaria did… Physar… <NA>    <NA>   
-    ##  4 P. acutifolia Physaria acu… Physar… Physar… <NA>   
-    ##  5 P. acutifolia Physaria did… Physar… <NA>    <NA>   
-    ##  6 P. acutifolia Physaria acu… Physar… <NA>    <NA>   
-    ##  7 P. acutifolia Physaria acu… Physar… Physar… <NA>   
-    ##  8 P. acutifolia Physaria acu… Physar… Physar… Physar…
-    ##  9 P. acutifolia Physaria did… Physar… Physar… <NA>   
-    ## 10 P. acutifolia Physaria bra… Physar… Physar… <NA>   
-    ## # … with 1,717 more rows, and 61 more variables:
-    ## #   prior_4 <chr>, Taxon <chr>,
-    ## #   Taxon_a_posteriori <chr>, Collector <chr>,
-    ## #   Collection_Number <chr>, Date <chr>,
-    ## #   Date_parsed <date>, Date_md <date>,
-    ## #   Herbarium <chr>, State <chr>, County <chr>,
-    ## #   Location <chr>, Longitude <dbl>, …
-
-Briefly, the script does the following:
-
--   Read data into R using `readxl` ([Wickham and Bryan
-    2019](#ref-R-readxl))
-    -   Filter records with `dplyr` ([Wickham et al.
-        2020](#ref-R-dplyr)) to annotations with:
-        -   *Physaria*
-        -   *Lesquerella*
-        -   Brassicaceae
-    -   Standardize dates with `lubridate` ([Spinu, Grolemund, and
-        Wickham 2020](#ref-R-lubridate))
-        -   New variable `Date_md` with month and day for phenology
-        -   Log records mismatched with the date format `YYYY-MM-DD`
--   Split comma-separated prior annotations as separate variables
-    -   Identification agreements denoted by “!” are substituted with ID
-    -   Extract most recent annotations into a new column
-        -   Replace recent annotations by synonym according to
-            [O’Kane](#ref-OKane2010) ([2010](#ref-OKane2010))
--   Parse elevation data
-    -   Cast as numeric and remove special characters
-    -   Combine variables with m / ft. elevation data
-    -   Split minimum and maximum values and convert m to ft.
--   Combine DNA specimen metadata from `specimens/dna_specimens.csv`
-    -   Create *dna\_specimens.Rda* with tibble in the `thesis`
-        namespace
-
-# DNA Map
-
-<div class="figure">
-
-<img src="mapping/map-dna.png" alt="Sampled DNA Specimens. Distribution of specimens with prior identifications and locations of DNA samples." width="750px" />
-<p class="caption">
-Sampled DNA Specimens. Distribution of specimens with prior
-identifications and locations of DNA samples.
-</p>
-
-</div>
-
 # DNA Sequence Analysis
 
 ## Fasta Concatenation
 
 Multi-FASTA files for sequenced loci were assembled from sequence
 chromatograms and deposited in the
-[`inst/extdata/FASTA`](https://github.com/jasonratcliff/thesis/blob/master/inst/extdata/FASTA)
+[`inst/extdata/FASTA`](https://github.com/jasonratcliff/thesis/tree/main/inst/extdata/FASTA)
 subdirectory. Here, `FASTA` headers are formatted with two fields
-`accession` and `locus` following “&gt;.” A single whitespace separates
+`accession` and `locus` following “\>”. A single whitespace separates
 the sample accession from the name of the locus, for example:
 `>PACUT_48 rITS` or `>PACUT_12821 rps`. Each `FASTA` file contains
 sequences sampled from a single genetic locus, where the locus is
 indicated in the second field of the `FASTA` headers.
 
 ``` r
-# Assign list of raw FASTA files from installed external package data.
 list.files(
-  path = system.file("extdata/FASTA", package = "thesis"),
-  full.names = TRUE
-  ) %>%
-  stringr::str_extract(string = ., pattern = "extdata.+")
+  path = fs::path_package(package = "thesis", "extdata/FASTA")
+)
 ```
 
-    ## [1] "extdata/FASTA/rITS-combined_raw.fasta"
-    ## [2] "extdata/FASTA/rps-combined_raw.fasta" 
-    ## [3] "extdata/FASTA/ycf1-combined_raw.fasta"
+    ## [1] "rITS-combined_raw.fasta" "rps-combined_raw.fasta" 
+    ## [3] "ycf1-combined_raw.fasta"
 
 The `Biostrings` package ([Pagès et al. 2020](#ref-R-Biostrings)) was
 used to read in `FASTA` files as `DNAStringSet` objects, an S4 class
@@ -125,26 +32,25 @@ The intersecting set of sequence headers among all `FASTA` files is
 identified from the extracted `DNAStringSet` names attributes. New
 subsets for each locus were indexed by the set of specimens sequenced
 for all loci. Untrimmed, single locus `FASTA` files from
-[`inst/extdata/FASTA`]() and `FASTA` files filtered to common specimens
-in
-[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/2.subset-fastas)
+[`inst/extdata/FASTA`](https://github.com/jasonratcliff/thesis/tree/main/inst/extdata/FASTA)
+and `FASTA` files filtered to common specimens in
+[`data-raw/sequencing/sequencing/2.subset-fastas`](https://github.com/jasonratcliff/thesis/tree/main/data-raw/sequencing/2.subset-fastas)
 were aligned using MAFFT version 7.306B ([Katoh and Standley
 2013](#ref-Katoh2013)). The G-INS-i alignment ([Katoh et al.
 2005](#ref-Katoh2005)) with iterative refinement and 1PAM / k=2
 nucleotide scoring matrix were set as alignment parameters. Aligned
 `FASTA` files were deposited in the
-[`data-raw/sequencing/3.alignments-single/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.alignments-single)
+[`data-raw/sequencing/3.alignments-single`](https://github.com/jasonratcliff/thesis/tree/main/data-raw/sequencing/3.alignments-single)
 and
-[`data-raw/sequencing/3.alignments-subset/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.alignments-subset)
+[`data-raw/sequencing/3.alignments-subset`](https://github.com/jasonratcliff/thesis/tree/main/data-raw/sequencing/3.alignments-subset)
 subdirectories. For the subset of samples with DNA sequence data from
 all three sample loci, a concatenated multi-FASTA file was compiled
 using the
-[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/thesis/blob/master/data-raw/sequencing/fasta-concat.R)
-Rscript, written to
-[`data-raw/sequencing/3.multi-locus/`](https://github.com/jasonratcliff/thesis/tree/master/data-raw/sequencing/3.multi-locus).
+[`data-raw/sequencing/fasta-concat.R`](https://github.com/jasonratcliff/thesis/tree/main/data-raw/sequencing/fasta-concat.R)
+R script, written to
+[`data-raw/sequencing/3.multi-locus`](https://github.com/jasonratcliff/thesis/tree/main/data-raw/sequencing/3.multi-locus).
 
-<div id="htmlwidget-ea1fbfc004dcf4dd7387" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ea1fbfc004dcf4dd7387">{"x":{"diagram":"\ngraph TD\n  %% Sequencing Workflow\n  S1[\"inst/extdata/FASTA\"]-->S2(fasta-subsets.R)\n  S2-->S3[\"sequencing/2.subset-fastas/\"]\n  S1-->S4{MAAFT}\n  S3-->S4\n  S4-->S5[\"sequencing/3.alignments-single/\"]\n  S4-->S6[\"sequencing/3.alignments-subset/\"]\n  S6-->S7(fasta-concat.R)\n  S7-->S8[\"sequencing/3.multi-locus/\"]\n"},"evals":[],"jsHooks":[]}</script>
+![](README_files/figure-gfm/diagFASTA-1.png)<!-- -->
 
 ## MEGA / MrBayes
 
@@ -155,19 +61,18 @@ using MEGA version 10.1.8 ([Kumar et al. 2018](#ref-Kumar2018);
 were calculated by p-distance treating gaps as pairwise deletions.
 Distance matrices and FASTA (*.fas*) files with combined headers for
 duplicate DNA sequences were deposited in
-[Bayes/MEGA/](https://github.com/jasonratcliff/thesis/tree/master/data-raw/Bayes/MEGA).
+[data-raw/Bayes/MEGA](https://github.com/jasonratcliff/thesis/tree/main/data-raw/Bayes/MEGA).
 Non-identical single locus (rITS, *rps*, *ycf1*) and concatenated
 multi-locus FASTA files were used as input for jModelTest ([Posada
 2008](#ref-Posada2008)) to assess evolutionary model fit. Lastly,
 alignment gaps were coded using 2matrix ([Salinas and Little
 2014](#ref-Salinas2014)), a Perl script that implements “simple indel
-coding” as described by [Simmons and Ochoterena](#ref-Simmons2000)
+coding” as described by Simmons and Ochoterena
 ([2000](#ref-Simmons2000)). Partitioned NEXUS (*.nex*) files with
 defined command blocks were deposited in
-[Bayes/Runs/](https://github.com/jasonratcliff/thesis/tree/master/data-raw/Bayes/Runs).
+[data-raw/Bayes/Runs](https://github.com/jasonratcliff/thesis/tree/main/data-raw/Bayes/Runs).
 
-<div id="htmlwidget-6f358baac00b048de77f" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6f358baac00b048de77f">{"x":{"diagram":"\ngraph TD\n  S1[\"sequencing/3.alignments-single/\"]\n  S2[\"sequencing/3.multi-locus/\"]\n  %% MEGA files\n  S1-->D1{MEGA}\n  S2-->D1\n  D1-->D2(Distance matrices)\n  D1-->D3(De-duplicated multi-FASTAs)\n  D2-->D4[\"Bayes/MEGA/\"]\n  D3-->D4\n  %% jModelTest\n  D4-->J1{jModelTest}\n  J1-->J2[\"Bayes/jmodeltest/\"]\n  %% 2Matrix / Bayes Nexus\n  D4-->M1{2Matrix}\n  M1-->M2[\"Bayes/Runs/\"]\n  M2-->M4{MrBayes}\n  J2-->M4\n"},"evals":[],"jsHooks":[]}</script>
+![](README_files/figure-gfm/diagMEGA-1.png)<!-- -->
 
 ## BEAST
 
@@ -178,22 +83,20 @@ all three loci (rITS, *rps*, *ycf1*), alignments were imported into
 `BEAUti` v2.6.3 ([Bouckaert et al. 2019](#ref-Bouckaert2019)) to
 configure BEAST *.xml* files.
 
-<div id="htmlwidget-0f7ca1b0bc94ffbe207a" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0f7ca1b0bc94ffbe207a">{"x":{"diagram":"\ngraph TD\n  S1[\"sequencing/3.alignments-subset/\"]\n  S1-->B1(data-raw/BEAST/beast.R)\n  B1-->B2[\"BEAST/NEXUS/\"]\n  B2-->B3(BEAUTi)\n  B3-->B4(data-raw/BEAST/*.xml)\n"},"evals":[],"jsHooks":[]}</script>
+![](README_files/figure-gfm/BEAUTi-1.png)<!-- -->
 
 BEAST v2.6.3 ([Bouckaert et al. 2019](#ref-Bouckaert2019)) results from
-3 independed runs of 50M states were combined with `LogCombiner` v2.6.3
+3 independent runs of 50M states were combined with `LogCombiner` v2.6.3
 (*ibid.*) with 10,000 resampled states. A maximum clade credibility tree
 was summarized using `TreeAnnotator` v2.6.3 (*ibid.*) and visualized
 using the `ggplot2` ([Wickham 2020](#ref-R-ggplot2)) extension `ggtree`
 ([Yu et al. 2017](#ref-R-ggtree)).
 
-<div id="htmlwidget-a86a7b562d0e36f2d1b7" style="width:672px;height:480px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a86a7b562d0e36f2d1b7">{"x":{"diagram":"\ngraph TD\n  B1(data-raw/BEAST/*.xml)-->B2\n  subgraph \"\"\n    B2[BEAST2]\n    B2-->B3[LogCombiner]\n    B3-->B4[TreeAnnotator]\n  end\n  B4-->B5(/inst/extdata/BEAST/*.mcc)\n  B5-->B6[R `ggtree`]\n"},"evals":[],"jsHooks":[]}</script>
+![](README_files/figure-gfm/BEAST-1.png)<!-- -->
 
 ## Evolutionary Models
 
--   <https://github.com/ddarriba/modeltest/wiki/Models-of-Evolution>
+- <https://github.com/ddarriba/modeltest/wiki/Models-of-Evolution>
 
 | Locus | Partition | jModelTest | MEGA | Par. Finder | MrBayes | BEAST |
 |:------|:----------|:-----------|:-----|:------------|:--------|:------|
@@ -205,7 +108,42 @@ using the `ggplot2` ([Wickham 2020](#ref-R-ggplot2)) extension `ggtree`
 
 Define a function to read *.fasta* extension files from a given file
 path as `DNAStringSet` objects, then calculate the number of unique
-sequence headers and minimum / maxium sequence lengths.
+sequence headers and minimum / maximum sequence lengths.
+
+``` r
+# Print aligned FASTA file, number of sequences, and range of alignments
+fasta_summaries <- function(fasta_path) {
+
+  # Read FASTA files from path.
+  fasta_list <-
+    list.files(fasta_path, pattern = "\\.fasta$", full.names = TRUE) %>%
+    purrr::map(., Biostrings::readDNAStringSet)
+
+  # Extract locus headers from DNAStringSet.
+  fasta_loci <- purrr::map(fasta_list, names) %>%
+    purrr::map(., function(locus_headers) {
+      purrr::map_chr(locus_headers, function(header) {
+        stringr::str_extract(string = header, pattern = "(?<= ).+$")
+      }) %>% unique()
+    }) %>%
+    unlist()
+
+  # Return summary tibble from DNAStringSet object.
+  tibble::tibble(
+    Locus = unlist(fasta_loci),
+    Sequences = purrr::map_int(fasta_list, length),
+    `Min Length` = purrr::map_int(
+      fasta_list,
+      function(fastas) min(Biostrings::width(fastas))
+    ),
+    `Max Length` = purrr::map_int(
+      fasta_list,
+      function(fastas) max(Biostrings::width(fastas))
+    )
+  ) %>%
+    knitr::kable(format = "html")
+}
+```
 
 ### Raw FASTAs
 
@@ -505,20 +443,11 @@ Computing Platforms.” *Molecular Biology and Evolution* 35 (6): 1547–49.
 
 </div>
 
-<div id="ref-OKane2010" class="csl-entry">
-
-O’Kane, Steve L, Jr. 2010. “*Physaria*.” In *<span
-class="nocase">Magnoliophya: Salicaceae to Brassicaceae</span>*, edited
-by Flora of North America editorial committee, 1st ed., 7:616–65. <span
-class="nocase">Flora of North America North of Mexico</span>. New York,
-(NY): Oxford Univ. Press.
-
-</div>
-
 <div id="ref-R-Biostrings" class="csl-entry">
 
 Pagès, H., P. Aboyoun, R. Gentleman, and S. DebRoy. 2020. *Biostrings:
 Efficient Manipulation of Biological Strings*. Manual.
+<https://www.bioconductor.org/packages/release/bioc/html/Biostrings.html>.
 
 </div>
 
@@ -549,16 +478,7 @@ Plant Science* 2 (1): 1300083. <https://doi.org/10.3732/apps.1300083>.
 <div id="ref-Simmons2000" class="csl-entry">
 
 Simmons, Mark P, and Helga Ochoterena. 2000. “Gaps as Characters in
-Sequence-Based Phylogenetic Analyses.” *Systematic Biology* 49 (2):
-369–81.
-
-</div>
-
-<div id="ref-R-lubridate" class="csl-entry">
-
-Spinu, Vitalie, Garrett Grolemund, and Hadley Wickham. 2020. *<span
-class="nocase">lubridate</span>: Make Dealing with Dates a Little
-Easier*. Manual. <https://CRAN.R-project.org/package=lubridate>.
+Sequence-Based Phylogenetic Analyses.” *Syst. Biol.* 49 (2): 369–81.
 
 </div>
 
@@ -576,22 +496,6 @@ class="nocase">macOS</span>.” *Molecular Biology and Evolution*.
 Wickham, Hadley. 2020. *<span class="nocase">ggplot2</span>: Elegant
 Graphics for Data Analysis*. 3rd ed. New York, (NY): Springer-Verlag.
 <https://ggplot2-book.org/>.
-
-</div>
-
-<div id="ref-R-readxl" class="csl-entry">
-
-Wickham, Hadley, and Jennifer Bryan. 2019. *<span
-class="nocase">readxl</span>: Read Excel Files*. Manual.
-<https://CRAN.R-project.org/package=readxl>.
-
-</div>
-
-<div id="ref-R-dplyr" class="csl-entry">
-
-Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2020.
-*<span class="nocase">dplyr</span>: A Grammar of Data Manipulation*.
-Manual. <https://CRAN.R-project.org/package=dplyr>.
 
 </div>
 

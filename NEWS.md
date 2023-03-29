@@ -2,6 +2,11 @@
 
 ## New features
 
+* Add `pkgdown` YAML configuration for package website. 
+    + Move DNA specimen map from `data-raw/README.Rmd` to `vignettes/articles`
+
+## Minor improvements and fixes
+
 * `SpecimenMap$features()` gains two new parameters:
     + `sf_states` passes a character vector to `tigris::counties()`
        for layering county borders from additional states.
