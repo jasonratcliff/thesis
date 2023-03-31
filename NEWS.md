@@ -2,32 +2,44 @@
 
 ## New features
 
-* Add `pkgdown` YAML configuration for package website. 
+* Add `pkgdown` YAML configuration for package website.
     + Move DNA specimen map from `data-raw/README.Rmd` to `vignettes/articles`
+      (#66).
 
 ## Minor improvements and fixes
 
 * `SpecimenMap$features()` gains two new parameters:
     + `sf_states` passes a character vector to `tigris::counties()`
        for layering county borders from additional states.
+
     + `expand` controls limit expansion by `ggplot2::coord_sf()` to account
       for clipping raster layers with satellite or elevation data.
 
 * `SpecimenMap$repel()` gains a `vouchers` parameter to specify arbitrary
-  labels given a tibble with collector, collection, longitude, and latitude. 
+  labels given a tibble with collector, collection, longitude, and latitude.
+
+* Specimen R scripts and raw data are consolidated into `data-raw/specimens`.
+
+| New                                | Old                                        |
+|------------------------------------|--------------------------------------------|
+| `data-raw/specimens/aesthetics.R`  | `data-raw/mapping/aesthetics.R`            |
+| `data-raw/specimens/dna.R`         | `data-raw/specimens/dna_specimens.R`       |
+| `data-raw/specimens/dna.csv`       | `data-raw/specimens/dna_specimens.csv`     |
+| `data-raw/specimens/vouchers.R`    | `data-raw/specimens/herbarium_specimens.R` |
+| `data-raw/specimens/vouchers.xlsx` | `inst/extdata/specimens.xlsx`              |
 
 # thesis 0.3.1
 
 ## Minor improvements and fixes
 
 * `Specimens$collections()` returns a tibble without modifying the `records`
-  field, allowing for use within other public methods.
+  field, allowing for use within other public methods (#67).
 
 # thesis 0.3.0
 
 ## Breaking changes
 
-* Rename package from `Thesis` to lowercase `thesis`.
+* Rename package from `Thesis` to lowercase `thesis` (#64).
 
 ## New features
 
@@ -36,15 +48,16 @@
   the reference semantics present a useful implementation for the various
   subsetting and plotting operations covered by these functions.
 
-* New R6 superclass `Specimen` data structure consolidates specimen record
-  tibbles with previously exported functions for subsetting and theme options.
-  * The `SpecimenMap` inherits methods from the superclass, and defines
-    public and private methods to consolidate previously exported functions.
+* Manual scale values from `spp_color` and `spp_shape` are combined into a new
+  exported data `aesthetics` tibble.
 
 ### `Specimen`
 
+* New R6 superclass `Specimen` data structure consolidates specimen record
+  tibbles with previously exported functions for subsetting and theme options.
+
 | method                    | function            | status                 |
-|---------------------------|---------------------|------------------------| 
+|---------------------------|---------------------|------------------------|
 | `Specimen$census()`       | `count_specimens()` | `R/deprec-specimens.R` |
 | `Specimen$limit()`        | `subset_coords()`   | `R/deprec-specimens.R` |
 | `Specimen$taxa()`         | `filter_reviewed()` | `R/deprec-specimens.R` |
@@ -53,6 +66,9 @@
 | `Specimen$labels()`       | `parse_taxa()`      | `R/deprec-themes.R`    |
 
 ### `SpecimenMap`
+
+* The `SpecimenMap` inherits methods from the superclass, and defines public
+  and private methods to consolidate previously exported functions (#61, #45).
 
 | method                    | function            | status              |
 |---------------------------|---------------------|---------------------|
@@ -80,6 +96,9 @@
 
 * New `italicize()` wraps text vector by `knitr` pandoc conversion.
 
+* Manual scale values from `spp_color` and `spp_shape` are combined into a new
+  exported data `aesthetics` tibble.
+
 * `haplotype_labels()` gains `id_column` parameter.
     - Specifies data variable for tidy evaluation
 
@@ -105,7 +124,7 @@
     - Proof specimen appendices
     - Remove window margins
 
-* Specific epithet of prospective lineage is now quoted 
+* Specific epithet of prospective lineage is now quoted
     - Table 2 \*BEAST hypotheses is formatted with `LaTeX` quotation
 
 <!-- TODO: See v0.2.2.9000-->
