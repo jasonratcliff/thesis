@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.1.9002
+Version: 0.3.1.9003
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes

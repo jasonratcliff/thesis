@@ -17,12 +17,12 @@ repo:
   url:
     home: https://github.com/jasonratcliff/thesis/
     source: https://github.com/jasonratcliff/thesis/tree/main/
-    issues: https://github.com/jasonratcliff/issues/
+    issues: https://github.com/jasonratcliff/thesis/issues/
 
 reference:
 - title: Specimens
 - desc: |
-    S4 class and methods for representing voucher specimens.
+    R6 class and methods for representing voucher specimens.
 - subtitle: R6 OOP
   contents:
   - Specimen

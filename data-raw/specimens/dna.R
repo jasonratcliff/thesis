@@ -11,7 +11,7 @@ specimens <- list()
 # Combine herbarium specimen record information with sequence documentation.
 specimens$metadata <-
   readr::read_csv(
-    file = "data-raw/specimens/dna_specimens.csv",
+    file = "data-raw/specimens/dna.csv",
     col_types = "ccdcccddcclccc"
   ) %>%
   dplyr::rename(label = taxa_label)
