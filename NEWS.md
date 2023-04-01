@@ -1,3 +1,8 @@
+# WIP
+
+* `data-raw/appendix` scripts configured for local paths are removed for
+  package portability.
+
 # thesis (development version)
 
 ## New features
