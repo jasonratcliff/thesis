@@ -20,6 +20,9 @@ source_url <- "https://github.com/jasonratcliff/thesis/tree/master/"
 ```{r setup}
 library(thesis)
 library(magrittr) # TODO
+library(dplyr)
+library(ggplot2)
+library(stringr)
 ```
 
 # Voucher Specimens
@@ -102,6 +105,32 @@ knitr::include_graphics(
   path = "dna.png",
   dpi = 400
 )
+```
+
+## Identifications
+
+```{r fig-identificationDates}
+#| fig.cap: "Dates of Identification Review."
+#| fig.dpi: 400
+thesis::herbarium_specimens %>%
+  dplyr::mutate(
+    date = stringr::str_extract(
+      string = .data$ID,
+      pattern = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{2}"
+    ) %>% as.Date(x = ., format = "%m/%d/%y")
+  ) %>%
+  dplyr::group_by(date) %>%
+  dplyr::count() %>%
+  ggplot(data = .) +
+  geom_point(
+    mapping = aes(
+      x = date, y = n,
+      color = date, size = n
+    )
+  ) +
+  scale_x_date() +
+  scale_color_viridis_c(trans = "date") +
+  theme_classic()
 ```
 
 # References
