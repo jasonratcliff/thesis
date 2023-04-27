@@ -1,0 +1,6 @@
+image:
+  file: .github/gitpod.Dockerfile
+
+vscode:
+  extensions:
+    - REditorSupport.R
