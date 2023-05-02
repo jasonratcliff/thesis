@@ -9,6 +9,7 @@
 #' @param ... Forwarding arguments to [ggplot2::ggsave()].
 #' @export
 #'
+#' @keywords internal
 save_plot <- function(gg_plot, ...) {
   gg_plot <- rlang::enquo(gg_plot)
   ggplot2::ggsave(
@@ -33,6 +34,7 @@ save_plot <- function(gg_plot, ...) {
 #' traits <- c("oblong", "elliptic", "linear")
 #' capitalize(character_vector = traits)
 #'
+#' @keywords internal
 capitalize <- function(character_vector) {
   purrr::map_chr(.x = character_vector, function(string_element) {
     split_string <- strsplit(x = string_element, split = "") %>% unlist()
@@ -54,6 +56,7 @@ capitalize <- function(character_vector) {
 #' @examples
 #' italicize(unitalicized = "Physaria floribunda", chunk_type = "latex")
 #'
+#' @keywords internal
 italicize <- function(unitalicized, chunk_type) {
   if (chunk_type == "latex") {
     paste0("\\textit{", unitalicized, "}")

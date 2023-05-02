@@ -10,6 +10,7 @@
 #'
 #' @export
 #'
+#' @keywords internal
 html_caption <- function(chunk_type, caption) {
   if (chunk_type == "html") {
     caption <- gsub("\\\\textit\\{", "*", caption)
@@ -32,6 +33,7 @@ html_caption <- function(chunk_type, caption) {
 #'
 #' @export
 #'
+#' @keywords internal
 knitr_section <- function(knitr_title, knitr_type, chunk_type) {
 
   # Check `knitr_type` against list of possible section names.
@@ -69,6 +71,7 @@ knitr_section <- function(knitr_title, knitr_type, chunk_type) {
 #'
 #' @export
 #'
+#' @keywords internal
 knitr_table_dna <- function(chunk_type) {
   if (chunk_type == "latex") {
     paste0("\\@ref(tab:TableDnaSpecimensLatex)")

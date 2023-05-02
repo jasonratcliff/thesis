@@ -18,6 +18,7 @@
 #'   read_tree(tree_file = .) %>%
 #'   dplyr::select(node, single_label, label)
 #'
+#' @keywords internal
 read_tree <- function(tree_file) {
   ggtree_import <- treeio::read.beast(tree_file) %>% ggtree::fortify()
   tree_data <- ggtree_import %>%
@@ -60,6 +61,7 @@ read_tree <- function(tree_file) {
 #'   read_tree(tree_file = .) %>%
 #'   node_labels(tree_data = .)
 #'
+#' @keywords internal
 node_labels <- function(tree_data) {
   ggtree_labels <- tree_data %>%
     dplyr::select("node", "single_label", "label")
@@ -107,6 +109,7 @@ node_labels <- function(tree_data) {
 #'   read_tree(tree_file = .) %>%
 #'   node_geoms(tree_data = ., id_column = "prior_id")
 #'
+#' @keywords internal
 node_geoms <- function(tree_data, id_column, scale_vector = c(4, 12)) {
   ggtree_geoms <- tree_data %>%
     dplyr::select("node", "single_label", "label", !!id_column) %>%
@@ -139,6 +142,7 @@ node_geoms <- function(tree_data, id_column, scale_vector = c(4, 12)) {
 #'   read_tree(tree_file = .) %>%
 #'   join_bayes(tree_data = ., id_column = "prior_id")
 #'
+#' @keywords internal
 join_bayes <- function(tree_data, id_column, ...) {
   joined_ggtree <- tree_data %>%
     dplyr::left_join(
@@ -195,6 +199,7 @@ join_bayes <- function(tree_data, id_column, ...) {
 #'     id_column = "prior_id", id_name = "Species"
 #'   )
 #'
+#' @keywords internal
 conserved_vouchers <- function(tree_file, id_column, id_name) {
   tree_data <- thesis::read_tree(tree_file = tree_file)
   conserved_specimens <- thesis::node_labels(tree_data) %>%
@@ -254,6 +259,7 @@ conserved_vouchers <- function(tree_file, id_column, id_name) {
 #'     kable_caption = "ggtree Specimens", knitr_chunk = "html"
 #'   )
 #'
+#' @keywords internal
 bayes_kable <- function(conserved_specimens, knitr_chunk,
                         kable_caption, kable_scap = "") {
   kable_build <-

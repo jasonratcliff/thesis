@@ -21,6 +21,7 @@
 #'   range_split(trait_tbl = ., split_var = "Ovule_number")
 #' @export
 #'
+#' @keywords internal
 range_split <- function(trait_tbl, split_var) {
 
   # Count "-" instances and warn when multiple matches are detected.
@@ -80,6 +81,7 @@ range_split <- function(trait_tbl, split_var) {
 #'   trait_selection = "Replum_shape"
 #' )
 #'
+#' @keywords internal
 separate_discrete_trait <- function(specimen_tbl, trait_selection,
                                     filter_n = 20) {
   tidy_trait <- specimen_tbl %>%
@@ -135,6 +137,7 @@ separate_discrete_trait <- function(specimen_tbl, trait_selection,
 #'   ggplot2::scale_color_viridis_d(option = "D") +
 #'   ggplot2::labs(color = "Max Ovule Count per Locule")
 #'
+#' @keywords internal
 map_trait_distribution <- function(tidy_trait,
                                    bb_xlim = c(-114, -102.5),
                                    bb_ylim = c(37.5, 48.75)) {
@@ -180,6 +183,7 @@ map_trait_distribution <- function(tidy_trait,
 #' @return [ggplot] of trait observations delineated by reviewed id (x-axis)
 #'   and jittered points (y-axis) representing numeric values.
 #'
+#' @keywords internal
 jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
                           aesthetic_labels = NULL, legend_title = NULL,
                           violin.params = list(),
@@ -273,6 +277,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #'     legend_title = "Reviewed Annotations"
 #'   )
 #'
+#' @keywords internal
 trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
                             aesthetic_labels = NULL, legend_title = NULL,
                             jitter.params = list(),
@@ -357,6 +362,7 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
 #' theme.params <- list()
 #' guide.params <- list()
 #'
+#' @keywords internal
 annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
                               legend_title, aesthetic_labels = NULL,
                               theme.params = list()) {
