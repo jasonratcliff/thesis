@@ -2243,17 +2243,6 @@
       ],
       "Hash": "3b5b99f4d3f067bb9c1d59317d071370"
     },
-    "pdftools": {
-      "Package": "pdftools",
-      "Version": "3.3.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Rcpp",
-        "qpdf"
-      ],
-      "Hash": "8072f379ae37e914e5adc0a3fd8c513c"
-    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.9.0",
@@ -2539,18 +2528,6 @@
         "vctrs"
       ],
       "Hash": "d71c815267c640f17ddbf7f16144b4bb"
-    },
-    "qpdf": {
-      "Package": "qpdf",
-      "Version": "1.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Rcpp",
-        "askpass",
-        "curl"
-      ],
-      "Hash": "e233fd211c74cb9297f4ab898ea2c18a"
     },
     "qs": {
       "Package": "qs",
@@ -3194,20 +3171,6 @@
         "methods"
       ],
       "Hash": "89c24bf35c961e047df79dde2eb69224"
-    },
-    "tesseract": {
-      "Package": "tesseract",
-      "Version": "5.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Rcpp",
-        "curl",
-        "digest",
-        "pdftools",
-        "rappdirs"
-      ],
-      "Hash": "bad30984019cf778ddcd70a550c860bc"
     },
     "testthat": {
       "Package": "testthat",

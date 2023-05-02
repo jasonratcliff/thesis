@@ -78,7 +78,6 @@ Suggests:
     rstudioapi,
     shiny,
     testthat (>= 3.0.0),
-    tesseract,
     tinytex,
     usethis,
     utils,
