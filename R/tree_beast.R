@@ -17,6 +17,7 @@
 #'   ggtree::ggtree(tr = .) +
 #'   beast_posterior()
 #'
+#' @keywords internal
 beast_posterior <- function() {
   posterior_list <-
     list(
@@ -51,6 +52,7 @@ beast_posterior <- function() {
 #' ggtree::ggtree(tr = tree_data) +
 #'   beast_labels(tree_data = tree_data)
 #'
+#' @keywords internal
 beast_labels <- function(tree_data) {
   label_list <-
     list(
@@ -104,6 +106,7 @@ beast_labels <- function(tree_data) {
 #'   beast_labels(tree_data = tree_data) +
 #'   beast_theme(tree_data = tree_data)
 #'
+#' @keywords internal
 beast_theme <- function(tree_data) {
   # Combine prior and reviewed annotations then keep unique values.
   id_labels <- c(
@@ -156,6 +159,7 @@ beast_theme <- function(tree_data) {
 #'
 #' beast_plot(tree_data = tree_data)
 #'
+#' @keywords internal
 beast_plot <- function(tree_data, ggtree_layout = "circular") {
   beast_ggtree <-
     ggtree::ggtree(tree_data, layout = ggtree_layout) +
@@ -176,6 +180,7 @@ beast_plot <- function(tree_data, ggtree_layout = "circular") {
 #'
 #' @return `gtable` object with specimen label legend.
 #'
+#' @keywords internal
 beast_legend_color <- function(tree_data, ncol = 2) {
   color_legend <-
     cowplot::get_legend(
@@ -194,6 +199,7 @@ beast_legend_color <- function(tree_data, ncol = 2) {
 #'
 #' @return `gtable` object with posterior probability legend.
 #'
+#' @keywords internal
 beast_legend_probability <- function(tree_data) {
   posterior_legend <-
     cowplot::get_legend(
@@ -232,6 +238,7 @@ beast_legend_probability <- function(tree_data) {
 #'   ) %>%
 #'   species_plot(tree_tibble = .)
 #'
+#' @keywords internal
 species_plot <- function(tree_tibble, label_size = 2) {
 
   # Parse tip label expressions for species italicization.

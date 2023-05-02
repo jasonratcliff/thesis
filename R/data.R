@@ -124,6 +124,7 @@
 #' - Longitude: c(-107.5, -104.5)
 #' - Latitude: c(38, 41)
 #'
+#' @keywords internal
 "spp_co_front_range"
 
 # ggplot Scales ----
@@ -149,6 +150,7 @@
 #' \describe{
 #'   \item{spp_color}{Vector with values for ggplot color aesthetics}
 #' }
+#' @keywords internal
 "spp_color"
 
 #' Species Shape Aesthetics
@@ -158,4 +160,5 @@
 #' \describe{
 #'   \item{spp_shape}{Vector with values for ggplot shape aesthetics}
 #' }
+#' @keywords internal
 "spp_shape"

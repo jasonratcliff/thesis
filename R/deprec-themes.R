@@ -19,6 +19,7 @@
 #'   id_column = "prior_id"
 #' )
 #'
+#' @keywords internal
 spl_labels <- function(specimen_tbl, id_column) {
   label_markdown <- function(label_vector) {
     purrr::map_chr(.x = label_vector, .f = function(label) {
@@ -92,6 +93,7 @@ spl_labels <- function(specimen_tbl, id_column) {
 #'   ) %>%
 #'   dplyr::select(label)
 #'
+#' @keywords internal
 parse_taxa <- function(tree_tibble, id_column) {
   # TODO Improve OOP understanding and implementations..
   # Here, generalize to either tbl or tbl_tree

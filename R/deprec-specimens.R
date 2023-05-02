@@ -13,6 +13,7 @@
 #' @examples
 #' count_specimens(spp_tibble = herbarium_specimens)
 #'
+#' @keywords internal
 count_specimens <- function(spp_tibble) {
 
   # Calculate total number of specimens accounting for duplicated records.
@@ -68,6 +69,7 @@ count_specimens <- function(spp_tibble) {
 #'
 #' @export
 #'
+#' @keywords internal
 subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
 
   # Cast non-null inputs as numerically sorted character vectors.
@@ -137,6 +139,7 @@ subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
 #'   dplyr::add_count(Taxon_a_posteriori) %>%
 #'   dplyr::distinct()
 #'
+#' @keywords internal
 filter_reviewed <- function(specimen_tbl) {
   filtered_specimens <- specimen_tbl %>%
     filter(
@@ -168,6 +171,7 @@ filter_reviewed <- function(specimen_tbl) {
 #'
 #' @export
 #'
+#' @keywords internal
 find_spp <- function(specimen_tbl, collector = NULL, collection = NULL) {
 
   # Keep non-null arguments from list of function inputs.

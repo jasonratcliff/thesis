@@ -41,6 +41,7 @@
 #' ggplot2::ggplot() +
 #'   layer_borders(spl_extent = spl_bbox(thesis::spp_co_front_range))
 #'
+#' @keywords internal
 layer_borders <- function(spl_extent, sf_crs = NULL,
                           sf_state_color = "black",
                           sf_county_color = "white", ...) {
@@ -115,6 +116,7 @@ layer_borders <- function(spl_extent, sf_crs = NULL,
 #'     jitter_width = 0.033, jitter_height = 0.033
 #'   )
 #'
+#' @keywords internal
 layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
                             shape_aes = FALSE, geom_size = 3,
                             jitter_width = NULL, jitter_height = NULL,
@@ -178,6 +180,7 @@ layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
 #'     legend_title = "Reviewed Annotations"
 #'   )
 #'
+#' @keywords internal
 layer_themes <- function(specimen_tbl, id_column, legend_title) {
 
   # Assign HTML markdown label vector.
@@ -272,6 +275,7 @@ layer_themes <- function(specimen_tbl, id_column, legend_title) {
 #'     legend_title = "Reviewed Annotations"
 #'   )
 #'
+#' @keywords internal
 layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
                         gg_map_type = c(
                           "terrain", "satellite",
@@ -350,6 +354,7 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #'   ) +
 #'   labs(x = "Longitude", y = "Latitude")
 #'
+#' @keywords internal
 layer_elevation <- function(specimen_tbl, raster_zoom = 7,
                             raster_factor = 2, ...) {
 
@@ -395,6 +400,7 @@ layer_elevation <- function(specimen_tbl, raster_zoom = 7,
 #' spl_bbox(herbarium_specimens) %>%
 #'   spl_states(spl_extent = ., sf_states = states_sfs)
 #'
+#' @keywords internal
 spl_states <- function(spl_extent, sf_states) {
 
   # Build simple features polygon from bounding box extent.
@@ -440,6 +446,7 @@ spl_states <- function(spl_extent, sf_states) {
 #' spl_order(specimen_tbl = spp_co_front_range, id_column = "prior_id") %>%
 #'   distinct(.data$prior_id)
 #'
+#' @keywords internal
 spl_order <- function(specimen_tbl, id_column) {
 
   # Group specimens by count of identification column.
@@ -473,6 +480,7 @@ spl_order <- function(specimen_tbl, id_column) {
 #' spl_bbox(ggmap_ggplot)
 #' spl_bbox(spp_co_front_range)
 #'
+#' @keywords internal
 spl_bbox <- function(...) {
   spl_base <- list(...)[[1]]
 
@@ -535,6 +543,7 @@ spl_bbox <- function(...) {
 #'   )
 #' )
 #'
+#' @keywords internal
 spl_legend <- function(specimen_tbl, id_column, legend_title,
                        shape_aes, geom_size) {
   gg_legend <-
@@ -583,6 +592,7 @@ spl_legend <- function(specimen_tbl, id_column, legend_title,
 #'     collector = "Wolf", collection = 642
 #'   )
 #'
+#' @keywords internal
 spl_id <- function(specimen_tbl, id_column, collector, collection,
                    shape_aes = NULL, geom_size = 3, label_size = 3,
                    h_adjust = 0.25, v_adjust = -0.15) {
@@ -665,6 +675,7 @@ spl_id <- function(specimen_tbl, id_column, collector, collection,
 #' map_base <- "ggmap"
 #' map_base <- "elevation"
 #'
+#' @keywords internal
 build_map <- function(specimen_tbl, id_column, legend_title,
                       map_base = c("base", "ggmap", "elevation"), ...) {
   ggplot_base <- # ggplot base layer

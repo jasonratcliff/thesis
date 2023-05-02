@@ -95,6 +95,7 @@
 #'   ) %>%
 #'   rlang::eval_tidy(expr = .)
 #'
+#' @keywords internal
 repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
   stopifnot(identical(class(initial_ggplot), c("gg", "ggplot")))
   repelled_ggplot <- dplyr::left_join(
@@ -201,6 +202,7 @@ repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
 #'   ) %>%
 #'   rlang::eval_tidy(expr = .)
 #'
+#' @keywords internal
 repel_haplotype_labels <- function(tree_nudges, tree_labels,
                                    initial_ggtree, label_size = 2) {
   # Check tree object class and join variables as expected.
@@ -318,6 +320,7 @@ repel_haplotype_labels <- function(tree_nudges, tree_labels,
 #'   ) %>%
 #'   rlang::eval_tidy(expr = .)
 #'
+#' @keywords internal
 repel_node_labels <- function(node_nudges, node_labels,
                               initial_ggtree, label_size = 3) {
   stopifnot(identical(class(initial_ggtree), c("ggtree", "gg", "ggplot")))
@@ -389,6 +392,7 @@ repel_node_labels <- function(node_nudges, node_labels,
 #'   ) %>%
 #'   haplotype_labels(haplotypes = ., id_column = "Taxon_a_posteriori")
 #'
+#' @keywords internal
 haplotype_labels <- function(haplotypes, id_column) {
 
   # Filter to nodes with multiple taxa, then count instances of reviewed IDs.

@@ -19,6 +19,7 @@
 #' potentially_informative_sites(fasta_file = ml_fasta[[1]])
 #' }
 #'
+#' @keywords internal
 potentially_informative_sites <- function(fasta_file, ...) {
 
   # Cast matrix from unmasked Biostrings DNAMultipleAlignment object.
@@ -64,6 +65,7 @@ potentially_informative_sites <- function(fasta_file, ...) {
 #' @return List of length-2 non-overlapping numeric vectors.
 #' @export
 #'
+#' @keywords internal
 msa_intervals <- function(msa_alignment) {
   msa_length <- ncol(msa_alignment)
   interval_msa <- seq(136, msa_length, 165) # Account for Appendix header
@@ -97,6 +99,7 @@ msa_intervals <- function(msa_alignment) {
 #'
 #' @export
 #'
+#' @keywords internal
 msa_wrapper <- function(msa_fasta, msa_output,
                         alignment_dir = fs::path("Appendix/alignments/")) {
 
@@ -143,6 +146,7 @@ msa_wrapper <- function(msa_fasta, msa_output,
 #'
 #' @export
 #'
+#' @keywords internal
 msa_texshade <- function(tex_path, landscape = FALSE) {
 
   # Subset TexShade LaTeX environment from msa::msaPrettyPrint() .tex output.
