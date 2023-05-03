@@ -8,6 +8,8 @@ Description: Data and code for compiling a thesis manuscript. Includes
     functions for importing and parsing herbarium and DNA specimen information,
     distribution mapping, phylogenetic tree annotation, and quantitative trait
     comparisons.
+URL: https://github.com/jasonratcliff/thesis
+BugReports: https://github.com/jasonratcliff/thesis/issues
 Encoding: UTF-8
 LazyData: true
 SystemRequirements: GNU make
