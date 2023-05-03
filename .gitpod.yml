@@ -1,6 +1,17 @@
 image:
   file: .github/gitpod.Dockerfile
 
+tasks:
+  - name: Install Package
+    before: Rscript -e "renv::hydrate()"
+    init: Rscript -e "renv::install('.')"
+
+github:
+    prebuilds:
+        master: true
+        branches: false
+        pullRequests: true
+
 vscode:
   extensions:
     - REditorSupport.R
