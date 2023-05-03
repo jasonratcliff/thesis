@@ -1,7 +1,7 @@
 library(shiny)
 library(magrittr)
 library(ggplot2)
-library(Thesis)
+library(thesis)
 options(tigris_use_cache = TRUE)
 
 # Distribution Plotting UI ----
@@ -64,11 +64,11 @@ server <- function(input, output, session) {
 
   # Plot Reset ----
   observeEvent(input$resetButton, {
-    specimens$data <- Thesis::herbarium_specimens %>%
+    specimens$data <- thesis::herbarium_specimens %>%
       # Filter specimens without manual aesthetic value specification.
       # TODO Report excluded specimens in `Specimens` tab
       dplyr::filter(.data = ., .data[[input$map_color_aes]] %in%
-                      names(spp_color))
+                      names(thesis::spp_color))
   })
 
   # Brush Subset ----
