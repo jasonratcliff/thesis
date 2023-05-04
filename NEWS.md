@@ -1,17 +1,20 @@
-# WIP
-
-* `data-raw/appendix` scripts configured for local paths are removed for
-  package portability.
-
 # thesis (development version)
 
 ## New features
 
-* Add `pkgdown` YAML configuration for package website.
+* Update `renv.lock` lockfile to support R v4.3.0 (#75).
+
+* Add `Gitpod` configuration to enable continuous development environment (#74).
+    + Include `renv` support for R v4.3.0 environment (#78).
+
+* Add `pkgdown` YAML configuration for package website (#70, #76).
     + Move DNA specimen map from `data-raw/README.Rmd` to `vignettes/articles`
       (#66).
 
 ## Minor improvements and fixes
+
+* Fix `mustashe` environment evaluation error by requiring packing development
+  version in `DESCRIPTION` and `renv.lock` (#79).
 
 * `SpecimenMap$features()` gains two new parameters:
     + `sf_states` passes a character vector to `tigris::counties()`
@@ -33,6 +36,9 @@
 | `data-raw/specimens/vouchers.R`    | `data-raw/specimens/herbarium_specimens.R` |
 | `data-raw/specimens/vouchers.xlsx` | `inst/extdata/specimens.xlsx`              |
 
+* `data-raw/appendix` scripts configured for local paths are removed for
+  package portability (#72).
+
 # thesis 0.3.1
 
 ## Minor improvements and fixes
@@ -51,7 +57,7 @@
 * A number of previously exported functions are refactored into a specimen
   container using the R6 OOP system. Despite the non-(R)-idiomatic style of R6,
   the reference semantics present a useful implementation for the various
-  subsetting and plotting operations covered by these functions.
+  subsetting and plotting operations covered by these functions (#63).
 
 * Manual scale values from `spp_color` and `spp_shape` are combined into a new
   exported data `aesthetics` tibble.
