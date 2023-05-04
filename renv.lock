@@ -2111,9 +2111,14 @@
     },
     "mustashe": {
       "Package": "mustashe",
-      "Version": "0.1.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "0.1.5",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "mustashe",
+      "RemoteUsername": "jhrcook",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "5723d534ea64466e0d3c3d276c81fad82dd9f381",
       "Requirements": [
         "digest",
         "formatR",
@@ -2121,7 +2126,7 @@
         "qs",
         "tibble"
       ],
-      "Hash": "2cdf8a528b3e4c03b588d80f679a394c"
+      "Hash": "c1720aef8da6a1cecd25b1e844d1006a"
     },
     "nlme": {
       "Package": "nlme",
