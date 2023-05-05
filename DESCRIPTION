@@ -87,5 +87,23 @@ Suggests:
     whisker,
     withr,
     xaringan
-Remotes:  
+Remotes:
     jhrcook/mustashe
+Collate: 
+    'data.R'
+    'deprec-maps.R'
+    'deprec-specimens.R'
+    'deprec-themes.R'
+    'helpers.R'
+    'knitr_wrappers.R'
+    'literature.R'
+    'specimens.R'
+    'maps.R'
+    'msa_wrappers.R'
+    'repel.R'
+    'thesis-package.R'
+    'traits.R'
+    'tree_bayes.R'
+    'tree_beast.R'
+    'tree_data.R'
+    'utils-pipe.R'
