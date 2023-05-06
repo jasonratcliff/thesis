@@ -16,6 +16,8 @@
 * Fix `mustashe` environment evaluation error by requiring packing development
   version in `DESCRIPTION` and `renv.lock` (#79).
 
+* Add `rgdal` package import required by `elevatr` (#83).
+
 * `SpecimenMap$features()` gains two new parameters:
     + `sf_states` passes a character vector to `tigris::counties()`
        for layering county borders from additional states.
