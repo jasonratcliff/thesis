@@ -14,7 +14,7 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-22.04.2
+    runs-on: ubuntu-22.04
     container: rocker/geospatial@sha256:1e9b96124f66f98c7dd0d2c41a990fb128fa335a658d869d799ad5779391a163
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
