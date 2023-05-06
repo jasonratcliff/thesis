@@ -3,7 +3,7 @@ image:
 
 tasks:
   - name: Install Package
-    before: Rscript -e "renv::hydrate()"
+    before: Rscript -e "renv::hydrate(); renv::restore()"
     init: Rscript -e "renv::install('.')"
 
 github:
