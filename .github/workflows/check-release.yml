@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     container: rocker/geospatial@sha256:1e9b96124f66f98c7dd0d2c41a990fb128fa335a658d869d799ad5779391a163
     env:
+      GGMAP_GOOGLE_API_KEY: ${{ secrets.GGMAP_GOOGLE_API_KEY }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
     steps:
