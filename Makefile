@@ -76,7 +76,7 @@ check:
 	Rscript -e 'devtools::check(args = c("--no-tests", "--no-examples"))'
 
 manuscript: figures
-	make -C inst/manuscript all
+	Rscript scripts/render_book.R
 
 # `pkgdown` Package Website
 site: README.Rmd
