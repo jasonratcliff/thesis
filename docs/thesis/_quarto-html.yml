@@ -1,0 +1,8 @@
+project:
+  output-dir: _html
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3

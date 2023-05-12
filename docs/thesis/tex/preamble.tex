@@ -8,17 +8,14 @@
 %%%%%% DOCUMENT SETUP
 % - https://guides.lib.uni.edu/thesis-and-dissertation-formatting/1-document
 
-%% MARGINS via LaTeX pacakge LaTeX GEOMETRY
-\usepackage{geometry}
-\geometry{top=1.25in, bottom=1.25in, left=1.5in, right=1in,
-  headsep=0.5in % Header 0.75" from edge https://tex.stackexchange.com/a/264246
-}
-
 %% PARAGRAPH SPACING via LaTeX TITLESEC (Bezos 2016) and SETSPACE
+\let\paragraph\oldparagraph
+\let\subparagraph\oldsubparagraph
 \usepackage{titlesec}
 \renewcommand\theparagraph{}  % Remove paragraph section numbering
 \titlespacing*{\paragraph}{0pt}{0pt}{0.5in}  % Paragraph (tab) indendation
 \setlength{\parskip}{0pt}  % Equal spacing between paragraphs
+
 \usepackage{setspace}
 \doublespacing  % Double line spacing
 \raggedright  % Right margin ragged justification
@@ -41,7 +38,7 @@
   \sethead{}{}{\thepage}
 }
 \newpagestyle{main}{ % Define page style for main body text
-  \sethead{}{}{\thepage} 
+  \sethead{}{}{\thepage}
 }
 
 %% TABLE OF CONTENTS
@@ -82,11 +79,11 @@
 \usepackage[normalem]{ulem}  % Add underline function \uline
 
 % - Modify section title formatting
-\titleformat{name=\chapter}[display] 
+\titleformat{name=\chapter}[display]
   {\normalsize\filcenter}{CHAPTER \thechapter}{0pt}{}{}
-\titleformat{name=\section}[display]  
+\titleformat{name=\section}[display]
   {\normalfont\filcenter}{}{0pt}{\uline}{}
-\titleformat{name=\subsection}[display]  
+\titleformat{name=\subsection}[display]
   {\normalfont\filright}{}{0pt}{\uline}{}
 
 % - Set spacing for heading levels via TITLESEC
@@ -122,14 +119,13 @@
 
 % Enumerated list for dichotomous key.
 \usepackage{enumitem}
-% Allow deeper nesting 
+% Allow deeper nesting
 % - https://stackoverflow.com/a/57952517
 \renewlist{enumerate}{enumerate}{5}
-% Eliminate list item separation, 
+% Eliminate list item separation,
 % - https://tex.stackexchange.com/a/174810
 \setlist{
   noitemsep,
   listparindent=\parindent,
   parsep=0pt
 }
-
