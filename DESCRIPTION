@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.1.9005
+Version: 0.3.1.9006
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes
@@ -12,7 +12,9 @@ URL: https://github.com/jasonratcliff/thesis
 BugReports: https://github.com/jasonratcliff/thesis/issues
 Encoding: UTF-8
 LazyData: true
-SystemRequirements: GNU make
+SystemRequirements:
+    GNU make,
+    Quarto command line tools (https://github.com/quarto-dev/quarto-cli).
 License: CC BY 4.0 + file LICENSE
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
