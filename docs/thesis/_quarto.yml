@@ -1,0 +1,38 @@
+project:
+  type: book
+  execute-dir: project
+  render:
+    - index.qmd
+    - "chapters/*.qmd"
+    - "appendix/*.qmd"
+
+profile:
+  group:
+    - [html, pdf]
+
+book:
+  title: "The systematics of *Physaria* sensu stricto"
+  subtitle: "From Wyoming and Surrounding Areas"
+  author: Jason Ratcliff
+  date: today
+  chapters:
+    - index.qmd
+    - chapters/introduction.qmd
+    - chapters/methods.qmd
+    - chapters/results.qmd
+    - chapters/discussion.qmd
+    - appendix/references.qmd
+    - appendix/specimens.qmd
+    - appendix/alignments.qmd
+
+bibliography: appendix/references.bib
+csl: appendix/council-of-science-editors-author-date.csl
+
+knitr:
+  opts_chunk:
+    echo: false
+    message: false
+    results: asis
+    fig-align: center
+  opts_knit:
+    eval.after: "fig.cap"

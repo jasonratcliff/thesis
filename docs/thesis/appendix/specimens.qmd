@@ -1,0 +1,25 @@
+# (APPENDIX) Appendix {-}
+
+\vspace*{-24pt}
+
+\addcontentsline{toc}{chapter}{APPENDIX A: SPECIMENS REVIEWED}
+
+<!-- Specimen appendix TeX files -->
+
+\begin{center}
+
+\vspace*{-12pt}
+
+SPECIMENS REVIEWED
+
+\end{center}
+
+\input{tex/specimens/medicinae}
+\input{tex/specimens/acutifolia}
+\input{tex/specimens/brassicoides}
+\input{tex/specimens/condensata}
+\input{tex/specimens/didymocarpa}
+\input{tex/specimens/dornii}
+\input{tex/specimens/eburniflora}
+\input{tex/specimens/integrifolia}
+\input{tex/specimens/vitulifera}

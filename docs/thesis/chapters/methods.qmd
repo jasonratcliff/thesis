@@ -1,18 +1,8 @@
----
-bibliography: "references.bib"
-csl: council-of-science-editors-author-date.csl
----
-
-```{r, include=FALSE}
-WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
-```
-
-```{r, child=if (WORD_DOC) '_setup.Rmd'}
-```
-
 # METHODS {#METHODS}
 
 \vspace*{-18pt}
+
+{{< include /_setup.qmd >}}
 
 ```{r MethodsVariables, echo=FALSE}
 
@@ -854,5 +844,8 @@ if (knit_variables$pandoc == "latex") {
 \captionsetup[table]{list=yes}
 \setcounter{table}{4}
 
-```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
-```
+::: {.content-visible when-format="docx"}
+
+{{< include /appendix/references.qmd >}}
+
+:::

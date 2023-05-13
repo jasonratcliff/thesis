@@ -1,7 +1,7 @@
 ---
 title: "data-raw README"
 output: rmarkdown::github_document
-bibliography: "`r fs::path_package(package = 'thesis', 'manuscript/references.bib')`"
+bibliography: "../docs/thesis/appendix/references.bib"
 link-citations: true
 always_allow_html: true
 ---
@@ -170,8 +170,8 @@ graph TD
 
 ## BEAST
 
-The `Biostrings` and `ape` [@R-ape] packages were used to read in the subset of 
-specimen alignments from the concatenated analysis and write `NEXUS` formatted 
+The `Biostrings` and `ape` [@R-ape] packages were used to read in the subset of
+specimen alignments from the concatenated analysis and write `NEXUS` formatted
 alignment files. For all three loci (rITS, *rps*, *ycf1*), alignments were
 imported into `BEAUti` v2.6.3 [@Bouckaert2019] to configure BEAST *.xml* files.
 
@@ -187,7 +187,7 @@ graph TD
 ```
 
 BEAST v2.6.3 [@Bouckaert2019] results from 3 independent runs of 50M states were
-combined with `LogCombiner` v2.6.3 (*ibid.*) with 10,000 resampled states. 
+combined with `LogCombiner` v2.6.3 (*ibid.*) with 10,000 resampled states.
 A maximum clade credibility tree was summarized using `TreeAnnotator` v2.6.3
 (*ibid.*) and visualized using the `ggplot2` [@R-ggplot2] extension `ggtree`
 [@R-ggtree].

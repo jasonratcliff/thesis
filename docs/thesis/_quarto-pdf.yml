@@ -1,0 +1,26 @@
+project:
+  output-dir: _pdf
+
+book:
+  output-file: "thesis"
+
+format:
+  pdf:
+    # See Quarto PDF format reference for options documentation:
+    # > https://quarto.org/docs/reference/formats/pdf.html
+    include-in-header:
+      - file: tex/preamble.tex
+    pdf-engine: xelatex
+    colorlinks: false
+    documentclass: report
+    geometry:
+      - top=1.25in
+      - bottom=1.25in
+      - left=1.5in
+      - right=1.in
+      - headsep=0.5in
+    number-depth: 1
+    number-sections: false
+    maintfont: Palatino
+    link-citations: true
+    toc: false

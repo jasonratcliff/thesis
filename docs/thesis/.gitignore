@@ -1,4 +1,6 @@
+/.quarto/
+/_freeze/
+/_html/
+/_pdf/
 *.aux
 *.log
-_book
-_gitbook
