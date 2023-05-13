@@ -4,6 +4,7 @@ project:
   render:
     - index.qmd
     - "chapters/*.qmd"
+    - "appendix/*.qmd"
 
 profile:
   group:
@@ -20,6 +21,7 @@ book:
     - chapters/methods.qmd
     - chapters/results.qmd
     - chapters/discussion.qmd
+    - appendix/references.qmd
 
 bibliography: references.bib
 csl: council-of-science-editors-author-date.csl

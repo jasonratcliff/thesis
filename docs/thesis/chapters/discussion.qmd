@@ -596,5 +596,8 @@ knitr_section(
  replum linear; ovules 2 per locule; style 4-6(-8) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
-```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
-```
+::: {.content-visible when-format="docx"}
+
+{{< include /appendix/references.qmd >}}
+
+:::

@@ -844,5 +844,8 @@ if (knit_variables$pandoc == "latex") {
 \captionsetup[table]{list=yes}
 \setcounter{table}{4}
 
-```{r, child=if (WORD_DOC) '05-APPENDICES.Rmd'}
-```
+::: {.content-visible when-format="docx"}
+
+{{< include /appendix/references.qmd >}}
+
+:::
