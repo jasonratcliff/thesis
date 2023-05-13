@@ -22,6 +22,7 @@ book:
     - chapters/results.qmd
     - chapters/discussion.qmd
     - appendix/references.qmd
+    - appendix/specimens.qmd
 
 bibliography: references.bib
 csl: council-of-science-editors-author-date.csl
