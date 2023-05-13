@@ -3,6 +3,7 @@ project:
   execute-dir: project
   render:
     - index.qmd
+    - "chapters/*.qmd"
 
 profile:
   group:
@@ -15,6 +16,10 @@ book:
   date: today
   chapters:
     - index.qmd
+    - chapters/introduction.qmd
+    - chapters/methods.qmd
+    - chapters/results.qmd
+    - chapters/discussion.qmd
 
 bibliography: references.bib
 csl: council-of-science-editors-author-date.csl

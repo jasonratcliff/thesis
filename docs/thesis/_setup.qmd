@@ -1,0 +1,29 @@
+
+```{r setup}
+# Load specimen data and thesis functions.
+library(thesis)
+
+# Allow `knitr::include_graphics()` to use project relative paths.
+options("knitr.graphics.error" = FALSE)
+
+# Initialize list for figure captions.
+caption <- list()
+
+# Function to return italized genus name.
+physaria <- function(knitr_chunk) {
+  paste(
+    ifelse(knitr_chunk == "latex",
+           "\\textit{Physaria}", "*Physaria*")
+  )
+}
+```
+
+```{r knitr-options}
+# Assign chunk type for knitr chunk sections, kable() calls, and graphics device.
+knit_variables <- list()
+knit_variables$pandoc <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+knit_variables$kable_format <-
+  list(html = "html", latex = "latex", docx = "simple")[[knit_variables$pandoc]]
+knit_variables$graphics <-
+  list(html = "png", latex = "pdf", docx = "png")[[knit_variables$pandoc]]
+```

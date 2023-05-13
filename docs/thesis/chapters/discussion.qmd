@@ -1,16 +1,6 @@
----
-bibliography: "references.bib"
-csl: council-of-science-editors-author-date.csl
----
-
-```{r, include=FALSE}
-WORD_DOC <- knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx"
-```
-
-```{r, child=if (WORD_DOC) '_setup.Rmd'}
-```
-
 # DISCUSSION {#DISCUSSION}
+
+{{< include /_setup.qmd >}}
 
 \paragraph{} How species are defined is a key issue in biology, the aptly named
 species problem. Potential for ambiguity in this problem was recognized early
@@ -129,15 +119,13 @@ species taxa (ibid.). In the case of recent radiations, integration by
 congruence may fail to recover species on the basis of a strict consensus
 approach due to a lack of gene monophyly [@Shaffer2007].
 
-```{r, child='04.1-MORPHOLOGY.Rmd'}
-```
+{{< include /chapters/_distributions.qmd >}}
 
 \clearpage
 
 \vspace*{-24pt}
 
-```{r, child='04.2-SPECIES.Rmd'}
-```
+{{< include /chapters/_species.qmd >}}
 
 \clearpage
 
