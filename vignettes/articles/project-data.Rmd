@@ -1,6 +1,6 @@
 ---
 title: "Project Data"
-bibliography: "`r fs::path_package(package = 'thesis', 'manuscript/references.bib')`"
+bibliography: "../../docs/thesis/appendix/references.bib"
 link-citations: true
 nocite: >
     @R-readxl, @R-dplyr

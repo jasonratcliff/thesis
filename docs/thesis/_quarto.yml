@@ -25,8 +25,8 @@ book:
     - appendix/specimens.qmd
     - appendix/alignments.qmd
 
-bibliography: references.bib
-csl: council-of-science-editors-author-date.csl
+bibliography: appendix/references.bib
+csl: appendix/council-of-science-editors-author-date.csl
 
 knitr:
   opts_chunk:
