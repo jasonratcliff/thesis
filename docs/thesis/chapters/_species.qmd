@@ -1,15 +1,5 @@
 
-```{r SectionNovelPhysaria}
-
-thesis::knitr_section(
-  knitr_title = paste(
-    "Southcentral Wyoming",
-    physaria(knit_variables$pandoc), "Lineage"
-  ),
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Southcentral Wyoming *Physaria* Lineage
 
 \paragraph{} Divergence of a novel *Physaria* lineage in the Sierra Madre and
 Medicine Bow Mountains is considered here on the basis of phylogenetic,
@@ -83,14 +73,7 @@ pendant pedicels and pinnatifid basal leaves [@OKane2010]. Future phylogenetic
 and population genetic analyses should include both *P. floribunda* subspecies
 of Middle Park and *P. bellii* of the eastern slope of the Front Range.
 
-```{r SectionSouthwesternEndemics}
-
-thesis::knitr_section(
-  knitr_title = paste("Southwest Wyoming Endemics"),
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Southwest Wyoming Endemics
 
 \paragraph{} In the multilocus analyses, the southwestern Wyoming endemics
 *P. condensata* and *P. dornii* were consistently supported in a clade with
@@ -139,14 +122,7 @@ knitr::include_graphics(
 
 \vspace*{-24pt}
 
-```{r SectionPhysariaDidymocarpaSubspecies}
-
-thesis::knitr_section(
-  knitr_title = paste("*Physaria didymocarpa* Subspecies"),
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## *Physaria didymocarpa* Subspecies
 
 \paragraph{} @Rollins1984 described two new varieties of *P. saximontana*,
 *saximontana* and *dentata*, with a primary distribution south of the range

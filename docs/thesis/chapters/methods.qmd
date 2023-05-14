@@ -32,14 +32,7 @@ names(methods_variables$fasta_msa) <-
 
 ```
 
-```{r SectionSpecimens}
-
-thesis::knitr_section(
-  knitr_title = "Herbarium Specimens",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Herbarium Specimens
 
 \paragraph{} Specimens of *Physaria* sensu stricto were requested from the
 following herbaria:
@@ -105,14 +98,7 @@ and formatted with `kableExtra` [@R-kableExtra]. Plot figures were formatted
 using `cowplot` [@R-cowplot], `ggtext` [@R-ggtext], `scales` [@R-scales], and
 `ggnewscale` [@R-ggnewscale].
 
-```{r SectionTissue}
-
-thesis::knitr_section(
-  knitr_title = "Tissue Sources",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Tissue Sources
 
 \paragraph{} In the context of molecular phylogenies, there has been debate
 regarding the extent to which density of taxon sampling versus gene number
@@ -154,14 +140,7 @@ intron, and `r length(methods_variables$fasta_msa$ycf1)` for *ycf1*.
 Analyses of concatenated multi-locus or partitioned data were limited to
 specimens for which sequencing of all three loci was completed.
 
-```{r SectionExtractions}
-
-thesis::knitr_section(
-  knitr_title = "DNA Extraction",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## DNA Extraction
 
 \paragraph{} Genomic DNA was extracted from one of two sources: basal leaf
 tissue taken from loaned herbarium specimens (ca. 20 mg) or silica bead-dried
@@ -351,14 +330,7 @@ Additionally, the volume of AE buffer used to elute DNA from the spin column was
 reduced to 75 $\mu$L from 100 $\mu$L. The incubation time for column elution was
 also extended from five minutes to 10 minutes.
 
-```{r SectionPCRrITS}
-
-thesis::knitr_section(
-  knitr_title = "rITS PCR",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## rITS PCR
 
 \paragraph{} All Polymerase Chain Reaction (PCR) was completed using a Biometra
 TProfessional Basic Thermocycler Gradient with individual or 8-tube strip 0.25
@@ -427,14 +399,7 @@ if (knit_variables$pandoc != "docx") {
 
 \vspace*{10pt}
 
-```{r SectionPCRrps}
-
-thesis::knitr_section(
-  knitr_title = "*rps* Intron PCR",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## *rps* Intron PCR
 
 \paragraph{} For the *rps* intron, individual reactions had a total volume of
 25 $\mu$L consisting of 11.25 $\mu$L ddH2O, 5.0 $\mu$L 5x Phusion HF Buffer
@@ -449,14 +414,7 @@ for 10s at 98 $^{\circ}$C, annealing for 25s at 66.8 $^{\circ}$C, and extension
 for 30s at 72 $^{\circ}$C. A final extension for seven minutes at 72
 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
-```{r SectionPCRycf1}
-
-thesis::knitr_section(
-  knitr_title = "*ycf1* PCR",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## *ycf1* PCR
 
 \paragraph{} The total volume for *ycf1* reactions was 20 $\mu$L. Due to
 inconsistencies in the success of PCR amplification, the volume of sample DNA
@@ -514,14 +472,7 @@ re-suspending in 18 mL ddH2O.
 
 \vspace*{-24pt}
 
-```{r SectionGel}
-
-thesis::knitr_section(
-  knitr_title = "Gel Electrophoresis",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Gel Electrophoresis
 
 \paragraph{} Success of PCR amplification was verified using a 1.1% agarose
 mini gel. A solution of 285 mL 20x SB buffer (boric acid and 10mM sodium
@@ -536,14 +487,7 @@ H2O for 5 minutes. A UV illuminator connected to a Kodak EDAS 290
 Electrophoresis Documentation and Analysis System was used to document digital
 images of the gels.
 
-```{r SectionSeqDNA}
-
-thesis::knitr_section(
-  knitr_title = "DNA Sequencing",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## DNA Sequencing
 
 \paragraph{} Prior to sequencing, the PCR reaction products were treated with
 a mixture consisting of Shrimp Alkaline Phosphatase and Exonuclease I
@@ -565,14 +509,7 @@ Forward and reverse reads for each sample were aligned with Clustal X v2.0
 labeled using IUPAC ambiguity codes [@Cornish-Bowden1985]. The sequences were
 assembled from chromatograms into multi-FASTA format for downstream analysis.
 
-```{r SectionPhylogenetics}
-
-thesis::knitr_section(
-  knitr_title = "Phylogenetic Analysis",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Phylogenetic Analysis
 
 \paragraph{} Phylogenetic relationships were estimated by bayesian inference
 using two programs, MrBayes v3.2.6 [@Ronquist2012; @Huelsenbeck2001] and
@@ -689,14 +626,7 @@ Maximum clade credibility trees were summarized using TreeAnnotator
 from the output species trees discarding 10% of trees as burn-in with a
 posterior probability limit of 0.5.
 
-```{r SectionSource}
-
-thesis::knitr_section(
-  knitr_title = "Source Code",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Source Code
 
 \paragraph{} To plot phylogenetic results, MrBayes consensus and BEAST
 maximum clade credibility tree data were read into R by the `treeio` package

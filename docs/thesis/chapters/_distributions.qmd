@@ -1,14 +1,5 @@
 
-```{r sectionMorphology}
-
-knitr::opts_chunk$set(fig.align = "center")
-
-knitr_section(
-  knitr_title = "Morphology",
-  knitr_type = "section", chunk_type = knit_variables$kable_format
-)
-
-```
+## Morphology
 
 \paragraph{} Two key morphological features for distinguishing *Physaria*
 sensu stricto include the membranous partition separating fruit locules
