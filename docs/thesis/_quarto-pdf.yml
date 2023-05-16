@@ -3,6 +3,8 @@ project:
 
 book:
   output-file: "thesis"
+  chapters:
+    - appendix/index.qmd
 
 format:
   pdf:

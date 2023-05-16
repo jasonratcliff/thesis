@@ -1,0 +1,9 @@
+# REFERENCES
+
+{{< include /appendix/_references.qmd >}}
+
+{{< include /appendix/_specimens.qmd >}}
+
+{{< include /appendix/_alignments.qmd >}}
+
+{{< include /appendix/_session.qmd >}}

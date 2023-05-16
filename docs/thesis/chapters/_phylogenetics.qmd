@@ -1,12 +1,4 @@
-
-```{r sectionBayesianInference}
-
-thesis::knitr_section(
-  knitr_title = "Phylogenetic Analysis",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Phylogenetic Analysis
 
 ```{r phylogeneticsData}
 
@@ -104,14 +96,7 @@ and *ycf1* yielded an alignment with two groupings of identical genotypes.
 Additional phylogenies estimated using BEAST support close relationships among
 the southwestern Wyoming endemics and a *Physaria didymocarpa* species complex.
 
-```{r subsectionrITS}
-
-thesis::knitr_section(
-  knitr_title = "ITS Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### ITS Sequence Analysis
 
 \paragraph{} Sequences for the rITS locus ranged from 581 to 583 base pairs with
 an alignment length of 586 base pairs. Of the identical genotype groupings,
@@ -201,14 +186,7 @@ and single specimens of *P. didymocarpa* subsp. *lanata*,
 with high support included *P. saximontana* subsp. *saximontana* and
 *P. eburniflora* (P=0.995), and *P. integrifolia* (P=0.982).
 
-```{r subsectionrps}
-
-thesis::knitr_section(
-  knitr_title = "*rps* Intron Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *rps* Intron Sequence Analysis
 
 \paragraph{} Sequences for the *rps* intron ranged from 802 to 852 base pairs
 with an aligned length of 889. A high degree of sequence homogeneity was
@@ -353,14 +331,7 @@ knitr::include_graphics(
 
 \vspace*{-24pt}
 
-```{r subsectionycf1}
-
-thesis::knitr_section(
-  knitr_title = "*ycf1* Sequence Analysis",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *ycf1* Sequence Analysis
 
 \paragraph{} Sequencing of the *ycf1* locus indicated a low mutation rate for
 that marker in this group of taxa. Specimens sampled from each of the putative
@@ -469,14 +440,7 @@ if (knit_variables$pandoc == "latex") {
 
 \vspace*{10pt}
 
-```{r subsectionMultiLocus}
-
-thesis::knitr_section(
-  knitr_title = "Multilocus Analyses",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### Multilocus Analyses
 
 \paragraph{} Concatenation of the three sequenced loci yielded an alignment
 with more potentially informative characters than any individual gene alignment.

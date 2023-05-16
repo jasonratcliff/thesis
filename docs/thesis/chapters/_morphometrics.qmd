@@ -29,14 +29,7 @@ anovaPhysariaStems <- herbarium_specimens %>%
 
 \vspace*{-18pt}
 
-```{r sectionTraitPlots}
-
-thesis::knitr_section(
-  knitr_title = "Trait Distributions",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Trait Distributions
 
 \paragraph{} Records of trait observations from specimen vouchers were used for
 exploratory data analysis of species hypotheses based on morphological and

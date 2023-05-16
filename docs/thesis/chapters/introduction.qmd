@@ -61,14 +61,7 @@ Here, an integrative taxonomic treatment of these species considers evidence
 from molecular, ecological and morphological data to address the
 phylogenetic status of these taxa.
 
-```{r SectionTaxaHistory}
-
-thesis::knitr_section(
-  knitr_title = "Systematic and Taxonomic History",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Systematic and Taxonomic History
 
 \paragraph{} The first mention of *Physaria* (Nutt.) A. Gray as a distinct taxon
 is credited to Thomas Nuttall in Torrey and Gray [-@Nuttal1838] where it is
@@ -262,14 +255,7 @@ while variety *saximontana* typically had 2 ovules per locule present.
 
 \vspace*{-24pt}
 
-```{r SectionDistribution}
-
-thesis::knitr_section(
-  knitr_title = "Geographical Distribution and Ecology",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Geographical Distribution and Ecology
 
 \paragraph{} *Physaria* sensu stricto occur in shrub-steppe, woodland and
 montane habitats with often-arid climates and intense sunlight where they tend
@@ -344,14 +330,7 @@ south to Colorado and Nebraska at generally lower elevations, ranging from
 and clay soils, its distribution is primarily non-overlapping with other
 Wyoming *Physaria*.
 
-```{r SubsectionCarbonVitulifera}
-
-thesis::knitr_section(
-  knitr_title = "Status of *Physaria vitulifera* in Wyoming",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### Status of *Physaria vitulifera* in Wyoming
 
 \paragraph{} Rollins' -@Rollins1993 treatment of *Physaria* described
 *P. vitulifera* as occurring in central Colorado. Weber and Wittman [-@Weber1996]
@@ -546,14 +525,7 @@ knitr::include_graphics(
 
 \vspace*{-24pt}
 
-```{r SectionMorphologicalTraits}
-
-thesis::knitr_section(
-  knitr_title = "Morphology and Phylogeny",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Morphology and Phylogeny
 
 \paragraph{} Delineation of a species based on morphological characteristics
 alone may result in the description of a non-monophyletic group, as it is often
@@ -632,6 +604,6 @@ information about genetic history, cytology, or reproductive mechanisms
 
 ::: {.content-visible when-format="docx"}
 
-{{< include /appendix/references.qmd >}}
+{{< include /appendix/_references.qmd >}}
 
 :::

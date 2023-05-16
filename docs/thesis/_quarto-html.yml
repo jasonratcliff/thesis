@@ -1,6 +1,21 @@
 project:
   output-dir: _html
 
+book:
+  title: "The Systematics of *Physaria* sensu stricto"
+  subtitle: "From Wyoming and Surrounding Areas"
+  author: Jason Ratcliff
+  date: today
+  appendices:
+    - text: References
+      href: appendix/_references.qmd
+    - text: Specimens
+      href: appendix/_specimens.qmd
+    - text: Alignments
+      href: appendix/_alignments.qmd
+    - text: R Session Info
+      href: appendix/_session.qmd
+
 format:
   html:
     theme: cosmo

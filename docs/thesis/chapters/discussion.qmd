@@ -21,14 +21,7 @@ species concept, secondary species concepts provide mutually applicable and
 equally valid operational support for recognizing species entities
 [@Mayden1997].
 
-```{r sectionSpeciesConcept}
-
-knitr_section(
-  knitr_title = "The Species Concept",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## The Species Concept
 
 \paragraph{} Attempting to reconcile differences among the various proposed
 species concepts, @deQueiroz1998 described a general lineage concept of
@@ -131,14 +124,7 @@ approach due to a lack of gene monophyly [@Shaffer2007].
 
 \vspace*{-24pt}
 
-```{r sectionDichotomousKey}
-
-thesis::knitr_section(
-  knitr_title = "Dichotomous Key",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Dichotomous Key
 
 \singlespacing
 
@@ -276,25 +262,11 @@ thesis::knitr_section(
 
 \vspace*{-24pt}
 
-```{r sectionDescriptions}
-
-knitr_section(
-  knitr_title = "Species Descriptions",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
-
-```
+## Species Descriptions
 
 \vspace*{-24pt}
 
-```{r subsectionDescriptionPhysariaSpNov}
-
-knitr_section(
-  knitr_title = "*Physaria* ‘medicinae’",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria* ‘medicinae’
 
 \paragraph{} **Perennials**; caudex simple, (branched);
  densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
@@ -312,14 +284,7 @@ knitr_section(
  (with simple trichomes); ovules 2 per locule; style 3-6(-7) mm.
 **Seeds** brown, flattened, 2(-3) mm.
 
-```{r subsectionDescriptionPacutifolia}
-
-knitr_section(
-  knitr_title = "*Physaria acutifolia* Rydberg",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria acutifolia* Rydberg
 
 \paragraph{} **Perennials**; caudex simple, less often branched, (tufted or condensed);
  densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
@@ -340,14 +305,7 @@ knitr_section(
  ovules 2(-4) per locule, restricted to apex of the replum; style 4-6(-8) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
-```{r subsectionDescriptionPbrassicoides}
-
-knitr_section(
-  knitr_title = "*Physaria brassicoides* Rydberg",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria brassicoides* Rydberg
 
 \paragraph{} **Perennials**; caudex simple, less often branched;
  densely pubescent, with appressed stellate trichomes, rays bifurcating, umbonate.
@@ -369,14 +327,7 @@ knitr_section(
  ovules 2 per locule, restricted to apex of the replum; style 4-6(-8) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
-```{r subsectionDescriptionPcondensata}
-
-knitr_section(
-  knitr_title = "*Physaria condensata* Rollins",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria condensata* Rollins
 
 \paragraph{} **Perennials**; caudex simple, (branched); plants compact, rosulate;
  densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
@@ -395,14 +346,7 @@ knitr_section(
  ovules 3-4(-5) per locule; style 3-5(-6) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPdidymocarpaSspDidymocarpa}
-
-knitr_section(
-  knitr_title = "*Physaria didymocarpa* (Hooker) A. Gray subsp. *didymocarpa*",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria didymocarpa* (Hooker) A. Gray subsp. *didymocarpa*
 
 \paragraph{} **Perennials**; caudex simple, less often branched;
  densely pubescent, with appressed stellate trichomes, rays furcate or bifurcate.
@@ -428,16 +372,7 @@ knitr_section(
 
 \vspace*{-24pt}
 
-```{r subsectionDescriptionPdidymocarpaSspLanata}
-
-knitr_section(
-  knitr_title = paste(
-    "*Physaria didymocarpa* (Hooker) A. Gray subsp. *lanata*",
-    "(A. Nelson) O'Kane"
-  ),  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria didymocarpa* (Hooker) A. Gray subsp. *lanata* (A. Nelson) O'Kane
  
 \paragraph{} **Perennials**; caudex simple, rarely branched;
  densely pubescent, with spreading trichomes, rays generally furcate.
@@ -458,17 +393,7 @@ knitr_section(
  ovules 2(-3) per locule; style 4-6(-7) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPdidymocarpaSspLyrata}
-
-knitr_section(
-  knitr_title = paste(
-    "*Physaria didymocarpa* (Hooker) A. Gray subsp. *lyrata*",
-    "(C. L. Hitchcock) O'Kane"
-  ),
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria didymocarpa* (Hooker) A. Gray subsp. *lyrata* (C. L. Hitchcock) O'Kane
   
 \paragraph{} **Perennials**; caudex simple, rarely branched; densely pubescent,
  with appressed stellate trichomes, rays furcate or bifurcate, (umbonate).
@@ -490,14 +415,7 @@ knitr_section(
  ovules (2-)4-6 per locule; style 4-7(-8) mm.
 **Seeds** brown, flattened; 2-3(-4) mm.
 
-```{r subsectionDescriptionPdornii}
-
-knitr_section(
-  knitr_title = "*Physaria dornii* Lichvar",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria dornii* Lichvar
 
 \paragraph{} **Perennials**; caudex simple; plants compact, rosulate;
  densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
@@ -515,14 +433,7 @@ knitr_section(
  style 3-5(-7) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPeburniflora}
-
-knitr_section(
-  knitr_title = "*Physaria eburniflora* Rollins",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria eburniflora* Rollins
 
 \paragraph{} **Perennials**; caudex simple; plants compact, rosulate;
  densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
@@ -542,14 +453,7 @@ knitr_section(
  style 4-6(-7) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPintegrifolia}
-
-knitr_section(
-  knitr_title = "*Physaria integrifolia* (Rollins) Lichvar",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria integrifolia* (Rollins) Lichvar
 
 \paragraph{} **Perennials**; caudex simple or often branched;
  densely pubescent, with appressed stellate trichomes, rays bifurcating, (umbonate).
@@ -569,14 +473,7 @@ knitr_section(
  style 5-7(-9) mm.
 **Seeds** brown, flattened; 2-3 mm.
 
-```{r subsectionDescriptionPvitulifera}
-
-knitr_section(
-  knitr_title = "*Physaria vitulifera* Rydberg",
-  knitr_type = "subsection", chunk_type = knit_variables$pandoc
-)
-
-```
+### *Physaria vitulifera* Rydberg
 
 \paragraph{} **Perennials**; caudex simple; densely pubescent,
  with appressed stellate trichomes, rays bifurcating.
@@ -598,6 +495,6 @@ knitr_section(
 
 ::: {.content-visible when-format="docx"}
 
-{{< include /appendix/references.qmd >}}
+{{< include /appendix/_references.qmd >}}
 
 :::

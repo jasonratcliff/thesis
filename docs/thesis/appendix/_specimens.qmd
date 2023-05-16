@@ -1,17 +1,21 @@
-# (APPENDIX) Appendix {-}
 
-\vspace*{-24pt}
+```{r specimens}
+#| results: asis
+switch(
+  EXPR = knitr::opts_knit$get("rmarkdown.pandoc.to"),
+  "html" = cat("# Specimens"),
+  "latex" = cat(
+    "\\chapter*{APPENDIX A}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX A: SPECIMENS REVIEWED}",
+    sep = "\n"
+  )
+)
+```
 
-\addcontentsline{toc}{chapter}{APPENDIX A: SPECIMENS REVIEWED}
-
-<!-- Specimen appendix TeX files -->
+::: {.content-visible when-format="pdf"}
 
 \begin{center}
-
-\vspace*{-12pt}
-
 SPECIMENS REVIEWED
-
 \end{center}
 
 \input{tex/specimens/medicinae}
@@ -23,3 +27,5 @@ SPECIMENS REVIEWED
 \input{tex/specimens/eburniflora}
 \input{tex/specimens/integrifolia}
 \input{tex/specimens/vitulifera}
+
+:::
