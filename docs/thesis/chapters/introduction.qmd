@@ -604,6 +604,6 @@ information about genetic history, cytology, or reproductive mechanisms
 
 ::: {.content-visible when-format="docx"}
 
-{{< include /appendix/references.qmd >}}
+{{< include /appendix/_references.qmd >}}
 
 :::

@@ -1,0 +1,50 @@
+
+```{r session}
+#| results: asis
+switch(
+  EXPR = knitr::opts_knit$get("rmarkdown.pandoc.to"),
+  "html" = cat("# R Session Info"),
+  "latex" = cat(
+    "\\chapter*{APPENDIX C}",
+    "\\addcontentsline{toc}{chapter}{APPENDIX C: R SESSION INFO}",
+    sep = "\n"
+  )
+)
+```
+
+::: {.content-visible when-format="pdf"}
+
+```{r session-pdf}
+library(magrittr)
+
+pkg_session <-
+  devtools::session_info(pkgs = "thesis")[2] %>%
+  plyr::ldply(.data = .) %>%
+  dplyr::select(package, ondiskversion, date, source) %>%
+  setNames(object = ., nm = c("Package", "Version", "Date", "Source"))
+
+knitr::kable(
+    x = pkg_session, format = 'latex',
+    longtable = TRUE, escape = TRUE,
+    caption = "\\texttt{Thesis} R session info."
+  ) %>%
+    kableExtra::column_spec(column = 1, border_left = TRUE) %>%
+    kableExtra::column_spec(column = 4, border_right = TRUE) %>%
+    kableExtra::kable_styling(
+      latex_options = c("hold_position", "repeat_header"),
+      repeat_header_text = "Continued.",
+      repeat_header_method = "replace",
+      font_size = 8
+    )
+```
+
+:::
+
+::: {.content-visible when-format="html"}
+
+```{r session-html}
+#| results: markup
+devtools::session_info(pkgs = 'thesis')
+```
+
+:::

@@ -495,6 +495,6 @@ approach due to a lack of gene monophyly [@Shaffer2007].
 
 ::: {.content-visible when-format="docx"}
 
-{{< include /appendix/references.qmd >}}
+{{< include /appendix/_references.qmd >}}
 
 :::

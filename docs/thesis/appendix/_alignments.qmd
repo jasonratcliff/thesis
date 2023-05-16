@@ -1,19 +1,18 @@
 
-{{< include /_setup.qmd >}}
-
-```{r AppendixAlignments, results = "asis"}
-
-if (knit_variables$pandoc == "latex") {
-  cat(
-    "\\vspace*{-12pt}",
+```{r alignments}
+#| results: asis
+switch(
+  EXPR = knitr::opts_knit$get("rmarkdown.pandoc.to"),
+  "html" = cat("# Alignments"),
+  "latex" = cat(
     "\\chapter*{APPENDIX B}",
     "\\addcontentsline{toc}{chapter}{APPENDIX B: MULTIPLE SEQUENCE ALIGNMENTS}",
-    "\\vspace*{-36pt}",
     sep = "\n"
   )
-}
-
+)
 ```
+
+{{< include /_setup.qmd >}}
 
 ## Nuclear rITS
 
@@ -76,35 +75,5 @@ knitr::include_graphics(
     ext = knit_variables$graphics
   )
 )
-
-```
-
-\clearpage
-
-# R SESSION INFO {-}
-
-```{r SessionInfo}
-
-pkg_session <-
-  devtools::session_info(pkgs = "thesis")[2] %>%
-  plyr::ldply(.data = .) %>%
-  dplyr::select(package, ondiskversion, date, source) %>%
-  setNames(object = ., nm = c("Package", "Version", "Date", "Source"))
-
-if (knit_variables$pandoc == "latex") {
-  knitr::kable(
-    x = pkg_session, format = knit_variables$kable_format,
-    longtable = TRUE, escape = TRUE,
-    caption = "\\texttt{Thesis} R session info."
-  ) %>%
-    kableExtra::column_spec(column = 1, border_left = TRUE) %>%
-    kableExtra::column_spec(column = 4, border_right = TRUE) %>%
-    kableExtra::kable_styling(
-      latex_options = c("hold_position", "repeat_header"),
-      repeat_header_text = "Continued.",
-      repeat_header_method = "replace",
-      font_size = 8
-    )
-}
 
 ```

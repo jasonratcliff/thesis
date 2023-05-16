@@ -1,9 +1,9 @@
-# REFERENCES {-}
+
+::: {.content-visible when-format="pdf"}
 
 ```{=latex}
-\vspace*{-18pt}
 \singlespacing
-\setlength{\parskip}{12pt}
+\setlength{\parskip}{12pt} %% TODO Fix paragraph skip spacing cslreferences
 \begin{hangparas}{0.5in}{1}
 ```
 
@@ -18,4 +18,13 @@
 \setlength{\leftskip}{0in}
 \setlength{\parskip}{12pt}
 
-<!-- \hspace*{-0.5in} -->
+:::
+
+::: {.content-visible when-format="html"}
+
+# References
+
+::: {#refs}
+:::
+
+:::

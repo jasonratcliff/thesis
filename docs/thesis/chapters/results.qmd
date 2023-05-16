@@ -10,6 +10,6 @@
 
 ::: {.content-visible when-format="docx"}
 
-{{< include /appendix/references.qmd >}}
+{{< include /appendix/_references.qmd >}}
 
 :::
