@@ -15,12 +15,9 @@ if (knit_variables$pandoc == "latex") {
 
 ```
 
-```{r FigureAppendixggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS, fig.scap="Nuclear rITS mutliple sequence alignment"}
+## Nuclear rITS
 
-thesis::knitr_section(
-  knitr_title = "Nuclear rITS",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
+```{r FigureAppendixggMSArITS, out.extra="angle=90", fig.cap=caption$msa_rITS, fig.scap="Nuclear rITS mutliple sequence alignment"}
 
 caption$msa_rITS <-
   "Mulitple sequence alignment of unique Nuclear rITS sites."
@@ -36,18 +33,9 @@ knitr::include_graphics(
 
 \clearpage
 
+## Plastid *rps* Intron
+
 ```{r FigureAppendixggMSArpsIntron, out.extra="angle=90", fig.cap=caption$msa_rps, fig.scap="Plastid \\textit{rps} intron mutliple sequence alignment"}
-
-if (knit_variables$pandoc == "latex") {
-  cat(
-    "\\vspace*{-48pt}"
-  )
-}
-
-thesis::knitr_section(
-  knitr_title = "Plastid *rps* Intron",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
 
 caption$msa_rps <-
   paste0(
@@ -69,18 +57,9 @@ knitr::include_graphics(
 
 \clearpage
 
+## Plastid *ycf1*
+
 ```{r FigureAppendixggMSAycf1, out.extra="angle=90", fig.cap=caption$msa_ycf1, fig.scap="Plastid \\textit{ycf1} mutliple sequence alignment"}
-
-if (knit_variables$pandoc == "latex") {
-  cat(
-    "\\vspace*{-48pt}"
-  )
-}
-
-thesis::knitr_section(
-  knitr_title = "Plastid *ycf1* ",
-  knitr_type = "section", chunk_type = knit_variables$pandoc
-)
 
 caption$msa_ycf1 <-
   paste0(
