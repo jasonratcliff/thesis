@@ -97,8 +97,6 @@ Collate:
     'deprec-maps.R'
     'deprec-specimens.R'
     'deprec-themes.R'
-    'helpers.R'
-    'knitr_wrappers.R'
     'specimens.R'
     'maps.R'
     'msa_wrappers.R'
@@ -109,3 +107,4 @@ Collate:
     'tree_beast.R'
     'tree_data.R'
     'utils-pipe.R'
+    'utils.R'

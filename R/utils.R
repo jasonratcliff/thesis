@@ -64,3 +64,42 @@ italicize <- function(unitalicized, chunk_type) {
     paste0("*", unitalicized, "*")
   }
 }
+
+#' Replace LaTeX Italics
+#'
+#' Convert LaTeX italics to HTML markdown for firgure captions.
+#'
+#' @param chunk_type Knitr chunk type returned by
+#'   `opts_knit$get("rmarkdown.pandoc.to")`
+#' @param caption Character scalar passed to `knitr::kable()` `caption` arg.
+#'
+#' @return Caption formatted by knitr pandoc conversion type.
+#'
+#' @export
+#'
+#' @keywords internal
+html_caption <- function(chunk_type, caption) {
+  if (chunk_type == "html") {
+    caption <- gsub("\\\\textit\\{", "*", caption)
+    caption <- gsub("\\}", "*", caption)
+  }
+  return(caption)
+}
+
+#' Table 2 Bookdown
+#'
+#' Methods table reference for DNA specimens.
+#'
+#' @inheritParams html_caption
+#' @return Table 2 reference based on type of pandoc conversion.
+#'
+#' @export
+#'
+#' @keywords internal
+knitr_table_dna <- function(chunk_type) {
+  if (chunk_type == "latex") {
+    paste0("\\@ref(tab:TableDnaSpecimensLatex)")
+  } else if (chunk_type == "html") {
+    paste0("\\@ref(tab:TableDnaSpecimensHtml)")
+  }
+}
