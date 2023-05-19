@@ -112,20 +112,21 @@ broadly represent populations within their distribution and multiple loci were
 sampled for each individual.
 
 \paragraph{} Taxon sampling was determined by species distribution patterns,
-with broader sampling from more widespread species (Table
-`r knitr_table_dna(knit_variables$pandoc)`). For the narrowly distributed
-Wyoming state endemics *P. dornii* and *P. condensata*, four individuals were
-sampled from each taxa. For Wyoming state endemics *P. eburniflora* and
-*P. saximontana* subsp. *saximontana*, five individuals from each taxa were
-included. Four individuals of *P. saximontana* subsp. *dentata* were sampled
-broadly from Montana. Five specimens identified as *P. didymocarpa* subsp.
-*lanata* in Wyoming and three identified as *P. didymocarpa* subsp. *lyrata* in
-Idaho were included. These two *P. didymocarpa* subspecies have narrow
-distributions and are thought to be state endemics of Wyoming and Idaho,
-respectively. Five individuals were sampled from *P. didymocarpa* subsp.
-*didymocarpa* in Wyoming and Montana. For the regional endemics
-*P. brassicoides* and *P. integrifolia*, six and five individuals were sampled,
-respectively. For *P. vitulifera*, three individuals from Colorado and four
+with broader sampling from more widespread species
+`r glue::glue("(@tbl-samples-{knitr::pandoc_to()})")`.
+For the narrowly distributed Wyoming state endemics *P. dornii* and
+*P. condensata*, four individuals were sampled from each taxa. For Wyoming
+state endemics *P. eburniflora* and *P. saximontana* subsp. *saximontana*,
+five individuals from each taxa were included. Four individuals of
+*P. saximontana* subsp. *dentata* were sampled broadly from Montana.
+Five specimens identified as *P. didymocarpa* subsp. *lanata* in Wyoming and
+three identified as *P. didymocarpa* subsp. *lyrata* in Idaho were included.
+These two *P. didymocarpa* subspecies have narrow distributions and are
+thought to be state endemics of Wyoming and Idaho, respectively.
+Five individuals were sampled from *P. didymocarpa* subsp. *didymocarpa* in
+Wyoming and Montana. For the regional endemics *P. brassicoides* and
+*P. integrifolia*, six and five individuals were sampled, respectively.
+For *P. vitulifera*, three individuals from Colorado and four
 putative specimens with annotations as *P. vitulifera* from Carbon County,
 Wyoming were included. The Carbon County population is of interest due to the
 questionable status of this species’ distribution in the state of Wyoming

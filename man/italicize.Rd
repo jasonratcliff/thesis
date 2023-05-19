@@ -8,9 +8,6 @@ italicize(unitalicized, chunk_type)
 }
 \arguments{
 \item{unitalicized}{Character vector to italicize.}
-
-\item{chunk_type}{Knitr chunk type returned by
-\code{opts_knit$get("rmarkdown.pandoc.to")}}
 }
 \description{
 Wrapper to italicize vector based on \code{knitr} chunk type.
