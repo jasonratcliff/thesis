@@ -1,10 +1,8 @@
 # METHODS {#METHODS}
 
-\vspace*{-18pt}
-
 {{< include /_setup.qmd >}}
 
-```{r MethodsVariables, echo=FALSE}
+```{r methods}
 
 methods_variables <- list()  # Initialize list for assigned variables
 
@@ -154,61 +152,79 @@ also included in this study.
 
 \clearpage
 
-```{r TableDnaSpecimens}
-
+```{r samples-table}
 # Read in DNA collection localities for methods table.
-methods_variables$collections <-
-  list.files(system.file("extdata/Methods", package = "thesis"),
-             pattern = "DNA-collections", full.names = TRUE) %>%
-  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc") %>%
+samples <-
+  readr::read_csv(
+    file = "tables/samples.csv",
+    col_names = TRUE,
+    col_types = "ccc"
+  ) %>%
+    dplyr::mutate(
+      # Convert markdown syntax from asterisk italicization by pandoc format.
+      taxon = purrr::map_chr(
+        .x = .data$taxon,
+        .f = function(x) {
+          dplyr::if_else(
+            condition = knitr::pandoc_to("latex"),
+            true = commonmark::markdown_latex(x),
+            false = x
+          )
+        }
+      )
+    )
 
-  # Isolate surnames for collectors.
-  dplyr::mutate(`Voucher Information` = sapply(
-      `Voucher Information`, function(voucher) {
-        gsub("[A-Z]\\. ?", "", voucher) %>% gsub("&", "and", x = .)
-        }))
-
-# Table footnote caption
-methods_variables$dna_footnote <-
+footnotes <-
   paste(
-    "Requested herbarium specimens used for extraction of",
-    "genomic DNA. Voucher information includes record",
-    "collector and collection number while locality reports",
-    "the county and state for the collection. Specimens",
-    "with a single * represent vouchers with DNA sequence",
-    "data obtained by Rethwisch (2014) while a double **",
-    "indicate specimens with sequence data previously obtained by",
-    "O'Kane Jr."
+    "Requested herbarium specimens used for extraction of genomic DNA.",
+    "Voucher information includes record collector and collection number while",
+    "locality reports the county and state for the collection. Specimens",
+    "with a single * represent vouchers with DNA sequence data obtained by",
+    dplyr::if_else(
+      condition = knitr::pandoc_to("latex"),
+      # TODO Workaround for including citation into KableExtra footnote.
+      true = paste0(
+        "Rethwisch \\(\\\\protect\\\\hyperlink",
+        "\\{ref-Rethwisch2014\\}\\{2014\\})"
+      ),
+      false = "@Rethwisch2014"
+    ),
+    "while double ** indicate specimens with sequence data previously",
+    "obtained by O'Kane Jr."
   )
 
-```
-
-```{r TableDnaSpecimensLatex}
-
-if (knit_variables$pandoc == "latex") {
-  methods_variables$collections %>% dplyr::slice(1:39) %>%
-    knitr::kable(x =.,
-      format = knit_variables$pandoc, escape = FALSE,
-      caption = "DNA extraction specimens.",
-      caption.short = "DNA extraction specimens"
-    ) %>%
+# Local function to format latex kable for sampled specimens
+sample_kable <- function(tbl) {
+  knitr::kable(
+    x = tbl,
+    format = knitr::pandoc_to(),
+    escape = FALSE
+  ) %>%
     kableExtra::kable_styling(
-      full_width = FALSE, font_size = 10,
+      full_width = FALSE,
+      font_size = 10,
       latex_options= "hold_position"
     ) %>%
     kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
     kableExtra::column_spec(1, border_left = TRUE, width = "3.2cm") %>%
     kableExtra::column_spec(2, width = "6cm") %>%
     kableExtra::column_spec(3, border_right = TRUE, width = "3.5cm") %>%
-    kableExtra::collapse_rows(columns = 1) %>%
-    kableExtra::footnote(
-      general = methods_variables$dna_footnote,
-      general_title = "",
-      threeparttable = TRUE,
-      escape = FALSE
-    )
+    kableExtra::collapse_rows(columns = 1)
 }
+```
 
+```{r tbl-samples-latex}
+#| eval: !expr knitr::pandoc_to("latex")
+#| tbl-cap: DNA extraction specimens.
+samples %>%
+  dplyr::slice(1:39) %>%
+  sample_kable(tbl = .) %>%
+  kableExtra::footnote(
+    general = footnotes,
+    general_title = "",
+    threeparttable = TRUE,
+    escape = FALSE
+  )
 ```
 
 \clearpage
@@ -219,25 +235,12 @@ if (knit_variables$pandoc == "latex") {
 <!--- Prevent automatic indexing of table entry in List of Tables -->
 \captionsetup[table]{list=no}
 
-```{r TableDnaSpecimensLatexContinued}
-
-if (knit_variables$pandoc == "latex") {
-  methods_variables$collections %>% dplyr::slice(40:68) %>%
-    knitr::kable(x = .,
-      format = knit_variables$pandoc, escape = FALSE,
-      caption = "Table 2. Continued."
-    ) %>%
-    kableExtra::kable_styling(
-      full_width = FALSE, font_size = 10,
-      latex_options= "hold_position"
-    ) %>%
-    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    kableExtra::column_spec(1, border_left = TRUE, width = "3.2cm") %>%
-    kableExtra::column_spec(2, width = "6cm") %>%
-    kableExtra::column_spec(3, border_right = TRUE, width = "3.5cm") %>%
-    kableExtra::collapse_rows(columns = 1)
-}
-
+```{r tbl-samples-continued}
+#| eval: !expr knitr::pandoc_to("latex")
+#| tbl-cap: "Table 2. Continued."
+samples %>%
+  dplyr::slice(40:68) %>%
+  sample_kable(tbl = .)
 ```
 
 <!--- Reset caption options and table counter -->
@@ -245,44 +248,11 @@ if (knit_variables$pandoc == "latex") {
 \captionsetup[table]{list=yes}
 \setcounter{table}{2}
 
-```{r TableDnaSpecimensHtml}
-
-if (knit_variables$pandoc != "latex") {
-  methods_variables$collections <- methods_variables$collections %>%
-    dplyr::mutate(taxa = purrr::map_chr(.data$Taxon, function(taxon) {
-      gsub("\\\\textit\\{", "\\*", taxon) %>%
-        gsub("\\}$", "\\*", x = .) %>%
-        gsub("\\} subsp.", "\\*  subsp.", x = .)
-    })) %>%
-    dplyr::select(c(taxa, `Voucher Information`, Locality)) %>%
-    dplyr::rename(Taxon = taxa) %>%
-    knitr::kable(
-      longtable = TRUE, escape = FALSE,
-      format = knit_variables$kable_format,
-      caption = "DNA Extraction Herbarium Specimens"
-    )
-}
-
-if (knit_variables$pandoc == "html") {
-    methods_variables$collections %>%
-    kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>%
-    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 12) %>%
-    kableExtra::column_spec(1, border_left = TRUE, bold = TRUE) %>%
-    kableExtra::column_spec(2, width = "6cm") %>%
-    kableExtra::column_spec(3, width = "3.5cm", border_right = TRUE) %>%
-    kableExtra::collapse_rows(columns = 1) %>%
-    kableExtra::footnote(
-      general = methods_variables$dna_footnote,
-      general_title = "",
-      threeparttable = TRUE,
-      escape = FALSE
-    )
-}
-
-if (knit_variables$pandoc == "docx") {
-  methods_variables$collections
-}
-
+```{r tbl-samples-html}
+#| eval: !expr knitr::pandoc_to("html")
+#| tbl-cap: DNA extraction specimens.
+#| tbl-subcap: !expr footnotes
+knitr::kable(x = samples, format = "markdown")
 ```
 
 \vspace*{10pt}
