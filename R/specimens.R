@@ -144,18 +144,19 @@ Specimen <- R6::R6Class(
     #'
     #' # Index tibble records column annotations to tabulate.
     #' table(species$records[["Taxon_a_posteriori"]])
-    taxa = function(..., identifier) {
+    taxa = function(..., .identifier = NULL) {
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
-      filtered_records <- self$records %>%
+      if (is.null(.identifier)) .identifier <- self$identifier
+      filtered <- self$records %>%
         dplyr::filter(
           grepl(
             pattern = paste(species, collapse = "|"),
-            x = .data[[identifier]]
+            x = .data[[.identifier]]
           )
         )
-      self$records <- filtered_records
+      self$records <- filtered
       invisible(self)
     },
 
@@ -219,8 +220,9 @@ Specimen <- R6::R6Class(
     #'  Length equals number of unique values in the `identifier` field.
     #' @examples
     #' limits$annotations()
-    annotations = function() {
-      annotations <- unique(self$records[[self$identifier]]) %>%
+    annotations = function(.identifier = NULL) {
+      if (is.null(.identifier)) .identifier <- self$identifier
+      annotations <- unique(self$records[[.identifier]]) %>%
         rlang::set_names() %>%
         purrr::map(
           .x = .,
