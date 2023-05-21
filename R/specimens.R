@@ -144,7 +144,7 @@ Specimen <- R6::R6Class(
     #'
     #' # Index tibble records column annotations to tabulate.
     #' table(species$records[["Taxon_a_posteriori"]])
-    taxa = function(..., .identifier = NULL) {
+    taxa = function(..., .identifier = NULL, .return = FALSE) {
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
@@ -156,8 +156,12 @@ Specimen <- R6::R6Class(
             x = .data[[.identifier]]
           )
         )
-      self$records <- filtered
-      invisible(self)
+      if (.return) {
+        return(filtered)
+      } else {
+        self$records <- filtered
+        invisible(self)
+      }
     },
 
     #' @description Query specimen records by collector or collection number.
@@ -178,9 +182,9 @@ Specimen <- R6::R6Class(
     #' found$census()
     #'
     #' dplyr::select(found$records, "Collector", "Collection_Number")
-    collections = function(...) {
+    collections = function(..., .return = FALSE) {
       search <- rlang::dots_list(..., .named = TRUE)
-      entries <- purrr::imap_dfr(
+      filtered <- purrr::imap_dfr(
         .x = search,
         .f = function(query, name) {
           if (length(query) == 1) {
@@ -209,7 +213,12 @@ Specimen <- R6::R6Class(
         }
       ) %>%
         purrr::keep(~ !is.null(.x))
-      return(entries)
+      if (.return) {
+        return(filtered)
+      } else {
+        self$records <- filtered
+        invisible(self)
+      }
     },
 
     #' @description Create markdown-formatted specimen annotations.
