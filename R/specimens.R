@@ -102,31 +102,60 @@ Specimen <- R6::R6Class(
     #' limits$limit(west = -107, east = -105, south = 39, north = 41)
     #'
     #' dim(limits$records)
-    limit = function(west = NULL, east = NULL, south = NULL, north = NULL) {
-      cardinal <-
-        list(
-          west = rlang::expr(dplyr::filter(.data$Longitude > {{ west }})),
-          east = rlang::expr(dplyr::filter(.data$Longitude < {{ east }})),
-          south = rlang::expr(dplyr::filter(.data$Latitude > {{ south }})),
-          north = rlang::expr(dplyr::filter(.data$Latitude < {{ north }}))
+    limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
+                     .return = FALSE) {
+      headings <- tibble::tibble(
+        heading = c("west", "south", "east", "north"),
+        reference = rep(c("Longitude", "Latitude"), times = 2),
+        comparison = c(rep(">", 2), rep("<", 2)),
+        coordinate = purrr::map_dbl(
+          .x = list(west, south, east, north),
+          .f = function(heading) {
+            ifelse(
+              test = !is.null(heading),
+              yes = heading,
+              no = NA_real_
+            )
+          }
         )
-
-      directions <- list(
-        west = west, east = east,
-        south = south, north = north
       ) %>%
-        purrr::keep(.x = ., .p = ~ !is.null(.x))
+        dplyr::filter(!is.na(coordinate))
 
-      if (length(directions) > 0) {
-        self$records <- rlang::eval_tidy(
+      if (!nrow(headings) > 0) {
+        usethis::ui_oops("At least one meridian or parallel recommended:")
+        purrr::walk(
+          .x = c("west", "south", "east", "north"),
+          .f = ~ print(glue::glue("#> {usethis::ui_field(.x)}"))
+        )
+        usethis::ui_info("Returning object unfiltered by coordinate limit.")
+        return(self$records)
+      } else {
+        cardinals <- purrr::pmap(
+          .l = headings,
+          .f = function(heading, reference, comparison, coordinate) {
+            limit <-
+              glue::glue(
+                "dplyr::filter(.data[['{reference}']] {comparison} {coordinate})"
+              )
+            str2lang(limit)
+          }
+        )
+      }
+      filtered <- rlang::eval_tidy(
+        expr = {
           purrr::reduce(
-            .x = cardinal[names(directions)],
+            .x = unlist(cardinals),
             .f = ~ rlang::expr(!!.x %>% !!.y),
             .init = rlang::expr(self$records)
           )
-        )
+        }
+      )
+      if (.return) {
+        return(filtered)
+      } else {
+        self$records <- filtered
+        invisible(self)
       }
-      invisible(self)
     },
 
     #' @description
