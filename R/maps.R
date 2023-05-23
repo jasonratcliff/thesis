@@ -298,8 +298,10 @@ SpecimenMap <- R6::R6Class(
     #'   )
     #' )
     repel = function(..., vouchers = NULL, repel.params = list()) {
-      if (length(rlang::list2(...)) > 0) {
-        collectors <- botanist(records = self$collections(...))
+      filtered <- self$filter_collections(..., .return = TRUE)
+      collections <- rlang::list2(...)
+      if (length(collections) > 0) {
+        collectors <- botanist(records = filtered)
       }
       if (!is.null(vouchers)) {
         collectors <- tryCatch(

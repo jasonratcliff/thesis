@@ -60,7 +60,7 @@ object from the package namespace.
 
 ```{r specimenSamples}
 #| message: false
-vouchers$limit(
+vouchers$filter_limit(
   west = -115.2,
   east = -103,
   south = 37,

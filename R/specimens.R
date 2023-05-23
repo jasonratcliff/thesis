@@ -102,8 +102,8 @@ Specimen <- R6::R6Class(
     #' limits$limit(west = -107, east = -105, south = 39, north = 41)
     #'
     #' dim(limits$records)
-    limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
-                     .return = FALSE) {
+    filter_limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
+                            .return = FALSE) {
       headings <- tibble::tibble(
         heading = c("west", "south", "east", "north"),
         reference = rep(c("Longitude", "Latitude"), times = 2),
@@ -173,7 +173,7 @@ Specimen <- R6::R6Class(
     #'
     #' # Index tibble records column annotations to tabulate.
     #' table(species$records[["Taxon_a_posteriori"]])
-    taxa = function(..., .identifier = NULL, .return = FALSE) {
+    filter_taxa = function(..., .identifier = NULL, .return = FALSE) {
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
@@ -211,7 +211,7 @@ Specimen <- R6::R6Class(
     #' found$census()
     #'
     #' dplyr::select(found$records, "Collector", "Collection_Number")
-    collections = function(..., .return = FALSE) {
+    filter_collections = function(..., .return = FALSE) {
       search <- rlang::dots_list(..., .named = TRUE)
       filtered <- purrr::imap_dfr(
         .x = search,
