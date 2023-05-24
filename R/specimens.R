@@ -306,8 +306,9 @@ Specimen <- R6::R6Class(
     #' # Note length of the returned label vector equals the record row number.
     #' length(dna_vouchers$labels())
     #' unique(dna_vouchers$labels())
-    labels = function() {
-      labels <- self$records[["label"]] %>%
+    labels = function(.identifier = "label") {
+      if (is.null(.identifier)) .identifier <- self$identifier
+      labels <- self$records[[.identifier]] %>%
         stringr::str_squish() %>%
         stringr::str_replace_all(
           string = .,

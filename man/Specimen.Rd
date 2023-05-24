@@ -323,9 +323,17 @@ Length equals number of unique values in the \code{identifier} field.
 \subsection{Method \code{labels()}}{
 Create base expression specimen labels.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$labels()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$labels(.identifier = "label")}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.identifier}}{Character scalar denoting \code{records} field variable
+for filtering and annotation operations involving taxonomic identifications.}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 Character vector of expressions for parsed font labels.
 Length equivalent to length of the records \code{label} variable.
