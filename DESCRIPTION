@@ -79,6 +79,7 @@ Suggests:
     readxl,
     remotes,
     renv,
+    roxygen2 (>= 7.0.0),
     rprojroot,
     rmarkdown,
     rstudioapi,
