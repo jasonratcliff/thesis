@@ -45,7 +45,7 @@ voucher_map <- SpecimenMap$new(
   identifier = "Taxon_a_posteriori"
 )
 
-voucher_map$limit(
+voucher_map$filter_limit(
   west = -108, east = -105,
   north = 42, south = 39
 )
@@ -129,10 +129,10 @@ The R Journal. 8(2):231-242.
 <ul>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="annotations"><a href='../../thesis/html/Specimen.html#method-Specimen-annotations'><code>thesis::Specimen$annotations()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="census"><a href='../../thesis/html/Specimen.html#method-Specimen-census'><code>thesis::Specimen$census()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="collections"><a href='../../thesis/html/Specimen.html#method-Specimen-collections'><code>thesis::Specimen$collections()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_collections"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_collections'><code>thesis::Specimen$filter_collections()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_limit"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_limit'><code>thesis::Specimen$filter_limit()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_taxa"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_taxa'><code>thesis::Specimen$filter_taxa()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="labels"><a href='../../thesis/html/Specimen.html#method-Specimen-labels'><code>thesis::Specimen$labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="limit"><a href='../../thesis/html/Specimen.html#method-Specimen-limit'><code>thesis::Specimen$limit()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="taxa"><a href='../../thesis/html/Specimen.html#method-Specimen-taxa'><code>thesis::Specimen$taxa()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -318,7 +318,7 @@ Design pattern to forward multiple plot arguments modelled after:
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Collector / collection
-sets passed to \code{\link[=Specimen]{Specimen$collections()}}.}
+sets passed to \code{\link[=Specimen]{Specimen$filter_collections()}}.}
 
 \item{\code{vouchers}}{Specimen records \code{\link[tibble:tbl_df-class]{tbl_df}} to
 specify subset of record collections. Requires columns \code{Collector},

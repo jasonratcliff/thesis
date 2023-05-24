@@ -1,51 +1,76 @@
 # Specimen Class ---------------------------------------------------------------
 
-#' @title Voucher Specimens
-#' @description
-#' R6 class defined as a specimen record data structure. The [Specimen]
-#' superclass holds a [`tibble`][tibble::tibble()] object containing voucher
-#' metadata. Public methods allow for reporting the number of distinct and
-#' duplicate records, subsetting specimen records by geographic coordinate,
-#' and filtering operations by either annotation or collector / collection.
+#' @title R6 Superclass Encapsulating Voucher Specimen Records
 #'
+#' @description
+#' The `Specimen` superclass facilitates analysis of voucher subsets by
+#' instantiating a data structure with public methods for filtering and
+#' annotating specimens. A core aspect of this class is the `Specimen$records`
+#' public field, which contains a [tibble::tibble()] data frame meant to
+#' represent specimen records. Plotting  subsets is enabled by superclass
+#' methods to filter by geographic coordinates, taxonomic annotation, and
+#' collection information (i.e., collector and number). Visualization of
+#' filtered specimen distributions is facilitated by methods to format
+#' annotations for plot labels.
+#'
+#' @seealso [thesis::SpecimenMap]
 #' @param records Specimen voucher records [tibble::tibble()].
 #' @param identifier Character scalar for voucher annotation label variable.
+#' @param .identifier Character scalar denoting `records` field variable
+#'  for filtering and annotation operations involving taxonomic identifications.
+#' @param .return Logical to return filtered records. By default, the public
+#'   field `Specimen$records` is updated silently to allow chaining subsequent
+#'   filtering operations. When `TRUE`, return the filtered records without
+#'   updating the public field.
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
   public = list(
 
-    #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 tibble object
-    #'  with set of specimen vouchers.
+    #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
+    #'   frame containing a set of specimen vouchers. The `filter_*` methods
+    #'   can be chained to update this field or set to return data without
+    #'   modifying the public `records` field.
     records = "tbl_df",
 
-    #' @field identifier Annotation variable in a [`Specimen$records`][Specimen]
-    #'  tibble. Used to designate [ggplot2::ggplot()] scale labels.
+    #' @field identifier Character scalar denoting a default variable in
+    #'   the `Specimen$records` field. For records with a `.identifier`
+    #'   argument, this field is referenced when the optional argument is
+    #'   omitted. The `identifier` field is used for operations involving a
+    #'   specific set of taxonomic identifications (e.g., prior annotations),
+    #'   including filtering and labelling methods.
     identifier = NULL,
 
-    #' @description Construct a `Specimen` container
+    #' @description Construct a `Specimen` class container from voucher records.
+    #'
     #' @examples
-    #' # Construct object instance with `$new()` method
-    #' voucher <- Specimen$new(
+    #' # Initialize object instance from set of records with `new()` method.
+    #' specimens <- Specimen$new(
     #'   records = thesis::herbarium_specimens,
     #'   identifier = "Taxon_a_posteriori"
     #' )
     #'
-    #' # Basic access to the public `records` field tibble
-    #' class(voucher$records)
-    #' dim(voucher$records)
+    #' class(specimens)
+    #'
+    #' # Specimen records can be readily accessed from public `records` field.
+    #' class(specimens$records)
+    #'
+    #' dim(specimens$records)
     initialize = function(records, identifier) {
       self$records <- records
       self$identifier <- identifier
     },
 
     #' @description Record census accounting of voucher specimens.
+    #'
+    #' @details
     #' Reports two summations:
     #'  * Total number of specimens **including duplicate collections**
     #'  * Number of *distinct* specimen collections (i.e., excluding duplicates)
+    #'
     #' @examples
     #' # Check basic record census of total and distinct specimens.
-    #' voucher$census()
+    #' specimens$census()
     census = function() {
       vouchers <- self$records %>%
         dplyr::select(
@@ -88,20 +113,33 @@ Specimen <- R6::R6Class(
       return(record_census)
     },
 
-    #' @description Limit records by geographic coordinate (lon/lat).
+    #' @description Filter specimen records by geographic coordinate limits.
+    #'
+    #' @details
     #' This method enables filtering records by minimum or maximum
     #' coordinate limits using any combination of the four cardinal directions.
     #' Each parameter sets the directional bound (min/max) to filter.
+    #'
     #' @param west Filter records by **minimum longitude** (min. x)
     #' @param east Filter records by **maximum longitude** (max. x)
     #' @param south Filter records by **minimum latitude** (min. y)
     #' @param north Filter records by **maximum latitude** (max. y)
-    #' @examples
-    #' # Subset records by geographic coordinates
-    #' limits <- voucher$clone()
-    #' limits$limit(west = -107, east = -105, south = 39, north = 41)
     #'
-    #' dim(limits$records)
+    #' @examples
+    #' # Subset records by geographic coordinates from cardinal headings.
+    #' clone <- specimens$clone()
+    #' dim(clone$records)
+    #'
+    #' # Assign named character vector with cardinal headings to limit records.
+    #' headings <- c(west = -107, south = 39, east = -105, north = 41)
+    #'
+    #' # By default, the `records` field is updated silently.
+    #' do.call(clone$filter_limit, args = as.list(headings))
+    #' dim(clone$records)
+    #'
+    #' # Optionally, return tibble data frame with filtered records.
+    #' filtered <- clone$filter_limit(west = -106, .return = TRUE)
+    #' dim(filtered) # Note `tbl_df` class returned object
     filter_limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
                             .return = FALSE) {
       headings <- tibble::tibble(
@@ -158,21 +196,29 @@ Specimen <- R6::R6Class(
       }
     },
 
-    #' @description
+    #' @description Filter specimen records by taxonomic annotations.
+    #'
+    #' @details
     #' Given a \href{#public-fields}{\code{Specimen$records}} tibble, utilize
     #' *partial* string matching for taxonomic filtering of specimen records.
     #' Flexibility is provided to query for e.g., multiple specific epithets.
-    #' @param identifier `records` field tibble variable for regular expression
-    #'  matching by [dplyr::filter()].
+    #'
     #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Taxonomic terms to filter
-    #'  records against column designation by `identifier` parameter.
+    #'  records against column designation by `.identifier` parameter.
+    #'
     #' @examples
     #' # Filter specimens by taxonomic rank; here, reviewed specific epithets.
-    #' species <- voucher$clone()
-    #' species$taxa(c("flori", "medi"), identifier = "Taxon_a_posteriori")
+    #' clone <- specimens$clone()
+    #' clone$filter_taxa(
+    #'   c("acutifolia", "floribunda", "vitulifera", "medicinae"),
+    #'   .identifier = "Taxon_a_posteriori"
+    #' )
+    #' dim(clone$records)
     #'
-    #' # Index tibble records column annotations to tabulate.
-    #' table(species$records[["Taxon_a_posteriori"]])
+    #' # Further subset filtered records and return a separate tibble.
+    #' filtered <-
+    #'   clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+    #' dim(filtered)
     filter_taxa = function(..., .identifier = NULL, .return = FALSE) {
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
@@ -193,24 +239,26 @@ Specimen <- R6::R6Class(
       }
     },
 
-    #' @description Query specimen records by collector or collection number.
+    #' @description Filter specimen records by collector or collection number.
+    #'
+    #' @details
     #' This method uses dot collection via [rlang::dots_list()], allowing for
     #' flexible specification of various collector and collection combos.
     #' Input arguments should take one of the following forms:
     #' * Numeric vector of collection numbers named by collector
     #' * Character scalar specifying a single collector string
     #' * Numeric scalar specifying a single collection number
-    #' @return A [`tbl_df`][tibble::tbl_df-class] subset of matched
-    #'  collector / collection specimen records.
+    #'
     #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Any number of collector
     #'  collections (i.e., numeric vector named by collector), collectors
     #'  (character scalars) or collection numbers (numeric scalars).
-    #' @examples
-    #' found <- voucher$clone()
-    #' found$collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
-    #' found$census()
     #'
-    #' dplyr::select(found$records, "Collector", "Collection_Number")
+    #' @examples
+    #' clone <- specimens$clone()
+    #' clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
+    #' clone$census()
+    #'
+    #' clone$records[, c("Collector", "Collection_Number")]
     filter_collections = function(..., .return = FALSE) {
       search <- rlang::dots_list(..., .named = TRUE)
       filtered <- purrr::imap_dfr(
@@ -251,13 +299,21 @@ Specimen <- R6::R6Class(
     },
 
     #' @description Create markdown-formatted specimen annotations.
+    #'
+    #' @details
     #' Used for plotting [ggplot2::ggplot()] manual scale values with italicized
     #' fonts via the [ggtext::element_markdown()] extension.
     #'
     #' @return Named list of markdown- (i.e., HTML) formatted annotations.
-    #'  Length equals number of unique values in the `identifier` field.
+    #'  Length equals number of unique values in the `.identifier` field.
+    #'
     #' @examples
-    #' limits$annotations()
+    #' # Omit `.identifier` for default set by public field `self$identifier`.
+    #' clone <- specimens$clone()
+    #' clone$filter_taxa("didymocarpa")
+    #'
+    #' # Use a different records tibble column to create named annotations.
+    #' clone$annotations(.identifier = "prior_id")
     annotations = function(.identifier = NULL) {
       if (is.null(.identifier)) .identifier <- self$identifier
       annotations <- unique(self$records[[.identifier]]) %>%
@@ -295,6 +351,7 @@ Specimen <- R6::R6Class(
     #'
     #' @return Character vector of expressions for parsed font labels.
     #'  Length equivalent to length of the records `label` variable.
+    #'
     #' @examples
     #' dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) %>%
     #'  dplyr::rename(label = ID_final) %>%

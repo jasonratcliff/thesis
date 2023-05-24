@@ -2,13 +2,17 @@
 % Please edit documentation in R/specimens.R
 \name{Specimen}
 \alias{Specimen}
-\title{Voucher Specimens}
+\title{R6 Superclass Encapsulating Voucher Specimen Records}
 \description{
-R6 class defined as a specimen record data structure. The \link{Specimen}
-superclass holds a \code{\link[tibble:tibble]{tibble}} object containing voucher
-metadata. Public methods allow for reporting the number of distinct and
-duplicate records, subsetting specimen records by geographic coordinate,
-and filtering operations by either annotation or collector / collection.
+The \code{Specimen} superclass facilitates analysis of voucher subsets by
+instantiating a data structure with public methods for filtering and
+annotating specimens. A core aspect of this class is the \code{Specimen$records}
+public field, which contains a \code{\link[tibble:tibble]{tibble::tibble()}} data frame meant to
+represent specimen records. Plotting  subsets is enabled by superclass
+methods to filter by geographic coordinates, taxonomic annotation, and
+collection information (i.e., collector and number). Visualization of
+filtered specimen distributions is facilitated by methods to format
+annotations for plot labels.
 }
 \examples{
 
@@ -16,59 +20,82 @@ and filtering operations by either annotation or collector / collection.
 ## Method `Specimen$new`
 ## ------------------------------------------------
 
-# Construct object instance with `$new()` method
-voucher <- Specimen$new(
+# Initialize object instance from set of records with `new()` method.
+specimens <- Specimen$new(
   records = thesis::herbarium_specimens,
   identifier = "Taxon_a_posteriori"
 )
 
-# Basic access to the public `records` field tibble
-class(voucher$records)
-dim(voucher$records)
+class(specimens)
+
+# Specimen records can be readily accessed from public `records` field.
+class(specimens$records)
+
+dim(specimens$records)
 
 ## ------------------------------------------------
 ## Method `Specimen$census`
 ## ------------------------------------------------
 
 # Check basic record census of total and distinct specimens.
-voucher$census()
+specimens$census()
 
 ## ------------------------------------------------
-## Method `Specimen$limit`
+## Method `Specimen$filter_limit`
 ## ------------------------------------------------
 
-# Subset records by geographic coordinates
-limits <- voucher$clone()
-limits$limit(west = -107, east = -105, south = 39, north = 41)
+# Subset records by geographic coordinates from cardinal headings.
+clone <- specimens$clone()
+dim(clone$records)
 
-dim(limits$records)
+# Assign named character vector with cardinal headings to limit records.
+headings <- c(west = -107, south = 39, east = -105, north = 41)
+
+# By default, the `records` field is updated silently.
+do.call(clone$filter_limit, args = as.list(headings))
+dim(clone$records)
+
+# Optionally, return tibble data frame with filtered records.
+filtered <- clone$filter_limit(west = -106, .return = TRUE)
+dim(filtered) # Note `tbl_df` class returned object
 
 ## ------------------------------------------------
-## Method `Specimen$taxa`
+## Method `Specimen$filter_taxa`
 ## ------------------------------------------------
 
 # Filter specimens by taxonomic rank; here, reviewed specific epithets.
-species <- voucher$clone()
-species$taxa(c("flori", "medi"), identifier = "Taxon_a_posteriori")
+clone <- specimens$clone()
+clone$filter_taxa(
+  c("acutifolia", "floribunda", "vitulifera", "medicinae"),
+  .identifier = "Taxon_a_posteriori"
+)
+dim(clone$records)
 
-# Index tibble records column annotations to tabulate.
-table(species$records[["Taxon_a_posteriori"]])
+# Further subset filtered records and return a separate tibble.
+filtered <-
+  clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+dim(filtered)
 
 ## ------------------------------------------------
-## Method `Specimen$collections`
+## Method `Specimen$filter_collections`
 ## ------------------------------------------------
 
-found <- voucher$clone()
-found$collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
-found$census()
+clone <- specimens$clone()
+clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
+clone$census()
 
-dplyr::select(found$records, "Collector", "Collection_Number")
+clone$records[, c("Collector", "Collection_Number")]
 
 ## ------------------------------------------------
 ## Method `Specimen$annotations`
 ## ------------------------------------------------
 
-limits$annotations()
+# Omit `.identifier` for default set by public field `self$identifier`.
+clone <- specimens$clone()
+clone$filter_taxa("didymocarpa")
+
+# Use a different records tibble column to create named annotations.
+clone$annotations(.identifier = "prior_id")
 
 ## ------------------------------------------------
 ## Method `Specimen$labels`
@@ -85,16 +112,23 @@ dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) \%>\%
 length(dna_vouchers$labels())
 unique(dna_vouchers$labels())
 }
+\seealso{
+\link{SpecimenMap}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{records}}{A \code{\link[tibble:tbl_df-class]{tbl_df}} S3 tibble object
-with set of specimen vouchers.}
+\item{\code{records}}{A \code{\link[tibble:tbl_df-class]{tbl_df}} S3 class tibble data
+frame containing a set of specimen vouchers. The \verb{filter_*} methods
+can be chained to update this field or set to return data without
+modifying the public \code{records} field.}
 
-\item{\code{identifier}}{Annotation variable in a \code{\link[=Specimen]{Specimen$records}}
-tibble. Used to designate \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} scale labels.}
-
-\item{\code{seed}}{Random seed value for deterministic reproducibility.}
+\item{\code{identifier}}{Character scalar denoting a default variable in
+the \code{Specimen$records} field. For records with a \code{.identifier}
+argument, this field is referenced when the optional argument is
+omitted. The \code{identifier} field is used for operations involving a
+specific set of taxonomic identifications (e.g., prior annotations),
+including filtering and labelling methods.}
 }
 \if{html}{\out{</div>}}
 }
@@ -103,9 +137,9 @@ tibble. Used to designate \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} scale 
 \itemize{
 \item \href{#method-Specimen-new}{\code{Specimen$new()}}
 \item \href{#method-Specimen-census}{\code{Specimen$census()}}
-\item \href{#method-Specimen-limit}{\code{Specimen$limit()}}
-\item \href{#method-Specimen-taxa}{\code{Specimen$taxa()}}
-\item \href{#method-Specimen-collections}{\code{Specimen$collections()}}
+\item \href{#method-Specimen-filter_limit}{\code{Specimen$filter_limit()}}
+\item \href{#method-Specimen-filter_taxa}{\code{Specimen$filter_taxa()}}
+\item \href{#method-Specimen-filter_collections}{\code{Specimen$filter_collections()}}
 \item \href{#method-Specimen-annotations}{\code{Specimen$annotations()}}
 \item \href{#method-Specimen-labels}{\code{Specimen$labels()}}
 \item \href{#method-Specimen-clone}{\code{Specimen$clone()}}
@@ -115,13 +149,9 @@ tibble. Used to designate \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} scale 
 \if{html}{\out{<a id="method-Specimen-new"></a>}}
 \if{latex}{\out{\hypertarget{method-Specimen-new}{}}}
 \subsection{Method \code{new()}}{
-Construct a \code{Specimen} container
+Construct a \code{Specimen} class container from voucher records.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$new(
-  records,
-  identifier = NULL,
-  seed = format(Sys.Date(), format = "\%Y\%m\%d")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$new(records, identifier)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -130,22 +160,23 @@ Construct a \code{Specimen} container
 \item{\code{records}}{Specimen voucher records \code{\link[tibble:tibble]{tibble::tibble()}}.}
 
 \item{\code{identifier}}{Character scalar for voucher annotation label variable.}
-
-\item{\code{seed}}{Random seed for reproducibility.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{# Construct object instance with `$new()` method
-voucher <- Specimen$new(
+\preformatted{# Initialize object instance from set of records with `new()` method.
+specimens <- Specimen$new(
   records = thesis::herbarium_specimens,
   identifier = "Taxon_a_posteriori"
 )
 
-# Basic access to the public `records` field tibble
-class(voucher$records)
-dim(voucher$records)
+class(specimens)
+
+# Specimen records can be readily accessed from public `records` field.
+class(specimens$records)
+
+dim(specimens$records)
 }
 \if{html}{\out{</div>}}
 
@@ -157,19 +188,22 @@ dim(voucher$records)
 \if{latex}{\out{\hypertarget{method-Specimen-census}{}}}
 \subsection{Method \code{census()}}{
 Record census accounting of voucher specimens.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$census()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
 Reports two summations:
 \itemize{
 \item Total number of specimens \strong{including duplicate collections}
 \item Number of \emph{distinct} specimen collections (i.e., excluding duplicates)
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$census()}\if{html}{\out{</div>}}
 }
 
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{# Check basic record census of total and distinct specimens.
-voucher$census()
+specimens$census()
 }
 \if{html}{\out{</div>}}
 
@@ -177,15 +211,18 @@ voucher$census()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Specimen-limit"></a>}}
-\if{latex}{\out{\hypertarget{method-Specimen-limit}{}}}
-\subsection{Method \code{limit()}}{
-Limit records by geographic coordinate (lon/lat).
-This method enables filtering records by minimum or maximum
-coordinate limits using any combination of the four cardinal directions.
-Each parameter sets the directional bound (min/max) to filter.
+\if{html}{\out{<a id="method-Specimen-filter_limit"></a>}}
+\if{latex}{\out{\hypertarget{method-Specimen-filter_limit}{}}}
+\subsection{Method \code{filter_limit()}}{
+Filter specimen records by geographic coordinate limits.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$limit(west = NULL, east = NULL, south = NULL, north = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$filter_limit(
+  west = NULL,
+  south = NULL,
+  east = NULL,
+  north = NULL,
+  .return = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -193,21 +230,41 @@ Each parameter sets the directional bound (min/max) to filter.
 \describe{
 \item{\code{west}}{Filter records by \strong{minimum longitude} (min. x)}
 
-\item{\code{east}}{Filter records by \strong{maximum longitude} (max. x)}
-
 \item{\code{south}}{Filter records by \strong{minimum latitude} (min. y)}
 
+\item{\code{east}}{Filter records by \strong{maximum longitude} (max. x)}
+
 \item{\code{north}}{Filter records by \strong{maximum latitude} (max. y)}
+
+\item{\code{.return}}{Logical to return filtered records. By default, the public
+field \code{Specimen$records} is updated silently to allow chaining subsequent
+filtering operations. When \code{TRUE}, return the filtered records without
+updating the public field.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+This method enables filtering records by minimum or maximum
+coordinate limits using any combination of the four cardinal directions.
+Each parameter sets the directional bound (min/max) to filter.
+}
+
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{# Subset records by geographic coordinates
-limits <- voucher$clone()
-limits$limit(west = -107, east = -105, south = 39, north = 41)
+\preformatted{# Subset records by geographic coordinates from cardinal headings.
+clone <- specimens$clone()
+dim(clone$records)
 
-dim(limits$records)
+# Assign named character vector with cardinal headings to limit records.
+headings <- c(west = -107, south = 39, east = -105, north = 41)
+
+# By default, the `records` field is updated silently.
+do.call(clone$filter_limit, args = as.list(headings))
+dim(clone$records)
+
+# Optionally, return tibble data frame with filtered records.
+filtered <- clone$filter_limit(west = -106, .return = TRUE)
+dim(filtered) # Note `tbl_df` class returned object
 }
 \if{html}{\out{</div>}}
 
@@ -215,35 +272,50 @@ dim(limits$records)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Specimen-taxa"></a>}}
-\if{latex}{\out{\hypertarget{method-Specimen-taxa}{}}}
-\subsection{Method \code{taxa()}}{
-Given a \href{#public-fields}{\code{Specimen$records}} tibble, utilize
-\emph{partial} string matching for taxonomic filtering of specimen records.
-Flexibility is provided to query for e.g., multiple specific epithets.
+\if{html}{\out{<a id="method-Specimen-filter_taxa"></a>}}
+\if{latex}{\out{\hypertarget{method-Specimen-filter_taxa}{}}}
+\subsection{Method \code{filter_taxa()}}{
+Filter specimen records by taxonomic annotations.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$taxa(..., identifier = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$filter_taxa(..., .identifier = NULL, .return = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Taxonomic terms to filter
-records against column designation by \code{identifier} parameter.}
+records against column designation by \code{.identifier} parameter.}
 
-\item{\code{identifier}}{\code{records} field tibble variable for regular expression
-matching by \code{\link[dplyr:filter]{dplyr::filter()}}.}
+\item{\code{.identifier}}{Character scalar denoting \code{records} field variable
+for filtering and annotation operations involving taxonomic identifications.}
+
+\item{\code{.return}}{Logical to return filtered records. By default, the public
+field \code{Specimen$records} is updated silently to allow chaining subsequent
+filtering operations. When \code{TRUE}, return the filtered records without
+updating the public field.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+Given a \href{#public-fields}{\code{Specimen$records}} tibble, utilize
+\emph{partial} string matching for taxonomic filtering of specimen records.
+Flexibility is provided to query for e.g., multiple specific epithets.
+}
+
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{# Filter specimens by taxonomic rank; here, reviewed specific epithets.
-species <- voucher$clone()
-species$taxa(c("flori", "medi"), identifier = "Taxon_a_posteriori")
+clone <- specimens$clone()
+clone$filter_taxa(
+  c("acutifolia", "floribunda", "vitulifera", "medicinae"),
+  .identifier = "Taxon_a_posteriori"
+)
+dim(clone$records)
 
-# Index tibble records column annotations to tabulate.
-table(species$records[["Taxon_a_posteriori"]])
+# Further subset filtered records and return a separate tibble.
+filtered <-
+  clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+dim(filtered)
 }
 \if{html}{\out{</div>}}
 
@@ -251,20 +323,12 @@ table(species$records[["Taxon_a_posteriori"]])
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Specimen-collections"></a>}}
-\if{latex}{\out{\hypertarget{method-Specimen-collections}{}}}
-\subsection{Method \code{collections()}}{
-Query specimen records by collector or collection number.
-This method uses dot collection via \code{\link[rlang:list2]{rlang::dots_list()}}, allowing for
-flexible specification of various collector and collection combos.
-Input arguments should take one of the following forms:
-\itemize{
-\item Numeric vector of collection numbers named by collector
-\item Character scalar specifying a single collector string
-\item Numeric scalar specifying a single collection number
-}
+\if{html}{\out{<a id="method-Specimen-filter_collections"></a>}}
+\if{latex}{\out{\hypertarget{method-Specimen-filter_collections}{}}}
+\subsection{Method \code{filter_collections()}}{
+Filter specimen records by collector or collection number.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$collections(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$filter_collections(..., .return = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -273,20 +337,32 @@ Input arguments should take one of the following forms:
 \item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Any number of collector
 collections (i.e., numeric vector named by collector), collectors
 (character scalars) or collection numbers (numeric scalars).}
+
+\item{\code{.return}}{Logical to return filtered records. By default, the public
+field \code{Specimen$records} is updated silently to allow chaining subsequent
+filtering operations. When \code{TRUE}, return the filtered records without
+updating the public field.}
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-A \code{\link[tibble:tbl_df-class]{tbl_df}} subset of matched
-collector / collection specimen records.
+\subsection{Details}{
+This method uses dot collection via \code{\link[rlang:list2]{rlang::dots_list()}}, allowing for
+flexible specification of various collector and collection combos.
+Input arguments should take one of the following forms:
+\itemize{
+\item Numeric vector of collection numbers named by collector
+\item Character scalar specifying a single collector string
+\item Numeric scalar specifying a single collection number
 }
+}
+
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{found <- voucher$clone()
-found$collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
-found$census()
+\preformatted{clone <- specimens$clone()
+clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
+clone$census()
 
-dplyr::select(found$records, "Collector", "Collection_Number")
+clone$records[, c("Collector", "Collection_Number")]
 }
 \if{html}{\out{</div>}}
 
@@ -298,19 +374,35 @@ dplyr::select(found$records, "Collector", "Collection_Number")
 \if{latex}{\out{\hypertarget{method-Specimen-annotations}{}}}
 \subsection{Method \code{annotations()}}{
 Create markdown-formatted specimen annotations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$annotations(.identifier = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.identifier}}{Character scalar denoting \code{records} field variable
+for filtering and annotation operations involving taxonomic identifications.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
 Used for plotting \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} manual scale values with italicized
 fonts via the \code{\link[ggtext:element_markdown]{ggtext::element_markdown()}} extension.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$annotations()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
 Named list of markdown- (i.e., HTML) formatted annotations.
-Length equals number of unique values in the \code{identifier} field.
+Length equals number of unique values in the \code{.identifier} field.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{limits$annotations()
+\preformatted{# Omit `.identifier` for default set by public field `self$identifier`.
+clone <- specimens$clone()
+clone$filter_taxa("didymocarpa")
+
+# Use a different records tibble column to create named annotations.
+clone$annotations(.identifier = "prior_id")
 }
 \if{html}{\out{</div>}}
 
