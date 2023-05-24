@@ -1,4 +1,17 @@
-# thesis (development version)
+# thesis 0.3.2
+
+## Breaking changes
+
+* Improve package interface by prefixing related `Specimen` superclass methods.
+    + `filter_limit()` replaces `limit()`
+    + `filter_taxa()` replaces `taxa()`
+    + `filter_collections()` replaces `collections()`
+
+* Clarify when the `records` field tibble is updated vs. returning a tibble.
+    + Filter methods gain a `.return` parameter to specify chained operations.
+
+* Allow flexible specification of `records` variable for taxonomic operations.
+    + Taxa filtering and annotation methods gain a `.identifier` parameter.
 
 ## New features
 

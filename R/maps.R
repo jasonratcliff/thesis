@@ -87,7 +87,7 @@
 #'   identifier = "Taxon_a_posteriori"
 #' )
 #'
-#' voucher_map$limit(
+#' voucher_map$filter_limit(
 #'   west = -108, east = -105,
 #'   north = 42, south = 39
 #' )
@@ -272,7 +272,7 @@ SpecimenMap <- R6::R6Class(
     #' * <https://ggplot2-book.org/programming.html#additional-arguments>
     #'
     #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Collector / collection
-    #'  sets passed to [`Specimen$collections()`][Specimen].
+    #'  sets passed to [`Specimen$filter_collections()`][Specimen].
     #' @param vouchers Specimen records [`tbl_df`][tibble::tbl_df-class] to
     #'  specify subset of record collections. Requires columns `Collector`,
     #'  `Collection_Number`, `Longitude`, and `Latitude` to construct labels.
@@ -298,8 +298,10 @@ SpecimenMap <- R6::R6Class(
     #'   )
     #' )
     repel = function(..., vouchers = NULL, repel.params = list()) {
-      if (length(rlang::list2(...)) > 0) {
-        collectors <- botanist(records = self$collections(...))
+      filtered <- self$filter_collections(..., .return = TRUE)
+      collections <- rlang::list2(...)
+      if (length(collections) > 0) {
+        collectors <- botanist(records = filtered)
       }
       if (!is.null(vouchers)) {
         collectors <- tryCatch(

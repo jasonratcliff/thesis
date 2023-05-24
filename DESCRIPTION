@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.1.9006
+Version: 0.3.2
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes
@@ -28,10 +28,10 @@ Imports:
     dplyr,
     elevatr,
     fs,
-    ggplot2,
     ggmap (>= 3.0.0.9),
     ggmsa,
     ggnewscale,
+    ggplot2,
     ggrepel,
     ggridges,
     ggtext,
@@ -57,19 +57,19 @@ Imports:
     stats,
     stringr,
     tibble,
+    tidyr,
     tigris,
-    treeio,
-    tidyr
+    treeio
 Suggests:
     ape,
+    bookdown,
     broom,
     car,
     covr,
-    bookdown,
     devtools,
     DiagrammeR,
-    gridExtra,
     grDevices,
+    gridExtra,
     here,
     kableExtra,
     lifecycle,
@@ -79,8 +79,9 @@ Suggests:
     readxl,
     remotes,
     renv,
-    rprojroot,
     rmarkdown,
+    roxygen2 (>= 7.0.0),
+    rprojroot,
     rstudioapi,
     shiny,
     testthat (>= 3.0.0),
