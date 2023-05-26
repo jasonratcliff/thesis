@@ -301,7 +301,7 @@ regional endemic of western Wyoming and eastern Idaho.
 knitr::include_graphics(
   path = fs::path(
     here::here(), "inst/figures/IntroPriors",
-    ext = knit_variables$graphics
+    ext = knitr::opts_chunk$get("dev")
   )
 )
 ```
@@ -363,11 +363,12 @@ geographically separated from the Colorado Front range *P. vitulifera*
 #| tbl-cap: Putative Carbon County, Wyoming *Physaria vitulifera* specimens.
 
 # Kable of putative Wyoming P. vitulifera specimens.
-carbon$kable <-
+carbon <-
   knitr::kable(
-    x = carbon$specimens,
-    format = knit_variables$kable_format,
-    escape = FALSE, row.names = FALSE,
+    x = revised,
+    format = knitr::pandoc_to(),
+    escape = FALSE,
+    row.names = FALSE,
     col.names = c(
       "Most Recent Annotation",
       "Collector",
@@ -376,8 +377,8 @@ carbon$kable <-
     )
   )
 
-if (knit_variables$pandoc != "docx") {
-  carbon$kable  %>%
+if (knitr::pandoc_to() != "docx") {
+  carbon %>%
     kableExtra::kable_styling(
       full_width = FALSE,
       latex_options= "hold_position",
@@ -386,11 +387,11 @@ if (knit_variables$pandoc != "docx") {
     kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
     kableExtra::column_spec(1, border_left = TRUE) %>%
     kableExtra::column_spec(3, width = "2.5cm") %>%
-    kableExtra::column_spec(4, border_right = TRUE)
+    kableExtra::column_spec(4, border_right = TRUE) %>%
+    kableExtra::collapse_rows(columns = 1:3)
 } else {
-  carbon$kable
+  carbon
 }
-
 ```
 
 \vspace*{10pt}
@@ -399,7 +400,7 @@ if (knit_variables$pandoc != "docx") {
 reduced mature fruits on sigmoidal pedicels with often dentate basal leaves.
 To the South, two flowering specimens (*Kastning* 1462 and *Kastning* 1725)
 collected from Jackson County, Colorado show a general reduction in size with
-ascending pedicels ("Physaria"; @fig-intro-carbon).
+ascending pedicels ("*Physaria*"; @fig-intro-carbon).
 An additional record from Jackson County with mature fruits (*Nelson* 49286)
 shows similarly ascending sigmoidal pedicels with reduced fruits. In contrast,
 records further South in Middle Park of Grand County, Colorado display notably
@@ -429,7 +430,7 @@ and Jackson Counties.
 knitr::include_graphics(
   path = fs::path(
     here::here(), "inst/figures/IntroCarbonWyo",
-    ext = knit_variables$graphics
+    ext = knitr::opts_chunk$get("dev")
   )
 )
 ```
