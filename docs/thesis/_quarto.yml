@@ -18,8 +18,8 @@ book:
     - chapters/results.qmd
     - chapters/discussion.qmd
 
-bibliography: appendix/references.bib
-csl: appendix/council-of-science-editors-author-date.csl
+bibliography: bibliography/references.bib
+csl: bibliography/CSE-N-Y.csl
 
 knitr:
   opts_chunk:
