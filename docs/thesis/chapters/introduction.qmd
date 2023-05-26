@@ -357,63 +357,10 @@ geographically separated from the Colorado Front range *P. vitulifera*
 
 \clearpage
 
+{{< include /qmd/_tbl-intro-carbon.qmd >}}
+
 ```{r tbl-intro-carbon}
 #| tbl-cap: Putative Carbon County, Wyoming *Physaria vitulifera* specimens.
-# Subset data frame of WY specimens with previous *P. vitulifera* annotations.
-carbon <- list()
-carbon$specimens <- herbarium_specimens %>%
-  dplyr:: select(
-    prior_id, Taxon, Date_parsed,
-    Collector, Collection_Number,
-    State, County, Herbarium
-  ) %>%
-  dplyr::filter(
-    grepl("vitulifera", x = .data$Taxon) &
-      grepl("Carbon", x = .data$County)
-  ) %>%
-  dplyr::mutate(
-    # Remove collector initials and punctuation.
-    Collector = purrr::map_chr(.x = Collector, function(collector) {
-      gsub("[A-Z]\\. ?", "", collector) %>%
-        gsub("&", "and", x = .)
-      }),
-
-    # Remove brackets from herbarium column of separate records.
-    Herbarium = purrr::map_chr(.x = Herbarium, function(herbarium) {
-      gsub("\\[|\\]", "", herbarium) %>% gsub(" +", " ", x = .)
-      }),
-
-    # Add asterisk to specimens reviewed by Jennings (2004).
-    Annotation = purrr::map2_chr(
-      .x = prior_id, .y = Collection_Number,
-      .f = function(id, collection) {
-        annotation <-
-          ifelse(  # italicize entries based on pandoc conversion.
-            test = knit_variables$pandoc == "latex",
-            yes = paste0("\\textit{", id, "}"),
-            no = paste0("*", id, "*")
-          )
-        annotation <-
-          ifelse(  # add collection asterisks.
-            test = collection %in%
-              c("411", "3695", "63", "54", "19075", "19078", "11363",
-                "16699", "19073", "16713", "19510", "6", "16475"),
-            yes = paste0(
-              annotation,
-              ifelse(  # preserve markdown italicization for GitBook.
-                test = knit_variables$pandoc == "latex",
-                yes = "*",
-                no = "\\*"
-              )
-            ),
-            no = annotation
-          )
-      })
-    ) %>%
-  dplyr::group_by(Collection_Number, Collector) %>%
-  dplyr::filter(dplyr::row_number() == 1) %>%
-  dplyr::arrange(Date_parsed, prior_id) %>%
-  dplyr::select(Annotation, Collector, Collection_Number, Herbarium)
 
 # Kable of putative Wyoming P. vitulifera specimens.
 carbon$kable <-
