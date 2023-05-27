@@ -1,5 +1,7 @@
 # REFERENCES
 
+{{< include /_setup.qmd >}}
+
 {{< include /appendix/_references.qmd >}}
 
 {{< include /appendix/_specimens.qmd >}}

@@ -3,9 +3,6 @@
 # Load specimen data and thesis functions.
 library(thesis)
 
-# Allow `knitr::include_graphics()` to use project relative paths.
-options("knitr.graphics.error" = FALSE)
-
 # Initialize list for figure captions.
 caption <- list()
 

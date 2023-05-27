@@ -3,7 +3,7 @@
 #| label: appendix-alignments
 #| results: asis
 switch(
-  EXPR = knitr::opts_knit$get("rmarkdown.pandoc.to"),
+  EXPR = knitr::pandoc_to(),
   "html" = cat("# Alignments"),
   "latex" = cat(
     "\\chapter*{APPENDIX B}",
@@ -12,8 +12,6 @@ switch(
   )
 )
 ```
-
-{{< include /_setup.qmd >}}
 
 ## Nuclear rITS
 
