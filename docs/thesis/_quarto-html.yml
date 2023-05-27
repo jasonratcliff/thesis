@@ -16,6 +16,10 @@ book:
     - text: R Session Info
       href: appendix/_session.qmd
 
+knitr:
+  opts_chunk:
+    dev: "png"
+
 format:
   html:
     theme: cosmo
