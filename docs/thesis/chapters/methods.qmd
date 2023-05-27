@@ -309,8 +309,8 @@ mL PCR microcentrifuge tubes. Individual reactions for the rITS region had a
 total volume of 25 $\mu$L consisting of 13.85 $\mu$L distilled H2O (ddH2O),
 2.5 $\mu$L 10X Reaction Buffer (500 mM KCl; 100 mM Tris-HCl, pH 8.8;
 17.5 mM MgCl2; 0.5% v/v Triton-X; 5% v/v DMSO), 2.5 $\mu$L rITS-F primer
-(2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), 2.5 $\mu$L rITS-R primer
-(2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), 2.5 $\mu$L 8 mM dNTP mix
+(2 $\mu$M, @tbl-primers), 2.5 $\mu$L rITS-R primer
+(2 $\mu$M, @tbl-primers), 2.5 $\mu$L 8 mM dNTP mix
 (10 $\mu$L 100 mM dATP; 10 $\mu$L 100 mM dGTP; 10 $\mu$L 100 mM dCTP; 10 $\mu$L
 100 mM dTTP; 5 $\mu$L 1 M Tris-HCl, pH 7.9; 455 $\mu$L ddH2O), 0.15 $\mu$L Taq
 DNA Polymerase (5 U/$\mu$L) and 1.0 $\mu$L sample DNA. Lid temperature for
@@ -323,37 +323,28 @@ of five minutes at 72 $^{\circ}$C was followed by a 16 $^{\circ}$C hold.
 
 \vspace*{20pt}
 
-```{r TablePCRPrimers}
-
-methods_variables$primers <-
-  system.file("extdata/Methods", package = "thesis") %>%
-  list.files(
-    pattern = "DNA-primers",
-    full.names = TRUE
+```{r tbl-primers}
+#| tbl-cap: PCR reaction primer sequences.
+primers <-
+  readr::read_csv(
+    file = "tables/primers.csv",
+    col_names = TRUE,
+    col_types = "ccc"
   ) %>%
-  readr::read_csv(file = ., col_names = TRUE, col_types = "ccc")
-
-if (knit_variables$pandoc != "latex") {
-  methods_variables$primers <- methods_variables$primers %>%
     dplyr::mutate(
-      Primer = stringr::str_replace_all(
-        string = .data$Primer,
-        pattern = "^\\\\textit\\{|\\}",
-        replacement = "*"
+      Primer = dplyr::case_when(
+        knitr::pandoc_to("latex") ~
+          commonmark::markdown_latex(.data$Primer),
+        TRUE ~ .data$Primer
       )
-    )
-}
-
-methods_variables$primers <- methods_variables$primers %>%
+    ) %>%
   knitr::kable(x = .,
-    format = knit_variables$kable_format,
-    align = "l", escape = FALSE,
-    caption = "PCR reaction primer sequences.",
-    caption.short = "PCR reaction primer sequences"
+    format = knitr::pandoc_to(),
+    align = "l", escape = FALSE
   )
 
 if (knit_variables$pandoc != "docx") {
-  methods_variables$primers %>%
+  primers %>%
     kableExtra::kable_styling(
       full_width = FALSE,
       latex_options= "hold_position",
@@ -363,9 +354,8 @@ if (knit_variables$pandoc != "docx") {
     kableExtra::column_spec(1, border_left = TRUE) %>%
     kableExtra::column_spec(3, border_right = TRUE)
 } else {
-  methods_variables$primers
+  primers
 }
-
 ```
 
 \vspace*{10pt}
@@ -375,8 +365,8 @@ if (knit_variables$pandoc != "docx") {
 \paragraph{} For the *rps* intron, individual reactions had a total volume of
 25 $\mu$L consisting of 11.25 $\mu$L ddH2O, 5.0 $\mu$L 5x Phusion HF Buffer
 (proprietary, Thermo Fisher Scientific), 2.5 $\mu$L *rps*-F (2 $\mu$M, Table
-(Table \@ref(tab:TablePCRPrimers))), 2.5 $\mu$L *rps*-R2 (2 $\mu$M,
-Table (Table \@ref(tab:TablePCRPrimers))), 2.5 $\mu$L dNTPs, 0.25
+(@tbl-primers)), 2.5 $\mu$L *rps*-R2 (2 $\mu$M,
+Table (@tbl-primers)), 2.5 $\mu$L dNTPs, 0.25
 $\mu$L Phusion Hot Start II High-Fidelity DNA Polymerase (Thermo Fisher
 Scientific), and 1.0 $\mu$L sample DNA. Lid temperature for thermocycling was
 set to 99 $^{\circ}$C. An initial 1 minute denaturation period at
@@ -393,8 +383,8 @@ in the PCR reactions ranged from 1.0 $\mu$L to 2.0 $\mu$L. An equivalent
 decrease in the volume of ddH2O, from 8.8 $\mu$L to 7.8 $\mu$L was used to
 maintain a total 20 $\mu$L volume. In addition, the reaction mixture included
 4.0 $\mu$L Phusion HF 5x buffer, 2.0 $\mu$L dNTPs, 2.0 $\mu$L *ycf1*-F
-(2 $\mu$M, Table (Table \@ref(tab:TablePCRPrimers))), 2.0 $\mu$L
-*ycf1*-R (2 $\mu$M, Table \@ref(tab:TablePCRPrimers)), and
+(2 $\mu$M, Table (@tbl-primers)), 2.0 $\mu$L
+*ycf1*-R (2 $\mu$M, @tbl-primers), and
 0.2 $\mu$L Phusion DNA polymerase. Lid temperature for thermocycling was set
 to 99 $^{\circ}$C. An initial denaturation period for one minute at 98
 $^{\circ}$C was followed by 35 cycles. Each cycle consisted of denaturation
@@ -471,7 +461,7 @@ reaction tube. The tubes were then incubated on a thermocycler for 15 min at
 PCR products were sent to the Iowa State University DNA facility
 for sequencing. Samples were processed via Sanger sequencing on an Applied
 Biosystems 3730xl DNA Analyzer. Amplification primers (5 mM; rITS-F, rITS-R,
-*rps*-F, *rps*-R2, *ycf1*-F, *ycf1*-R; Table \@ref(tab:TablePCRPrimers))
+*rps*-F, *rps*-R2, *ycf1*-F, *ycf1*-R; @tbl-primers)
 were sent at a volume of seven $\mu$L (15 ng/$\mu$L) for each reaction.
 Sequence data were returned as chromatograms from which DNA sequences were
 extracted using the software program 4Peaks v1.7.2 [@4Peaks].
