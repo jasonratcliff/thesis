@@ -163,8 +163,8 @@ samples <-
   ) %>%
     dplyr::mutate(
       # Convert markdown syntax from asterisk italicization by pandoc format.
-      taxon = purrr::map_chr(
-        .x = .data$taxon,
+      Taxon = purrr::map_chr(
+        .x = .data$Taxon,
         .f = function(x) {
           dplyr::if_else(
             condition = knitr::pandoc_to("latex"),
