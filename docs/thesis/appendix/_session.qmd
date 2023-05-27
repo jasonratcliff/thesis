@@ -1,5 +1,5 @@
 
-```{r session}
+```{r appendix-session}
 #| results: asis
 switch(
   EXPR = knitr::opts_knit$get("rmarkdown.pandoc.to"),

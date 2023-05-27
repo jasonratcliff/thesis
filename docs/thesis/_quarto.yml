@@ -18,8 +18,8 @@ book:
     - chapters/results.qmd
     - chapters/discussion.qmd
 
-bibliography: appendix/references.bib
-csl: appendix/council-of-science-editors-author-date.csl
+bibliography: bibliography/references.bib
+csl: bibliography/CSE-N-Y.csl
 
 knitr:
   opts_chunk:
@@ -27,5 +27,7 @@ knitr:
     message: false
     results: asis
     fig-align: center
+    R.options:
+      knitr.graphics.error: false
   opts_knit:
     eval.after: "fig.cap"

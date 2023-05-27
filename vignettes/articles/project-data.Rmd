@@ -1,6 +1,6 @@
 ---
 title: "Project Data"
-bibliography: "../../docs/thesis/appendix/references.bib"
+bibliography: "../../docs/thesis/bibliography/references.bib"
 link-citations: true
 nocite: >
     @R-readxl, @R-dplyr
