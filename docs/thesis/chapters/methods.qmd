@@ -616,119 +616,105 @@ and `bookdown` manuscript (https://github.com/jasonratcliff/thesis).
 
 \vspace*{20pt}
 
-```{r TableSpeciesTreeHypotheses}
-
-methods_variables$star_beast <-
-  system.file("extdata/BEAST", package = "thesis") %>%
-  list.files(pattern = "spp_hypotheses.csv", full.names = TRUE) %>%
-  readr::read_csv(file = ., col_types = 'ccccc') %>%
+```{r beast-species}
+# Read species tree hypotheses from project table `.csv` file.
+species <-
+  readr::read_csv(
+    file = "tables/beast.csv",
+    col_types = 'ccccc'
+  ) %>%
   stats::setNames(c("Sample", paste("Hypothesis", 1:4))) %>%
   dplyr::arrange(`Hypothesis 1`, Sample) %>%
   dplyr::mutate(
     dplyr::across(
-      .fns = ~ gsub("medicinae", "'medicinae'", x = .x)
+      .cols = dplyr::contains("Hypothesis"),
+      .fns = function(hypotheses) {
+        purrr::map_chr(
+          .x = hypotheses,
+          .f = function(hypothesis) {
+            proposed <- # Unquote proposed species determinations
+              gsub(
+                pattern = "medicinae",
+                replacement = "'medicinae'",
+                x = hypothesis
+              )
+            # Format markdown text by pandoc conversion
+            formatted <- switch(
+              EXPR = knitr::pandoc_to(),
+              "html" = "* <br/><br/> &nbsp;&nbsp; subsp. *",
+              "latex" = "* \n subsp. *"
+            )
+            # Substitute newline by output format type
+            replaced <- gsub(
+              pattern = " subsp. ",
+              replacement = formatted,
+              x = hypothesis
+            )
+            glue::glue("*{replaced}*") # Enclosing italics
+          }
+        )
+      }
+    ),
+    dplyr::across(
+      .cols = dplyr::everything(),
+      .fns = function(beast) {
+        # Convert markdown to html / latex via `commonmark`
+        purrr::map_chr(
+          .x = beast,
+          .f = ~ dplyr::case_when(
+            knitr::pandoc_to(fmt = "html") ~
+              commonmark::markdown_html(.x),
+            knitr::pandoc_to(fmt = "latex") ~
+              commonmark::markdown_latex(.x) %>%
+                kableExtra::linebreak(x = .), # Adjust makecell for linebreaks
+            TRUE ~ .x
+          )
+        )
+      }
     )
   )
-
-if (knit_variables$pandoc == "latex") {
-  methods_variables$star_beast <-
-    methods_variables$star_beast %>%
-    dplyr::mutate(
-      Sample = gsub("_", "\\\\_", .data$Sample),
-      dplyr::across(
-        .cols = dplyr::matches("^Hypothesis"),
-        .fns = ~ purrr::map_chr(.x = .x, function(taxa) {
-          genus <- stringr::str_extract(
-            string = taxa,
-            pattern = "^[A-Z]\\."
-            )
-          species <- stringr::str_extract(
-            string = taxa,
-            pattern = "(?<=^[A-Z]\\. )'?[a-z]+'?"
-            )
-          subspecies <- stringr::str_extract(
-            string = taxa,
-            pattern = "(?<=subsp\\. )[a-z]+$"
-            )
-          taxon <- paste(
-            thesis::italicize(genus, knit_variables$pandoc),
-            ifelse(
-              test = grepl(pattern = "'[a-z]+'", x = species),
-              yes = paste0("‘",
-                stringr::str_extract(
-                  string = species,
-                  pattern = "(?<=')[a-z]+(?=')"),
-                "’" 
-              ),
-              no = thesis::italicize(species, knit_variables$pandoc)
-            ),
-            ifelse(
-              test = !is.na(subspecies),
-              yes = paste("\nsubsp.",
-                thesis::italicize(subspecies,knit_variables$pandoc)
-                ),
-              no = ""
-            )
-          )
-          kableExtra::linebreak(x = taxon)
-        })
-      )
-    )
-  }
-
 ```
 
-```{r TableSpeciesTreeHypothesesLatex}
+```{r tbl-species-tree}
+#| tbl-cap: "*BEAST species tree hypotheses."
 
-if (knit_variables$pandoc == "latex") {
-  methods_variables$star_beast %>%
-    dplyr::slice(1:32) %>%
-    knitr::kable(
-      x = .,
-      format = knit_variables$kable_format,
-      escape = FALSE,
-      caption = "*BEAST species tree hypotheses.",
-      caption.short = "*BEAST species tree hypotheses"
-    ) %>%
+# Local function to format latex kable for *BEAST species hypotheses.
+species_kable <- function(tbl) {
+  knitr::kable(
+    x = tbl, escape = FALSE,
+    format = knitr::pandoc_to()
+  ) %>%
     kableExtra::kable_styling(
       full_width = FALSE,
       font_size = 8,
       latex_options= "hold_position"
     ) %>%
     kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    kableExtra::column_spec(1, border_left = TRUE) %>%
-    kableExtra::column_spec(5, border_right = TRUE) %>%
+    kableExtra::column_spec(column = 1, border_left = TRUE) %>%
+    kableExtra::column_spec(column = 5, border_right = TRUE) %>%
     kableExtra::collapse_rows(columns = 2:5)
 }
 
+# Return kable formatted for pandoc output type.
+switch(
+  EXPR = knitr::pandoc_to(),
+  "html" = species_kable(species),
+  "latex" =  species %>%
+    dplyr::slice(1:32) %>%
+    species_kable(tbl = .)
+)
 ```
 
 \clearpage
 \captionsetup[table]{labelformat=empty}
 \captionsetup[table]{list=no}
 
-```{r TableSpeciesTreeHypothesesLatexContinued}
-
-if (knit_variables$pandoc == "latex") {
-  methods_variables$star_beast %>%
-    dplyr::slice(33:60) %>%
-    knitr::kable(
-      x = .,
-      format = knit_variables$kable_format,
-      escape = FALSE,
-      caption = "Table 4. Continued."
-    ) %>%
-    kableExtra::kable_styling(
-      full_width = FALSE,
-      font_size = 8,
-      latex_options= "hold_position"
-    ) %>%
-    kableExtra::row_spec(row = 0, bold = TRUE, font_size = 10) %>%
-    kableExtra::column_spec(1, border_left = TRUE) %>%
-    kableExtra::column_spec(5, border_right = TRUE) %>%
-    kableExtra::collapse_rows(columns = 2:5)
-}
-
+```{r tbl-species-tree-continued}
+#| eval: !expr knitr::pandoc_to("latex")
+#| tbl-cap: Table 4. Continued.
+species %>%
+  dplyr::slice(33:60) %>%
+  species_kable(tbl = .)
 ```
 
 \captionsetup[table]{labelformat=default}
