@@ -39,7 +39,7 @@ Imports:
     glue,
     grid,
     gtable,
-    knitr,
+    knitr (>= 1.35),
     magrittr,
     methods,
     msa,

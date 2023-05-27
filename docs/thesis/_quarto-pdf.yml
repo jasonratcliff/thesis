@@ -6,6 +6,10 @@ book:
   chapters:
     - appendix/index.qmd
 
+knitr:
+  opts_chunk:
+    dev: "pdf"
+
 format:
   pdf:
     # See Quarto PDF format reference for options documentation:

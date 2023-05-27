@@ -1,0 +1,116 @@
+
+```{r carbon-specimens}
+# Limit specimens to Carbon County, Wyoming
+specimens <-
+  SpecimenMap$new(
+    records = thesis::herbarium_specimens,
+    identifier = "prior_id"
+  )$filter_limit(
+    north = 42.0, south = 40.5, east = -105.5, west = -107.5
+  )$filter_taxa("vitulifera", .identifier = "Taxon")
+
+# Join markdown-formatted annotation labels for most recent annotation.
+records <- tibble::as_tibble(specimens$annotations()) %>%
+  tidyr::pivot_longer(
+    cols = dplyr::everything(),
+    names_to = "taxa",
+    values_to = "label"
+  ) %>%
+  dplyr::left_join(
+    x = specimens$records %>%
+      dplyr::select(
+        prior_id, Date_parsed,
+        Collector, Collection_Number,
+        Herbarium, State, County
+      ),
+    y = .,
+    by = c("prior_id" = "taxa")
+  ) %>%
+  dplyr::mutate(
+    Collector = stringr::str_remove_all(
+      # # TODO Abstract `Collector` variable cleanup to R6 initialization.
+      string = .data$Collector,
+      pattern = "([A-Z]\\. ?){1,}"
+    ) %>%
+      gsub(pattern = "\\&", replacement = "and", x = .),
+
+    herbarium = dplyr::case_when(
+      grepl(pattern = "\\[[A-Z]+\\]", x = .data$Herbarium) ~
+        stringr::str_extract(
+          string = .data$Herbarium,
+          pattern = "(?<=\\[)[A-Z]+?(?=\\])"
+        ),
+      grepl(pattern = "[A-Z]+", x = .data$Herbarium) ~ .data$Herbarium,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  dplyr::add_count(Collector, Collection_Number, name = "n")
+```
+
+```{r join-revisions}
+revised <- # Join determinations by Jennings (2004) to collections table.
+  Specimen$new(
+    records = records,
+    identifier = "prior_id"
+  )$filter_collections(
+    .return = TRUE,
+    "Osterhout" = 411,
+    "Peryam" = 6,
+    "Nelson" = 11363,
+    "Morton" = 63,
+    "Dorn" = 3695,
+    "Williams" = 54,
+    "Fertig" = c(16699, 16713, 19073, 19075, 19078, 19510),
+    16475
+  ) %>%
+    dplyr::distinct(prior_id, Collector, Collection_Number) %>%
+    dplyr::mutate(
+      # Add logical vector to flag revised herbarium determinations.
+      revision = dplyr::case_when(
+        grepl(pattern = "acutifolia", .data$prior_id) ~ TRUE,
+        TRUE ~ FALSE
+      )
+    ) %>%
+    dplyr::left_join(
+      x = records, y = .,
+      by = dplyr::join_by(prior_id, Collector, Collection_Number)
+    ) %>%
+    dplyr::mutate(
+      # Update `revision` logical vector to account for missing data.
+      revision = dplyr::case_when(
+        is.na(.data$revision) ~ FALSE,
+        isFALSE(.data$revision) ~ FALSE,
+        TRUE ~ .data$revision
+      ),
+      herbarium = dplyr::case_when(
+        .data$revision ~ glue::glue("{herbarium}<sup>*</sup>"),
+        !.data$revision ~ glue::glue("{.data$herbarium}"),
+        TRUE ~ NA_character_
+      )
+    ) %>%
+  dplyr::summarise(
+    herbarium = paste0(herbarium, sep = "", collapse = ", "),
+    .by = dplyr::matches(
+      match = c(
+        "Date_parsed", "label", "revision",
+        "Collector", "Collection_Number"
+      )
+    ), .group = "drop"
+  ) %>%
+  # Arrange summarized rows by specimen collection date.
+  dplyr::arrange(Date_parsed) %>%
+  dplyr::select(label, Collector, Collection_Number, herbarium) %>%
+  dplyr::mutate(
+    across(
+      .cols = dplyr::matches(match = c("label", "herbarium")),
+      .fns = ~ purrr::map_chr(
+        .x = .x,
+        .f = ~ dplyr::case_when(
+          knitr::pandoc_to("html") ~ commonmark::markdown_html(.x),
+          knitr::pandoc_to("latex") ~ commonmark::markdown_latex(.x),
+          TRUE ~ .x
+        )
+      )
+    )
+  )
+```

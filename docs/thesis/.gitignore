@@ -3,4 +3,10 @@
 /_html/
 /_pdf/
 *.aux
+*.json
+*.lof
 *.log
+*.lot
+*.pdf
+*.rmarkdown
+*.toc
