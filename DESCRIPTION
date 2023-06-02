@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.2.9000
+Version: 0.3.2.9001
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes
@@ -59,7 +59,8 @@ Imports:
     tibble,
     tidyr,
     tigris,
-    treeio
+    treeio,
+    usethis
 Suggests:
     ape,
     bookdown,
@@ -87,7 +88,6 @@ Suggests:
     shiny,
     testthat (>= 3.0.0),
     tinytex,
-    usethis,
     utils,
     whisker,
     withr,
@@ -109,3 +109,4 @@ Collate:
     'tree_beast.R'
     'tree_data.R'
     'utils-pipe.R'
+    'zzz.R'
