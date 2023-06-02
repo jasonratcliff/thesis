@@ -75,8 +75,9 @@ package:
 check:
 	Rscript -e 'devtools::check(args = c("--no-tests", "--no-examples"))'
 
-manuscript: figures
-	Rscript scripts/render_book.R
+quarto-book: figures
+	quarto render docs/thesis --profile pdf
+	quarto render docs/thesis --profile html
 
 # `pkgdown` Package Website
 site: README.Rmd

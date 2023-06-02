@@ -1,5 +1,5 @@
 project:
-  output-dir: _pdf
+  output-dir: ../../_site/thesis/pdf/thesis
 
 book:
   output-file: "thesis"
