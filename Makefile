@@ -64,7 +64,7 @@ descriptions:
 
 # Render project README files.
 readme: README.Rmd data-raw/README.Rmd
-	Rscript scripts/render_readme.R
+	Rscript exec/readme.R
 
 # R CMD INSTALL
 package:
