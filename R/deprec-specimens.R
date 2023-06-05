@@ -54,7 +54,6 @@ count_specimens <- function(spp_tibble) {
 #'   Should be numeric vectors of decimal degree coordinates.
 #' @param Latitude Character vector length two min / max latitude.
 #' @param Longitude Character vector length two min / max longitude.
-#' @importFrom rlang .data
 #'
 #' @return Data.frame of specimens within coordinate bounds.
 #'
@@ -127,7 +126,6 @@ subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
 #' - P. vitulifera
 #'
 #' @inheritParams layer_specimens
-#' @importFrom dplyr filter select add_count distinct
 #' @export
 #'
 #' @return Tibble of specimens filtered by species of reviewed annotation.
