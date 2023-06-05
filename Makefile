@@ -85,6 +85,10 @@ site: README.Rmd
 	Rscript -e 'rmarkdown::render(input = "README.Rmd")'
 	Rscript -e 'pkgdown::build_site()'
 
+## `covr` | Report coverage
+covr-report:
+	 Rscript exec/coverage.R
+
 clean:
 	rm Rplots.pdf
 	rm inst/figures/*
