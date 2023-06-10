@@ -24,10 +24,10 @@ test_that("SpecimenMap R6 Subclass", {
 
   # Border Features ------------------------------------------------------------
   expect_type(vouchers$features, type = "closure")
-  expect_error(vouchers$features(sf_border = "black", sf_states = list()))
+  expect_error(vouchers$features(.borders = "black", .states = list()))
 
   # County / State layer simple features
-  voucher_features <- vouchers$features(sf_border = "black")
+  voucher_features <- vouchers$features(.borders = "black")
   purrr::walk(
     .x = list(
       voucher_features[[1]][[1]],

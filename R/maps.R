@@ -38,11 +38,11 @@
 #' @param records Specimen voucher records [tibble::tibble()].
 #' @param identifier Name of [`Specimen$records`][Specimen] tibble variable for
 #'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
-#' @param sf_border Character scalar to set color of
+#' @param .borders Character scalar to set color of
 #'  county and state borders.
-#' @param sf_states Additional character vector of states to layer
+#' @param .states Additional character vector of states to layer
 #'  county borders onto map base.
-#' @param expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
+#' @param .expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
 #'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
 #'  base layers.
 #' @param legend Character scalar to set legend title
@@ -95,13 +95,13 @@
 #' # Base map type
 #' voucher_map$map(
 #'   legend = "Reviewed Annotation",
-#'   sf_border = "black"
+#'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
 #' voucher_map$map(
 #'   legend = "Reviewed Annotation",
-#'   sf_border = "grey",
+#'   .borders = "grey",
 #'   baselayer = "elevatr"
 #' )
 SpecimenMap <- R6::R6Class(
@@ -126,22 +126,24 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(sf_border, sf_states = NULL, expand = FALSE) {
+    features = function(.borders = "black", .states = NULL, .expand = FALSE) {
       list(
         ggplot2::geom_sf(
           data = private$counties(sf_states),
           inherit.aes = FALSE, size = 0.5, alpha = 0.75,
-          color = sf_border, fill = NA
+          color = .borders, fill = NA
         ),
         ggplot2::geom_sf(
           data = private$states(),
-          inherit.aes = FALSE, size = 1.2,
-          color = sf_border, fill = NA
+          color = .borders,
+          inherit.aes = FALSE,
+          size = 1.2,
+          fill = NA
         ),
         ggplot2::coord_sf(
           xlim = base::range(self$records[["Longitude"]], na.rm = TRUE),
           ylim = base::range(self$records[["Latitude"]], na.rm = TRUE),
-          expand = expand
+          expand = .expand
         )
       )
     },
@@ -234,8 +236,8 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier, expand = FALSE,
-                   sf_border = "black", sf_states = NULL,
+    map = function(legend = self$identifier, .expand = FALSE,
+                   .borders = "black", .states = NULL,
                    baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
                    center = NULL,
@@ -254,9 +256,9 @@ SpecimenMap <- R6::R6Class(
 
       species_map <- baselayer +
         self$features(
-          sf_border = sf_border,
-          sf_states = sf_states,
-          expand = expand
+          .borders = .borders,
+          .states = .states,
+          .expand = .expand
         ) +
         self$specimens() +
         self$scales() +
@@ -282,7 +284,7 @@ SpecimenMap <- R6::R6Class(
     #' @examples
     #' voucher_map$map(
     #'   baselayer = "ggmap",
-    #'   sf_border = "white"
+    #'   .borders = "white"
     #' ) +
     #' voucher_map$repel(
     #'   Nelson = c(49286, 49478),
