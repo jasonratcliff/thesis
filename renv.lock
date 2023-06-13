@@ -2109,25 +2109,6 @@
       ],
       "Hash": "6dfe8bf774944bd5595785e3229d8771"
     },
-    "mustashe": {
-      "Package": "mustashe",
-      "Version": "0.1.5",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "mustashe",
-      "RemoteUsername": "jhrcook",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "5723d534ea64466e0d3c3d276c81fad82dd9f381",
-      "Requirements": [
-        "digest",
-        "formatR",
-        "here",
-        "qs",
-        "tibble"
-      ],
-      "Hash": "c1720aef8da6a1cecd25b1e844d1006a"
-    },
     "nlme": {
       "Package": "nlme",
       "Version": "3.1-162",

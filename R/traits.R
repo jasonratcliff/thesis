@@ -8,7 +8,6 @@
 #'
 #' @param trait_tbl Tibble of specimen observations to split range data from.
 #' @param split_var Single column tibble of range data in character vector.
-#' @importFrom rlang .data :=
 #' @export
 #'
 #' @return Tibble (3 columns) with character vector of raw ranges and
@@ -258,7 +257,6 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #'
 #' @inheritParams jitter_violin
 #' @inheritParams layer_themes
-#' @importFrom ggplot2 geom_point theme
 #' @export
 #'
 #' @return [ggplot] object of trait phenology by "%m-%d" date format.
@@ -348,7 +346,6 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
 #' @inheritParams jitter_violin
 #' @inheritParams layer_specimens
 #' @inheritParams layer_themes
-#' @importFrom ggplot2 theme
 #' @export
 #'
 #' @return A `grob` with extracted plot legend of annotation aesthetics.

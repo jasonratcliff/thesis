@@ -38,11 +38,11 @@
 #' @param records Specimen voucher records [tibble::tibble()].
 #' @param identifier Name of [`Specimen$records`][Specimen] tibble variable for
 #'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
-#' @param sf_border Character scalar to set color of
+#' @param .borders Character scalar to set color of
 #'  county and state borders.
-#' @param sf_states Additional character vector of states to layer
+#' @param .states Additional character vector of states to layer
 #'  county borders onto map base.
-#' @param expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
+#' @param .expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
 #'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
 #'  base layers.
 #' @param legend Character scalar to set legend title
@@ -95,13 +95,13 @@
 #' # Base map type
 #' voucher_map$map(
 #'   legend = "Reviewed Annotation",
-#'   sf_border = "black"
+#'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
 #' voucher_map$map(
 #'   legend = "Reviewed Annotation",
-#'   sf_border = "grey",
+#'   .borders = "grey",
 #'   baselayer = "elevatr"
 #' )
 SpecimenMap <- R6::R6Class(
@@ -109,12 +109,88 @@ SpecimenMap <- R6::R6Class(
   inherit = Specimen,
   public = list(
 
+    #' @field sf_states State Borders `sf` data frame
+    sf_states = NULL,
+
+    #' @field sf_counties County Borders `sf` data frame
+    sf_counties = NULL,
+
     #' @description
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
     #'
     initialize = function(records, identifier) {
       super$initialize(records, identifier)
+    },
+
+    #' @description
+    #' State border simple features via `tigris`
+    #' @return `sf` data frame of U.S. states.
+    tigris_states = function() {
+      state_rda <- path(
+        getOption(x = "thesis.data", default = NULL), "tigris/states",
+        ext = "rda"
+      )
+      if (!file_exists(state_rda)) {
+        self$sf_states <- tigris::states(year = 2021) %>%
+          rmapshaper::ms_simplify(input = .)
+        base::saveRDS(object = self$sf_states, file = state_rda)
+        ui_done(x = "State border data written to:\n{ui_path(state_rda)}")
+      } else {
+        if (file_exists(state_rda)) {
+          self$sf_states <- base::readRDS(file = state_rda)
+        }
+      }
+      invisible()
+    },
+
+    #' @description
+    #' County border simple features via `tigris`
+    #' @return `sf` data frame with county borders from matched states.
+    tigris_counties = function(.states) {
+      if (is.null(.states)) {
+        .states <- unique(self$records[["State"]])
+      } else {
+        if (!is.character(.states)) {
+          rlang::abort(
+            message = glue::glue(
+              "{ui_code('.states')} must be a character vector."
+            )
+          )
+        }
+        .states <- c(.states, unique(self$records[["State"]]))
+      }
+
+      tigris_counties <-
+        purrr::keep(
+          .x = .states,
+          .p = ~ !is.na(.x) & (.x %in% datasets::state.name)
+        ) %>%
+        purrr::map(
+          .x = .,
+          .f = function(state) {
+            county_rda <- path(
+              getOption(x = "thesis.data"), "tigris/counties", state,
+              ext = "rda"
+            )
+            county_dir <- fs::path_dir(county_rda)
+            if (!dir_exists(county_dir)) {
+              dir_create(county_dir)
+            }
+            if (!file_exists(county_rda)) {
+              county_sf <- tigris::counties(state = state, progress_bar = FALSE)
+              base::saveRDS(object = county_sf, file = county_rda)
+              ui_done(x = "County borders written to:\n{ui_path(county_rda)}")
+            } else {
+              county_sf <- base::readRDS(file = county_rda)
+            }
+            return(county_sf)
+          }
+        ) %>%
+        tigris::rbind_tigris() %>%
+        rmapshaper::ms_simplify(input = .)
+      self$sf_counties <- tigris_counties
+      invisible()
     },
 
     #' @description
@@ -126,22 +202,26 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(sf_border, sf_states = NULL, expand = FALSE) {
+    features = function(.borders = "black", .states = NULL, .expand = FALSE) {
+      if (is.null(self$sf_states)) self$tigris_states()
+      if (is.null(self$sf_counties)) self$tigris_counties(.states = .states)
       list(
         ggplot2::geom_sf(
-          data = private$counties(sf_states),
+          data = self$sf_counties,
           inherit.aes = FALSE, size = 0.5, alpha = 0.75,
-          color = sf_border, fill = NA
+          color = .borders, fill = NA
         ),
         ggplot2::geom_sf(
-          data = private$states(),
-          inherit.aes = FALSE, size = 1.2,
-          color = sf_border, fill = NA
+          data = self$sf_states,
+          color = .borders,
+          inherit.aes = FALSE,
+          size = 1.2,
+          fill = NA
         ),
         ggplot2::coord_sf(
           xlim = base::range(self$records[["Longitude"]], na.rm = TRUE),
           ylim = base::range(self$records[["Latitude"]], na.rm = TRUE),
-          expand = expand
+          expand = .expand
         )
       )
     },
@@ -234,8 +314,8 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier, expand = FALSE,
-                   sf_border = "black", sf_states = NULL,
+    map = function(legend = self$identifier, .expand = FALSE,
+                   .borders = "black", .states = NULL,
                    baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
                    center = NULL,
@@ -254,9 +334,9 @@ SpecimenMap <- R6::R6Class(
 
       species_map <- baselayer +
         self$features(
-          sf_border = sf_border,
-          sf_states = sf_states,
-          expand = expand
+          .borders = .borders,
+          .states = .states,
+          .expand = .expand
         ) +
         self$specimens() +
         self$scales() +
@@ -282,7 +362,7 @@ SpecimenMap <- R6::R6Class(
     #' @examples
     #' voucher_map$map(
     #'   baselayer = "ggmap",
-    #'   sf_border = "white"
+    #'   .borders = "white"
     #' ) +
     #' voucher_map$repel(
     #'   Nelson = c(49286, 49478),
@@ -391,51 +471,6 @@ SpecimenMap <- R6::R6Class(
           guide = ggplot2::guide_colourbar(order = 1)
         )
       return(elev_ggplot)
-    },
-
-    # `tigris` State Borders ---------------------------------------------------
-    states = function() {
-      tigris_states <-
-        mustashe::stash(
-          var = "tigris_states",
-          code = {
-            tigris::states() %>%
-              rmapshaper::ms_simplify(input = .)
-          },
-          functional = TRUE,
-          verbose = FALSE
-        )
-      return(tigris_states)
-    },
-
-    # `tigris` County Borders --------------------------------------------------
-    counties = function(sf_states = NULL) {
-      if (!is.null(sf_states)) {
-        stopifnot(is.character(sf_states))
-      }
-      tigris_counties <- c(sf_states, unique(self$records[["State"]])) %>%
-        purrr::keep(
-          .x = .,
-          .p = ~ !(is.na(.x) | .x %in% c("Canada", "Unknown"))
-        ) %>%
-        purrr::map(
-          .x = .,
-          .f = function(state) {
-            state_var <- stringr::str_to_lower(state) %>%
-              stringr::str_replace(pattern = " +", replacement = "_")
-            mustashe::stash(
-              var = state_var,
-              code = {
-                tigris::counties(state = state, progress_bar = FALSE)
-              },
-              functional = TRUE,
-              verbose = FALSE
-            )
-          }
-        ) %>%
-        tigris::rbind_tigris() %>%
-        rmapshaper::ms_simplify(input = .)
-      return(tigris_counties)
     }
   )
 )

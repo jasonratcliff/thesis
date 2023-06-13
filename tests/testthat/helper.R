@@ -1,3 +1,8 @@
+suppressPackageStartupMessages({
+  library(fs)
+  library(withr)
+})
+
 build_specimens <- function() {
   specimens <- tibble::tibble(
     Taxon = c(
@@ -22,6 +27,27 @@ build_specimens <- function() {
     Specimen$new(
       records = .,
       identifier = "Taxon"
+    )
+  return(specimens)
+}
+
+build_cartography <- function() {
+  specimens <- tibble::tibble(
+    State = "Wyoming",
+    Species = c("Medicari iugerum", rep("Medicari profundus", 3)),
+    Collector = "J. Hooker",
+    Collection_Number = 1:4
+  ) %>%
+    dplyr::bind_cols(
+      x = .,
+      y = tibble::tibble(
+        Latitude = c(45, 44, 44, 45),
+        Longitude = c(-110, -110, -109, -109),
+      )
+    ) %>%
+    SpecimenMap$new(
+      records = .,
+      identifier = "Species"
     )
   return(specimens)
 }

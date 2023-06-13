@@ -9,7 +9,6 @@
 #'   from DNA specimens output by [join_bayes()].
 #' @param ggtree_layout `layout` argument passed to [ggtree::ggtree()].
 #' @inheritParams node_geoms
-#' @importFrom ggplot2 ggplot geom_point aes_
 #' @export
 #'
 #' @return `ggtree` object built from [read_tree()] and [join_bayes()] outputs.

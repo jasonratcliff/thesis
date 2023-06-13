@@ -53,13 +53,13 @@ voucher_map$filter_limit(
 # Base map type
 voucher_map$map(
   legend = "Reviewed Annotation",
-  sf_border = "black"
+  .borders = "black"
 )
 
 # Example `elevatr` wrapper
 voucher_map$map(
   legend = "Reviewed Annotation",
-  sf_border = "grey",
+  .borders = "grey",
   baselayer = "elevatr"
 )
 
@@ -69,7 +69,7 @@ voucher_map$map(
 
 voucher_map$map(
   baselayer = "ggmap",
-  sf_border = "white"
+  .borders = "white"
 ) +
 voucher_map$repel(
   Nelson = c(49286, 49478),
@@ -167,19 +167,19 @@ Data layers for simple feature (sf) objects are enabled by
 \code{\link[ggplot2:ggsf]{ggplot2::geom_sf()}}. Coordinate limits are set by the range of
 lon/lat values in the \code{\link[=Specimen]{Specimen$records}} tibble.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$features(sf_border, sf_states = NULL, expand = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$features(.borders = "black", .states = NULL, .expand = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{sf_border}}{Character scalar to set color of
+\item{\code{.borders}}{Character scalar to set color of
 county and state borders.}
 
-\item{\code{sf_states}}{Additional character vector of states to layer
+\item{\code{.states}}{Additional character vector of states to layer
 county borders onto map base.}
 
-\item{\code{expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand
+\item{\code{.expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand
 map coorinate limits. Set \code{FALSE} to prevent clipping of \code{ggmap} / \code{elevatr}
 base layers.}
 }
@@ -257,9 +257,9 @@ Combines the public methods exposed by \link{SpecimenMap}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$map(
   legend = self$identifier,
-  expand = FALSE,
-  sf_border = "black",
-  sf_states = NULL,
+  .expand = FALSE,
+  .borders = "black",
+  .states = NULL,
   baselayer = c("base", "ggmap", "elevatr"),
   zoom = 7,
   center = NULL,
@@ -273,14 +273,14 @@ Combines the public methods exposed by \link{SpecimenMap}.
 \item{\code{legend}}{Character scalar to set legend title
 for \code{color} and \code{shape} keys via \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
 
-\item{\code{expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand
+\item{\code{.expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand
 map coorinate limits. Set \code{FALSE} to prevent clipping of \code{ggmap} / \code{elevatr}
 base layers.}
 
-\item{\code{sf_border}}{Character scalar to set color of
+\item{\code{.borders}}{Character scalar to set color of
 county and state borders.}
 
-\item{\code{sf_states}}{Additional character vector of states to layer
+\item{\code{.states}}{Additional character vector of states to layer
 county borders onto map base.}
 
 \item{\code{baselayer}}{Specify map baselayer underlying county borders.
@@ -333,7 +333,7 @@ specify subset of record collections. Requires columns \code{Collector},
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{voucher_map$map(
   baselayer = "ggmap",
-  sf_border = "white"
+  .borders = "white"
 ) +
 voucher_map$repel(
   Nelson = c(49286, 49478),
