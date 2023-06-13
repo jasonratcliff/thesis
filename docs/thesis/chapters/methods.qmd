@@ -339,7 +339,11 @@ primers <-
       )
     ) %>%
   knitr::kable(x = .,
-    format = knitr::pandoc_to(),
+    format = ifelse(
+      test = knitr::pandoc_to() == "docx",
+      yes = "pipe",
+      no = knitr::pandoc_to()
+    ),
     align = "l", escape = FALSE
   )
 
@@ -642,7 +646,8 @@ species <-
             formatted <- switch(
               EXPR = knitr::pandoc_to(),
               "html" = "* <br/><br/> &nbsp;&nbsp; subsp. *",
-              "latex" = "* \n subsp. *"
+              "latex" = "* \n subsp. *",
+              "docx" = "* \n subsp. *"
             )
             # Substitute newline by output format type
             replaced <- gsub(
@@ -682,7 +687,11 @@ species <-
 species_kable <- function(tbl) {
   knitr::kable(
     x = tbl, escape = FALSE,
-    format = knitr::pandoc_to()
+    format = ifelse(
+      test = knitr::pandoc_to() == "docx",
+      yes = "pipe",
+      no = knitr::pandoc_to()
+    )
   ) %>%
     kableExtra::kable_styling(
       full_width = FALSE,

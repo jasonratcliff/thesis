@@ -1,0 +1,13 @@
+project:
+  output-dir: ../../_site/thesis/docx
+
+book:
+  output-file: "thesis"
+  chapters:
+    - appendix/index.qmd
+
+format:
+  docx:
+    toc: true
+    number-sections: true
+    highlight-style: github

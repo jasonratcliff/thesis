@@ -371,7 +371,11 @@ geographically separated from the Colorado Front range *P. vitulifera*
 carbon <-
   knitr::kable(
     x = revised,
-    format = knitr::pandoc_to(),
+    format = ifelse(
+      test = knitr::pandoc_to() == "docx",
+      yes = "pipe",
+      no = knitr::pandoc_to()
+    ),
     escape = FALSE,
     row.names = FALSE,
     col.names = c(

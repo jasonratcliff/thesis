@@ -78,6 +78,7 @@ check:
 quarto-book: figures
 	quarto render docs/thesis --profile pdf
 	quarto render docs/thesis --profile html
+	quarto render docs/thesis --profile docx
 
 # `pkgdown` Package Website
 site: README.Rmd
