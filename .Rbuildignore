@@ -1,6 +1,5 @@
 ^\.github$
 ^\.idea$
-^\.mustashe$
 ^_site$
 ^data-raw$
 ^docs$

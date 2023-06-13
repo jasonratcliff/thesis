@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.2.9001
+Version: 0.3.2.9002
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes
@@ -43,7 +43,6 @@ Imports:
     magrittr,
     methods,
     msa,
-    mustashe (>= 0.1.5),
     plyr,
     purrr,
     R6,
@@ -92,8 +91,6 @@ Suggests:
     whisker,
     withr,
     xaringan
-Remotes:
-    jhrcook/mustashe
 Collate: 
     'data.R'
     'deprec-maps.R'
