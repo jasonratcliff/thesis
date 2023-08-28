@@ -16,7 +16,7 @@ specimens$metadata <-
   ) %>%
   dplyr::rename(label = taxa_label)
 
-dna_specimens <- purrr::pmap_dfr(
+dna <- purrr::pmap_dfr(
   .l = specimens$metadata,
   .f = function(label, Collector, Collection_Number, ...) {
 
@@ -40,4 +40,4 @@ dna_specimens <- purrr::pmap_dfr(
   dplyr::slice(1) %>%
   dplyr::ungroup()
 
-usethis::use_data(dna_specimens, overwrite = TRUE)
+usethis::use_data(dna, overwrite = TRUE)

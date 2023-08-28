@@ -233,7 +233,7 @@ specimens$elevation <- specimens$raw %>%
 
 # Bind Columns ----
 
-herbarium_specimens <-
+vouchers <-
   dplyr::bind_cols(
     excel_sheet = specimens$raw$excel_sheet,
     specimens$priors,
@@ -246,4 +246,4 @@ herbarium_specimens <-
 
 # Write Data .Rda ----
 
-usethis::use_data(herbarium_specimens, overwrite = TRUE)
+usethis::use_data(vouchers, overwrite = TRUE)

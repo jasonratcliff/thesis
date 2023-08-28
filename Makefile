@@ -1,51 +1,24 @@
-################################################################################
-#
-# 1) Create `data/*.rda` files
-#
-# Each `.rda` file contains an exported R data object in the thesis
-# NAMESPACE. Scripts and raw data are contained in `data-raw/` subdirectories.
-#
-# Includes:
-#   - Herbarium voucher data    `herbarium_specimens`
-#   - Sampled DNA specimens     `dna_specimens`
-#   - SEINet occurrences        `seinet_coords`
-#   - ggplot aesthetic values   `spp_(color|shape)`
-#
-# 2) Write figure images to `inst/figures/*(.png|.pnf)`
-#
-# - File stems are matched by R scripts in `inst/scripts/*.R`
-#
-# `data-raw/` R scripts to render binary `.Rda` files.
-r_spp	:= data-raw/specimens/vouchers.R
-r_dna	:= data-raw/specimens/dna.R
-r_themes	:= data-raw/specimens/aesthetics.R
-r_seinet	:= data-raw/SEINet/SEINet.R
-rda_specimens	:= $(wildcard data/*specimens.rda)
-rda_themes	:= $(wildcard data/spp*.rda)
+.PHONY : all data
+
+SPECIMENS	:=	$(wildcard data-raw/specimens/*.R)
+RDATA		:=	$(patsubst data-raw/specimens/%.R, data/%.rda, $(SPECIMENS))
+
+all: $(RDATA)
+
+data: $(RDATA)
+
+data/dna.rda : data-raw/specimens/dna.csv
+data/seinet.rda : data-raw/seinet/occurrences.tab
+data/vouchers.rda : data-raw/specimens/vouchers.xlsx
+
+data/%.rda : data-raw/specimens/%.R
+	@Rscript $<
 
 # `inst/scripts/` R scripts to render `inst/figures/` images.
 inst_scripts 	:= $(wildcard inst/scripts/*.R)
 inst_figures 	:= $(inst_scripts:inst/scripts%=inst/figures%)
 pdf		:= $(inst_figures:%.R=%.pdf)
 png		:= $(inst_figures:%.R=%.png)
-
-.PHONY: all
-all: specimens themes seinet figures package check manuscript site # slides
-
-# Write .rda binary `data/` files.
-specimens: $(rda_specimens)
-data/herbarium_specimens.rda: $(r_spp) data-raw/specimens/vouchers.xlsx
-	Rscript $(r_spp)
-data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna.csv
-	Rscript $(r_dna)
-
-themes: $(rda_themes)
-data/spp_color.rda data/spp_shape.rda: $(r_themes)
-	Rscript $(r_themes)
-
-seinet: data/seinet_coords.rda
-data/seinet_coords.rda: $(r_seinet) data-raw/SEINet/P*/occurrences.csv
-	Rscript $(r_seinet)
 
 # Write .png / .pdf image `inst/figures/` files.
 figures: $(pdf) $(png) specimens
