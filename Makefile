@@ -5,6 +5,7 @@ RDATA		:=	$(patsubst data-raw/specimens/%.R, data/%.rda, $(SPECIMENS))
 
 all: $(RDATA)
 
+## data : Render package data files in `data/*.rda` from `data-raw/*.R` scripts.
 data: $(RDATA)
 
 data/dna.rda : data-raw/specimens/dna.csv
@@ -27,42 +28,63 @@ inst/figures/%.pdf: inst/scripts/%.R
 inst/figures/%.png: inst/scripts/%.R
 	Rscript $(<D)/$(<F)
 
-# Render R markdown .docx chapter files.
-word:
-	Rscript tools/render_word.R
-
-# Build species descriptions bookdown.
-descriptions:
-	Rscript data-raw/descriptions/descriptions.R
-
-# Render project README files.
+## readme : Render project README files.
 readme: README.Rmd data-raw/README.Rmd
 	Rscript exec/readme.R
 
-# R CMD INSTALL
-package:
+## document : Update `man/*.Rd` R documentation files.
+document:
 	Rscript -e 'devtools::document()'
-	Rscript -e 'devtools::install_local(path = "~/Thesis", force = TRUE)'
 
-# R CMD check
-check:
-	Rscript -e 'devtools::check(args = c("--no-tests", "--no-examples"))'
+## test : Run `testthat` package unit tests.
+test: document
+	Rscript -e 'devtools::test()'
 
-quarto-book: figures
+## check : Check development status via `R CMD Check` wrapper.
+check: document
+	Rscript -e 'devtools::check()'
+
+## coverage : Calculate test coverage report with `covr` package.
+coverage: document
+	 Rscript exec/coverage.R
+
+## install : Install development package from project source with `renv`
+install: document
+	Rscript -e 'renv::install(".")'
+
+## book : Render quarto book project profiles for .pdf, .html, and .docx
+book: figures
 	quarto render docs/thesis --profile pdf
 	quarto render docs/thesis --profile html
 	quarto render docs/thesis --profile docx
 
-# `pkgdown` Package Website
-site: README.Rmd
-	Rscript -e 'pkgdown::clean_site()'
-	Rscript -e 'rmarkdown::render(input = "README.Rmd")'
-	Rscript -e 'pkgdown::build_site()'
+## pkgdown : Render package website with reference documentation and articles
+pkgdown:
+	Rscript \
+ 		-e 'pkgdown::clean_site()' \
+		-e 'pkgdown::build_site()'
 
-## `covr` | Report coverage
-covr-report:
-	 Rscript exec/coverage.R
+## quarto : Render quarto website landing page for thesis and package.
+quarto:
+	quarto render
+
+## open : Open website landing page with firefox application.
+open:
+	open -a firefox _site/quarto/index.html
 
 clean:
 	rm Rplots.pdf
 	rm inst/figures/*
+
+## settings : Show build rule script pre-requisites and data targets.
+settings :
+	@printf "\nR Scripts\n"
+	@printf "  * %s\n" $(SPECIMENS)
+	@printf "\nR Data\n"
+	@printf "  * %s\n" $(RDATA)
+
+## help : Show all commands.
+help :
+	@grep -h -E '^##' ${MAKEFILE_LIST} \
+		| sed -e 's/## //g' \
+ 		| column -t -s ':'
