@@ -1,0 +1,8 @@
+# Skip functions with deprecated software lifecycle status
+R/deprec-*.R
+
+# TODO (6/2/23): Outstanding refactor tasks for updates to R6 OOP
+R/msa_wrappers*.R
+R/repel.R
+R/traits.R
+R/tree_*.R

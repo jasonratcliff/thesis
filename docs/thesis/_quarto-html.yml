@@ -1,5 +1,5 @@
 project:
-  output-dir: _html
+  output-dir: ../../_site/thesis/html
 
 book:
   title: "The Systematics of *Physaria* sensu stricto"

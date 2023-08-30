@@ -1,51 +1,25 @@
-################################################################################
-#
-# 1) Create `data/*.rda` files
-#
-# Each `.rda` file contains an exported R data object in the thesis
-# NAMESPACE. Scripts and raw data are contained in `data-raw/` subdirectories.
-#
-# Includes:
-#   - Herbarium voucher data    `herbarium_specimens`
-#   - Sampled DNA specimens     `dna_specimens`
-#   - SEINet occurrences        `seinet_coords`
-#   - ggplot aesthetic values   `spp_(color|shape)`
-#
-# 2) Write figure images to `inst/figures/*(.png|.pnf)`
-#
-# - File stems are matched by R scripts in `inst/scripts/*.R`
-#
-# `data-raw/` R scripts to render binary `.Rda` files.
-r_spp	:= data-raw/specimens/vouchers.R
-r_dna	:= data-raw/specimens/dna.R
-r_themes	:= data-raw/specimens/aesthetics.R
-r_seinet	:= data-raw/SEINet/SEINet.R
-rda_specimens	:= $(wildcard data/*specimens.rda)
-rda_themes	:= $(wildcard data/spp*.rda)
+.PHONY : all data
+
+SPECIMENS	:=	$(wildcard data-raw/specimens/*.R)
+RDATA		:=	$(patsubst data-raw/specimens/%.R, data/%.rda, $(SPECIMENS))
+
+all: $(RDATA)
+
+## data : Render package data files in `data/*.rda` from `data-raw/*.R` scripts.
+data: $(RDATA)
+
+data/dna.rda : data-raw/specimens/dna.csv
+data/seinet.rda : data-raw/seinet/occurrences.tab
+data/vouchers.rda : data-raw/specimens/vouchers.xlsx
+
+data/%.rda : data-raw/specimens/%.R
+	@Rscript $<
 
 # `inst/scripts/` R scripts to render `inst/figures/` images.
 inst_scripts 	:= $(wildcard inst/scripts/*.R)
 inst_figures 	:= $(inst_scripts:inst/scripts%=inst/figures%)
 pdf		:= $(inst_figures:%.R=%.pdf)
 png		:= $(inst_figures:%.R=%.png)
-
-.PHONY: all
-all: specimens themes seinet figures package check manuscript site # slides
-
-# Write .rda binary `data/` files.
-specimens: $(rda_specimens)
-data/herbarium_specimens.rda: $(r_spp) data-raw/specimens/vouchers.xlsx
-	Rscript $(r_spp)
-data/dna_specimens.rda: $(r_dna) data-raw/specimens/dna.csv
-	Rscript $(r_dna)
-
-themes: $(rda_themes)
-data/spp_color.rda data/spp_shape.rda: $(r_themes)
-	Rscript $(r_themes)
-
-seinet: data/seinet_coords.rda
-data/seinet_coords.rda: $(r_seinet) data-raw/SEINet/P*/occurrences.csv
-	Rscript $(r_seinet)
 
 # Write .png / .pdf image `inst/figures/` files.
 figures: $(pdf) $(png) specimens
@@ -54,36 +28,63 @@ inst/figures/%.pdf: inst/scripts/%.R
 inst/figures/%.png: inst/scripts/%.R
 	Rscript $(<D)/$(<F)
 
-# Render R markdown .docx chapter files.
-word:
-	Rscript tools/render_word.R
-
-# Build species descriptions bookdown.
-descriptions:
-	Rscript data-raw/descriptions/descriptions.R
-
-# Render project README files.
+## readme : Render project README files.
 readme: README.Rmd data-raw/README.Rmd
-	Rscript scripts/render_readme.R
+	Rscript exec/readme.R
 
-# R CMD INSTALL
-package:
+## document : Update `man/*.Rd` R documentation files.
+document:
 	Rscript -e 'devtools::document()'
-	Rscript -e 'devtools::install_local(path = "~/Thesis", force = TRUE)'
 
-# R CMD check
-check:
-	Rscript -e 'devtools::check(args = c("--no-tests", "--no-examples"))'
+## test : Run `testthat` package unit tests.
+test: document
+	Rscript -e 'devtools::test()'
 
-manuscript: figures
-	Rscript scripts/render_book.R
+## check : Check development status via `R CMD Check` wrapper.
+check: document
+	Rscript -e 'devtools::check()'
 
-# `pkgdown` Package Website
-site: README.Rmd
-	Rscript -e 'pkgdown::clean_site()'
-	Rscript -e 'rmarkdown::render(input = "README.Rmd")'
-	Rscript -e 'pkgdown::build_site()'
+## coverage : Calculate test coverage report with `covr` package.
+coverage: document
+	 Rscript exec/coverage.R
+
+## install : Install development package from project source with `renv`
+install: document
+	Rscript -e 'renv::install(".")'
+
+## book : Render quarto book project profiles for .pdf, .html, and .docx
+book: figures
+	quarto render docs/thesis --profile pdf
+	quarto render docs/thesis --profile html
+	quarto render docs/thesis --profile docx
+
+## pkgdown : Render package website with reference documentation and articles
+pkgdown:
+	Rscript \
+ 		-e 'pkgdown::clean_site()' \
+		-e 'pkgdown::build_site()'
+
+## quarto : Render quarto website landing page for thesis and package.
+quarto:
+	quarto render
+
+## open : Open website landing page with firefox application.
+open:
+	open -a firefox _site/quarto/index.html
 
 clean:
 	rm Rplots.pdf
 	rm inst/figures/*
+
+## settings : Show build rule script pre-requisites and data targets.
+settings :
+	@printf "\nR Scripts\n"
+	@printf "  * %s\n" $(SPECIMENS)
+	@printf "\nR Data\n"
+	@printf "  * %s\n" $(RDATA)
+
+## help : Show all commands.
+help :
+	@grep -h -E '^##' ${MAKEFILE_LIST} \
+		| sed -e 's/## //g' \
+ 		| column -t -s ':'

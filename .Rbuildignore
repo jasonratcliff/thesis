@@ -3,9 +3,11 @@
 ^_site$
 ^data-raw$
 ^docs$
+^exec$
 ^renv$
 ^scripts$
 ^vignettes/articles$
+^\.covrignore$
 ^\.gitpod\.yml$
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
