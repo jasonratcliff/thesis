@@ -174,62 +174,68 @@ specimens$geography <- specimens$raw %>%
   dplyr::select(Longitude, Latitude) %>%
   dplyr::mutate_all(.tbl = ., ~ as.numeric(.x))
 
-# Convert geographic coordinate column classes from character to numeric.
-specimens$elevation <- specimens$raw %>%
-  dplyr::select(dplyr::matches("Elev")) %>%
-  dplyr::rename_at(
-    .vars = dplyr::vars(dplyr::matches("Elev")),
-    .funs = ~ paste0(
-      "Elev_",
-      stringr::str_extract(string = .x, pattern = "m|ft")
-    )
-  ) %>%
-  dplyr::mutate_at(
-    .vars = dplyr::vars(dplyr::matches("Elev")),
-    .funs =
-      ~ stringr::str_remove_all(
-        string = .x,
-        pattern = "[A-Za-z\\.,'~ ]"
-      )
+## ---- voucher-elevation --------
+
+elevations <- specimens$raw %>%
+  dplyr::select(dplyr::matches(match = "^Elev_\\((m|ft\\.)\\)")) %>%
+  dplyr::rename_with(
+    .fn = ~ stringr::str_remove_all(string = .x, pattern = "[^[A-z]_]")
   ) %>%
   dplyr::mutate(
-    Elev_var = dplyr::case_when(
-      !is.na(Elev_ft) ~ "Elev_ft",
-      !is.na(Elev_m) ~ "Elev_m",
-      TRUE ~ NA_character_
+    # Concatenate raw elevation observations across units
+    verbatimElevation = glue::glue("{Elev_m}, {Elev_ft}"),
+
+    # Process collection elevation records from meter and feet vectors
+    dplyr::across(
+      .cols = dplyr::matches("^Elev_"),
+      .fns = function(observed) {
+        # Exclude non-standard elevations; expect (± ranged) character data
+        elevation <- stringr::str_squish(string = observed)
+        processed <- dplyr::case_when(
+          grepl(pattern = "UTM|sn\\.", x = elevation) ~ NA_character_,
+          stringr::str_detect(string = elevation, pattern = "[^[0-9]-.]") ~
+            stringr::str_remove_all(string = elevation, pattern = "[^[0-9]-\\.]"),
+          TRUE ~ elevation
+        )
+
+        # Split ranged data from processed strings, handling NA values
+        separated <- tryCatch(
+          stringr::str_split(processed, pattern = "-"),
+          error = function(e) processed
+        )
+
+        # Return list column of double vectors cast from split strings
+        purrr::map(.x = separated, .f = ~ as.numeric(.x))
+      }
     ),
-    Elev_raw = dplyr::case_when(
-      !is.na(Elev_ft) ~ as.character(Elev_ft),
-      !is.na(Elev_m) ~ as.character(Elev_m),
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  dplyr::bind_cols(
-    thesis::range_split(
-      trait_tbl = .,
-      split_var = "Elev_raw"
-    )
-  ) %>%
-  dplyr::mutate(
-    Elev_var = dplyr::case_when(
-      !is.na(Elev_ft) ~ "Elev_ft",
-      !is.na(Elev_m) ~ "Elev_m",
-      TRUE ~ NA_character_
+
+    # Combine range-separated values, convert ft. to m, and round to nearest m
+    converted = purrr::map2(
+      .x = .data$Elev_m, .y = .data$Elev_ft,
+      .f = function(m, ft) {
+        sorted <- sort(c(m, ft / 3.281))
+        if (length(sorted) == 0) {
+          return(NA_real_)
+        }
+        round(sorted)
+      }
     ),
-    Elev_raw = dplyr::case_when(
-      !is.na(Elev_ft) ~ as.character(Elev_ft),
-      !is.na(Elev_m) ~ as.character(Elev_m),
-      TRUE ~ NA_character_
+
+    # Calculate minimum / maximum for non-identical values
+    minimumElevationInMeters = purrr::map_dbl(.x = converted, .f = ~ min(.x)),
+    maximumElevationInMeters = purrr::map2_dbl(
+      .x = converted, .y = minimumElevationInMeters,
+      .f = function(x, y) {
+        dplyr::case_when(
+          length(x) == 1 ~ NA_real_,
+          max(x) != y ~ max(x),
+          TRUE ~ NA_real_
+        )
+      }
     )
   ) %>%
-  dplyr::mutate_at(
-    .vars = dplyr::vars(dplyr::matches("Elev_raw_(min|max)")),
-    .funs = ~ dplyr::case_when(
-      Elev_var == "Elev_ft" ~ .x,
-      Elev_var == "Elev_m" ~ .x * 3.281,
-      TRUE ~ NA_real_
-    )
-  )
+  dplyr::select(minimumElevationInMeters, maximumElevationInMeters, verbatimElevation)
+
 
 # Bind Columns ----
 
@@ -240,7 +246,7 @@ vouchers <-
     dplyr::select(specimens$raw, Taxon:Location),
     specimens$geography,
     dplyr::select(specimens$raw, ID:Imaged),
-    specimens$elevation,
+    elevations,
     dplyr::select(specimens$raw, TRS1:Chromosomes)
   )
 
