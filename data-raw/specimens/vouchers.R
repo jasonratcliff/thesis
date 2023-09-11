@@ -1,55 +1,86 @@
-library(magrittr)
-library(readxl)
-library(readr)
-library(plyr)
-library(dplyr)
-library(purrr)
-library(lubridate)
-library(stringr)
-library(tibble)
-library(thesis)
+## =============================================================================
+##
+## Title: Herbarium Voucher R Data
+##
+## Author: jasonratcliff
+##
+## Created: 2020-22-02 (31cb433)
+##
+## Updated: 2023-09-07
+##
+## Copyright (c) Jason Ratcliff, 2023
+##
+## =============================================================================
+##
+## Notes:
+##
+## Herbarium voucher and field specimen data were recorded into a `.xlsx`
+## file containing collection metadata and morphological trait observations.
+##
+## This script combines records from multiple sheets, each containing a
+## particular species and / or suspected infraspecific taxa, into a tibble
+## class data frame. The processed data is exported as an R object `vouchers`
+## from the `thesis` package namespace from raw data as the project path:
+##
+## > `data-raw/specimens/vouchers.xlsx`
+##
+## Here, information from transcribed collection labels and field notes are
+## standardized to Darwin Core terms for describing biodiversity information.
+##
+## Dates:
+##
+## In the herbarium specimen .xlsx file, dates were converted to an
+## Excel Date format "mm/dd/yyyy" (e.g. 06/15/2003) and saved to a new column
+## using the expression '=TEXT(<CELL>, "mm/dd/yyyy")'.  That column was copied
+## and saved to a new column using 'paste special...' by value.
+##
+## =============================================================================
 
-if (basename(getwd()) != "thesis") {
-  stop("Source from top level of `thesis`.")
-}
+## ---- packages --------
 
-# Read Specimens ----
-#
-# An .xlsx file located in the `data-raw/` subdirectory contains
-# specimen voucher information from project herbarium records, including
-# geographic coordinate data (decimal degrees), collection dates,
-# annotation information, trait measurements and observations.
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(fs)
+  library(glue)
+  library(lubridate)
+  library(purrr)
+  library(readxl)
+  library(stringr)
+  library(tibble)
+  library(usethis)
+})
 
-specimens <- list()
+## ---- vouchers-xlsx --------
 
-# Map .xlsx sheetnames to read tibbles from .xlsx file..
-specimens$path <-
-  fs::path(here::here(), "data-raw/specimens/vouchers", ext = "xlsx")
-specimens$raw <-
-  readxl::excel_sheets(path = specimens$path) %>%
-  purrr::keep(.x = ., ~ !grepl("excluded", x = .x)) %>%
-  purrr::map_dfr(function(excel_sheet) {
+# Map separate species sheet names to row-bind tibble data frame from .xlsx file
+voucher <- list(xlsx = fs::path("data-raw/specimens/vouchers", ext = "xlsx"))
+voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
+  purrr::keep(.p = ~ !grepl(pattern = "excluded", x = .x)) %>%
+  purrr::map_dfr(.f = function(sheet) {
     readxl::read_xlsx(
-      path = specimens$path,
-      sheet = excel_sheet,
+      path = voucher$xlsx,
+      sheet = sheet,
       na = c("", "NA", "s.n."),
       col_types = c(
-        rep("text", 16),
-        rep("skip", 10),
-        rep("text", 2),
-        rep("skip", 1),
-        rep("text", 36)
+        # Skip uninformative columns in species sheets raw data
+        rep("text", 16), rep("skip", 10), rep("text", 2), rep("skip", 1),
+        rep("text", 36) # Morphological trait observations (AD:DM)
       )
     ) %>%
-      tibble::add_column(excel_sheet = excel_sheet, .before = TRUE)
+      tibble::add_column(datasetName = sheet, .before = TRUE)
   }) %>%
-  # bind row-wise and remove rows not matching Genera / Family of interest.
+  # Retain records matching study-relevant genus / family names
   dplyr::filter(
     grepl(
       pattern = "Physaria|Lesquerella|Brassicaceae",
-      x = .data$Taxon
+      x = .data$Taxon, ignore.case = TRUE
     )
   ) %>%
+  # Add unique identifier for collection records in data set
+  tibble::rowid_to_column(var = "catalogNumber")
+
+specimens <- list()
+specimens$raw <-
   # Parse dates with lubridate, create vector for month / day and reorder.
   dplyr::mutate(
     Date_parsed = lubridate::mdy(Date),
@@ -241,7 +272,7 @@ elevations <- specimens$raw %>%
 
 vouchers <-
   dplyr::bind_cols(
-    excel_sheet = specimens$raw$excel_sheet,
+    datasetName = specimens$raw$datasetName,
     specimens$priors,
     dplyr::select(specimens$raw, Taxon:Location),
     specimens$geography,
