@@ -79,56 +79,24 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
   # Add unique identifier for collection records in data set
   tibble::rowid_to_column(var = "catalogNumber")
 
-specimens <- list()
-specimens$raw <-
-  # Parse dates with lubridate, create vector for month / day and reorder.
+## ---- collection-dates --------
+
+# Event: Extract fields related to the time of specimen collection.
+voucher$Event <- voucher$specimens %>%
+  dplyr::select(catalogNumber, Date) %>%
   dplyr::mutate(
-    Date_parsed = lubridate::mdy(Date),
-    Date_md = gsub(
-      pattern = "/[0-9]{4}", "",
-      x = .data$Date
-    ) %>%
-      as.Date(
-        x = .,
-        format = "%m/%d"
-      )
-  ) %>%
-  dplyr::select(
-    excel_sheet:Collection_Number,
-    dplyr::matches("Date"),
-    Herbarium:`Chromosome #`
-  ) %>%
-  dplyr::rename(Chromosomes = "Chromosome #")
+    verbatimEventDate = Date,
+    eventDate = lubridate::parse_date_time(
+      x = .data$verbatimEventDate,
+      orders = c("mdY", "md", "Y")
+    ),
+    year = lubridate::year(.data$eventDate),
+    month = lubridate::month(.data$eventDate),
+    day = lubridate::day(.data$eventDate)
+  )
 
-# Log Date Formats ----
-#
-# In the herbarium specimen .xlsx file, dates were converted to an
-# Excel Date format "mm/dd/yyyy" (e.g. 06/15/2003) and saved to a new column
-# using the expression '=TEXT(<CELL>, "mm/dd/yyyy")'.  That column was copied
-# and saved to a new column using 'paste special...' by value.
-#
-# Check for log directory, create if non-existent, and open log file.
-if (!dir.exists("inst/log")) {
-  dir.create("inst/log")
-}
-
-# Select date columns, filter by format, and write mismatches to a .csv log.
-specimens$raw %>%
-  dplyr::select(
-    excel_sheet, Collector, Collection_Number, Date,
-    Date_parsed, ID
-  ) %>%
-  dplyr::filter(
-    .,
-    !grepl(
-      pattern = "[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]",
-      x = as.character(Date_parsed)
-    ) & !is.na(Date) |
-      !grepl(pattern = "[!C\\?] [0-1][0-9]/[0-3][0-9]/[1][5-9]", x = ID)
-  ) %>%
-  readr::write_excel_csv(x = ., file = "inst/log/remaining_dates.csv")
-
-# Parse Prior ID ----
+specimens <- list(raw = voucher$specimens)
+specimens$raw <- dplyr::rename(specimens$raw, Chromosomes = "Chromosome #")
 
 # Function to recursively replace identification agreements marked by "!"
 prior_ids <- function(prior_vector) {
