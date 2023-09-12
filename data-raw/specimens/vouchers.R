@@ -95,6 +95,58 @@ voucher$Event <- voucher$specimens %>%
     day = lubridate::day(.data$eventDate)
   )
 
+## ---- prior-identifications --------
+
+# Organism: Process fields linking taxonomic definitions to occurrence records.
+voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
+  dplyr::mutate(
+    .keep = "unused",
+    # Map prior identifications to handle author names and concurrence IDs.
+    previousIdentifications = purrr::map(
+      .x = Taxon,
+      .f = function(id) {
+        annotations <- stringr::str_split(string = id, pattern = ", ?")[[1]]
+
+        # Extract species name ± subspecies rank.
+        identifications <- purrr::map_chr(
+          .x = annotations,
+          .f = function(sp) {
+            if (grepl("!", x = sp)) {
+              return(sp)
+            }
+            species <-
+              stringr::str_extract(sp, pattern = "^([A-z]+)( ?[A-z]+)?")
+            subspecies <-
+              stringr::str_extract(sp, pattern = " (ssp|subsp|var).? [a-z]+")
+            glue::glue(species, subspecies, .na = "")
+          }
+        )
+
+        # Replace "!" annotation concurrence with species name.
+        purrr::imap_chr(
+          .x = identifications,
+          .f = function(sp, i) {
+            if (grepl("!", sp)) {
+              identifications[i] <<- identifications[i - 1]
+              return(identifications[i])
+            }
+            return(sp)
+          }
+        ) %>%
+          paste0(collapse = " | ")
+      }
+    ),
+
+    # Account for taxonomic synonyms in most recent identification.
+    organismName = purrr::map_chr(
+      .x = previousIdentifications,
+      .f = function(ids) {
+        annotations <- stringr::str_split(string = ids, pattern = " \\| ")[[1]]
+        id <- annotations[length(annotations)]
+      }
+    )
+  )
+
 specimens <- list(raw = voucher$specimens)
 specimens$raw <- dplyr::rename(specimens$raw, Chromosomes = "Chromosome #")
 
