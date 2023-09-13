@@ -142,7 +142,41 @@ voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
       .x = previousIdentifications,
       .f = function(ids) {
         annotations <- stringr::str_split(string = ids, pattern = " \\| ")[[1]]
-        id <- annotations[length(annotations)]
+        id <- # Add missing periods for taxonomic ranks
+          stringr::str_replace(
+            string = annotations[length(annotations)],
+            pattern = "(?<=(ssp|var)) ", replacement = ". "
+          )
+      }
+    ),
+
+    # Check for (sub-)species synonyms and replace with updated taxon.
+    organismName = purrr::map_chr(
+      .x = organismName,
+      .f = function(id) {
+        # Early escape hatch to avoid checking for string replacements.
+        if (id %in% aesthetics$species) return(id)
+        dplyr::case_when(
+          grepl(pattern = "australis|purpurea|stylosa", x = id) ~
+            "Physaria acutifolia",
+          grepl(pattern = "integrifolia|monticola", x = id) ~
+            "Physaria integrifolia",
+          grepl(pattern = "didymocarpa|lanata", x = id) ~
+            dplyr::case_when(
+              grepl(pattern = "lanata", x = id) ~
+                "Physaria didymocarpa subsp. lanata",
+              grepl(pattern = "lyrata", x = id) ~
+                "Physaria didymocarpa subsp. lyrata",
+              TRUE ~ "Physaria didymocarpa subsp. didymocarpa"
+            ),
+          grepl(pattern = "saximontana|dentata", x = id) ~
+            dplyr::case_when(
+              grepl(pattern = "dentata", x = id) ~
+                "Physaria saximontana subsp. dentata",
+              TRUE ~ "Physaria saximontana subsp. saximontana"
+            ),
+          TRUE ~ id
+        )
       }
     )
   )
