@@ -184,69 +184,7 @@ voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
 specimens <- list(raw = voucher$specimens)
 specimens$raw <- dplyr::rename(specimens$raw, Chromosomes = "Chromosome #")
 
-# Function to recursively replace identification agreements marked by "!"
-prior_ids <- function(prior_vector) {
-  # Detect first index of ID agreement and replace with previous ID.
-  if (TRUE %in% grepl(pattern = "!", x = prior_vector)) {
-    id_match <- grep(pattern = "!", x = prior_vector) %>% min()
-    prior_vector[id_match] <- prior_vector[id_match - 1]
-    return(prior_ids(prior_vector))
-  } else {
-    return(prior_vector)
-  }
-}
-
-# Built tibble from prior annotation history.
-specimens$split <- specimens$raw$Taxon %>%
-  # Map list of comma-separated annotations to replace synonyms and concurrence.
-  stringr::str_split(string = ., pattern = ", ?") %>%
-  purrr::map(.x = ., function(split_ids) {
-    prior_ids(prior_vector = split_ids)
-  })
-
-specimens$priors <- specimens$split %>%
-  # Subset most recent identification from list of annotation vectors.
-  purrr::map_chr(.x = ., .f = function(annotations) {
-    annotations[length(annotations)]
-  }) %>%
-  # Remove author names and replace variety with subsp. abbreviations.
-  stringr::str_replace_all(
-    string = ., replacement = "",
-    pattern = " \\((Payson|Hook\\.)\\)| Gray| A\\.| Hitch\\.| Rollins"
-  ) %>%
-  stringr::str_replace_all(
-    string = .,
-    pattern = "var\\.?|var\\.$|(ssp|subsp).?(?= )", replacement = "subsp."
-  ) %>%
-  # Replace identification synonyms.
-  ifelse(grepl("australis|purpurea|stylosa", x = .),
-    yes = "Physaria acutifolia", no = .
-  ) %>%
-  ifelse(grepl("integrifolia", x = .),
-    yes = "Physaria integrifolia", no = .
-  ) %>%
-  ifelse(grepl("Physaria didymocarpa( ssp\\.$)?$|normalis", x = .),
-    yes = "Physaria didymocarpa subsp. didymocarpa", no = .
-  ) %>%
-  ifelse(grepl("lanata", x = .),
-    yes = "Physaria didymocarpa subsp. lanata", no = .
-  ) %>%
-  ifelse(grepl("Physaria saximontana$", x = .),
-    yes = "Physaria saximontana subsp. saximontana", no = .
-  ) %>%
-  # Enframe character vector as tibble.
-  tibble::enframe(value = "prior_id", name = NULL) %>%
-  # Combine recent ID and
-  dplyr::bind_cols(
-    plyr::ldply(
-      .data = specimens$split,
-      .fun = rbind
-    ) %>%
-      setNames(
-        object = .,
-        nm = paste0("prior_", names(.))
-      )
-  )
+## ---- reviewed-annotations ---------------------------------------------------
 
 # Replace instances of `ssp.` with `subsp.` in reviewed annotations
 specimens$raw$Taxon_a_posteriori <- specimens$raw$Taxon_a_posteriori %>%
@@ -327,7 +265,6 @@ elevations <- specimens$raw %>%
 vouchers <-
   dplyr::bind_cols(
     datasetName = specimens$raw$datasetName,
-    specimens$priors,
     dplyr::select(specimens$raw, Taxon:Location),
     specimens$geography,
     dplyr::select(specimens$raw, ID:Imaged),
