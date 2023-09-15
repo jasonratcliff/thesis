@@ -51,7 +51,7 @@ suppressPackageStartupMessages({
   library(thesis)
 })
 
-## ---- vouchers-xlsx --------
+## ---- vouchers-xlsx ----------------------------------------------------------
 
 # Map separate species sheet names to row-bind tibble data frame from .xlsx file
 voucher <- list(xlsx = fs::path("data-raw/specimens/vouchers", ext = "xlsx"))
@@ -68,7 +68,7 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
         rep("text", 36) # Morphological trait observations (AD:DM)
       )
     ) %>%
-      tibble::add_column(datasetName = sheet, .before = TRUE)
+      tibble::add_column(datasetID = sheet, .before = TRUE)
   }) %>%
   # Retain records matching study-relevant genus / family names
   dplyr::filter(
@@ -78,13 +78,32 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
     )
   ) %>%
   # Add unique identifier for collection records in data set
-  tibble::rowid_to_column(var = "catalogNumber")
+  tibble::rowid_to_column(var = "collectionID")
 
-## ---- collection-dates --------
+## ---- voucher-records --------------------------------------------------------
+
+dwcRecord <- voucher$specimens %>%
+  dplyr::select(collectionID, datasetID, Herbarium) %>%
+  dplyr::rename(institutionCode = Herbarium)
+
+## ---- reviewed-annotations ---------------------------------------------------
+
+# Replace instances of `ssp.` with `subsp.` in reviewed annotations
+dwcTaxon <- voucher$specimens %>%
+  dplyr::select(Taxon_a_posteriori) %>%
+  dplyr::mutate(
+    scientificName = gsub(
+      pattern = "ssp.", replacement = "subsp.",
+      x = .data$Taxon_a_posteriori
+    ),
+    .keep = "unused"
+  )
+
+## ---- collection-dates -------------------------------------------------------
 
 # Event: Extract fields related to the time of specimen collection.
-voucher$Event <- voucher$specimens %>%
-  dplyr::select(catalogNumber, Date) %>%
+dwcEvent <- voucher$specimens %>%
+  dplyr::select(Date) %>%
   dplyr::mutate(
     verbatimEventDate = Date,
     eventDate = lubridate::parse_date_time(
@@ -96,12 +115,14 @@ voucher$Event <- voucher$specimens %>%
     day = lubridate::day(.data$eventDate)
   )
 
-## ---- prior-identifications --------
+## ---- prior-identifications --------------------------------------------------
 
 # Organism: Process fields linking taxonomic definitions to occurrence records.
-voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
+dwcOrganism <- voucher$specimens %>%
+  dplyr::select(Taxon) %>%
   dplyr::mutate(
     .keep = "unused",
+    verbatimIdentification = Taxon,
     # Map prior identifications to handle author names and concurrence IDs.
     previousIdentifications = purrr::map(
       .x = Taxon,
@@ -182,25 +203,16 @@ voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
     )
   )
 
-specimens <- list(raw = voucher$specimens)
-specimens$raw <- dplyr::rename(specimens$raw, Chromosomes = "Chromosome #")
-
-## ---- reviewed-annotations ---------------------------------------------------
-
-# Replace instances of `ssp.` with `subsp.` in reviewed annotations
-specimens$raw$Taxon_a_posteriori <- specimens$raw$Taxon_a_posteriori %>%
-  gsub(pattern = "ssp.", "subsp.", x = .)
-
-# Parse Elevation ----
+## ---- voucher-coordinates ----------------------------------------------------
 
 # Convert geographic coordinate column classes from character to numeric.
-specimens$geography <- specimens$raw %>%
+dwcCoordinates <- voucher$specimens %>%
   dplyr::select(Longitude, Latitude) %>%
   dplyr::mutate_all(.tbl = ., ~ as.numeric(.x))
 
-## ---- voucher-elevation --------
+## ---- voucher-elevations -----------------------------------------------------
 
-elevations <- specimens$raw %>%
+dwcElevation <- voucher$specimens %>%
   dplyr::select(dplyr::matches(match = "^Elev_\\((m|ft\\.)\\)")) %>%
   dplyr::rename_with(
     .fn = ~ stringr::str_remove_all(string = .x, pattern = "[^[A-z]_]")
@@ -260,19 +272,12 @@ elevations <- specimens$raw %>%
   ) %>%
   dplyr::select(minimumElevationInMeters, maximumElevationInMeters, verbatimElevation)
 
-
-# Bind Columns ----
+## ---- write-vouchers ---------------------------------------------------------
 
 vouchers <-
   dplyr::bind_cols(
-    datasetName = specimens$raw$datasetName,
-    dplyr::select(specimens$raw, Taxon:Location),
-    specimens$geography,
-    dplyr::select(specimens$raw, ID:Imaged),
-    elevations,
-    dplyr::select(specimens$raw, TRS1:Chromosomes)
+    dwcRecord, dwcTaxon, dwcOrganism,
+    dwcEvent, dwcCoordinates, dwcElevation
   )
-
-# Write Data .Rda ----
 
 usethis::use_data(vouchers, overwrite = TRUE)
