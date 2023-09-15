@@ -48,6 +48,7 @@ suppressPackageStartupMessages({
   library(stringr)
   library(tibble)
   library(usethis)
+  library(thesis)
 })
 
 ## ---- vouchers-xlsx --------
@@ -155,7 +156,7 @@ voucher$Organism <- dplyr::select(voucher$specimens, Taxon) %>%
       .x = organismName,
       .f = function(id) {
         # Early escape hatch to avoid checking for string replacements.
-        if (id %in% aesthetics$species) return(id)
+        if (id %in% thesis::aesthetics$species) return(id)
         dplyr::case_when(
           grepl(pattern = "australis|purpurea|stylosa", x = id) ~
             "Physaria acutifolia",
