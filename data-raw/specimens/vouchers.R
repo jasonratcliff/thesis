@@ -99,12 +99,22 @@ dwcTaxon <- voucher$specimens %>%
     .keep = "unused"
   )
 
+## ---- voucher-occurrences ----------------------------------------------------
+
+dwcOccurrence <- voucher$specimens %>%
+  dplyr::select(Collector, Collection_Number) %>%
+  dplyr::rename(
+    recordedBy = Collector,
+    recordNumber = Collection_Number
+  )
+
 ## ---- collection-dates -------------------------------------------------------
 
 # Event: Extract fields related to the time of specimen collection.
 dwcEvent <- voucher$specimens %>%
   dplyr::select(Date) %>%
   dplyr::mutate(
+    .keep = "unused",
     verbatimEventDate = Date,
     eventDate = lubridate::parse_date_time(
       x = .data$verbatimEventDate,
@@ -117,15 +127,17 @@ dwcEvent <- voucher$specimens %>%
 
 ## ---- prior-identifications --------------------------------------------------
 
-# Organism: Process fields linking taxonomic definitions to occurrence records.
-dwcOrganism <- voucher$specimens %>%
+# Identifications:
+dwcIdentification <- voucher$specimens %>%
   dplyr::select(Taxon) %>%
+  dplyr::mutate(verbatimIdentification = Taxon, .keep = "unused")
+
+# Organism: Process fields linking taxonomic definitions to occurrence records.
+dwcOrganism <- dwcIdentification %>%
   dplyr::mutate(
-    .keep = "unused",
-    verbatimIdentification = Taxon,
     # Map prior identifications to handle author names and concurrence IDs.
     previousIdentifications = purrr::map(
-      .x = Taxon,
+      .x = verbatimIdentification,
       .f = function(id) {
         annotations <- stringr::str_split(string = id, pattern = ", ?")[[1]]
 
@@ -177,7 +189,9 @@ dwcOrganism <- voucher$specimens %>%
       .x = organismName,
       .f = function(id) {
         # Early escape hatch to avoid checking for string replacements.
-        if (id %in% thesis::aesthetics$species) return(id)
+        if (id %in% thesis::aesthetics$species) {
+          return(id)
+        }
         dplyr::case_when(
           grepl(pattern = "australis|purpurea|stylosa", x = id) ~
             "Physaria acutifolia",
@@ -201,14 +215,29 @@ dwcOrganism <- voucher$specimens %>%
         )
       }
     )
-  )
+  ) %>%
+  dplyr::select(organismName, previousIdentifications)
 
-## ---- voucher-coordinates ----------------------------------------------------
+## ---- voucher-locations ------------------------------------------------------
 
 # Convert geographic coordinate column classes from character to numeric.
-dwcCoordinates <- voucher$specimens %>%
-  dplyr::select(Longitude, Latitude) %>%
-  dplyr::mutate_all(.tbl = ., ~ as.numeric(.x))
+dwcLocation <- voucher$specimens %>%
+  dplyr::select(State, County, Location, Latitude, Longitude) %>%
+  dplyr::mutate(
+    dplyr::across(
+      .cols = dplyr::all_of(c("Latitude", "Longitude")),
+      .fns = \(x) as.numeric(x)
+    )
+  ) %>%
+  dplyr::rename_with(
+    .cols = dplyr::where(is.numeric),
+    .fn = \(x) glue::glue("decimal{x}")
+  ) %>%
+  dplyr::rename(
+    stateProvince = State,
+    county = County,
+    verbatimLocality = Location
+  )
 
 ## ---- voucher-elevations -----------------------------------------------------
 
@@ -276,8 +305,8 @@ dwcElevation <- voucher$specimens %>%
 
 vouchers <-
   dplyr::bind_cols(
-    dwcRecord, dwcTaxon, dwcOrganism,
-    dwcEvent, dwcCoordinates, dwcElevation
+    dwcRecord, dwcTaxon, dwcOrganism, dwcOccurrence,
+    dwcEvent, dwcLocation, dwcElevation, dwcIdentification
   )
 
 usethis::use_data(vouchers, overwrite = TRUE)
