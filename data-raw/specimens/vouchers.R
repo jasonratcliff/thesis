@@ -264,10 +264,7 @@ dwcElevation <- voucher$specimens %>%
         )
 
         # Split ranged data from processed strings, handling NA values
-        separated <- tryCatch(
-          stringr::str_split(processed, pattern = "-"),
-          error = function(e) processed
-        )
+        separated <- stringr::str_split(processed, pattern = "-")
 
         # Return list column of double vectors cast from split strings
         purrr::map(.x = separated, .f = ~ as.numeric(.x))
