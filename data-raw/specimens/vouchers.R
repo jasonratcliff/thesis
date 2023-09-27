@@ -298,12 +298,39 @@ dwcElevation <- voucher$specimens %>%
   ) %>%
   dplyr::select(minimumElevationInMeters, maximumElevationInMeters, verbatimElevation)
 
+## ---- trait-data -------------------------------------------------------------
+
+dwcTraits <- voucher$specimens %>%
+  dplyr::select(Rosulate:`Chromosome #`) %>%
+  dplyr::rename(Chromosome = "Chromosome #", Ovule_n = "Ovule_number") %>%
+  dplyr::rename_with(
+    .fn = ~ purrr::map_chr(
+      .x = .,
+      .f = function(trait) {
+        split <- stringr::str_split(trait, pattern = "_")[[1]]
+        quantitative <-
+          grepl(pattern = "[mcd]m|n$", x = split[length(split)])
+        joined <- dplyr::if_else(
+          condition = quantitative,
+          true = glue::glue_collapse(
+            c(
+              split[length(split)],
+              stringr::str_to_title(split[1:(length(split)-1)])
+            )
+          ),
+          false = glue::glue_collapse(stringr::str_to_title(split))
+        )
+      }
+    )
+  )
+
 ## ---- write-vouchers ---------------------------------------------------------
 
 vouchers <-
   dplyr::bind_cols(
     dwcRecord, dwcTaxon, dwcOrganism, dwcOccurrence,
-    dwcEvent, dwcLocation, dwcElevation, dwcIdentification
+    dwcEvent, dwcLocation, dwcElevation, dwcIdentification,
+    dwcTraits
   )
 
 usethis::use_data(vouchers, overwrite = TRUE)
