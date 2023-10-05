@@ -1,0 +1,6 @@
+This data package was downloaded from a SEINet Portal Network Portal on 2023-09-09 15:27:10.
+
+Please use the following format to cite this dataset:
+Biodiversity occurrence data published by: SEINet Portal Network (accessed through the SEINet Portal Network Portal, https://swbiodiversity.org/seinet, 2023-09-09).
+
+For more information on citation formats, please see the following page: https://swbiodiversity.org/seinet/includes/usagepolicy.php
