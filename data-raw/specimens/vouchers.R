@@ -4,7 +4,7 @@
 ##
 ## Author: jasonratcliff
 ##
-## Created: 2020-22-02 (31cb433)
+## Created: 2020-02-22 (31cb433)
 ##
 ## Updated: 2023-09-07
 ##
@@ -78,7 +78,8 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
     )
   ) %>%
   # Add unique identifier for collection records in data set
-  tibble::rowid_to_column(var = "collectionID")
+  tibble::rowid_to_column(var = "collectionID") %>%
+  dplyr::mutate(collectionID = as.character(.data$collectionID))
 
 ## ---- voucher-records --------------------------------------------------------
 
@@ -248,7 +249,7 @@ dwcElevation <- voucher$specimens %>%
   ) %>%
   dplyr::mutate(
     # Concatenate raw elevation observations across units
-    verbatimElevation = glue::glue("{Elev_m}, {Elev_ft}"),
+    verbatimElevation = unclass(glue::glue("{Elev_m}, {Elev_ft}")),
 
     # Process collection elevation records from meter and feet vectors
     dplyr::across(
