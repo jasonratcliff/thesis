@@ -9,8 +9,8 @@ all: $(RDATA)
 data: $(RDATA)
 
 data/dna.rda : data-raw/specimens/dna.csv
-data/seinet.rda : data-raw/seinet/occurrences.tab
 data/vouchers.rda : data-raw/specimens/vouchers.xlsx
+data/seinet.rda : data-raw/seinet/occurrences.csv data/vouchers.rda
 
 data/%.rda : data-raw/specimens/%.R
 	@Rscript $<
