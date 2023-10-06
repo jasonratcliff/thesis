@@ -8,7 +8,7 @@ methods_variables <- list()  # Initialize list for assigned variables
 
 # Calculate SEINet records with non-missing geographic coordinates.
 methods_variables$seinet <-
-  dplyr::filter(seinet_coords, !is.na(Latitude), !is.na(Longitude))
+  dplyr::filter(seinet, !is.na(Latitude), !is.na(Longitude))
 
 # Read in raw FASTA system files.
 methods_variables$fasta_paths <-
@@ -72,7 +72,7 @@ Two specimen searches of all available herbaria were performed using the
 scientific name as taxonomic criteria with synonyms included for
 "Physaria floribunda" and "Physaria bellii" as search terms.
 Occurrence records were downloaded as *.csv* files in the Darwin Core structure
-[@Wieczorek2012]. Searches returned a total of `r nrow(seinet_coords)` records,
+[@Wieczorek2012]. Searches returned a total of `r nrow(seinet)` records,
 `r nrow(methods_variables$seinet)` with specimen occurrence
 decimal degree coordinates.
 

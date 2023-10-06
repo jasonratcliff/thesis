@@ -33,7 +33,7 @@ carbon$aesthetics <-
       id_column = "Taxon_a_posteriori"
     ),
     thesis::spl_labels(
-      specimen_tbl = thesis::seinet_coords,
+      specimen_tbl = thesis::seinet,
       id_column = "scientificName"
     )
   )
@@ -126,9 +126,9 @@ carbon$ggplot <-
     color = "white", alpha = 0.5, size = 3
   ) +
   geom_point(
-    data = thesis::seinet_coords,
+    data = thesis::seinet,
     mapping = aes(
-      x = Longitude, y = Latitude,
+      x = decimalLongitude, y = decimalLatitude,
       color = scientificName, shape = scientificName
     ),
     show.legend = TRUE, na.rm = TRUE, inherit.aes = TRUE

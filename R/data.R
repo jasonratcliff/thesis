@@ -115,7 +115,7 @@
 #'   \item{references}{SEINet record site reference}
 #' }
 #'
-"seinet_coords"
+"seinet"
 
 #' CO Front Range Subset
 #'
