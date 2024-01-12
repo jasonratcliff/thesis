@@ -24,3 +24,37 @@ test_that("Replace specimens data variables with Darwin Core terms.", {
     ) |> all()
   )
 })
+
+test_that("Consisent names and classes for SEINet occurrence data.", {
+  if (is_checking()) {
+    skip("Interactive testing for `seinet_coords` refactoring.")
+  }
+
+  intersection <- intersect(names(seinet), names(vouchers))
+
+  # Verify class casting of SEINet today relative to `vouchers` intersection.
+  expect_true(
+    purrr::map2_lgl(
+      .x = vouchers[, intersection],
+      .y = seinet[, intersection],
+      .f = function(.vouchers, .seinet) {
+        identical(class(.vouchers), class(.seinet))
+      }
+    ) |> all()
+  )
+
+  # Check expected synonyms from SEINet search terms.
+  expect_equal(
+    sort(unique(seinet$scientificName)),
+    c(
+      "Physaria bellii",
+      "Physaria floribunda subsp. floribunda",
+      "Physaria floribunda subsp. osterhoutii",
+      "Physaria rollinsii"
+    )
+  )
+
+  # Verify filtering to records with geographic coordinates.
+  expect_true(all(!is.na(seinet$decimalLongitude)))
+  expect_true(all(!is.na(seinet$decimalLatitude)))
+})

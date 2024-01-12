@@ -1,7 +1,7 @@
 Package: thesis
 Type: Package
 Title: Data and functions for systematic botany thesis work
-Version: 0.3.2.9002
+Version: 0.3.2.9003
 Author: Jason Ratcliff <jason.ratcliff.515@gmail.com> [aut,cre]
 Maintainer: Jason Ratcliff <jason.ratcliff.515@gmail.com>
 Description: Data and code for compiling a thesis manuscript. Includes
@@ -25,7 +25,7 @@ Depends:
 Imports:
     Biostrings,
     cowplot,
-    dplyr,
+    dplyr (>= 1.0.0),
     elevatr,
     fs,
     ggmap (>= 3.0.0.9),
@@ -47,7 +47,7 @@ Imports:
     purrr,
     R6,
     raster,
-    readr,
+    readr (>= 2.0.0),
     rgdal,
     rlang,
     rmapshaper,
@@ -85,7 +85,7 @@ Suggests:
     rprojroot,
     rstudioapi,
     shiny,
-    testthat (>= 3.0.0),
+    testthat (>= 3.1.9),
     tinytex,
     utils,
     whisker,

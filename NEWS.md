@@ -1,8 +1,36 @@
+# thesis (development version)
+
+## Breaking changes
+
+* Rename exported package data objects:
+
+| Old             | New       |
+|:----------------|:----------|
+| `seinet_coords` | `seinet`  |
+
+## New features
+
+* Implement Darwin Core biodiversity standard terms for specimen data (#106).
+  - Improve `tidyverse` data carpentry for `vouchers` raw data (#105). 
+
+* Reduce evalution time of `roxygen` documentation example code (#99).
+
+* Replace local caching of census border shapefiles with persistent data (#102).
+
+## Minor improvements and fixes
+
+* Consolidate `@importFrom` statements into `R/thesis-package.R`
+
+* Remove non-portable `data-raw/appendix` scripts (#72).
+
+* Consolidate package raw data and R scripts to `data-raw/` (#71).
+  - `specimens.xlsx` is no longer installed as raw package data.
+
 # thesis 0.3.2
 
 ## Breaking changes
 
-* Improve package interface by prefixing related `Specimen` superclass methods.
+* Improve package interface by prefixing `Specimen` filter methods (#93).
     + `filter_limit()` replaces `limit()`
     + `filter_taxa()` replaces `taxa()`
     + `filter_collections()` replaces `collections()`

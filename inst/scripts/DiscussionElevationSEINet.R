@@ -21,10 +21,14 @@ spp_colorado <-
   ) %>%
   ungroup() %>%
   select("Taxon_a_posteriori", "Longitude", "Latitude") %>%
-  rename("scientificName" = "Taxon_a_posteriori")
+  dplyr::rename("scientificName" = "Taxon_a_posteriori")
 
 # Filter SEINet data, bind herbarium vouchers, and sort by occurrence tally.
-spp_seinet <- seinet_coords %>%
+spp_seinet <- seinet %>%
+  dplyr::rename(
+    Longitude = "decimalLongitude",
+    Latitude = "decimalLatitude"
+  ) %>%
   select("scientificName", "Longitude", "Latitude") %>%
   bind_rows(., spp_colorado) %>%
   filter(!is.na(Latitude), !is.na(Longitude)) %>%
