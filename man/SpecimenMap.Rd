@@ -52,13 +52,13 @@ voucher_map$filter_limit(
 
 # Base map type
 voucher_map$map(
-  legend = "Reviewed Annotation",
+  .legend = "Reviewed Annotation",
   .borders = "black"
 )
 
 # Example `elevatr` wrapper
 voucher_map$map(
-  legend = "Reviewed Annotation",
+  .legend = "Reviewed Annotation",
   .borders = "grey",
   baselayer = "elevatr"
 )
@@ -231,13 +231,13 @@ Layer \code{\link[ggplot2:theme]{ggplot2::theme()}} specification and default sc
 Depends on \code{\link[ggtext:element_markdown]{ggtext::element_markdown()}} to set legend text for
 italicized species annotations using HTML formatting.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$theme(legend)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$theme(.legend = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{legend}}{Character scalar to set legend title
+\item{\code{.legend}}{Character scalar to set legend title
 for \code{color} and \code{shape} keys via \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
 }
 \if{html}{\out{</div>}}
@@ -256,7 +256,7 @@ are set by the \code{\link[=Specimen]{Specimen$identifier}} field.
 Combines the public methods exposed by \link{SpecimenMap}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$map(
-  legend = self$identifier,
+  .legend = self$identifier,
   .expand = FALSE,
   .borders = "black",
   .states = NULL,
@@ -270,7 +270,7 @@ Combines the public methods exposed by \link{SpecimenMap}.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{legend}}{Character scalar to set legend title
+\item{\code{.legend}}{Character scalar to set legend title
 for \code{color} and \code{shape} keys via \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
 
 \item{\code{.expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand

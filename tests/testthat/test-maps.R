@@ -194,7 +194,7 @@ test_that("SpecimenMap R6 Subclass", {
 
   # Plot Theme -----------------------------------------------------------------
   expect_type(vouchers$theme, type = "closure")
-  voucher_theme <- vouchers$theme(legend = vouchers$identifier)
+  voucher_theme <- vouchers$theme(.legend = vouchers$identifier)
   expect_identical(class(voucher_theme[[1]]), expected = c("theme", "gg"))
   expect_identical(voucher_theme[[1]]$legend.text, ggtext::element_markdown())
   expect_snapshot(voucher_theme[[2]])

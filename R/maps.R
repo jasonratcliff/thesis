@@ -45,7 +45,7 @@
 #' @param .expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
 #'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
 #'  base layers.
-#' @param legend Character scalar to set legend title
+#' @param .legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
 #' @param baselayer Specify map baselayer underlying county borders.
 #'  One of: `base`, `ggmap`, or `elevatr`.
@@ -94,13 +94,13 @@
 #'
 #' # Base map type
 #' voucher_map$map(
-#'   legend = "Reviewed Annotation",
+#'   .legend = "Reviewed Annotation",
 #'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
 #' voucher_map$map(
-#'   legend = "Reviewed Annotation",
+#'   .legend = "Reviewed Annotation",
 #'   .borders = "grey",
 #'   baselayer = "elevatr"
 #' )
@@ -286,7 +286,7 @@ SpecimenMap <- R6::R6Class(
     #' italicized species annotations using HTML formatting.
     #'
     #' @return List of [ggplot2::theme()] and [ggplot2::labs()] objects.
-    theme = function(legend) {
+    theme = function(.legend = NULL) {
       list(
         ggplot2::theme(
           panel.background = ggplot2::element_blank(),
@@ -314,7 +314,7 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier, .expand = FALSE,
+    map = function(.legend = self$identifier, .expand = FALSE,
                    .borders = "black", .states = NULL,
                    baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
@@ -340,7 +340,7 @@ SpecimenMap <- R6::R6Class(
         ) +
         self$specimens() +
         self$scales() +
-        self$theme(legend = legend)
+        self$theme(.legend = .legend)
       return(species_map)
     },
 
