@@ -111,10 +111,21 @@ The R Journal. 8(2):231-242.
 \section{Super class}{
 \code{\link[thesis:Specimen]{thesis::Specimen}} -> \code{SpecimenMap}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{sf_states}}{State Borders \code{sf} data frame}
+
+\item{\code{sf_counties}}{County Borders \code{sf} data frame}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-SpecimenMap-new}{\code{SpecimenMap$new()}}
+\item \href{#method-SpecimenMap-tigris_states}{\code{SpecimenMap$tigris_states()}}
+\item \href{#method-SpecimenMap-tigris_counties}{\code{SpecimenMap$tigris_counties()}}
 \item \href{#method-SpecimenMap-features}{\code{SpecimenMap$features()}}
 \item \href{#method-SpecimenMap-specimens}{\code{SpecimenMap$specimens()}}
 \item \href{#method-SpecimenMap-scales}{\code{SpecimenMap$scales()}}
@@ -155,6 +166,40 @@ subclass instance for geographic mapping.
 filtering, annotations, and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} aesthetics.}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SpecimenMap-tigris_states"></a>}}
+\if{latex}{\out{\hypertarget{method-SpecimenMap-tigris_states}{}}}
+\subsection{Method \code{tigris_states()}}{
+State border simple features via \code{tigris}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$tigris_states()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{sf} data frame of U.S. states.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SpecimenMap-tigris_counties"></a>}}
+\if{latex}{\out{\hypertarget{method-SpecimenMap-tigris_counties}{}}}
+\subsection{Method \code{tigris_counties()}}{
+County border simple features via \code{tigris}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$tigris_counties(.states)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.states}}{Additional character vector of states to layer
+county borders onto map base.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{sf} data frame with county borders from matched states.
 }
 }
 \if{html}{\out{<hr>}}
