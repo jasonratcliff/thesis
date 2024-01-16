@@ -41,8 +41,8 @@ Map terrain tiles pulled from:
 }
 \examples{
 voucher_map <- SpecimenMap$new(
-  records = thesis::herbarium_specimens,
-  identifier = "Taxon_a_posteriori"
+  records = thesis::vouchers,
+  identifier = "scientificName"
 )
 
 voucher_map$filter_limit(
@@ -362,12 +362,13 @@ Design pattern to forward multiple plot arguments modelled after:
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Collector / collection
-sets passed to \code{\link[=Specimen]{Specimen$filter_collections()}}.}
+\item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Sets of \code{recordedBy} /
+\code{recordNumber} pairs passed to \code{\link[=Specimen]{Specimen$filter_collections()}}.}
 
 \item{\code{vouchers}}{Specimen records \code{\link[tibble:tbl_df-class]{tbl_df}} to
-specify subset of record collections. Requires columns \code{Collector},
-\code{Collection_Number}, \code{Longitude}, and \code{Latitude} to construct labels.}
+specify subset of record collections. Requires columns
+\code{recordedBy}, \code{recordNumber}, \code{decimalLongitude}, and \code{decimalLatitude}
+to construct repelled labels.}
 
 \item{\code{repel.params}}{Arg/value pairs passed on to
 \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_label_repel()}} to modify repelled labels.}

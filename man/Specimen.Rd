@@ -22,8 +22,8 @@ annotations for plot labels.
 
 # Initialize object instance from set of records with `new()` method.
 specimens <- Specimen$new(
-  records = thesis::herbarium_specimens,
-  identifier = "Taxon_a_posteriori"
+  records = thesis::vouchers,
+  identifier = "scientificName"
 )
 
 class(specimens)
@@ -67,13 +67,17 @@ dim(filtered) # Note `tbl_df` class returned object
 clone <- specimens$clone()
 clone$filter_taxa(
   c("acutifolia", "floribunda", "vitulifera", "medicinae"),
-  .identifier = "Taxon_a_posteriori"
+  .identifier = "scientificName"
 )
 dim(clone$records)
 
 # Further subset filtered records and return a separate tibble.
 filtered <-
-  clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+  clone$filter_taxa(
+    "vitulifera",
+    .identifier = "previousIdentifications",
+    .return = TRUE
+  )
 dim(filtered)
 
 ## ------------------------------------------------
@@ -84,7 +88,7 @@ clone <- specimens$clone()
 clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
 clone$census()
 
-clone$records[, c("Collector", "Collection_Number")]
+clone$records[, c("recordedBy", "recordNumber")]
 
 ## ------------------------------------------------
 ## Method `Specimen$annotations`
@@ -95,7 +99,7 @@ clone <- specimens$clone()
 clone$filter_taxa("didymocarpa")
 
 # Use a different records tibble column to create named annotations.
-clone$annotations(.identifier = "prior_id")
+clone$annotations(.identifier = "organismName")
 
 ## ------------------------------------------------
 ## Method `Specimen$labels`
@@ -167,8 +171,8 @@ Construct a \code{Specimen} class container from voucher records.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{# Initialize object instance from set of records with `new()` method.
 specimens <- Specimen$new(
-  records = thesis::herbarium_specimens,
-  identifier = "Taxon_a_posteriori"
+  records = thesis::vouchers,
+  identifier = "scientificName"
 )
 
 class(specimens)
@@ -308,13 +312,17 @@ Flexibility is provided to query for e.g., multiple specific epithets.
 clone <- specimens$clone()
 clone$filter_taxa(
   c("acutifolia", "floribunda", "vitulifera", "medicinae"),
-  .identifier = "Taxon_a_posteriori"
+  .identifier = "scientificName"
 )
 dim(clone$records)
 
 # Further subset filtered records and return a separate tibble.
 filtered <-
-  clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+  clone$filter_taxa(
+    "vitulifera",
+    .identifier = "previousIdentifications",
+    .return = TRUE
+  )
 dim(filtered)
 }
 \if{html}{\out{</div>}}
@@ -362,7 +370,7 @@ Input arguments should take one of the following forms:
 clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
 clone$census()
 
-clone$records[, c("Collector", "Collection_Number")]
+clone$records[, c("recordedBy", "recordNumber")]
 }
 \if{html}{\out{</div>}}
 
@@ -402,7 +410,7 @@ clone <- specimens$clone()
 clone$filter_taxa("didymocarpa")
 
 # Use a different records tibble column to create named annotations.
-clone$annotations(.identifier = "prior_id")
+clone$annotations(.identifier = "organismName")
 }
 \if{html}{\out{</div>}}
 

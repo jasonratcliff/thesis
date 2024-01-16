@@ -6,8 +6,8 @@ test_that("Replace specimens data variables with Darwin Core terms.", {
   # Compare updated prior identification parsing; account for ID qualifier.
   expect_true(
     purrr::map2_lgl(
-      .x = vouchers$scientificName,
-      .y = herbarium_specimens$Taxon_a_posteriori,
+      .x = thesis::vouchers$scientificName,
+      .y = thesis::herbarium_specimens$Taxon_a_posteriori,
       .f = \(x, y) identical(x, y)
     ) |> all()
   )
@@ -15,11 +15,11 @@ test_that("Replace specimens data variables with Darwin Core terms.", {
   # Compare parsed elevation data accounting for conversion to meters.
   expect_true(
     purrr::map2_lgl(
-      .x = herbarium_specimens$Elev_raw_min,
-      .y = vouchers$minimumElevationInMeters,
+      .x = thesis::herbarium_specimens$Elev_raw_min,
+      .y = thesis::vouchers$minimumElevationInMeters,
       .f = function(Elev_raw_min, minimumElevationInMeters) {
         if (identical(minimumElevationInMeters, Elev_raw_min)) return(TRUE)
-        near(minimumElevationInMeters, (Elev_raw_min / 3.281), tol = 2)
+        dplyr::near(minimumElevationInMeters, (Elev_raw_min / 3.281), tol = 2)
       }
     ) |> all()
   )

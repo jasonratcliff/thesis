@@ -46,7 +46,7 @@ test_that("Persistent state shapefile package data.", {
 
 ## ---- SpecimenMap$counties() -------------------------------------------------
 test_that("Persistent county shapefile package data.", {
-  specimens <- SpecimenMap$new(herbarium_specimens, "Taxon_a_posteriori")
+  specimens <- SpecimenMap$new(thesis::vouchers, "scientificName")
   # specimens <- build_cartography()$clone()
   with_options(
     new = list("thesis.data" = tmp),
@@ -71,7 +71,7 @@ test_that("Persistent county shapefile package data.", {
       expect_s3_class(object = tigris_counties, class = c("sf", "data.frame"))
 
       # Verify persistent file is written for all states in specimen records
-      unique(specimens$records$State) %>%
+      unique(specimens$records$stateProvince) %>%
         keep(.x = ., .p = ~ !is.na(.x) & (.x %in% datasets::state.name)) %>%
         walk(
           # Orthogonal path check to verify relative path from local option
@@ -113,7 +113,7 @@ test_that("SpecimenMap R6 Subclass", {
   expect_type(vouchers, type = "environment")
   expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "R6"))
   expect_s3_class(vouchers$records, c("tbl_df"))
-  expect_identical(vouchers$identifier, expected = "Species")
+  expect_identical(vouchers$identifier, expected = "scientificName")
 
   # Border Features ------------------------------------------------------------
   expect_type(vouchers$features, type = "closure")
@@ -165,7 +165,7 @@ test_that("SpecimenMap R6 Subclass", {
   expect_identical(
     voucher_specimens[[1]]$data %>%
       dplyr::slice_tail(n = 1) %>%
-      dplyr::pull(Species),
+      dplyr::pull(scientificName),
     expected = "Medicari iugerum"
   )
 
@@ -186,7 +186,7 @@ test_that("SpecimenMap R6 Subclass", {
     .f = function(scale) {
       expect_equal(
         names(scale$labels),
-        expected = unique(vouchers$records[["Species"]]),
+        expected = unique(vouchers$records[["scientificName"]]),
         ignore_attr = TRUE
       )
     }
@@ -222,7 +222,7 @@ test_that("SpecimenMap R6 Subclass", {
   # Optionally set specific specimen records in addition to collection search.
   voucher_labels <-
     tibble::tribble(
-      ~"Collector", ~"Collection_Number", ~"Longitude", ~"Latitude",
+      ~"recordedBy", ~"recordNumber", ~"decimalLongitude", ~"decimalLatitude",
       "A. Gray", 5, 46, -111
     )
   expect_identical(
@@ -245,9 +245,9 @@ test_that("SpecimenMap R6 Subclass", {
 
   # Map Plots ------------------------------------------------------------------
   expect_type(vouchers$map, type = "closure")
-  map_vouchers <- thesis::herbarium_specimens %>%
-    dplyr::filter(State == "Wyoming") %>%
-    SpecimenMap$new(records = ., identifier = "Taxon_a_posteriori")
+  map_vouchers <- thesis::vouchers %>%
+    dplyr::filter(.data$stateProvince == "Wyoming") %>%
+    SpecimenMap$new(records = ., identifier = "scientificName")
 
   expect_error(
     withr::with_envvar(
