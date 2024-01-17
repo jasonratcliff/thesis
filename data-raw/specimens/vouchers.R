@@ -62,11 +62,7 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
       path = voucher$xlsx,
       sheet = sheet,
       na = c("", "NA", "s.n."),
-      col_types = c(
-        # Skip uninformative columns in species sheets raw data
-        rep("text", 16), rep("skip", 10), rep("text", 2), rep("skip", 1),
-        rep("text", 36) # Morphological trait observations (AD:DM)
-      )
+      col_types = "text"
     ) %>%
       tibble::add_column(datasetID = sheet, .before = TRUE)
   }) %>%
@@ -103,19 +99,24 @@ dwcTaxon <- voucher$specimens %>%
 ## ---- voucher-occurrences ----------------------------------------------------
 
 dwcOccurrence <- voucher$specimens %>%
-  dplyr::select(Collector, Collection_Number) %>%
+  dplyr::select(
+    Collector, Collection_Number,
+    Association, Special_Note
+  ) %>%
   dplyr::rename(
     recordedBy = Collector,
-    recordNumber = Collection_Number
+    recordNumber = Collection_Number,
+    associatedTaxa = Association,
+    occurrenceRemarks = Special_Note
   )
 
 ## ---- collection-dates -------------------------------------------------------
 
 # Event: Extract fields related to the time of specimen collection.
 dwcEvent <- voucher$specimens %>%
-  dplyr::select(Date) %>%
+  dplyr::select(Date, Description) %>%
   dplyr::mutate(
-    .keep = "unused",
+    .keep = "unused", .before = "Description",
     verbatimEventDate = Date,
     eventDate = lubridate::parse_date_time(
       x = .data$verbatimEventDate,
@@ -124,7 +125,8 @@ dwcEvent <- voucher$specimens %>%
     year = lubridate::year(.data$eventDate),
     month = lubridate::month(.data$eventDate),
     day = lubridate::day(.data$eventDate)
-  )
+  ) %>%
+  dplyr::rename(habitat = Description)
 
 ## ---- prior-identifications --------------------------------------------------
 
