@@ -25,14 +25,16 @@
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
+  private = list(
+    .bb_lon = NULL,
+    .bb_lat = NULL
+  ),
   public = list(
-
     #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
     #'   frame containing a set of specimen vouchers. The `filter_*` methods
     #'   can be chained to update this field or set to return data without
     #'   modifying the public `records` field.
     records = "tbl_df",
-
     #' @field identifier Character scalar denoting a default variable in
     #'   the `Specimen$records` field. For records with a `.identifier`
     #'   argument, this field is referenced when the optional argument is
@@ -40,7 +42,6 @@ Specimen <- R6::R6Class(
     #'   specific set of taxonomic identifications (e.g., prior annotations),
     #'   including filtering and labelling methods.
     identifier = NULL,
-
     #' @description Construct a `Specimen` class container from voucher records.
     #'
     #' @examples
@@ -56,9 +57,20 @@ Specimen <- R6::R6Class(
     #' class(specimens$records)
     #'
     #' dim(specimens$records)
-    initialize = function(records, identifier) {
+    initialize = function(records, identifier = NULL) {
+      stopifnot(tibble::is_tibble(records))
+      stopifnot(
+        is.null(identifier) ||
+          all(
+            is.character(identifier),
+            length(identifier == 1),
+            identifier %in% names(records)
+          )
+      )
       self$records <- records
-      self$identifier <- identifier
+      self$identifier <- identifier %||% "scientificName"
+      private$.bb_lon <- base::range(self$records[["decimalLongitude"]], na.rm = TRUE)
+      private$.bb_lat <- base::range(self$records[["decimalLatitude"]], na.rm = TRUE)
     },
 
     #' @description Record census accounting of voucher specimens.
@@ -230,7 +242,7 @@ Specimen <- R6::R6Class(
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
-      if (is.null(.identifier)) .identifier <- self$identifier
+      .identifier <- .identifier %||% self$identifier
       filtered <- self$records %>%
         dplyr::filter(
           grepl(
