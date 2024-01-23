@@ -107,90 +107,27 @@
 SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
   inherit = Specimen,
+  private = list(
+    .states = NA,
+    .counties = NA,
+    .borders = "black",
+    .expand = FALSE
+  ),
   public = list(
-
-    #' @field sf_states State Borders `sf` data frame
-    sf_states = NULL,
-
-    #' @field sf_counties County Borders `sf` data frame
-    sf_counties = NULL,
-
     #' @description
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
     #'
-    initialize = function(records, identifier) {
+    initialize = function(records, identifier = NULL) {
       super$initialize(records, identifier)
-    },
-
-    #' @description
-    #' State border simple features via `tigris`
-    #' @return `sf` data frame of U.S. states.
-    tigris_states = function() {
-      state_rda <- path(
-        getOption(x = "thesis.data", default = NULL), "tigris/states",
-        ext = "rda"
-      )
-      if (!file_exists(state_rda)) {
-        self$sf_states <- tigris::states(year = 2021) %>%
-          rmapshaper::ms_simplify(input = .)
-        base::saveRDS(object = self$sf_states, file = state_rda)
-        ui_done(x = "State border data written to:\n{ui_path(state_rda)}")
-      } else {
-        if (file_exists(state_rda)) {
-          self$sf_states <- base::readRDS(file = state_rda)
-        }
-      }
-      invisible()
-    },
-
-    #' @description
-    #' County border simple features via `tigris`
-    #' @return `sf` data frame with county borders from matched states.
-    tigris_counties = function(.states) {
-      if (is.null(.states)) {
-        .states <- unique(self$records[["stateProvince"]])
-      } else {
-        if (!is.character(.states)) {
-          rlang::abort(
-            message = glue::glue(
-              "{ui_code('.states')} must be a character vector."
-            )
+      private$.states <- tigris::states()
+      private$.counties <-
+        tigris::counties(
+          state = purrr::keep(
+            .x = unique(self$records$stateProvince),
+            .p = \(x) x %in% datasets::state.name
           )
-        }
-        .states <- c(.states, unique(self$records[["stateProvince"]]))
-      }
-
-      tigris_counties <-
-        purrr::keep(
-          .x = .states,
-          .p = ~ !is.na(.x) & (.x %in% datasets::state.name)
-        ) %>%
-        purrr::map(
-          .x = .,
-          .f = function(state) {
-            county_rda <- path(
-              getOption(x = "thesis.data"), "tigris/counties", state,
-              ext = "rda"
-            )
-            county_dir <- fs::path_dir(county_rda)
-            if (!dir_exists(county_dir)) {
-              dir_create(county_dir)
-            }
-            if (!file_exists(county_rda)) {
-              county_sf <- tigris::counties(state = state, progress_bar = FALSE)
-              base::saveRDS(object = county_sf, file = county_rda)
-              ui_done(x = "County borders written to:\n{ui_path(county_rda)}")
-            } else {
-              county_sf <- base::readRDS(file = county_rda)
-            }
-            return(county_sf)
-          }
-        ) %>%
-        tigris::rbind_tigris() %>%
-        rmapshaper::ms_simplify(input = .)
-      self$sf_counties <- tigris_counties
-      invisible()
+        )
     },
 
     #' @description
@@ -202,26 +139,24 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(.borders = "black", .states = NULL, .expand = FALSE) {
-      if (is.null(self$sf_states)) self$tigris_states()
-      if (is.null(self$sf_counties)) self$tigris_counties(.states = .states)
+    features = function() {
       list(
         ggplot2::geom_sf(
-          data = self$sf_counties,
-          inherit.aes = FALSE, size = 0.5, alpha = 0.75,
-          color = .borders, fill = NA
+          data = private$.counties,
+          color = private$.borders, fill = NA,
+          size = 0.5, alpha = 0.75,
+          inherit.aes = FALSE
         ),
         ggplot2::geom_sf(
-          data = self$sf_states,
-          color = .borders,
-          inherit.aes = FALSE,
-          size = 1.2,
-          fill = NA
+          data = private$.states,
+          color = private$.borders, fill = NA,
+          size = 1.2, alpha = 0.75,
+          inherit.aes = FALSE
         ),
         ggplot2::coord_sf(
           xlim = base::range(self$records[["decimalLongitude"]], na.rm = TRUE),
           ylim = base::range(self$records[["decimalLatitude"]], na.rm = TRUE),
-          expand = .expand
+          expand = FALSE
         )
       )
     },
@@ -337,11 +272,7 @@ SpecimenMap <- R6::R6Class(
         )
 
       species_map <- baselayer +
-        self$features(
-          .borders = .borders,
-          .states = .states,
-          .expand = .expand
-        ) +
+        self$features() +
         self$specimens() +
         self$scales() +
         self$theme(.legend = .legend)
@@ -415,9 +346,7 @@ SpecimenMap <- R6::R6Class(
         val = repel.params
       ))
       return(id)
-    }
-  ),
-  private = list(
+    },
 
     # Base Layer `ggmap` -------------------------------------------------------
     base_ggmap = function(zoom, center, maptype) {
