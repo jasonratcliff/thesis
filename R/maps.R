@@ -101,7 +101,22 @@ SpecimenMap <- R6::R6Class(
     .states = NA,
     .counties = NA,
     .borders = "black",
-    .expand = FALSE
+    .expand = FALSE,
+    ggmap = list(
+      key = function() {
+        if (!ggmap::has_google_key()) {
+          rlang::abort(
+            message = c(
+              "Register API key with Google:",
+              "https://github.com/dkahle/ggmap#google-maps-api-key"
+            )
+          )
+        }
+      },
+      maptype = function(.maptype) {
+        match.arg(arg = .maptype, choices = ggmap:::GOOGLE_VALID_MAP_TYPES)
+      }
+    )
   ),
   public = list(
     #' @description
@@ -117,7 +132,11 @@ SpecimenMap <- R6::R6Class(
     #'  * `ggmap`: Google Maps API via `ggmap::get_map()`
     #'  * `elevatr`: Elevation rasters via [`elevatr`](https://github.com/jhollist/elevatr)
     initialize = function(records, identifier = NULL,
-                          baselayer = c("ggplot2", "ggmap", "elevatr")) {
+                          baselayer = c("ggplot2", "ggmap", "elevatr"),
+                          ggmap.params = list(
+                            location = NULL,
+                            maptype = "satellite",
+                            zoom = 7)) {
       super$initialize(records, identifier)
       private$.source <-
         match.arg(baselayer, choices = c("ggplot2", "ggmap", "elevatr"))
@@ -133,7 +152,19 @@ SpecimenMap <- R6::R6Class(
               )
             )
           },
-          ggmap = stop("Unimplemented"),
+          ggmap = {
+            if (private$ggmap$key() %||% TRUE) {
+              .location <- ggmap.params[['location']] %||%
+                c(lon = sum(private$.bb_lon) / 2, lat = sum(private$.bb_lat) / 2)
+              ggmap::ggmap(
+                ggmap = ggmap::get_map(
+                  location = .location,
+                  maptype = private$ggmap$maptype(ggmap.params[['maptype']]),
+                  zoom = ggmap.params[['zoom']]
+                )
+              )
+            }
+          },
           elevatr = stop("Unimplemented")
         )
 
@@ -310,43 +341,6 @@ SpecimenMap <- R6::R6Class(
         val = repel.params
       ))
       return(id)
-    },
-
-    # Base Layer `ggmap` -------------------------------------------------------
-    base_ggmap = function(zoom, center, maptype) {
-      if (ggmap::has_google_key() == FALSE) {
-        stop(paste(
-          "Register an API key with Google.",
-          "See: https://github.com/dkahle/ggmap"
-        ))
-      }
-      maptype <-
-        match.arg(
-          arg = maptype,
-          choices = as.character(formals(ggmap::get_map)[["maptype"]])
-        )
-      if (is.null(center)) {
-        bound <- ggmap::make_bbox(
-          lon = self$records[["decimalLongitude"]],
-          lat = self$records[["decimalLatitude"]]
-        )
-        center <- c(
-          lon = (bound[["left"]] + bound[["right"]]) / 2,
-          lat = (bound[["bottom"]] + bound[["top"]]) / 2
-        )
-      } else {
-        rlang::is_bare_numeric(center, n = 2) || rlang::abort(
-          message = c(
-            "Map centroid requires numeric vector of length 2.",
-            "*" = glue::glue("`center` has a length of {length(center)}."),
-            "i" = glue::glue("Set values for for lon (x) / lat (y) coordinates.")
-          )
-        )
-      }
-      ggmap_raster <-
-        ggmap::get_map(location = center, zoom = zoom, maptype = maptype)
-      ggmap_ggplot <- ggmap::ggmap(ggmap = ggmap_raster)
-      return(ggmap_ggplot)
     },
 
     # Base Layer `elevatr` -----------------------------------------------------
