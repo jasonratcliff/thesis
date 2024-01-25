@@ -131,37 +131,6 @@ SpecimenMap <- R6::R6Class(
     },
 
     #' @description
-    #' Layer census border shapefiles built from
-    #' [tigris::states()] and [tigris::counties()] simple features.
-    #' Data layers for simple feature (sf) objects are enabled by
-    #' [ggplot2::geom_sf()]. Coordinate limits are set by the range of
-    #' lon/lat values in the [`Specimen$records`][Specimen] tibble.
-    #'
-    #' @return List of state / county [ggplot2::geom_sf()] and
-    #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function() {
-      list(
-        ggplot2::geom_sf(
-          data = private$.counties,
-          color = private$.borders, fill = NA,
-          size = 0.5, alpha = 0.75,
-          inherit.aes = FALSE
-        ),
-        ggplot2::geom_sf(
-          data = private$.states,
-          color = private$.borders, fill = NA,
-          size = 1.2, alpha = 0.75,
-          inherit.aes = FALSE
-        ),
-        ggplot2::coord_sf(
-          xlim = base::range(self$records[["decimalLongitude"]], na.rm = TRUE),
-          ylim = base::range(self$records[["decimalLatitude"]], na.rm = TRUE),
-          expand = FALSE
-        )
-      )
-    },
-
-    #' @description
     #' Layer jitter geom of specimens from records tibble.
     #' Color and shape aesthetics are set by the
     #' [`Specimen$identifier`][Specimen] public field.
@@ -272,7 +241,9 @@ SpecimenMap <- R6::R6Class(
         )
 
       species_map <- baselayer +
-        self$features() +
+        self$states +
+        self$counties +
+        self$coordinates +
         self$specimens() +
         self$scales() +
         self$theme(.legend = .legend)
@@ -411,6 +382,43 @@ SpecimenMap <- R6::R6Class(
           guide = ggplot2::guide_colourbar(order = 1)
         )
       return(elev_ggplot)
+    }
+  ),
+  active = list(
+    #' @field states Layer [ggplot2::geom_sf()] simple features from state
+    #'   boundary shapefiles returned by [tigris::states()].
+    states = function() {
+      list(
+        ggplot2::geom_sf(
+          data = private$.states,
+          color = private$.borders, fill = NA,
+          size = 1.2, alpha = 0.75,
+          inherit.aes = FALSE
+        )
+      )
+    },
+    #' @field counties Layer [ggplot2::geom_sf()] simple features from county
+    #'   boundary shapefiles returned by [tigris::counties()].
+    counties = function() {
+      list(
+        ggplot2::geom_sf(
+          data = private$.counties,
+          color = private$.borders, fill = NA,
+          size = 0.5, alpha = 0.75,
+          inherit.aes = FALSE
+        )
+      )
+    },
+    #' @field coordinates Layer [ggplot2::coord_sf()] to decimal degree
+    #' format coordinates from extent of `self$records` specimen records.
+    coordinates = function() {
+      list(
+        ggplot2::coord_sf(
+          xlim = private$.bb_lon,
+          ylim = private$.bb_lat,
+          expand = private$.expand
+        )
+      )
     }
   )
 )
