@@ -35,28 +35,13 @@
 #'
 #' - <https://registry.opendata.aws/terrain-tiles/>
 #'
-#' @param records Specimen voucher records [tibble::tibble()].
-#' @param identifier Name of [`Specimen$records`][Specimen] tibble variable for
-#'  filtering, annotations, and [ggplot2::ggplot()] aesthetics.
-#' @param .borders Character scalar to set color of
-#'  county and state borders.
-#' @param .states Additional character vector of states to layer
-#'  county borders onto map base.
-#' @param .expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
-#'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
-#'  base layers.
 #' @param .legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
-#' @param baselayer Specify map baselayer underlying county borders.
-#'  One of: `base`, `ggmap`, or `elevatr`.
 #' @param zoom Integer passed to [ggmap::get_map()] argument `zoom`.
 #' @param center Numeric vector of length 2 specifying x,y lon/lat centroid.
 #'  Default `NULL` centers map by [`Specimen$records`][Specimen] coordinate
 #'  range midpoints.
 #' @param maptype Choice of [ggmap::get_map()] `maptype` argument.
-#'
-#' @include specimens.R
-#' @export
 #'
 #' @references
 #' Hollister J, Shah T, Robitaille A, Beck M, Johnson M. 2021. `elevatr`:
@@ -104,10 +89,15 @@
 #'   .borders = "grey",
 #'   baselayer = "elevatr"
 #' )
+#'
+#' @include specimens.R
+#' @export
 SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
   inherit = Specimen,
   private = list(
+    .source = NULL,
+    .baselayer = NULL,
     .states = NA,
     .counties = NA,
     .borders = "black",
@@ -119,7 +109,35 @@ SpecimenMap <- R6::R6Class(
     #' subclass instance for geographic mapping.
     #'
     initialize = function(records, identifier = NULL) {
+    #' @param records Specimen records tibble as defined for `Specimen$new()`.
+    #' @param identifier Darwin Core term matching column in `$records` to set
+    #'  default variable for specimen plot map aesthetics.
+    #' @param baselayer Set map baselayer type by source package, one of:
+    #'  * `ggplot2`: Basic plot with simple features from `tigris` shapefiles
+    #'  * `ggmap`: Google Maps API via `ggmap::get_map()`
+    #'  * `elevatr`: Elevation rasters via [`elevatr`](https://github.com/jhollist/elevatr)
+    initialize = function(records, identifier = NULL,
+                          baselayer = c("ggplot2", "ggmap", "elevatr")) {
       super$initialize(records, identifier)
+      private$.source <-
+        match.arg(baselayer, choices = c("ggplot2", "ggmap", "elevatr"))
+      private$.baselayer <-
+        switch(
+          EXPR = private$.source,
+          ggplot2 = {
+            ggplot2::ggplot(
+              data = self$records,
+              mapping = ggplot2::aes(
+                x = decimalLongitude,
+                y = decimalLatitude
+              )
+            )
+          },
+          ggmap = stop("Unimplemented"),
+          elevatr = stop("Unimplemented")
+        )
+
+      # Define private fields for `tigris` border shapefiles.
       private$.states <- tigris::states()
       private$.counties <-
         tigris::counties(
@@ -128,6 +146,17 @@ SpecimenMap <- R6::R6Class(
             .p = \(x) x %in% datasets::state.name
           )
         )
+    },
+    #' @description Construct `ggplot2` from composed plot layers.
+    #' @return Grid graphics / ggplot object to print specimen distribution.
+    cartography = function() {
+      private$.baselayer +
+        self$states +
+        self$counties +
+        self$coordinates +
+        self$specimens() +
+        self$scales() +
+        self$theme()
     },
 
     #' @description
@@ -214,42 +243,6 @@ SpecimenMap <- R6::R6Class(
         )
       )
     },
-
-    #' @description
-    #' Build [ggplot2::ggplot()] distribution map from the
-    #' [`Specimen$records`][Specimen] field tibble. Color and shape aesthetics
-    #' are set by the [`Specimen$identifier`][Specimen] field.
-    #' Combines the public methods exposed by [thesis::SpecimenMap].
-    #'
-    #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(.legend = self$identifier, .expand = FALSE,
-                   .borders = "black", .states = NULL,
-                   baselayer = c("base", "ggmap", "elevatr"),
-                   zoom = 7,
-                   center = NULL,
-                   maptype = "satellite") {
-      baselayer <- match.arg(baselayer, choices = c("base", "ggmap", "elevatr"))
-      baselayer <-
-        switch(baselayer,
-          base = ggplot2::ggplot(),
-          ggmap = private$base_ggmap(
-            zoom = zoom,
-            center = center,
-            maptype = maptype
-          ),
-          elevatr = private$base_elevatr(zoom = zoom)
-        )
-
-      species_map <- baselayer +
-        self$states +
-        self$counties +
-        self$coordinates +
-        self$specimens() +
-        self$scales() +
-        self$theme(.legend = .legend)
-      return(species_map)
-    },
-
     #' @description
     #' Layer botanist collection tags, wrapping over
     #' [ggrepel::geom_label_repel()] to plot repelled labels.
