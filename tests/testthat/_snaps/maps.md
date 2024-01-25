@@ -4,10 +4,10 @@
       voucher_specimens[[1]]$mapping
     Output
       Aesthetic mapping: 
-      * `colour` -> `Species`
-      * `shape`  -> `Species`
-      * `x`      -> `Longitude`
-      * `y`      -> `Latitude`
+      * `x`      -> `decimalLongitude`
+      * `y`      -> `decimalLatitude`
+      * `colour` -> `.data[["scientificName"]]`
+      * `shape`  -> `.data[["scientificName"]]`
 
 ---
 
@@ -15,16 +15,19 @@
       voucher_theme[[2]]
     Output
       $x
-      [1] "Longitude"
+      [1] "decimalLongitude"
       
       $y
-      [1] "Latitude"
+      [1] "decimalLatitude"
       
       $colour
-      [1] "Species"
+      [1] "scientificName"
       
       $shape
-      [1] "Species"
+      [1] "scientificName"
+      
+      $size
+      [1] "scientificName"
       
       attr(,"class")
       [1] "labels"

@@ -45,7 +45,7 @@
 #' @param .expand Boolean passed to [ggplot2::coord_sf()] to optionally expand
 #'  map coorinate limits. Set `FALSE` to prevent clipping of `ggmap` / `elevatr`
 #'  base layers.
-#' @param legend Character scalar to set legend title
+#' @param .legend Character scalar to set legend title
 #'  for `color` and `shape` keys via [ggplot2::labs()].
 #' @param baselayer Specify map baselayer underlying county borders.
 #'  One of: `base`, `ggmap`, or `elevatr`.
@@ -83,8 +83,8 @@
 #'
 #' @examples
 #' voucher_map <- SpecimenMap$new(
-#'   records = thesis::herbarium_specimens,
-#'   identifier = "Taxon_a_posteriori"
+#'   records = thesis::vouchers,
+#'   identifier = "scientificName"
 #' )
 #'
 #' voucher_map$filter_limit(
@@ -94,13 +94,13 @@
 #'
 #' # Base map type
 #' voucher_map$map(
-#'   legend = "Reviewed Annotation",
+#'   .legend = "Reviewed Annotation",
 #'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
 #' voucher_map$map(
-#'   legend = "Reviewed Annotation",
+#'   .legend = "Reviewed Annotation",
 #'   .borders = "grey",
 #'   baselayer = "elevatr"
 #' )
@@ -149,7 +149,7 @@ SpecimenMap <- R6::R6Class(
     #' @return `sf` data frame with county borders from matched states.
     tigris_counties = function(.states) {
       if (is.null(.states)) {
-        .states <- unique(self$records[["State"]])
+        .states <- unique(self$records[["stateProvince"]])
       } else {
         if (!is.character(.states)) {
           rlang::abort(
@@ -158,7 +158,7 @@ SpecimenMap <- R6::R6Class(
             )
           )
         }
-        .states <- c(.states, unique(self$records[["State"]]))
+        .states <- c(.states, unique(self$records[["stateProvince"]]))
       }
 
       tigris_counties <-
@@ -219,8 +219,8 @@ SpecimenMap <- R6::R6Class(
           fill = NA
         ),
         ggplot2::coord_sf(
-          xlim = base::range(self$records[["Longitude"]], na.rm = TRUE),
-          ylim = base::range(self$records[["Latitude"]], na.rm = TRUE),
+          xlim = base::range(self$records[["decimalLongitude"]], na.rm = TRUE),
+          ylim = base::range(self$records[["decimalLatitude"]], na.rm = TRUE),
           expand = .expand
         )
       )
@@ -237,15 +237,19 @@ SpecimenMap <- R6::R6Class(
       specimens <- self$records %>%
         dplyr::add_count(.data[[self$identifier]]) %>%
         dplyr::arrange(dplyr::desc(.data$n)) %>%
-        dplyr::filter(!is.na(.data$Longitude) & !is.na(.data$Latitude))
+        dplyr::filter(
+          !is.na(.data$decimalLongitude) &
+            !is.na(.data$decimalLatitude)
+        )
+
       list(
         ggplot2::geom_jitter(
           data = specimens,
-          mapping = ggplot2::aes_string(
-            x = "Longitude",
-            y = "Latitude",
-            color = self$identifier,
-            shape = self$identifier
+          mapping = ggplot2::aes(
+            x = decimalLongitude,
+            y = decimalLatitude,
+            color = .data[[self$identifier]],
+            shape = .data[[self$identifier]]
           ),
           size = 3
         )
@@ -286,7 +290,7 @@ SpecimenMap <- R6::R6Class(
     #' italicized species annotations using HTML formatting.
     #'
     #' @return List of [ggplot2::theme()] and [ggplot2::labs()] objects.
-    theme = function(legend) {
+    theme = function(.legend = NULL) {
       list(
         ggplot2::theme(
           panel.background = ggplot2::element_blank(),
@@ -301,8 +305,8 @@ SpecimenMap <- R6::R6Class(
           legend.text = ggtext::element_markdown()
         ),
         ggplot2::labs(
-          x = "Longitude", y = "Latitude",
-          color = legend, shape = legend
+          x = "decimalLongitude", y = "decimalLatitude",
+          color = .legend, shape = .legend, size = .legend
         )
       )
     },
@@ -314,7 +318,7 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(legend = self$identifier, .expand = FALSE,
+    map = function(.legend = self$identifier, .expand = FALSE,
                    .borders = "black", .states = NULL,
                    baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7,
@@ -340,7 +344,7 @@ SpecimenMap <- R6::R6Class(
         ) +
         self$specimens() +
         self$scales() +
-        self$theme(legend = legend)
+        self$theme(.legend = .legend)
       return(species_map)
     },
 
@@ -351,11 +355,12 @@ SpecimenMap <- R6::R6Class(
     #'
     #' * <https://ggplot2-book.org/programming.html#additional-arguments>
     #'
-    #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Collector / collection
-    #'  sets passed to [`Specimen$filter_collections()`][Specimen].
+    #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Sets of `recordedBy` /
+    #'   `recordNumber` pairs passed to [`Specimen$filter_collections()`][Specimen].
     #' @param vouchers Specimen records [`tbl_df`][tibble::tbl_df-class] to
-    #'  specify subset of record collections. Requires columns `Collector`,
-    #'  `Collection_Number`, `Longitude`, and `Latitude` to construct labels.
+    #'  specify subset of record collections. Requires columns
+    #'  `recordedBy`, `recordNumber`, `decimalLongitude`, and `decimalLatitude`
+    #'   to construct repelled labels.
     #' @param repel.params Arg/value pairs passed on to
     #'  [ggrepel::geom_label_repel()] to modify repelled labels.
     #'
@@ -393,7 +398,11 @@ SpecimenMap <- R6::R6Class(
       id <- do.call(what = ggrepel::geom_label_repel, utils::modifyList(
         list(
           data = collectors,
-          mapping = ggplot2::aes(x = Longitude, y = Latitude, label = label),
+          mapping = ggplot2::aes(
+            x = decimalLongitude,
+            y = decimalLatitude,
+            label = label
+          ),
           alpha = 0.5,
           max.overlaps = Inf,
           point.size = 3,
@@ -425,8 +434,8 @@ SpecimenMap <- R6::R6Class(
         )
       if (is.null(center)) {
         bound <- ggmap::make_bbox(
-          lon = self$records[["Longitude"]],
-          lat = self$records[["Latitude"]]
+          lon = self$records[["decimalLongitude"]],
+          lat = self$records[["decimalLatitude"]]
         )
         center <- c(
           lon = (bound[["left"]] + bound[["right"]]) / 2,
@@ -453,7 +462,9 @@ SpecimenMap <- R6::R6Class(
       prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
       elev_raster <-
         elevatr::get_elev_raster(
-          locations = as.data.frame(self$records[, c("Longitude", "Latitude")]),
+          locations = as.data.frame(
+            self$records[, c("decimalLongitude", "decimalLatitude")]
+          ),
           z = zoom, prj = prj_dd, clip = "bbox", src = "aws", verbose = FALSE
         )
       elev_df <-
@@ -480,12 +491,15 @@ botanist <- function(records) {
   collections <- records %>%
     dplyr::select(
       dplyr::all_of(
-        c("Collector", "Collection_Number", "Longitude", "Latitude")
+        c(
+          "recordedBy", "recordNumber",
+          "decimalLongitude", "decimalLatitude"
+        )
       )
     ) %>%
     dplyr::mutate(
       label = purrr::pmap_chr(
-        .l = list(.data$Collector, .data$Collection_Number),
+        .l = list(.data$recordedBy, .data$recordNumber),
         .f = function(collector, collection) {
           extract <- stringr::str_extract_all(
             string = collector,

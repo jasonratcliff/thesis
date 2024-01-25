@@ -46,8 +46,8 @@ Specimen <- R6::R6Class(
     #' @examples
     #' # Initialize object instance from set of records with `new()` method.
     #' specimens <- Specimen$new(
-    #'   records = thesis::herbarium_specimens,
-    #'   identifier = "Taxon_a_posteriori"
+    #'   records = thesis::vouchers,
+    #'   identifier = "scientificName"
     #' )
     #'
     #' class(specimens)
@@ -74,27 +74,27 @@ Specimen <- R6::R6Class(
     census = function() {
       vouchers <- self$records %>%
         dplyr::select(
-          "Collector", "Collection_Number",
-          "Date", "Herbarium"
+          "recordedBy", "recordNumber",
+          "eventDate", "institutionCode"
         )
       record_census <-
         # tibble::tibble(
         list(
           total = dplyr::mutate(
             .data = vouchers,
-            original = Herbarium,
-            Herbarium = stringr::str_remove_all(
-              string = .data$Herbarium,
+            original = institutionCode,
+            institutionCode = stringr::str_remove_all(
+              string = .data$institutionCode,
               pattern = "[\\[\\]]|([ \\-]?[0-9]+)|( +$)"
             )
           ) %>%
-            tidyr::separate_rows(Herbarium, sep = ", ") %>%
+            tidyr::separate_rows(institutionCode, sep = ", ") %>%
             nrow(),
           distinct = dplyr::mutate(
             .data = vouchers,
             row_id = 1:nrow(vouchers),
-            Herbarium = stringr::str_remove_all(
-              string = .data$Herbarium,
+            institutionCode = stringr::str_remove_all(
+              string = .data$institutionCode,
               pattern = "\\[|\\]"
             ) %>%
               stringr::str_split(string = ., pattern = ", +") %>%
@@ -104,8 +104,11 @@ Specimen <- R6::R6Class(
                 ifelse(length(herbarium_split) == 1, herbarium_split, "NA")
               })
           ) %>%
-            dplyr::distinct(., .data$Collector, .data$Collection_Number,
-              .data$Date, .data$Herbarium,
+            dplyr::distinct(
+              .data$recordedBy,
+              .data$recordNumber,
+              .data$eventDate,
+              .data$institutionCode,
               .keep_all = TRUE
             ) %>%
             nrow()
@@ -144,7 +147,7 @@ Specimen <- R6::R6Class(
                             .return = FALSE) {
       headings <- tibble::tibble(
         heading = c("west", "south", "east", "north"),
-        reference = rep(c("Longitude", "Latitude"), times = 2),
+        reference = rep(c("decimalLongitude", "decimalLatitude"), times = 2),
         comparison = c(rep(">", 2), rep("<", 2)),
         coordinate = purrr::map_dbl(
           .x = list(west, south, east, north),
@@ -211,13 +214,17 @@ Specimen <- R6::R6Class(
     #' clone <- specimens$clone()
     #' clone$filter_taxa(
     #'   c("acutifolia", "floribunda", "vitulifera", "medicinae"),
-    #'   .identifier = "Taxon_a_posteriori"
+    #'   .identifier = "scientificName"
     #' )
     #' dim(clone$records)
     #'
     #' # Further subset filtered records and return a separate tibble.
     #' filtered <-
-    #'   clone$filter_taxa("vitulifera", .identifier = "Taxon", .return = TRUE)
+    #'   clone$filter_taxa(
+    #'     "vitulifera",
+    #'     .identifier = "previousIdentifications",
+    #'     .return = TRUE
+    #'   )
     #' dim(filtered)
     filter_taxa = function(..., .identifier = NULL, .return = FALSE) {
       species <- rlang::list2(...) %>%
@@ -258,7 +265,7 @@ Specimen <- R6::R6Class(
     #' clone$filter_collections(5068, "Rollins" = c(5145, 5146), "Mulligan")
     #' clone$census()
     #'
-    #' clone$records[, c("Collector", "Collection_Number")]
+    #' clone$records[, c("recordedBy", "recordNumber")]
     filter_collections = function(..., .return = FALSE) {
       search <- rlang::dots_list(..., .named = TRUE)
       filtered <- purrr::imap_dfr(
@@ -268,21 +275,21 @@ Specimen <- R6::R6Class(
             if (is.numeric(query)) {
               collections <- self$records %>%
                 dplyr::filter(
-                  grepl(pattern = query, x = Collection_Number)
+                  grepl(pattern = query, x = recordNumber)
                 )
               return(collections)
             } else if (is.character(query)) {
               collections <- self$records %>%
-                dplyr::filter(grepl(pattern = query, x = Collector))
+                dplyr::filter(grepl(pattern = query, x = recordedBy))
               return(collections)
             }
           } else {
             collections <- self$records %>%
               dplyr::filter(
-                grepl(pattern = name, x = Collector),
+                grepl(pattern = name, x = recordedBy),
                 grepl(
                   pattern = paste(query, collapse = "|"),
-                  x = .data$Collection_Number
+                  x = .data$recordNumber
                 )
               )
             return(collections)
@@ -313,7 +320,7 @@ Specimen <- R6::R6Class(
     #' clone$filter_taxa("didymocarpa")
     #'
     #' # Use a different records tibble column to create named annotations.
-    #' clone$annotations(.identifier = "prior_id")
+    #' clone$annotations(.identifier = "organismName")
     annotations = function(.identifier = NULL) {
       if (is.null(.identifier)) .identifier <- self$identifier
       annotations <- unique(self$records[[.identifier]]) %>%

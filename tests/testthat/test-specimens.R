@@ -61,7 +61,7 @@ test_that(
       .l = list(
         heading = c("west", "south", "east", "north"),
         coordinate = c(-106.75, 42, -105.5, 43.5),
-        reference = rep(c("Longitude", "Latitude"), times = 2),
+        reference = rep(c("decimalLongitude", "decimalLatitude"), times = 2),
         comparison = c(rep(">", 2), rep("<", 2))
       ),
       .f = function(heading, coordinate, reference, comparison) {

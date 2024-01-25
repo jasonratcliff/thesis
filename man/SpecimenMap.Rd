@@ -41,8 +41,8 @@ Map terrain tiles pulled from:
 }
 \examples{
 voucher_map <- SpecimenMap$new(
-  records = thesis::herbarium_specimens,
-  identifier = "Taxon_a_posteriori"
+  records = thesis::vouchers,
+  identifier = "scientificName"
 )
 
 voucher_map$filter_limit(
@@ -52,13 +52,13 @@ voucher_map$filter_limit(
 
 # Base map type
 voucher_map$map(
-  legend = "Reviewed Annotation",
+  .legend = "Reviewed Annotation",
   .borders = "black"
 )
 
 # Example `elevatr` wrapper
 voucher_map$map(
-  legend = "Reviewed Annotation",
+  .legend = "Reviewed Annotation",
   .borders = "grey",
   baselayer = "elevatr"
 )
@@ -111,10 +111,21 @@ The R Journal. 8(2):231-242.
 \section{Super class}{
 \code{\link[thesis:Specimen]{thesis::Specimen}} -> \code{SpecimenMap}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{sf_states}}{State Borders \code{sf} data frame}
+
+\item{\code{sf_counties}}{County Borders \code{sf} data frame}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-SpecimenMap-new}{\code{SpecimenMap$new()}}
+\item \href{#method-SpecimenMap-tigris_states}{\code{SpecimenMap$tigris_states()}}
+\item \href{#method-SpecimenMap-tigris_counties}{\code{SpecimenMap$tigris_counties()}}
 \item \href{#method-SpecimenMap-features}{\code{SpecimenMap$features()}}
 \item \href{#method-SpecimenMap-specimens}{\code{SpecimenMap$specimens()}}
 \item \href{#method-SpecimenMap-scales}{\code{SpecimenMap$scales()}}
@@ -155,6 +166,40 @@ subclass instance for geographic mapping.
 filtering, annotations, and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} aesthetics.}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SpecimenMap-tigris_states"></a>}}
+\if{latex}{\out{\hypertarget{method-SpecimenMap-tigris_states}{}}}
+\subsection{Method \code{tigris_states()}}{
+State border simple features via \code{tigris}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$tigris_states()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{sf} data frame of U.S. states.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SpecimenMap-tigris_counties"></a>}}
+\if{latex}{\out{\hypertarget{method-SpecimenMap-tigris_counties}{}}}
+\subsection{Method \code{tigris_counties()}}{
+County border simple features via \code{tigris}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$tigris_counties(.states)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.states}}{Additional character vector of states to layer
+county borders onto map base.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{sf} data frame with county borders from matched states.
 }
 }
 \if{html}{\out{<hr>}}
@@ -231,13 +276,13 @@ Layer \code{\link[ggplot2:theme]{ggplot2::theme()}} specification and default sc
 Depends on \code{\link[ggtext:element_markdown]{ggtext::element_markdown()}} to set legend text for
 italicized species annotations using HTML formatting.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$theme(legend)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$theme(.legend = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{legend}}{Character scalar to set legend title
+\item{\code{.legend}}{Character scalar to set legend title
 for \code{color} and \code{shape} keys via \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
 }
 \if{html}{\out{</div>}}
@@ -256,7 +301,7 @@ are set by the \code{\link[=Specimen]{Specimen$identifier}} field.
 Combines the public methods exposed by \link{SpecimenMap}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$map(
-  legend = self$identifier,
+  .legend = self$identifier,
   .expand = FALSE,
   .borders = "black",
   .states = NULL,
@@ -270,7 +315,7 @@ Combines the public methods exposed by \link{SpecimenMap}.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{legend}}{Character scalar to set legend title
+\item{\code{.legend}}{Character scalar to set legend title
 for \code{color} and \code{shape} keys via \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
 
 \item{\code{.expand}}{Boolean passed to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} to optionally expand
@@ -317,12 +362,13 @@ Design pattern to forward multiple plot arguments modelled after:
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Collector / collection
-sets passed to \code{\link[=Specimen]{Specimen$filter_collections()}}.}
+\item{\code{...}}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Sets of \code{recordedBy} /
+\code{recordNumber} pairs passed to \code{\link[=Specimen]{Specimen$filter_collections()}}.}
 
 \item{\code{vouchers}}{Specimen records \code{\link[tibble:tbl_df-class]{tbl_df}} to
-specify subset of record collections. Requires columns \code{Collector},
-\code{Collection_Number}, \code{Longitude}, and \code{Latitude} to construct labels.}
+specify subset of record collections. Requires columns
+\code{recordedBy}, \code{recordNumber}, \code{decimalLongitude}, and \code{decimalLatitude}
+to construct repelled labels.}
 
 \item{\code{repel.params}}{Arg/value pairs passed on to
 \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_label_repel()}} to modify repelled labels.}
