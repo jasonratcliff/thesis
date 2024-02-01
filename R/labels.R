@@ -5,14 +5,6 @@
 Labels <- R6::R6Class(
   classname = "Labels",
   private = list(
-    preamble = function(.document = "article") {
-      .document <- match.arg(arg = .document, choices = "article")
-      glue::glue_safe( # LaTeX Preamble
-        "\\documentclass{<<.document>>}",
-        "\\begin{document}",
-        .sep = "\n", .open = "<<", .close = ">>"
-      )
-    },
     terms = c(
       "scientificName", "scientificAuthor",
       "stateProvince", "county", "verbatimLocality",
@@ -20,6 +12,30 @@ Labels <- R6::R6Class(
       "decimalLatitude", "decimalLongitude",
       "verbatimElevation"
     ),
+    preamble = function(.document = "article") {
+      .document <- match.arg(arg = .document, choices = "article")
+      glue::glue_safe("
+        %% LaTeX Preamble
+        \\documentclass{<<.document>>}
+        \\usepackage[margin=0pt]{geometry}
+        \\usepackage{multicol}
+        \\setlength\\parindent{0pt}
+        \\newenvironment{record}
+            {
+              \\begin{minipage}{\\linewidth}
+              \\begin{tabular}{|p{\\linewidth}}
+            }
+            {
+              \\end{tabular}
+              \\end{minipage}
+            }
+
+        \\begin{document}
+        \\begin{multicols}{2}
+        ",
+        .sep = "\n", .open = "<<", .close = ">>"
+      )
+    },
     label = function(.record) {
       stopifnot(inherits(.record, "tbl_df") & nrow(.record) == 1)
       collection <- .record |>
@@ -69,7 +85,11 @@ Labels <- R6::R6Class(
         list(
           preamble = private$preamble(),
           labelled = labels,
-          end = "\\end{document}"
+          end = glue::glue(
+            "\\end{{multicols}}",
+            "\\end{{document}}",
+            .sep = "\n"
+          )
         )
       return(composed)
     },
