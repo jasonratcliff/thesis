@@ -132,8 +132,11 @@ dwcEvent <- voucher$specimens %>%
 
 # Identifications:
 dwcIdentification <- voucher$specimens %>%
-  dplyr::select(Taxon) %>%
-  dplyr::mutate(verbatimIdentification = Taxon, .keep = "unused")
+  dplyr::mutate(
+    verbatimIdentification = Taxon,
+    typeStatus = Type,
+    .keep = "none"
+  )
 
 # Organism: Process fields linking taxonomic definitions to occurrence records.
 dwcOrganism <- dwcIdentification %>%
