@@ -20,18 +20,7 @@ Labels <- R6::R6Class(
         \\usepackage[margin=0pt]{geometry}
         \\usepackage{multicol}
         \\setlength\\parindent{0pt}
-        \\newenvironment{record}
-            {
-              \\begin{minipage}{\\linewidth}
-              \\begin{tabular}{|p{\\linewidth}}
-            }
-            {
-              \\end{tabular}
-              \\end{minipage}
-            }
-
         \\begin{document}
-        \\begin{multicols}{2}
         ",
         .sep = "\n", .open = "<<", .close = ">>"
       )
@@ -54,15 +43,51 @@ Labels <- R6::R6Class(
           # TODO Handle range of elevelations; unit conversion: m -> f
           elevation = .record$verbatimElevation,
           elev_unit = "ft. elev",
+          opening = ifelse(
+            # Open `minipage` nested with 2 column `multicol` environment.
+            test = .record$rowId %% 2,
+            yes = private$counter$open,
+            no = ""
+          ),
+          closing = ifelse(
+            # Handle even-numbered or final odd-numbered record to close.
+            test = !(.record$rowId %% 2) |
+              (.record$rowId == nrow(self$occurrences)),
+            yes = private$counter$close,
+            no = ""
+          ),
           .keep = "unused"
         )
       glue::glue_data_safe(
-        .x = collection,
-        "\\section{Flora of <<state>>}",
-        "\\textit{\\bold{<<taxa>>}} <<author>><<type>>",
-        "<<county>> County: <<locale>>",
-        "<<latitude>>°N <<longitude>>°W <<elevation>> <<elev_unit>>",
-        .open = "<<", .close = ">>", .sep = "\n\n"
+        .x = collection, "
+          <<opening>>
+          \\section{Flora of <<state>>}
+
+          \\textit{\\textbf{<<taxa>>}} <<author>><<type>>
+
+          \\bigskip
+          <<county>> County: <<locale>>
+          \\newline
+          <<latitude>>°N <<longitude>>°W \\hfill{} <<elevation>> <<elev_unit>>
+
+          \\bigskip
+          <<closing>>
+          \\
+          ",
+        .open = "<<", .close = ">>",
+        .sep = "\n"
+      )
+    },
+    counter = {
+      list(
+        open = "
+          \\begin{minipage}{\\linewidth}
+          \\begin{multicols}{2}
+        ",
+        close = "
+          \\end{multicols}
+          \\end{minipage}
+        "
       )
     }
   ),
@@ -70,11 +95,14 @@ Labels <- R6::R6Class(
     occurrences = NULL,
     initialize = function(records) {
       self$occurrences <- records |>
-        dplyr::select(dplyr::all_of(private$terms))
+        dplyr::select(dplyr::all_of(private$terms)) |>
+        dplyr::mutate(
+          rowId = dplyr::row_number()
+        )
     },
     tex = function() {
       # Map *p-variables* from *n-records* of specimen occurrences.
-      labels <- purrr::pmap(
+      .labels <- purrr::pmap(
         .l = self$occurrences,
         .f = function(...) {
           l <- rlang::dots_list(..., .named = TRUE)
@@ -84,17 +112,14 @@ Labels <- R6::R6Class(
       composed <-
         list(
           preamble = private$preamble(),
-          labelled = labels,
-          end = glue::glue(
-            "\\end{{multicols}}",
-            "\\end{{document}}",
-            .sep = "\n"
-          )
+          labels = .labels,
+          ending = "\\end{document}"
         )
       return(composed)
     },
     pdf = function(.write = FALSE) {
       if (.write) stop("Unimplemented")
+      .NotYetImplemented()
     }
   )
 )
