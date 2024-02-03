@@ -5,13 +5,15 @@
 Labels <- R6::R6Class(
   classname = "Labels",
   private = list(
-    terms = c(
-      "scientificName", "scientificAuthor",
-      "stateProvince", "county", "verbatimLocality",
-      "recordedBy", "recordNumber", "typeStatus",
-      "decimalLatitude", "decimalLongitude",
-      "verbatimElevation"
-    ),
+    terms = {
+      c(
+        "scientificName", "scientificAuthor",
+        "stateProvince", "county", "verbatimLocality",
+        "recordedBy", "recordNumber", "typeStatus",
+        "decimalLatitude", "decimalLongitude",
+        "verbatimElevation"
+      )
+    },
     preamble = function(.document = "article") {
       .document <- match.arg(arg = .document, choices = "article")
       glue::glue_safe("
@@ -29,20 +31,20 @@ Labels <- R6::R6Class(
       stopifnot(inherits(.record, "tbl_df") & nrow(.record) == 1)
       collection <- .record |>
         dplyr::mutate(
-          state = .record$stateProvince,
-          taxa = .record$scientificName,
-          author = .record$scientificAuthor,
+          state = .data$stateProvince,
+          taxa = .data$scientificName,
+          author = .data$scientificAuthor,
           type = dplyr::if_else(
-            condition = is.na(.record$typeStatus), true = "",
+            condition = is.na(.data$typeStatus), true = "",
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
           ),
-          county = .record$county,
-          latitude = .record$decimalLatitude,
-          longitude = .record$decimalLongitude,
-          locale = .record$verbatimLocality,
+          county = .data$county,
+          latitude = .data$decimalLatitude,
+          longitude = .data$decimalLongitude,
+          locale = .data$verbatimLocality,
           # TODO Handle range of elevelations; unit conversion: m -> f
-          elevation = .record$verbatimElevation,
-          elev_unit = "ft. elev",
+          elevation = .data$verbatimElevation,
+          elev_unit = "ft. elev.",
           opening = ifelse(
             # Open `minipage` nested with 2 column `multicol` environment.
             test = .record$rowId %% 2,
