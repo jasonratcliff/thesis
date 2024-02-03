@@ -21,6 +21,11 @@ Labels <- R6::R6Class(
         \\documentclass{<<.document>>}
         \\usepackage[margin=0pt]{geometry}
         \\usepackage{multicol}
+
+        \\usepackage{titlesec}
+        \\titleformat{name=\\section}
+          {\\bf\\filcenter}{}{1em}{}{}
+
         \\setlength\\parindent{0pt}
         \\begin{document}
         ",
