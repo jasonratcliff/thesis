@@ -66,16 +66,7 @@ voucher$specimens <- readxl::excel_sheets(path = voucher$xlsx) %>%
     ) %>%
       tibble::add_column(datasetID = sheet, .before = TRUE)
   }) %>%
-  # Retain records matching study-relevant genus / family names
-  dplyr::filter(
-    grepl(
-      pattern = "Physaria|Lesquerella|Brassicaceae",
-      x = .data$Taxon, ignore.case = TRUE
-    )
-  ) %>%
-  # Add unique identifier for collection records in data set
-  tibble::rowid_to_column(var = "collectionID") %>%
-  dplyr::mutate(collectionID = as.character(.data$collectionID))
+  tibble::rowid_to_column(var = "collectionID")
 
 ## ---- voucher-records --------------------------------------------------------
 
