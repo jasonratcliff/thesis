@@ -11,7 +11,9 @@ Labels <- R6::R6Class(
         "stateProvince", "county", "verbatimLocality",
         "recordedBy", "recordNumber", "typeStatus",
         "decimalLatitude", "decimalLongitude",
-        "verbatimElevation"
+        "verbatimElevation",
+        "habitat", "associatedTaxa",
+        "occurrenceRemarks"
       )
     },
     preamble = function(.document = "article") {
@@ -78,6 +80,12 @@ Labels <- R6::R6Class(
           <<latitude>>°N <<longitude>>°W \\hfill{} <<elevation>> <<elev_unit>>
 
           \\bigskip
+          <<habitat>>
+          <<associatedTaxa>>
+
+          <<remarks>>
+
+          \\bigskip
           <<closing>>
           \\
           ",
@@ -125,7 +133,6 @@ Labels <- R6::R6Class(
       return(composed)
     },
     pdf = function(.write = FALSE) {
-      if (.write) stop("Unimplemented")
       .NotYetImplemented()
     }
   )
