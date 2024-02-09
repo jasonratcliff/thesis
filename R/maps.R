@@ -375,36 +375,30 @@ SpecimenMap <- R6::R6Class(
     #' @field states Layer [ggplot2::geom_sf()] simple features from state
     #'   boundary shapefiles returned by [tigris::states()].
     states = function() {
-      list(
-        ggplot2::geom_sf(
-          data = private$.states,
-          color = private$.borders, fill = NA,
-          size = 1.2, alpha = 0.75,
-          inherit.aes = FALSE
-        )
+      ggplot2::geom_sf(
+        data = private$.states_sf,
+        color = private$.borders, fill = NA,
+        size = 1.2, alpha = 0.75,
+        inherit.aes = FALSE
       )
     },
     #' @field counties Layer [ggplot2::geom_sf()] simple features from county
     #'   boundary shapefiles returned by [tigris::counties()].
     counties = function() {
-      list(
-        ggplot2::geom_sf(
-          data = private$.counties,
-          color = private$.borders, fill = NA,
-          size = 0.5, alpha = 0.75,
-          inherit.aes = FALSE
-        )
+      ggplot2::geom_sf(
+        data = private$.counties_sf,
+        color = private$.borders, fill = NA,
+        size = 0.5, alpha = 0.75,
+        inherit.aes = FALSE
       )
     },
     #' @field coordinates Layer [ggplot2::coord_sf()] to decimal degree
     #' format coordinates from extent of `self$records` specimen records.
     coordinates = function() {
-      list(
-        ggplot2::coord_sf(
-          xlim = private$.bb_lon,
-          ylim = private$.bb_lat,
-          expand = private$.expand
-        )
+      ggplot2::coord_sf(
+        xlim = private$.bb_lon,
+        ylim = private$.bb_lat,
+        expand = private$.expand
       )
     }
   )
