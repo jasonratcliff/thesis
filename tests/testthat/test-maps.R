@@ -82,13 +82,6 @@ test_that("Species color and shape aesthetics", {
 test_that("Update deprecated tests", {
   skip()
 
-  # Plot Theme -----------------------------------------------------------------
-  expect_type(vouchers$theme, type = "closure")
-  voucher_theme <- vouchers$theme(.legend = vouchers$identifier)
-  expect_identical(class(voucher_theme[[1]]), expected = c("theme", "gg"))
-  expect_identical(voucher_theme[[1]]$legend.text, ggtext::element_markdown())
-  expect_snapshot(voucher_theme[[2]])
-
   # Collector Tags -------------------------------------------------------------
   expect_type(vouchers$repel, type = "closure")
   voucher_repel <-

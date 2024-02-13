@@ -149,7 +149,8 @@ SpecimenMap <- R6::R6Class(
                           ggmap.params = list(
                             location = NULL,
                             maptype = "satellite",
-                            zoom = 7)) {
+                            zoom = 7
+                          )) {
       super$initialize(records, identifier)
       private$.source <-
         match.arg(baselayer, choices = c("ggplot2", "ggmap", "elevatr"))
@@ -167,13 +168,13 @@ SpecimenMap <- R6::R6Class(
           },
           ggmap = {
             if (private$ggmap$key() %||% TRUE) {
-              .location <- ggmap.params[['location']] %||%
+              .location <- ggmap.params[["location"]] %||%
                 c(lon = sum(private$.bb_lon) / 2, lat = sum(private$.bb_lat) / 2)
               ggmap::ggmap(
                 ggmap = ggmap::get_map(
                   location = .location,
-                  maptype = private$ggmap$maptype(ggmap.params[['maptype']]),
-                  zoom = ggmap.params[['zoom']]
+                  maptype = private$ggmap$maptype(ggmap.params[["maptype"]]),
+                  zoom = ggmap.params[["zoom"]]
                 )
               )
             }
@@ -200,33 +201,20 @@ SpecimenMap <- R6::R6Class(
         self$coordinates +
         self$specimens +
         self$scales +
-        self$theme()
-    },
-    #' @description
-    #' Layer [ggplot2::theme()] specification and default scale labels.
-    #' Depends on [ggtext::element_markdown()] to set legend text for
-    #' italicized species annotations using HTML formatting.
-    #'
-    #' @return List of [ggplot2::theme()] and [ggplot2::labs()] objects.
-    theme = function(.legend = NULL) {
-      list(
         ggplot2::theme(
           panel.background = ggplot2::element_blank(),
           panel.border = ggplot2::element_rect(fill = NA, color = "black"),
-          legend.text.align = 0, legend.title.align = 0.5,
+          legend.background = ggplot2::element_rect(color = "black"),
           legend.direction = "vertical",
           legend.key = ggplot2::element_blank(),
-          legend.background = ggplot2::element_rect(
-            fill = "grey90",
-            color = "black"
-          ),
-          legend.text = ggtext::element_markdown()
-        ),
+          legend.text = ggtext::element_markdown(),
+          legend.text.align = 0,
+          legend.title.align = 0.5
+        ) +
         ggplot2::labs(
-          x = "decimalLongitude", y = "decimalLatitude",
+          x = "Longitude", y = "Latitude",
           color = .legend, shape = .legend, size = .legend
         )
-      )
     },
     #' @description
     #' Layer botanist collection tags, wrapping over
