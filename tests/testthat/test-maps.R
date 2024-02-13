@@ -45,27 +45,27 @@ test_that("Shapefile simple features active fields", {
 
 })
 
+test_that("Specimens jitter layer", {
+  expect_snapshot(specimen_map$specimens)
+  expect_s3_class(
+    specimen_map$specimens, exact = TRUE,
+    class = c("LayerInstance", "Layer", "ggproto", "gg")
+  )
+
+  # Check sorted record counts
+  counts <- unique(specimen_map$specimens$data$n)
+  checks <- logical(length(counts) - 1)
+  for (i in seq_along(counts)) {
+    if (i > 1) {
+      checks[i-1] <- counts[i-1] >= counts[i]
+    }
+  }
+  expect_true(all(checks))
+  rm(counts, checks, i)
+})
+
 test_that("Update deprecated tests", {
   skip()
-
-  # Specimen Layer -------------------------------------------------------------
-  expect_type(vouchers$specimens, type = "closure")
-  voucher_specimens <- vouchers$specimens()
-
-  # Verify record sorting
-  expect_identical(
-    voucher_specimens[[1]]$data %>%
-      dplyr::slice_tail(n = 1) %>%
-      dplyr::pull(scientificName),
-    expected = "Medicari iugerum"
-  )
-
-  # Check layer geom aesthetics
-  expect_identical(
-    class(voucher_specimens[[1]]),
-    expected = c("LayerInstance", "Layer", "ggproto", "gg")
-  )
-  expect_snapshot(voucher_specimens[[1]]$mapping)
 
   # Manual Scales --------------------------------------------------------------
   expect_type(vouchers$scales, type = "closure")

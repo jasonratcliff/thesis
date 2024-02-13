@@ -1,34 +1,10 @@
-# SpecimenMap R6 Subclass
+# Specimens jitter layer
 
     Code
-      voucher_specimens[[1]]$mapping
+      specimen_map$specimens
     Output
-      Aesthetic mapping: 
-      * `x`      -> `decimalLongitude`
-      * `y`      -> `decimalLatitude`
-      * `colour` -> `.data[["scientificName"]]`
-      * `shape`  -> `.data[["scientificName"]]`
-
----
-
-    Code
-      voucher_theme[[2]]
-    Output
-      $x
-      [1] "decimalLongitude"
-      
-      $y
-      [1] "decimalLatitude"
-      
-      $colour
-      [1] "scientificName"
-      
-      $shape
-      [1] "scientificName"
-      
-      $size
-      [1] "scientificName"
-      
-      attr(,"class")
-      [1] "labels"
+      mapping: x = ~decimalLongitude, y = ~decimalLatitude, colour = ~.data[["scientificName"]], shape = ~.data[["scientificName"]] 
+      geom_point: na.rm = FALSE
+      stat_identity: na.rm = FALSE
+      position_jitter 
 

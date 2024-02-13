@@ -102,6 +102,15 @@ SpecimenMap <- R6::R6Class(
     .counties = NA,
     .borders = "black",
     .expand = FALSE,
+    .specimens = function() {
+      # Order specimens to account for plot density; exlude missing coordinates.
+      self$records %>%
+        dplyr::add_count(.data[[self$identifier]]) %>%
+        dplyr::arrange(dplyr::desc(.data$n)) %>%
+        dplyr::filter(
+          !is.na(.data$decimalLongitude) & !is.na(.data$decimalLatitude)
+        )
+    },
     ggmap = list(
       key = function() {
         if (!ggmap::has_google_key()) {
@@ -185,41 +194,10 @@ SpecimenMap <- R6::R6Class(
         self$states +
         self$counties +
         self$coordinates +
-        self$specimens() +
+        self$specimens +
         self$scales() +
         self$theme()
     },
-
-    #' @description
-    #' Layer jitter geom of specimens from records tibble.
-    #' Color and shape aesthetics are set by the
-    #' [`Specimen$identifier`][Specimen] public field.
-    #'
-    #' @return List with [ggplot2::geom_jitter()] ggproto object.
-    specimens = function() {
-      # Order specimens to account for plot density
-      specimens <- self$records %>%
-        dplyr::add_count(.data[[self$identifier]]) %>%
-        dplyr::arrange(dplyr::desc(.data$n)) %>%
-        dplyr::filter(
-          !is.na(.data$decimalLongitude) &
-            !is.na(.data$decimalLatitude)
-        )
-
-      list(
-        ggplot2::geom_jitter(
-          data = specimens,
-          mapping = ggplot2::aes(
-            x = decimalLongitude,
-            y = decimalLatitude,
-            color = .data[[self$identifier]],
-            shape = .data[[self$identifier]]
-          ),
-          size = 3
-        )
-      )
-    },
-
     #' @description
     #' Layer manual scale values for color and shape aesthetics.
     #' Legend limits are subset to name values in
@@ -399,6 +377,20 @@ SpecimenMap <- R6::R6Class(
         xlim = private$.bb_lon,
         ylim = private$.bb_lat,
         expand = private$.expand
+      )
+    },
+    #' @field specimens Layer [ggplot2::geom_jitter()] for specimen records
+    #' with color and shape aesthetics set by [`Specimen$identifier`][Specimen].
+    specimens = function() {
+      ggplot2::geom_jitter(
+        data = private$.specimens(),
+        mapping = ggplot2::aes(
+          x = decimalLongitude,
+          y = decimalLatitude,
+          color = .data[[self$identifier]],
+          shape = .data[[self$identifier]]
+        ),
+        size = 3
       )
     }
   )
