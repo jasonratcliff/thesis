@@ -295,7 +295,7 @@ conservation priority by the Wyoming National Diversity Database with
 the G2G3/S2S3 heritage ranking (@HeidelOKane2012). *Physaria integrifolia* is a
 regional endemic of western Wyoming and eastern Idaho.
 
-{{< include /qmd/_fig-intro-priors.qmd >}}
+{{< include /qmd/fig/_intro-priors.qmd >}}
 
 \clearpage
 
@@ -348,7 +348,7 @@ geographically separated from the Colorado Front range *P. vitulifera*
 
 \clearpage
 
-{{< include /qmd/_tbl-intro-carbon.qmd >}}
+{{< include /qmd/tbl/_intro-carbon.qmd >}}
 
 ```{r tbl-intro-carbon}
 #| tbl-cap: Putative Carbon County, Wyoming *Physaria vitulifera* specimens.
