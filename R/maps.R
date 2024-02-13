@@ -111,6 +111,10 @@ SpecimenMap <- R6::R6Class(
           !is.na(.data$decimalLongitude) & !is.na(.data$decimalLatitude)
         )
     },
+    .scales = function() {
+      thesis::aesthetics %>%
+        dplyr::filter(species %in% names(self$annotations()))
+    },
     ggmap = list(
       key = function() {
         if (!ggmap::has_google_key()) {
@@ -195,37 +199,9 @@ SpecimenMap <- R6::R6Class(
         self$counties +
         self$coordinates +
         self$specimens +
-        self$scales() +
+        self$scales +
         self$theme()
     },
-    #' @description
-    #' Layer manual scale values for color and shape aesthetics.
-    #' Legend limits are subset to name values in
-    #' [`Specimen$annotations()`][Specimen] for
-    #' the set of species values indicated by [`Specimen$identifier`][Specimen].
-    #' See [thesis::aesthetics] for scale value specifications.
-    #'
-    #' @return List with [ggplot2::scale_color_manual()] and
-    #'  [ggplot2::scale_shape_manual()] ggproto objects.
-    scales = function() {
-      manual_scales <- thesis::aesthetics %>%
-        dplyr::filter(species %in% names(self$annotations()))
-      list(
-        ggplot2::scale_color_manual(
-          labels = self$annotations(),
-          limits = manual_scales[["species"]],
-          values = manual_scales[["color"]],
-          na.value = "black"
-        ),
-        ggplot2::scale_shape_manual(
-          labels = self$annotations(),
-          limits = manual_scales[["species"]],
-          values = manual_scales[["shape"]],
-          na.value = 17
-        )
-      )
-    },
-
     #' @description
     #' Layer [ggplot2::theme()] specification and default scale labels.
     #' Depends on [ggtext::element_markdown()] to set legend text for
@@ -391,6 +367,28 @@ SpecimenMap <- R6::R6Class(
           shape = .data[[self$identifier]]
         ),
         size = 3
+      )
+    },
+    #' @field specimens Layer manual values for color and shape aesthetics.
+    #' Scale limits and values matched by [`Specimen$annotations()`][Specimen]
+    #' are defined in [thesis::aesthetics]. Returns `ggproto` objects from
+    #' [ggplot2::scale_color_manual()] and [ggplot2::scale_shape_manual()].
+    scales = function() {
+      labeled <- self$annotations()
+      filtered <- private$.scales()
+      list(
+        ggplot2::scale_color_manual(
+          labels = labeled,
+          limits = filtered[["species"]],
+          values = filtered[["color"]],
+          na.value = "black"
+        ),
+        ggplot2::scale_shape_manual(
+          labels = labeled,
+          limits = filtered[["species"]],
+          values = filtered[["shape"]],
+          na.value = 17
+        )
       )
     }
   )

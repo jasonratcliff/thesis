@@ -64,24 +64,23 @@ test_that("Specimens jitter layer", {
   rm(counts, checks, i)
 })
 
-test_that("Update deprecated tests", {
-  skip()
-
-  # Manual Scales --------------------------------------------------------------
-  expect_type(vouchers$scales, type = "closure")
-  voucher_scales <- vouchers$scales()
-  expect_identical(voucher_scales[[1]]$aesthetics, expected = "colour")
-  expect_identical(voucher_scales[[2]]$aesthetics, expected = "shape")
-  purrr::walk(
-    .x = voucher_scales,
-    .f = function(scale) {
+test_that("Species color and shape aesthetics", {
+  species <- unique(specimen_map$records[["scientificName"]])
+  purrr::walk2(
+    .x = list(specimen_map$scales[[1]], specimen_map$scales[[2]]),
+    .y = c("colour", "shape"),
+    .f = function(scale, aesthetic) {
+      expect_identical(scale$aesthetics, expected = aesthetic)
       expect_equal(
-        names(scale$labels),
-        expected = unique(vouchers$records[["scientificName"]]),
-        ignore_attr = TRUE
+        names(scale$labels), expected = species, ignore_attr = TRUE
       )
     }
   )
+  rm(species)
+})
+
+test_that("Update deprecated tests", {
+  skip()
 
   # Plot Theme -----------------------------------------------------------------
   expect_type(vouchers$theme, type = "closure")
