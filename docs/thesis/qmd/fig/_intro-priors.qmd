@@ -1,11 +1,37 @@
 
+[//]: # (TODO <1/23/24>: Verify appropriate term for prior identifications)
+
 ```{r setup-intro-priors}
 #| include: false
-library(thesis)
-library(ggplot2)
 
 set.seed(20210311)
+
+priors <- SpecimenMap$new(
+  records = thesis::vouchers,
+  identifier = "organismName"
+)$filter_limit(
+    # Set coordinate extent for specimen plot
+    west = -114.5,
+    south = 37,
+    east = -102,
+    north = 49.1
+  )$filter_taxa(
+    paste0(
+      "Physaria ",
+      c(
+        "acutifolia", "brassicoides", "condensata", "dornii",
+        "eburniflora", "integrifolia", "vitulifera",
+        "'medicinae'", "chambersii", "rollinsii",
+        paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
+        paste("saximontana subsp.", c("saximontana", "dentata")),
+        paste("floribunda subsp.", c("floribunda", "osterhoutii"))
+      ),
+      "$"
+    )
+  )
 ```
+
+[//]: # (TODO <1/23/24>: Default theme setting - PDF vs. HTML?)
 
 ```{r fig-intro-priors}
 #| column: body-outset
@@ -14,34 +40,5 @@ set.seed(20210311)
 #| fig-align: center
 #| fig-height: 12
 #| fig-width: 8
-SpecimenMap$new(
-  records = thesis::herbarium_specimens,
-  identifier = "prior_id"
-)$filter_limit(
-  # Set coordinate extent for specimen plot
-  west = -114.5,
-  south = 37,
-  east = -102,
-  north = 49.1
-)$filter_taxa(
-  paste0(
-    "Physaria ",
-    c(
-      "acutifolia", "brassicoides", "condensata", "dornii",
-      "eburniflora", "integrifolia", "vitulifera",
-      "'medicinae'", "chambersii", "rollinsii",
-      paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
-      paste("saximontana subsp.", c("saximontana", "dentata")),
-      paste("floribunda subsp.", c("floribunda", "osterhoutii"))
-    ),
-    "$"
-  )
-)$map(legend = "Prior Annotations") +
-  theme(
-    legend.background = element_rect(fill = "grey99"),
-    legend.position = "bottom",
-    legend.direction = "horizontal",
-    plot.margin = margin(0.25, 1, 0.25, 0, "in")
-  ) +
-  guides(colour = guide_legend(ncol = 3, byrow = TRUE))
+priors$cartography()
 ```
