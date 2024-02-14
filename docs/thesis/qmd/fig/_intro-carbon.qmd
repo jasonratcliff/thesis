@@ -1,0 +1,58 @@
+
+[//]: # (TODO <2/13/24>: Verify appropriate use of DWC term for prior ID)
+
+```{r setup-intro-carbon}
+#| include: false
+
+set.seed(20230404)
+
+carbon <- thesis::vouchers |>
+  # Update most recent annotation to `organismName`
+  dplyr::mutate(
+    identificationRemarks = dplyr::case_when(
+
+      # Northern extent specimens with any *P. vitulifera* annotation.
+      grepl("vitulifera", x = .data$previousIdentifications) &
+        .data$decimalLatitude > 40
+        ~ "*P. vitulifera* (Carbon, WY)",
+
+      # Last annotation as *P. acutifolia* with *P. vitulifera* phenotype.
+      grepl(pattern = "acutifolia", x = .data$organismName) &
+        grepl(pattern = "medicinae", x = .data$scientificName)
+        ~ "*P. vitulifera* (Phenotype)",
+
+      TRUE ~ .data$organismName
+    ),
+
+    # Static update to `datasetID` to distinguish SEINet occurrence data.
+    datasetID = "Loaned"
+  ) |>
+
+  # Row-bind SEINet occurrence data:
+  dplyr::bind_rows(
+    tibble::add_column(.data = seinet, datasetID = "SEINet") |>
+      dplyr::mutate(
+        identificationRemarks = scientificName,
+        decimalLongitude = Longitude,
+        decimalLatitude = Latitude
+      )
+  ) |>
+  Specimen$new()
+
+carbon$filter_limit(west = -109, south = 39, east = -105, north = 42)
+
+```
+
+```{r fig-intro-carbon-wip}
+#| subtitle: "Carbon County, WY putative *Phyasaria vitulifera* specimens"
+SpecimenMap$new(
+  records = carbon$records,
+  identifier = "identificationRemarks",
+  baselayer = "ggmap",
+  ggmap.params = list(
+    location = c(-106.5, 40.4),
+    zoom = 7,
+    maptype = "satellite"
+  )
+)$cartography()
+```
