@@ -1,0 +1,44 @@
+
+[//]: # (TODO <1/23/24>: Verify appropriate term for prior identifications)
+
+```{r setup-intro-priors}
+#| include: false
+
+set.seed(20210311)
+
+priors <- SpecimenMap$new(
+  records = thesis::vouchers,
+  identifier = "organismName"
+)$filter_limit(
+    # Set coordinate extent for specimen plot
+    west = -114.5,
+    south = 37,
+    east = -102,
+    north = 49.1
+  )$filter_taxa(
+    paste0(
+      "Physaria ",
+      c(
+        "acutifolia", "brassicoides", "condensata", "dornii",
+        "eburniflora", "integrifolia", "vitulifera",
+        "'medicinae'", "chambersii", "rollinsii",
+        paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
+        paste("saximontana subsp.", c("saximontana", "dentata")),
+        paste("floribunda subsp.", c("floribunda", "osterhoutii"))
+      ),
+      "$"
+    )
+  )
+```
+
+[//]: # (TODO <1/23/24>: Default theme setting - PDF vs. HTML?)
+
+```{r fig-intro-priors}
+#| column: body-outset
+#| fig-cap: >
+#|   Distribution of *Physaria* herbarium specimen vouchers by prior annotation.
+#| fig-align: center
+#| fig-height: 12
+#| fig-width: 8
+priors$cartography()
+```

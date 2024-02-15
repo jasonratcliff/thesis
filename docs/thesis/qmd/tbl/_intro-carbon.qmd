@@ -1,13 +1,13 @@
 
 ```{r carbon-specimens}
 # Limit specimens to Carbon County, Wyoming
-specimens <-
+carbon <-
   SpecimenMap$new(
-    records = thesis::herbarium_specimens,
-    identifier = "prior_id"
+    records = thesis::vouchers,
+    identifier = "organismName"
   )$filter_limit(
     north = 42.0, south = 40.5, east = -105.5, west = -107.5
-  )$filter_taxa("vitulifera", .identifier = "Taxon")
+  )$filter_taxa("vitulifera", .identifier = "previousIdentifications")
 
 # Join markdown-formatted annotation labels for most recent annotation.
 records <- tibble::as_tibble(specimens$annotations()) %>%
