@@ -193,7 +193,11 @@ SpecimenMap <- R6::R6Class(
     },
     #' @description Construct `ggplot2` from composed plot layers.
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    cartography = function() {
+    cartography = function(.legend = NULL) {
+      .legend <- .legend %||% self$identifier
+      if (!.legend %in% names(self$records)) {
+        rlang::abort("{.legend} must match variable in `$records`")
+      }
       private$.baselayer +
         self$states +
         self$counties +
