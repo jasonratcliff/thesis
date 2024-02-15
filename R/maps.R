@@ -136,7 +136,6 @@ SpecimenMap <- R6::R6Class(
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
     #'
-    initialize = function(records, identifier = NULL) {
     #' @param records Specimen records tibble as defined for `Specimen$new()`.
     #' @param identifier Darwin Core term matching column in `$records` to set
     #'  default variable for specimen plot map aesthetics.
