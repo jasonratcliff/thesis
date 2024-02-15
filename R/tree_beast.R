@@ -240,7 +240,6 @@ beast_legend_probability <- function(tree_data) {
 #'
 #' @keywords internal
 species_plot <- function(tree_tibble, label_size = 2) {
-
   # Parse tip label expressions for species italicization.
   labeled_tree <- tree_tibble %>%
     dplyr::mutate(

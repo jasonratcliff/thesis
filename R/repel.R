@@ -394,7 +394,6 @@ repel_node_labels <- function(node_nudges, node_labels,
 #'
 #' @keywords internal
 haplotype_labels <- function(haplotypes, id_column) {
-
   # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
   labelled_haplotypes <- haplotypes %>%
     dplyr::select(

@@ -15,7 +15,6 @@
 #'
 #' @keywords internal
 count_specimens <- function(spp_tibble) {
-
   # Calculate total number of specimens accounting for duplicated records.
   specimen_count <- spp_tibble %>%
     dplyr::select("Collector", "Collection_Number", "Date", "Herbarium") %>%
@@ -70,7 +69,6 @@ count_specimens <- function(spp_tibble) {
 #'
 #' @keywords internal
 subset_coords <- function(specimen_tbl, Latitude = NULL, Longitude = NULL) {
-
   # Cast non-null inputs as numerically sorted character vectors.
   args_cords <- list(Longitude = Longitude, Latitude = Latitude) %>%
     purrr::map(function(coords) sort(coords)) %>%
@@ -171,7 +169,6 @@ filter_reviewed <- function(specimen_tbl) {
 #'
 #' @keywords internal
 find_spp <- function(specimen_tbl, collector = NULL, collection = NULL) {
-
   # Keep non-null arguments from list of function inputs.
   args_find <- list(
     Collector = collector,

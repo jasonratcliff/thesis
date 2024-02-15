@@ -21,7 +21,6 @@
 #'
 #' @keywords internal
 potentially_informative_sites <- function(fasta_file, ...) {
-
   # Cast matrix from unmasked Biostrings DNAMultipleAlignment object.
   dna_alignment <-
     Biostrings::readDNAMultipleAlignment(filepath = fasta_file)
@@ -102,7 +101,6 @@ msa_intervals <- function(msa_alignment) {
 #' @keywords internal
 msa_wrapper <- function(msa_fasta, msa_output,
                         alignment_dir = fs::path("Appendix/alignments/")) {
-
   # Assign DNA multiple alignment object from external package data:
   dna_align <-
     list.files(system.file("extdata/Alignments", package = "thesis"),
@@ -148,7 +146,6 @@ msa_wrapper <- function(msa_fasta, msa_output,
 #'
 #' @keywords internal
 msa_texshade <- function(tex_path, landscape = FALSE) {
-
   # Subset TexShade LaTeX environment from msa::msaPrettyPrint() .tex output.
   raw_tex <- readr::read_lines(file = tex_path)
   texshade_start <- grep(pattern = "\\\\begin\\{texshade\\}", x = raw_tex)

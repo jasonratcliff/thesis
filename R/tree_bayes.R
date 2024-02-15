@@ -91,7 +91,6 @@ bayes_ggtree <- function(joined_ggtree, id_column,
 #'
 #' @keywords internal
 bayes_themes <- function(joined_ggtree, id_column) {
-
   # Assign HTML markdown label vector.
   markdown_labels <- thesis::spl_labels(
     specimen_tbl = joined_ggtree,
