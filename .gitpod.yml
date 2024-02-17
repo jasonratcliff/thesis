@@ -3,14 +3,8 @@ image:
 
 tasks:
   - name: Install Package
-    before: Rscript -e "renv::hydrate(); renv::restore()"
-    init: Rscript -e "renv::install('.')"
-
-github:
-    prebuilds:
-        master: true
-        branches: false
-        pullRequests: true
+    before: Rscript -e "renv::install('.')"
+    command: R
 
 vscode:
   extensions:
