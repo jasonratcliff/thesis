@@ -4,7 +4,6 @@ image:
 tasks:
   - name: Install Package
     before: Rscript -e "renv::install('.')"
-    command: R
 
 vscode:
   extensions:

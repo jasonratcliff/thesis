@@ -23,9 +23,9 @@ RUN R -e "remotes::install_github('rstudio/renv@${RENV_VERSION}')"
 WORKDIR /workspace
 COPY renv.lock renv.lock
 ENV RENV_PATHS_LIBRARY renv/library
+ENV RENV_CONFIG_PAK_ENABLED true
 
-RUN R -e "renv::restore(library = Sys.getenv('R_LIBS_SITE'))"
-RUN R -e "renv::install('.')"
+RUN R -e "renv::restore(library = Sys.getenv('R_LIBS_SITE'), repos = c(CRAN = 'https://cloud.r-project.org'))"
 
 # Create the gitpod user. UID must be 33333.
 RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod
