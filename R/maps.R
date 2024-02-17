@@ -143,6 +143,7 @@ SpecimenMap <- R6::R6Class(
     #'  * `ggplot2`: Basic plot with simple features from `tigris` shapefiles
     #'  * `ggmap`: Google Maps API via `ggmap::get_map()`
     #'  * `elevatr`: Elevation rasters via [`elevatr`](https://github.com/jhollist/elevatr)
+    #' @param ggmap.params Additional `ggmap` parameters for raster image base.
     initialize = function(records, identifier = NULL,
                           baselayer = c("ggplot2", "ggmap", "elevatr"),
                           ggmap.params = list(
@@ -287,8 +288,7 @@ SpecimenMap <- R6::R6Class(
       ))
       return(id)
     },
-
-    # Base Layer `elevatr` -----------------------------------------------------
+    #' @description Base Layer `elevatr`
     base_elevatr = function(zoom) {
       # Define projection and get AWS Open Data terrain tiles.
       prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -321,7 +321,7 @@ SpecimenMap <- R6::R6Class(
     #'   boundary shapefiles returned by [tigris::states()].
     states = function() {
       ggplot2::geom_sf(
-        data = private$.states_sf,
+        data = private$.states,
         color = private$.borders, fill = NA,
         size = 1.2, alpha = 0.75,
         inherit.aes = FALSE
@@ -331,7 +331,7 @@ SpecimenMap <- R6::R6Class(
     #'   boundary shapefiles returned by [tigris::counties()].
     counties = function() {
       ggplot2::geom_sf(
-        data = private$.counties_sf,
+        data = private$.counties,
         color = private$.borders, fill = NA,
         size = 0.5, alpha = 0.75,
         inherit.aes = FALSE
@@ -360,7 +360,7 @@ SpecimenMap <- R6::R6Class(
         size = 3
       )
     },
-    #' @field specimens Layer manual values for color and shape aesthetics.
+    #' @field scales Layer manual values for color and shape aesthetics.
     #' Scale limits and values matched by [`Specimen$annotations()`][Specimen]
     #' are defined in [thesis::aesthetics]. Returns `ggproto` objects from
     #' [ggplot2::scale_color_manual()] and [ggplot2::scale_shape_manual()].
@@ -389,12 +389,10 @@ SpecimenMap <- R6::R6Class(
 botanist <- function(records) {
   collections <- records %>%
     dplyr::select(
-      dplyr::all_of(
-        c(
-          "recordedBy", "recordNumber",
-          "decimalLongitude", "decimalLatitude"
-        )
-      )
+      dplyr::all_of(c(
+        "recordedBy", "recordNumber",
+        "decimalLongitude", "decimalLatitude"
+      ))
     ) %>%
     dplyr::mutate(
       label = purrr::pmap_chr(
