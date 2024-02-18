@@ -73,6 +73,7 @@ Suggests:
     gridExtra,
     here,
     kableExtra,
+    languageserver,
     lifecycle,
     lubridate,
     pander,

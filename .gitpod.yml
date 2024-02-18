@@ -2,8 +2,9 @@ image:
   file: .github/gitpod.Dockerfile
 
 tasks:
-  - name: Install Package
-    before: Rscript -e "renv::install('.')"
+  - name: Install Development Package
+    before: Rscript -e "renv::hydrate(); renv::restore()"
+    init: Rscript -e "renv::install('.')"
 
 vscode:
   extensions:
