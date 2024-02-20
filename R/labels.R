@@ -52,6 +52,7 @@ Labels <- R6::R6Class(
           # TODO Handle range of elevelations; unit conversion: m -> f
           elevation = .data$verbatimElevation,
           elev_unit = "ft. elev.",
+          remarks = .data$occurrenceRemarks %|% "",
           opening = ifelse(
             # Open `minipage` nested with 2 column `multicol` environment.
             test = .record$rowId %% 2,
