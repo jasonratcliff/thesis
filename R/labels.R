@@ -111,6 +111,9 @@ Labels <- R6::R6Class(
     initialize = function(records) {
       self$occurrences <- records |>
         dplyr::select(dplyr::all_of(private$terms)) |>
+        # Many-to-one joins against internal package datasets: R/sysdata.R
+        dplyr::left_join(y = taxa, by = "scientificName") |>
+        dplyr::left_join(y = institutions, by = "institutionCode") |>
         dplyr::mutate(
           rowId = dplyr::row_number()
         )
