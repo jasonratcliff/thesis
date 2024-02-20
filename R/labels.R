@@ -7,7 +7,7 @@ Labels <- R6::R6Class(
   private = list(
     terms = {
       c(
-        "scientificName", "scientificAuthor",
+        "scientificName", "institutionCode",
         "stateProvince", "county", "verbatimLocality",
         "recordedBy", "recordNumber", "typeStatus",
         "decimalLatitude", "decimalLongitude",
@@ -85,9 +85,13 @@ Labels <- R6::R6Class(
 
           <<remarks>>
 
-          \\bigskip
+          \\begin{center}
+          \\begin{footnotesize}
+          \\textbf{<<institutionName>>}
+          \\end{footnotesize}
+          \\end{center}
+
           <<closing>>
-          \\
           ",
         .open = "<<", .close = ">>",
         .sep = "\n"
@@ -102,6 +106,7 @@ Labels <- R6::R6Class(
         close = "
           \\end{multicols}
           \\end{minipage}
+          \\bigskip
         "
       )
     }
