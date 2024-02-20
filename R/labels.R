@@ -40,7 +40,7 @@ Labels <- R6::R6Class(
         dplyr::mutate(
           state = .data$stateProvince,
           taxa = .data$scientificName,
-          author = .data$scientificAuthor,
+          author = .data$scientificNameAuthorship,
           type = dplyr::if_else(
             condition = is.na(.data$typeStatus), true = "",
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
@@ -115,6 +115,12 @@ Labels <- R6::R6Class(
         dplyr::left_join(y = taxa, by = "scientificName") |>
         dplyr::left_join(y = institutions, by = "institutionCode") |>
         dplyr::mutate(
+          scientificNameAuthorship = gsub(
+            pattern = "&",
+            replacement = "\\&",
+            x = scientificNameAuthorship,
+            fixed = TRUE
+          ),
           rowId = dplyr::row_number()
         )
     },
