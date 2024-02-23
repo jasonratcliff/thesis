@@ -1,11 +1,14 @@
-#' Specimen Voucher Labels
+#' @title Voucher Labels
 #'
 #' Format occurrence data for `LaTeX` typesetting of voucher labels.
+#' @include taxa.R
 #' @export
 Labels <- R6::R6Class(
   classname = "Labels",
   private = list(
-    terms = {
+    # Initialize R6 instance to join taxonomic terms
+    .taxa = NULL,
+    .terms = {
       c(
         "scientificName", "institutionCode",
         "stateProvince", "county", "verbatimLocality",
@@ -38,9 +41,9 @@ Labels <- R6::R6Class(
       stopifnot(inherits(.record, "tbl_df") & nrow(.record) == 1)
       collection <- .record |>
         dplyr::mutate(
+          taxon = private$.taxa$authorship(taxon = .data$scientificName) |>
+            commonmark::markdown_latex(),
           state = .data$stateProvince,
-          taxa = .data$scientificName,
-          author = .data$scientificNameAuthorship,
           type = dplyr::if_else(
             condition = is.na(.data$typeStatus), true = "",
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
@@ -53,6 +56,10 @@ Labels <- R6::R6Class(
           elevation = .data$verbatimElevation,
           elev_unit = "ft. elev.",
           remarks = .data$occurrenceRemarks %|% "",
+          institutionName = gsub(
+            pattern = "&", replacement = "\\&",
+            x = .data$institutionName, fixed = TRUE
+          ),
           opening = ifelse(
             # Open `minipage` nested with 2 column `multicol` environment.
             test = .record$rowId %% 2,
@@ -73,7 +80,7 @@ Labels <- R6::R6Class(
           <<opening>>
           \\section{Flora of <<state>>}
 
-          \\textit{\\textbf{<<taxa>>}} <<author>><<type>>
+          <<taxon>> <<type>>
 
           \\bigskip
           <<county>> County: <<locale>>
@@ -115,20 +122,11 @@ Labels <- R6::R6Class(
   public = list(
     occurrences = NULL,
     initialize = function(records) {
+      private$.taxa <- Taxa$new(thesis:::taxa)
       self$occurrences <- records |>
-        dplyr::select(dplyr::all_of(private$terms)) |>
-        # Many-to-one joins against internal package datasets: R/sysdata.R
-        dplyr::left_join(y = taxa, by = "scientificName") |>
-        dplyr::left_join(y = institutions, by = "institutionCode") |>
-        dplyr::mutate(
-          scientificNameAuthorship = gsub(
-            pattern = "&",
-            replacement = "\\&",
-            x = scientificNameAuthorship,
-            fixed = TRUE
-          ),
-          rowId = dplyr::row_number()
-        )
+        dplyr::select(dplyr::all_of(private$.terms)) |>
+        dplyr::left_join(y = thesis:::codes, by = "institutionCode") |>
+        dplyr::mutate(rowId = dplyr::row_number())
     },
     tex = function() {
       # Map *p-variables* from *n-records* of specimen occurrences.

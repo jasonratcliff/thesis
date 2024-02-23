@@ -23,10 +23,13 @@ reference:
 - title: Specimens
 - desc: |
     R6 class and methods for representing voucher specimens.
-- subtitle: R6 OOP
+- subtitle: Voucher Records
   contents:
   - Specimen
   - SpecimenMap
+- subtitle: Taxonomy
+  contents:
+  - Taxa
 - subtitle: Data
   contents:
   - herbarium_specimens
