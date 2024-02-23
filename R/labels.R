@@ -145,8 +145,25 @@ Labels <- R6::R6Class(
         )
       return(composed)
     },
-    pdf = function(.write = FALSE) {
-      .NotYetImplemented()
+    #' @description
+    #' Render PDF-formatted voucher labels.
+    #' @param tex Path to `.tex` file for render by [tinytex::pdflatex()].
+    pdf = function(tex = "docs/labels/label.tex") {
+      stopifnot(fs::path_ext(tex) == "tex")
+      publish <- fs::path_dir(tex)
+      if (!fs::dir_exists(publish)) {
+        confirmed <-
+          usethis::ui_yeah("Create label directory: {ui_path(publish)}")
+        if (confirmed) {
+          fs::dir_create(publish)
+          usethis::ui_done("New directory: {ui_path(publish)}")
+        }
+      }
+      flattened <- self$tex() |>
+        purrr::list_flatten() |>
+        purrr::list_c()
+      cat(flattened, file = tex, sep = "\n")
+      tinytex::pdflatex(file = tex)
     }
   )
 )
