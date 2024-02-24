@@ -14,7 +14,7 @@ Labels <- R6::R6Class(
         "stateProvince", "county", "verbatimLocality",
         "recordedBy", "recordNumber", "typeStatus",
         "decimalLatitude", "decimalLongitude",
-        "verbatimElevation",
+        "minimumElevationInMeters", "maximumElevationInMeters",
         "habitat", "associatedTaxa", "occurrenceRemarks",
         "recordedBy", "recordNumber", "eventDate"
       )
@@ -23,6 +23,16 @@ Labels <- R6::R6Class(
       lon <- ifelse(x > 0, "E", "W")
       lat <- ifelse(y > 0, "N", "S")
       glue::glue("{abs(y)}&deg;{lat} {abs(x)}&deg;{lon}")
+    },
+    elevation_ft = function(m_min, m_max) {
+      meters <- c(m_min, m_max)
+      meters <- meters[!is.na(meters)]
+      # NOTE: Resolution of scale conversion in data-raw/specimens/vouchers.R
+      # > Loss of floating point precision due to round() call in `vouchers`
+      feet <- format(round(meters * 3.281), big.mark = ",")
+      if (length(feet) > 1) feet <- paste(feet, collapse = "-")
+      feet <- paste(feet, "ft. elev.")
+      return(feet)
     },
     event = function(x) { format(as.Date(x), "%d %B %Y") },
     preamble = function(.document = "article") {
@@ -53,9 +63,6 @@ Labels <- R6::R6Class(
             condition = is.na(.data$typeStatus), true = "",
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
           ),
-          # TODO Handle range of elevelations; unit conversion: m -> f
-          elevation = .data$verbatimElevation,
-          elev_unit = "ft. elev.",
           remarks = .data$occurrenceRemarks %|% "",
           opening = ifelse(
             # Open `minipage` nested with 2 column `multicol` environment.
@@ -83,7 +90,7 @@ Labels <- R6::R6Class(
           \\bigskip
           <<county>> County: <<verbatimLocality>>
           \\newline
-          <<coordinates>> \\hfill{} <<elevation>> <<elev_unit>>
+          <<coordinates>> \\hfill{} <<elevation_ft>>
 
           \\bigskip
           <<habitat>>
@@ -132,6 +139,11 @@ Labels <- R6::R6Class(
             .x = .data$decimalLongitude,
             .y = .data$decimalLatitude,
             .f = \(x, y) private$coordinates(x, y)
+          ),
+          elevation_ft = purrr::map2_chr(
+            .x = .data$minimumElevationInMeters,
+            .y = .data$maximumElevationInMeters,
+            .f = \(x, y) private$elevation_ft(x, y)
           ),
           eventDate = private$event(eventDate),
           dplyr::across(
