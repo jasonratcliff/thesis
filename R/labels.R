@@ -19,6 +19,11 @@ Labels <- R6::R6Class(
         "occurrenceRemarks"
       )
     },
+    coordinates = function(x, y) {
+      lon <- ifelse(x > 0, "E", "W")
+      lat <- ifelse(y > 0, "N", "S")
+      glue::glue("{abs(y)}&deg;{lat} {abs(x)}&deg;{lon}")
+    },
     preamble = function(.document = "article") {
       .document <- match.arg(arg = .document, choices = "article")
       glue::glue_safe("
@@ -43,15 +48,10 @@ Labels <- R6::R6Class(
         dplyr::mutate(
           taxon = private$.taxa$authorship(taxon = .data$scientificName) |>
             commonmark::markdown_latex(),
-          state = .data$stateProvince,
           type = dplyr::if_else(
             condition = is.na(.data$typeStatus), true = "",
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
           ),
-          county = .data$county,
-          latitude = .data$decimalLatitude,
-          longitude = .data$decimalLongitude,
-          locale = .data$verbatimLocality,
           # TODO Handle range of elevelations; unit conversion: m -> f
           elevation = .data$verbatimElevation,
           elev_unit = "ft. elev.",
@@ -75,17 +75,18 @@ Labels <- R6::R6Class(
           ),
           .keep = "unused"
         )
+
       glue::glue_data_safe(
         .x = collection, "
           <<opening>>
-          \\section{Flora of <<state>>}
+          \\section{Flora of <<stateProvince>>}
 
           <<taxon>> <<type>>
 
           \\bigskip
-          <<county>> County: <<locale>>
+          <<county>> County: <<verbatimLocality>>
           \\newline
-          <<latitude>>°N <<longitude>>°W \\hfill{} <<elevation>> <<elev_unit>>
+          <<coordinates>> \\hfill{} <<elevation>> <<elev_unit>>
 
           \\bigskip
           <<habitat>>
@@ -126,7 +127,20 @@ Labels <- R6::R6Class(
       self$occurrences <- records |>
         dplyr::select(dplyr::all_of(private$.terms)) |>
         dplyr::left_join(y = thesis:::codes, by = "institutionCode") |>
-        dplyr::mutate(rowId = dplyr::row_number())
+        dplyr::mutate(
+          rowId = dplyr::row_number(),
+          coordinates = purrr::map2_chr(
+            .x = .data$decimalLongitude,
+            .y = .data$decimalLatitude,
+            .f = \(x, y) private$coordinates(x, y)
+          ),
+          dplyr::across(
+            .cols = dplyr::all_of(c("coordinates")),
+            .fns = \(x) purrr::map_chr(
+              .x = x, .f = ~ commonmark::markdown_latex(.x)
+            )
+          )
+        )
     },
     tex = function() {
       # Map *p-variables* from *n-records* of specimen occurrences.
