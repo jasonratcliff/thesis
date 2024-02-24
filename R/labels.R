@@ -57,10 +57,6 @@ Labels <- R6::R6Class(
           elevation = .data$verbatimElevation,
           elev_unit = "ft. elev.",
           remarks = .data$occurrenceRemarks %|% "",
-          institutionName = gsub(
-            pattern = "&", replacement = "\\&",
-            x = .data$institutionName, fixed = TRUE
-          ),
           opening = ifelse(
             # Open `minipage` nested with 2 column `multicol` environment.
             test = .record$rowId %% 2,
@@ -138,6 +134,10 @@ Labels <- R6::R6Class(
             .f = \(x, y) private$coordinates(x, y)
           ),
           eventDate = private$event(eventDate),
+          dplyr::across(
+            .cols = dplyr::all_of(c("institutionCode", "recordedBy")),
+            .fns = \(x) gsub("&", "\\&", x = x, fixed = TRUE)
+          ),
           dplyr::across(
             .cols = dplyr::all_of(c("coordinates")),
             .fns = \(x) purrr::map_chr(
