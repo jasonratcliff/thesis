@@ -15,8 +15,8 @@ Labels <- R6::R6Class(
         "recordedBy", "recordNumber", "typeStatus",
         "decimalLatitude", "decimalLongitude",
         "verbatimElevation",
-        "habitat", "associatedTaxa",
-        "occurrenceRemarks"
+        "habitat", "associatedTaxa", "occurrenceRemarks",
+        "recordedBy", "recordNumber", "eventDate"
       )
     },
     coordinates = function(x, y) {
@@ -24,6 +24,7 @@ Labels <- R6::R6Class(
       lat <- ifelse(y > 0, "N", "S")
       glue::glue("{abs(y)}&deg;{lat} {abs(x)}&deg;{lon}")
     },
+    event = function(x) { format(as.Date(x), "%d %B %Y") },
     preamble = function(.document = "article") {
       .document <- match.arg(arg = .document, choices = "article")
       glue::glue_safe("
@@ -94,6 +95,8 @@ Labels <- R6::R6Class(
 
           <<remarks>>
 
+          <<recordedBy>> <<recordNumber>> \\hfill{} <<eventDate>>
+
           \\begin{center}
           \\begin{footnotesize}
           \\textbf{<<institutionName>>}
@@ -134,6 +137,7 @@ Labels <- R6::R6Class(
             .y = .data$decimalLatitude,
             .f = \(x, y) private$coordinates(x, y)
           ),
+          eventDate = private$event(eventDate),
           dplyr::across(
             .cols = dplyr::all_of(c("coordinates")),
             .fns = \(x) purrr::map_chr(
