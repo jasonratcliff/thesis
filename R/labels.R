@@ -35,6 +35,40 @@ Labels <- R6::R6Class(
       return(feet)
     },
     event = function(x) { format(as.Date(x), "%d %B %Y") },
+    open = function(i) {
+      # Open `minipage` nested with 2 column `multicol` environment.
+      ifelse(
+        test = i %% 2, no = "",
+        yes = paste(
+          "\\begin{minipage}{\\linewidth}",
+          "\\begin{multicols}{2}",
+          sep = "\n"
+        )
+      )
+    },
+    close = function(i, n) {
+      # Handle even-numbered or final odd-numbered record to close.
+      ends <- list(
+        odd = c("\\columnbreak", "\\vspace*{\\fill}"),
+        env = c(
+          "\\end{multicols}",
+          "\\end{minipage}",
+          "\\vspace{12pt}\n"
+        )
+      )
+      count <- list(odd = (i %% 2), final = (i == n))
+      if (count$odd) {
+        if (count$final) {
+          ending <- c(ends$odd, ends$env)
+        } else {
+          ending <- "\\columnbreak"
+        }
+      } else {
+        ending <- ends$env
+      }
+      ending <- paste(ending, collapse = "\n")
+      return(ending)
+    },
     preamble = function(.document = "article") {
       .document <- match.arg(arg = .document, choices = "article")
       glue::glue_safe("
@@ -64,25 +98,12 @@ Labels <- R6::R6Class(
             false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
           ),
           remarks = .data$occurrenceRemarks %|% "",
-          opening = ifelse(
-            # Open `minipage` nested with 2 column `multicol` environment.
-            test = .record$rowId %% 2,
-            yes = private$counter$open,
-            no = ""
-          ),
-          closing = ifelse(
-            # Handle even-numbered or final odd-numbered record to close.
-            test = !(.record$rowId %% 2) |
-              (.record$rowId == nrow(self$occurrences)),
-            yes = private$counter$close,
-            no = ""
-          ),
           .keep = "unused"
         )
 
       glue::glue_data_safe(
         .x = collection, "
-          <<opening>>
+          <<open>>
           \\section{Flora of <<stateProvince>>}
 
           <<taxon>> <<type>>
@@ -106,23 +127,10 @@ Labels <- R6::R6Class(
           \\end{footnotesize}
           \\end{center}
 
-          <<closing>>
+          <<close>>
           ",
         .open = "<<", .close = ">>",
         .sep = "\n"
-      )
-    },
-    counter = {
-      list(
-        open = "
-          \\begin{minipage}{\\linewidth}
-          \\begin{multicols}{2}
-        ",
-        close = "
-          \\end{multicols}
-          \\end{minipage}
-          \\bigskip
-        "
       )
     }
   ),
@@ -134,7 +142,11 @@ Labels <- R6::R6Class(
         dplyr::select(dplyr::all_of(private$.terms)) |>
         dplyr::left_join(y = thesis:::codes, by = "institutionCode") |>
         dplyr::mutate(
-          rowId = dplyr::row_number(),
+          id = dplyr::row_number(),
+          open = private$open(id),
+          close = purrr::map_chr(
+            .x = id, .f = \(x) private$close(x, n = nrow(records))
+          ),
           coordinates = purrr::map2_chr(
             .x = .data$decimalLongitude,
             .y = .data$decimalLatitude,
