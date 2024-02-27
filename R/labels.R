@@ -87,14 +87,15 @@ Labels <- R6::R6Class(
       glue::glue_safe("
         %% LaTeX Preamble
         \\documentclass{<<.document>>}
-        \\usepackage[margin=0pt]{geometry}
+        \\usepackage[margin=1em]{geometry}
         \\usepackage{multicol}
-
+        \\raggedcolumns
+        \\frenchspacing
         \\usepackage{titlesec}
         \\titleformat{name=\\section}
           {\\bf\\filcenter}{}{1em}{}{}
-
         \\setlength\\parindent{0pt}
+        \\setlength{\\columnsep}{1em}
         \\begin{document}
         ",
         .sep = "\n", .open = "<<", .close = ">>"
@@ -108,24 +109,18 @@ Labels <- R6::R6Class(
           \\section{Flora of <<stateProvince>>}
           <<taxon>> \\hfill{} \\textbf{<<typeStatus>>} \\newline
           \\newline
-          <<coordinates>> \\hfill{} <<elevation_ft>>
+          <<county>> County: <<verbatimLocality>> \\newline
+          <<coordinates>> \\hfill{} <<elevation_ft>> \\newline
 
           <<description>>
 
           <<remarks>>
 
-          <<recordedBy>> <<recordNumber>> \\hfill{} <<eventDate>>
-
-          \\begin{center}
-          \\begin{footnotesize}
-          \\textbf{<<institutionName>>}
-          \\end{footnotesize}
-          \\end{center}
-
+          <<recordedBy>> <<recordNumber>> \\hfill{} <<eventDate>>\\newline
+          {\\centering \\textbf{\\footnotesize{<<institutionName>>}} \\par}
           <<close>>
           ",
-        .open = "<<", .close = ">>",
-        .sep = "\n"
+        .open = "<<", .close = ">>", .na = ""
       )
     }
   ),
