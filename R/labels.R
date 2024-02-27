@@ -35,6 +35,19 @@ Labels <- R6::R6Class(
       return(feet)
     },
     event = function(x) { format(as.Date(x), "%d %B %Y") },
+    associations = function(x) {
+      if (!is.na(x)) {
+        obs <- unlist(strsplit(x, split = " | ", fixed = TRUE))
+        obs <- paste0("*", obs, "*")
+        n <- length(obs)
+        combined <- paste(obs[1:n - 1], collapse = ", ")
+        combined <- paste(combined, obs[n], sep = " and ")
+        combined <- paste0("With ", combined, ".")
+        return(combined)
+      } else {
+        return(NA_character_)
+      }
+    },
     open = function(i) {
       # Open `minipage` nested with 2 column `multicol` environment.
       ifelse(
@@ -158,6 +171,10 @@ Labels <- R6::R6Class(
             .f = \(x, y) private$elevation_ft(x, y)
           ),
           eventDate = private$event(eventDate),
+          associations = purrr::map_chr(
+            .x = .data$associatedTaxa,
+            .f = \(x) private$associations(x)
+          ),
           dplyr::across(
             .cols = dplyr::all_of(c("institutionCode", "recordedBy")),
             .fns = \(x) gsub("&", "\\&", x = x, fixed = TRUE)
