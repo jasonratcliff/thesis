@@ -102,27 +102,11 @@ Labels <- R6::R6Class(
     },
     label = function(.record) {
       stopifnot(inherits(.record, "tbl_df") & nrow(.record) == 1)
-      collection <- .record |>
-        dplyr::mutate(
-          taxon = private$.taxa$authorship(taxon = .data$scientificName) |>
-            commonmark::markdown_latex(),
-          type = dplyr::if_else(
-            condition = is.na(.data$typeStatus), true = "",
-            false = glue::glue_data(.record, " \\hfill{{}} {typeStatus}")
-          ),
-          remarks = .data$occurrenceRemarks %|% "",
-          .keep = "unused"
-        )
-
       glue::glue_data_safe(
-        .x = collection, "
+        .x = .record, "
           <<open>>
           \\section{Flora of <<stateProvince>>}
-
-          <<taxon>> <<type>>
-
-          \\bigskip
-          <<county>> County: <<verbatimLocality>>
+          <<taxon>> \\hfill{} \\textbf{<<typeStatus>>} \\newline
           \\newline
           <<coordinates>> \\hfill{} <<elevation_ft>>
 
@@ -158,6 +142,8 @@ Labels <- R6::R6Class(
           close = purrr::map_chr(
             .x = id, .f = \(x) private$close(x, n = nrow(records))
           ),
+          taxon = private$.taxa$authorship(taxon = .data$scientificName),
+          typeStatus = toupper(.data$typeStatus),
           coordinates = purrr::map2_chr(
             .x = .data$decimalLongitude,
             .y = .data$decimalLatitude,
@@ -183,7 +169,7 @@ Labels <- R6::R6Class(
             .fns = \(x) gsub("&", "\\&", x = x, fixed = TRUE)
           ),
           dplyr::across(
-            .cols = dplyr::all_of(c("coordinates")),
+            .cols = dplyr::all_of(c("taxon", "coordinates", "description")),
             .fns = \(x) purrr::map_chr(
               .x = x, .f = ~ commonmark::markdown_latex(.x)
             )
