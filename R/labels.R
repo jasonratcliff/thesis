@@ -34,7 +34,7 @@ Labels <- R6::R6Class(
       feet <- paste(feet, "ft. elev.")
       return(feet)
     },
-    event = function(x) { format(as.Date(x), "%d %B %Y") },
+    event = \(x) format(as.Date(x), "%e %B %Y"),
     associations = function(x) {
       if (!is.na(x)) {
         obs <- unlist(strsplit(x, split = " | ", fixed = TRUE))
