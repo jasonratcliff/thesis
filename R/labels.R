@@ -126,9 +126,7 @@ Labels <- R6::R6Class(
           \\newline
           <<coordinates>> \\hfill{} <<elevation_ft>>
 
-          \\bigskip
-          <<habitat>>
-          <<associatedTaxa>>
+          <<description>>
 
           <<remarks>>
 
@@ -175,6 +173,11 @@ Labels <- R6::R6Class(
             .x = .data$associatedTaxa,
             .f = \(x) private$associations(x)
           ),
+          description = glue::glue_data(
+            .x = list("habitat" = habitat, "associations" = associations),
+            "{habitat}", "{associations}",
+            .na = "", .sep = " "
+          ),
           dplyr::across(
             .cols = dplyr::all_of(c("institutionCode", "recordedBy")),
             .fns = \(x) gsub("&", "\\&", x = x, fixed = TRUE)
@@ -184,6 +187,13 @@ Labels <- R6::R6Class(
             .fns = \(x) purrr::map_chr(
               .x = x, .f = ~ commonmark::markdown_latex(.x)
             )
+          ),
+          description = ifelse(
+            nzchar(description), paste(description, "\\newline"), ""
+          ),
+          remarks = ifelse(
+            is.na(occurrenceRemarks), "",
+            paste(occurrenceRemarks, "\\newline")
           )
         )
     },
