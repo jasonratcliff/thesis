@@ -6,7 +6,7 @@
 Labels <- R6::R6Class(
   classname = "Labels",
   private = list(
-    # Initialize R6 instance to join taxonomic terms
+    .occurrences = NULL,
     .taxa = NULL,
     .terms = {
       c(
@@ -124,11 +124,34 @@ Labels <- R6::R6Class(
       )
     }
   ),
+  active = list(
+    #' @field occurrences Collection record occurrence data
+    occurrences = function() {
+      private$.occurrences
+    },
+    #' @field tex `LaTeX`-formatted record labels
+    tex = function() {
+      # Map *p-variables* from *n-records* of specimen occurrences.
+      .labels <- purrr::pmap(
+        .l = self$occurrences,
+        .f = function(...) {
+          l <- rlang::dots_list(..., .named = TRUE)
+          private$label(.record = tibble::as_tibble(l))
+        }
+      )
+      composed <-
+        list(
+          preamble = private$preamble(),
+          labels = .labels,
+          ending = "\\end{document}"
+        )
+      return(composed)
+    }
+  ),
   public = list(
-    occurrences = NULL,
     initialize = function(records) {
       private$.taxa <- Taxa$new(thesis:::taxa)
-      self$occurrences <- records |>
+      private$.occurrences <- records |>
         dplyr::select(dplyr::all_of(private$.terms)) |>
         dplyr::left_join(y = thesis:::codes, by = "institutionCode") |>
         dplyr::mutate(
@@ -178,23 +201,6 @@ Labels <- R6::R6Class(
           )
         )
     },
-    tex = function() {
-      # Map *p-variables* from *n-records* of specimen occurrences.
-      .labels <- purrr::pmap(
-        .l = self$occurrences,
-        .f = function(...) {
-          l <- rlang::dots_list(..., .named = TRUE)
-          private$label(.record = tibble::as_tibble(l))
-        }
-      )
-      composed <-
-        list(
-          preamble = private$preamble(),
-          labels = .labels,
-          ending = "\\end{document}"
-        )
-      return(composed)
-    },
     #' @description
     #' Render PDF-formatted voucher labels.
     #' @param tex Path to `.tex` file for render by [tinytex::pdflatex()].
@@ -209,7 +215,7 @@ Labels <- R6::R6Class(
           usethis::ui_done("New directory: {ui_path(publish)}")
         }
       }
-      flattened <- self$tex() |>
+      flattened <- self$tex |>
         purrr::list_flatten() |>
         purrr::list_c()
       cat(flattened, file = tex, sep = "\n")
