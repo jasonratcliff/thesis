@@ -1,6 +1,50 @@
 #' @title Voucher Labels
 #'
+#' @description
 #' Format occurrence data for `LaTeX` typesetting of voucher labels.
+#' For each record, coordinates are annotated relative to a spatial reference
+#' system axis (i.e., ± longitude and latitude), elevation data are
+#' converted from m to ft. and `eventDates` are converted from `POSIXct` class
+#' dates using [base::strptime()] specifications. Associated taxa split from `|`
+#' separated values in `associatedTaxa`.
+#'
+#' @details
+#' The following [Darwin Core](https://dwc.tdwg.org/terms/)
+#' (DWC) terms are expected:
+#' * Record-level:
+#'   - `institutionCode`
+#' * Occurrence:
+#'   - `recordNumber`
+#'   - `recordedBy`
+#'   - `associatedTaxa`
+#'   - `occurrenceRemarks`
+#' * Event:
+#'   - `eventDate`
+#'   - `habitat`
+#' * Location:
+#'   - `stateProvince`
+#'   - `county`
+#'   - `verbatimLocality`
+#'   - `decimalLatitude`
+#'   - `decimalLongitude`
+#'   - `minimumElevationInMeters`
+#'   - `maximumElevationInMeters`
+#' * Identification:
+#'   - `typeStatus`
+#' * Taxon:
+#'   - `scientificName`
+#'
+#' @examples
+#' fieldwork <- vouchers |>
+#'   dplyr::filter(
+#'     datasetID == "Fieldwork",
+#'     grepl("eburniflora", scientificName)
+#'   )
+#' label <- Labels$new(records = fieldwork)
+#'
+#' label$tex
+#'
+#' @seealso [thesis::Taxa]
 #' @include taxa.R
 #' @export
 Labels <- R6::R6Class(
@@ -149,6 +193,8 @@ Labels <- R6::R6Class(
     }
   ),
   public = list(
+    #' @description Initialize `Labels` class R6 object from specimen records.
+    #' @param records Occurrence records [tbl-df] with expected DWC terms.
     initialize = function(records) {
       private$.taxa <- Taxa$new(thesis:::taxa)
       private$.occurrences <- records |>
