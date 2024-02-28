@@ -203,8 +203,13 @@ Labels <- R6::R6Class(
     },
     #' @description
     #' Render PDF-formatted voucher labels.
-    #' @param tex Path to `.tex` file for render by [tinytex::pdflatex()].
-    pdf = function(tex = "docs/labels/label.tex") {
+    #' @param tex Path to `.tex` file for rendering by [tinytex::pdflatex()].
+    #' @examples
+    #' \dontrun{
+    #'   # Render `labels.pdf` from *.tex intermediate file
+    #'   label$pdf(tex = tempfile("labels.tex"))
+    #' }
+    pdf = function(tex) {
       stopifnot(fs::path_ext(tex) == "tex")
       publish <- fs::path_dir(tex)
       if (!fs::dir_exists(publish)) {
