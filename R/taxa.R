@@ -38,8 +38,8 @@ Taxa <- R6::R6Class(
       private$.taxa <- taxa |>
         purrr::pmap(
           .f = function(...) {
-            x <- rlang::dots_list(...)
-            authors <- strsplit(x$author, split = " | ", fixed = TRUE) |>
+            x <- rlang::dots_list(..., .named = TRUE)
+            authors <- strsplit(x$authors, split = " | ", fixed = TRUE) |>
               unlist()
             taxon <- x[c("genus", "species", "infra")]
             taxon <- paste0("_**", taxon[!is.na(taxon)], "**_")
