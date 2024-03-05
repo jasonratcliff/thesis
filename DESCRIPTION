@@ -97,6 +97,7 @@ Collate:
     'deprec-specimens.R'
     'deprec-themes.R'
     'taxa.R'
+    'labels.R'
     'specimens.R'
     'maps.R'
     'msa_wrappers.R'

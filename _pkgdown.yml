@@ -29,6 +29,7 @@ reference:
   - SpecimenMap
 - subtitle: Taxonomy
   contents:
+  - Labels
   - Taxa
 - subtitle: Data
   contents:

@@ -14,9 +14,6 @@
 #' * TODO Reconsider use as internal data
 #'   - `R/sysdata.rda`
 #'
-#' @examples
-#' taxa <- Taxa$new(taxa = thesis:::taxa)
-#' taxa$authorship("Physaria vitulifera")
 #' @export
 Taxa <- R6::R6Class(
   classname = "Taxa",
@@ -58,6 +55,9 @@ Taxa <- R6::R6Class(
     #' Taxonomic Name with Authorship
     #' @param taxon Lookup value for `scientificName`
     #' @return List of 1 named by `scientificName` with full taxonomic name.
+    #' @examples
+    #' taxa <- Taxa$new(taxa = thesis:::taxa)
+    #' taxa$authorship("Physaria vitulifera")
     authorship = function(taxon) {
       private$.taxa[taxon]
     }
