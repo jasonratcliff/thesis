@@ -25,3 +25,5 @@ format:
     theme: cosmo
     toc: true
     toc-depth: 3
+    fig-height: 12
+    fig-width: 8

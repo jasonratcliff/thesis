@@ -30,3 +30,6 @@ format:
     maintfont: Palatino
     link-citations: true
     toc: false
+    fig-height: 10
+    fig-width: 6
+    keep-tex: true

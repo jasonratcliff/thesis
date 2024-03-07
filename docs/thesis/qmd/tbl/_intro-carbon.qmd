@@ -2,56 +2,64 @@
 ```{r carbon-specimens}
 # Limit specimens to Carbon County, Wyoming
 carbon <-
-  SpecimenMap$new(
+  Specimen$new(
     records = thesis::vouchers,
     identifier = "organismName"
   )$filter_limit(
-    north = 42.0, south = 40.5, east = -105.5, west = -107.5
-  )$filter_taxa("vitulifera", .identifier = "previousIdentifications")
+    north = 42.0,
+    south = 40.5,
+    east = -105.5,
+    west = -107.5
+  )$filter_taxa(
+    "vitulifera", .identifier = "previousIdentifications"
+  )
 
 # Join markdown-formatted annotation labels for most recent annotation.
-records <- tibble::as_tibble(specimens$annotations()) %>%
+records <- tibble::as_tibble(carbon$annotations()) %>%
   tidyr::pivot_longer(
     cols = dplyr::everything(),
     names_to = "taxa",
     values_to = "label"
   ) %>%
   dplyr::left_join(
-    x = specimens$records %>%
+    x = carbon$records %>%
       dplyr::select(
-        prior_id, Date_parsed,
-        Collector, Collection_Number,
-        Herbarium, State, County
+        organismName, eventDate,
+        recordedBy, recordNumber, institutionCode,
+        stateProvince, county
       ),
     y = .,
-    by = c("prior_id" = "taxa")
+    by = c("organismName" = "taxa")
   ) %>%
   dplyr::mutate(
-    Collector = stringr::str_remove_all(
-      # # TODO Abstract `Collector` variable cleanup to R6 initialization.
-      string = .data$Collector,
+    recordedBy = stringr::str_remove_all(
+      # # TODO Abstract `recordedBy` variable cleanup to R6 initialization.
+      string = .data$recordedBy,
       pattern = "([A-Z]\\. ?){1,}"
     ) %>%
       gsub(pattern = "\\&", replacement = "and", x = .),
 
     herbarium = dplyr::case_when(
-      grepl(pattern = "\\[[A-Z]+\\]", x = .data$Herbarium) ~
+      grepl(pattern = "\\[[A-Z]+\\]", x = .data$institutionCode) ~
         stringr::str_extract(
-          string = .data$Herbarium,
+          string = .data$institutionCode,
           pattern = "(?<=\\[)[A-Z]+?(?=\\])"
         ),
-      grepl(pattern = "[A-Z]+", x = .data$Herbarium) ~ .data$Herbarium,
+      grepl(
+        pattern = "[A-Z]+",
+        x = .data$institutionCode
+      ) ~ .data$institutionCode,
       TRUE ~ NA_character_
     )
   ) %>%
-  dplyr::add_count(Collector, Collection_Number, name = "n")
+  dplyr::add_count(recordedBy, recordNumber, name = "n")
 ```
 
 ```{r join-revisions}
 revised <- # Join determinations by Jennings (2004) to collections table.
   Specimen$new(
     records = records,
-    identifier = "prior_id"
+    identifier = "organismName"
   )$filter_collections(
     .return = TRUE,
     "Osterhout" = 411,
@@ -63,17 +71,17 @@ revised <- # Join determinations by Jennings (2004) to collections table.
     "Fertig" = c(16699, 16713, 19073, 19075, 19078, 19510),
     16475
   ) %>%
-    dplyr::distinct(prior_id, Collector, Collection_Number) %>%
+    dplyr::distinct(organismName, recordedBy, recordNumber) %>%
     dplyr::mutate(
       # Add logical vector to flag revised herbarium determinations.
       revision = dplyr::case_when(
-        grepl(pattern = "acutifolia", .data$prior_id) ~ TRUE,
+        grepl(pattern = "acutifolia", .data$organismName) ~ TRUE,
         TRUE ~ FALSE
       )
     ) %>%
     dplyr::left_join(
       x = records, y = .,
-      by = dplyr::join_by(prior_id, Collector, Collection_Number)
+      by = dplyr::join_by(organismName, recordedBy, recordNumber)
     ) %>%
     dplyr::mutate(
       # Update `revision` logical vector to account for missing data.
@@ -92,16 +100,16 @@ revised <- # Join determinations by Jennings (2004) to collections table.
     herbarium = paste0(herbarium, sep = "", collapse = ", "),
     .by = dplyr::matches(
       match = c(
-        "Date_parsed", "label", "revision",
-        "Collector", "Collection_Number"
+        "eventDate", "label", "revision",
+        "recordedBy", "recordNumber"
       )
     ), .group = "drop"
   ) %>%
   # Arrange summarized rows by specimen collection date.
-  dplyr::arrange(Date_parsed) %>%
-  dplyr::select(label, Collector, Collection_Number, herbarium) %>%
+  dplyr::arrange(eventDate) %>%
+  dplyr::select(label, recordedBy, recordNumber, herbarium) %>%
   dplyr::mutate(
-    across(
+    dplyr::across(
       .cols = dplyr::matches(match = c("label", "herbarium")),
       .fns = ~ purrr::map_chr(
         .x = .x,

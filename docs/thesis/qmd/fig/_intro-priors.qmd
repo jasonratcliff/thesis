@@ -1,11 +1,7 @@
 
-[//]: # (TODO <1/23/24>: Verify appropriate term for prior identifications)
-
-```{r setup-intro-priors}
-#| include: false
-
-set.seed(20210311)
-
+```{r fig-intro-priors}
+#| fig-cap: >
+#|   Distribution of *Physaria* herbarium specimen vouchers by prior annotation.
 priors <- SpecimenMap$new(
   records = thesis::vouchers,
   identifier = "organismName"
@@ -29,16 +25,6 @@ priors <- SpecimenMap$new(
       "$"
     )
   )
-```
 
-[//]: # (TODO <1/23/24>: Default theme setting - PDF vs. HTML?)
-
-```{r fig-intro-priors}
-#| column: body-outset
-#| fig-cap: >
-#|   Distribution of *Physaria* herbarium specimen vouchers by prior annotation.
-#| fig-align: center
-#| fig-height: 12
-#| fig-width: 8
 priors$cartography()
 ```

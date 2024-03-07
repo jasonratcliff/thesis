@@ -25,9 +25,4 @@ knitr:
   opts_chunk:
     echo: false
     message: false
-    results: asis
     fig-align: center
-    R.options:
-      knitr.graphics.error: false
-  opts_knit:
-    eval.after: "fig.cap"

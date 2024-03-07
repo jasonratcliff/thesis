@@ -1,21 +1,24 @@
 
-[//]: # (TODO <2/13/24>: Verify appropriate use of DWC term for prior ID)
-
-```{r setup-intro-carbon}
-#| include: false
-
-set.seed(20230404)
-
+```{r fig-intro-carbon}
+#| fig-cap: >
+#|   Distribution of reported Carbon County, Wyoming *Physaria vitulifera*.
+#|   SEINet specimen occurrences reveal ranges of neighboring
+#|   *Physaria floribunda* subspecies southwest from Middle Park and
+#|   *Physaria bellii* north of *P. vitulifera* along the eastern slope
+#|   of the Front Range in Colorado. White diamonds indicate sampled DNA
+#|   specimens and yellow squares denote reviewed voucher specimens of interest.
+#|   SEINet specimens are otherwise indicated by smaller hollow shapes.
+#| fig-scap: >
+#|   *Physaria* of the Colorado Basin, Front Range, and Medicine Bow Mountains.
+#| subtitle: "Carbon County, WY putative *Phyasaria vitulifera* specimens"
 carbon <- thesis::vouchers |>
   # Update most recent annotation to `organismName`
   dplyr::mutate(
     identificationRemarks = dplyr::case_when(
-
       # Northern extent specimens with any *P. vitulifera* annotation.
       grepl("vitulifera", x = .data$previousIdentifications) &
         .data$decimalLatitude > 40
         ~ "*P. vitulifera* (Carbon, WY)",
-
       # Last annotation as *P. acutifolia* with *P. vitulifera* phenotype.
       grepl(pattern = "acutifolia", x = .data$organismName) &
         grepl(pattern = "medicinae", x = .data$scientificName)
@@ -23,28 +26,20 @@ carbon <- thesis::vouchers |>
 
       TRUE ~ .data$organismName
     ),
-
     # Static update to `datasetID` to distinguish SEINet occurrence data.
     datasetID = "Loaned"
   ) |>
-
   # Row-bind SEINet occurrence data:
   dplyr::bind_rows(
     tibble::add_column(.data = seinet, datasetID = "SEINet") |>
       dplyr::mutate(
-        identificationRemarks = scientificName,
-        decimalLongitude = Longitude,
-        decimalLatitude = Latitude
+        identificationRemarks = scientificName
       )
   ) |>
   Specimen$new()
 
 carbon$filter_limit(west = -109, south = 39, east = -105, north = 42)
 
-```
-
-```{r fig-intro-carbon-wip}
-#| subtitle: "Carbon County, WY putative *Phyasaria vitulifera* specimens"
 SpecimenMap$new(
   records = carbon$records,
   identifier = "identificationRemarks",

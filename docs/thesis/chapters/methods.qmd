@@ -7,8 +7,11 @@
 methods_variables <- list()  # Initialize list for assigned variables
 
 # Calculate SEINet records with non-missing geographic coordinates.
-methods_variables$seinet <-
-  dplyr::filter(seinet, !is.na(Latitude), !is.na(Longitude))
+methods_variables$seinet <- seinet %>%
+  dplyr::filter(
+    !is.na(decimalLatitude),
+    !is.na(decimalLongitude)
+  )
 
 # Read in raw FASTA system files.
 methods_variables$fasta_paths <-

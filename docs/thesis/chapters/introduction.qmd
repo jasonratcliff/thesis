@@ -351,7 +351,7 @@ geographically separated from the Colorado Front range *P. vitulifera*
 {{< include /qmd/tbl/_intro-carbon.qmd >}}
 
 ```{r tbl-intro-carbon}
-#| tbl-cap: Putative Carbon County, Wyoming *Physaria vitulifera* specimens.
+#| tbl-cap: "Putative Carbon County, Wyoming *Physaria vitulifera* specimens."
 #| tbl-subcap: >
 #|   Voucher specimens within the extent ((-107.5, -105.5), (40.5, 42.0))
 #|   and matched by "vitulifera" in a prior identification. Collections with a
@@ -416,24 +416,7 @@ and Jackson Counties.
 
 \vspace*{-40pt}
 
-```{r fig-intro-carbon}
-#| fig-cap: >
-#|   Distribution of reported Carbon County, Wyoming *Physaria vitulifera*.
-#|   SEINet specimen occurrences reveal ranges of neighboring
-#|   *Physaria floribunda* subspecies southwest from Middle Park and
-#|   *Physaria bellii* north of *P. vitulifera* along the eastern slope
-#|   of the Front Range in Colorado. White diamonds indicate sampled DNA
-#|   specimens and yellow squares denote reviewed voucher specimens of interest.
-#|   SEINet specimens are otherwise indicated by smaller hollow shapes.
-#| fig-scap: >
-#|   *Physaria* of the Colorado Basin, Front Range, and Medicine Bow Mountains.
-knitr::include_graphics(
-  path = fs::path(
-    here::here(), "inst/figures/IntroCarbonWyo",
-    ext = knitr::opts_chunk$get("dev")
-  )
-)
-```
+{{< include /qmd/fig/_intro-carbon.qmd >}}
 
 \clearpage
 

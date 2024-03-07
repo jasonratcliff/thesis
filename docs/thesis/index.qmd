@@ -11,6 +11,11 @@ nocite: |
 
 # Thesis {.unnumbered .unlisted}
 
+```{r log-version}
+paste(format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+paste("Version:", packageVersion("thesis"))
+```
+
 \thispagestyle{empty}
 
 \include{tex/front-matter}
