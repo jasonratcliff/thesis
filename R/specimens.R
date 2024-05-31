@@ -25,14 +25,20 @@
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
-  public = list(
-
+  private = list(
+    .records = NULL,
+    .filtered = NULL
+  ),
+  active = list(
     #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
     #'   frame containing a set of specimen vouchers. The `filter_*` methods
     #'   can be chained to update this field or set to return data without
     #'   modifying the public `records` field.
-    records = "tbl_df",
-
+    records = function() {
+      private$.filtered %||% private$.records
+    }
+  ),
+  public = list(
     #' @field identifier Character scalar denoting a default variable in
     #'   the `Specimen$records` field. For records with a `.identifier`
     #'   argument, this field is referenced when the optional argument is
@@ -40,7 +46,6 @@ Specimen <- R6::R6Class(
     #'   specific set of taxonomic identifications (e.g., prior annotations),
     #'   including filtering and labelling methods.
     identifier = NULL,
-
     #' @description Construct a `Specimen` class container from voucher records.
     #'
     #' @examples
@@ -57,10 +62,14 @@ Specimen <- R6::R6Class(
     #'
     #' dim(specimens$records)
     initialize = function(records, identifier) {
-      self$records <- records
+      if (tibble::is_tibble(records)) {
+        private$.records <- records |>
+          dplyr::select(dplyr::any_of(dwc), dplyr::everything())
+      } else {
+        rlang::abort(c("`records` should inherit `tbl_df`:", class(records)))
+      }
       self$identifier <- identifier
     },
-
     #' @description Record census accounting of voucher specimens.
     #'
     #' @details
@@ -78,7 +87,6 @@ Specimen <- R6::R6Class(
           "eventDate", "institutionCode"
         )
       record_census <-
-        # tibble::tibble(
         list(
           total = dplyr::mutate(
             .data = vouchers,
@@ -92,7 +100,7 @@ Specimen <- R6::R6Class(
             nrow(),
           distinct = dplyr::mutate(
             .data = vouchers,
-            row_id = 1:nrow(vouchers),
+            row_id = seq_len(nrow(vouchers)),
             institutionCode = stringr::str_remove_all(
               string = .data$institutionCode,
               pattern = "\\[|\\]"
@@ -115,7 +123,6 @@ Specimen <- R6::R6Class(
         )
       return(record_census)
     },
-
     #' @description Filter specimen records by geographic coordinate limits.
     #'
     #' @details
@@ -168,8 +175,10 @@ Specimen <- R6::R6Class(
           .x = c("west", "south", "east", "north"),
           .f = ~ print(glue::glue("#> {usethis::ui_field(.x)}"))
         )
-        usethis::ui_info("Returning object unfiltered by coordinate limit.")
-        return(self$records)
+        if (.return) {
+          usethis::ui_info("Returning object unfiltered by coordinate limit.")
+          return(self$records)
+        }
       } else {
         cardinals <- purrr::pmap(
           .l = headings,
@@ -181,20 +190,20 @@ Specimen <- R6::R6Class(
             str2lang(limit)
           }
         )
-      }
-      filtered <- rlang::eval_tidy(
-        expr = {
-          purrr::reduce(
-            .x = unlist(cardinals),
-            .f = ~ rlang::expr(!!.x %>% !!.y),
-            .init = rlang::expr(self$records)
-          )
+        filtered <- rlang::eval_tidy(
+          expr = {
+            purrr::reduce(
+              .x = unlist(cardinals),
+              .f = ~ rlang::expr(!!.x %>% !!.y),
+              .init = rlang::expr(self$records)
+            )
+          }
+        )
+        if (.return) {
+          return(filtered)
+        } else {
+          private$.filtered <- filtered
         }
-      )
-      if (.return) {
-        return(filtered)
-      } else {
-        self$records <- filtered
         invisible(self)
       }
     },
@@ -241,11 +250,10 @@ Specimen <- R6::R6Class(
       if (.return) {
         return(filtered)
       } else {
-        self$records <- filtered
+        private$.filtered <- filtered
         invisible(self)
       }
     },
-
     #' @description Filter specimen records by collector or collection number.
     #'
     #' @details
@@ -300,11 +308,10 @@ Specimen <- R6::R6Class(
       if (.return) {
         return(filtered)
       } else {
-        self$records <- filtered
+        private$.filtered <- filtered
         invisible(self)
       }
     },
-
     #' @description Create markdown-formatted specimen annotations.
     #'
     #' @details
@@ -353,7 +360,6 @@ Specimen <- R6::R6Class(
         )
       return(annotations)
     },
-
     #' @description Create base expression specimen labels.
     #'
     #' @return Character vector of expressions for parsed font labels.
@@ -420,3 +426,17 @@ Specimen <- R6::R6Class(
     }
   )
 )
+
+# Terms indexing ---------------------------------------------------------------
+
+dwc <- {
+  c(
+    "collectionID", "datasetID", "institutionCode", "scientificName",
+    "organismName", "previousIdentifications", "recordedBy", "recordNumber",
+    "associatedTaxa", "occurrenceRemarks", "verbatimEventDate", "eventDate",
+    "year", "month", "day", "habitat", "stateProvince", "county",
+    "verbatimLocality", "decimalLatitude", "decimalLongitude",
+    "minimumElevationInMeters", "maximumElevationInMeters", "verbatimElevation",
+    "verbatimIdentification", "typeStatus"
+  )
+}

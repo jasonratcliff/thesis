@@ -1,23 +1,18 @@
-## ---- Specimens$initialize() -------------------------------------------------
-test_that(
-  desc = "Specimen R6 superclass specification for public fields and methods.",
-  code = {
-    specimens <- build_specimens()$clone()
-    expect_identical(class(specimens), c("Specimen", "R6"))
-    expect_identical(class(specimens$records), c("tbl_df", "tbl", "data.frame"))
+## ---- Specimens$new() --------------------------------------------------------
 
-    # TODO Check public functions class - metaprogramming with R6 `$` closure?
-    purrr::walk(
-      .x = list(
-        specimens$census,
-        specimens$filter_limit,
-        specimens$filter_taxa,
-        specimens$filter_collections
-      ),
-      .f = ~ expect_type(.x, "closure")
-    )
-  }
-)
+test_that("initialize `Specimen` object from `tbl_df` records", {
+  x <- Specimen$new(records = vouchers)
+  expect_s3_class(x, c("Specimen", "R6"))
+  expect_s3_class(x$records, c("tbl_df", "tbl", "data.frame"))
+})
+
+test_that("raise error if input does not inherit `tbl_df` class", {
+  expect_error(
+    Specimen$new(records = as.data.frame(vouchers)),
+    regexp = "data.frame"
+  )
+})
+
 
 ## ---- Specimens$census() -----------------------------------------------------
 test_that(
@@ -38,7 +33,7 @@ test_that(
     specimens <- build_specimens()$clone()
 
     # Expect default NULL values to return unchanged `self$records` tibble.
-    expect_identical(specimens$records, specimens$filter_limit())
+    expect_identical(specimens$records, specimens$filter_limit(.return = TRUE))
 
     # Check silent update for default `.return` = FALSE.
     filtered <- specimens$clone()
