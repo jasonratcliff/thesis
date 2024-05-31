@@ -119,7 +119,7 @@ SpecimenMap <- R6::R6Class(
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
     #'
-    initialize = function(records, identifier) {
+    initialize = function(records, identifier = NULL) {
       super$initialize(records, identifier)
     },
 

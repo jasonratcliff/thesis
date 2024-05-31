@@ -27,7 +27,8 @@ Specimen <- R6::R6Class(
   classname = "Specimen",
   private = list(
     .records = NULL,
-    .filtered = NULL
+    .filtered = NULL,
+    .identifier = NULL
   ),
   active = list(
     #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
@@ -36,16 +37,29 @@ Specimen <- R6::R6Class(
     #'   modifying the public `records` field.
     records = function() {
       private$.filtered %||% private$.records
-    }
-  ),
-  public = list(
+    },
     #' @field identifier Character scalar denoting a default variable in
     #'   the `Specimen$records` field. For records with a `.identifier`
     #'   argument, this field is referenced when the optional argument is
     #'   omitted. The `identifier` field is used for operations involving a
     #'   specific set of taxonomic identifications (e.g., prior annotations),
     #'   including filtering and labelling methods.
-    identifier = NULL,
+    identifier = function(value) {
+      if (missing(value)) {
+        private$.identifier
+      } else {
+        stopifnot(
+          all(
+            is.character(value), length(value) == 1,
+            value %in% names(private$.records)
+          )
+        )
+        private$.identifier <- value
+        invisible(self)
+      }
+    }
+  ),
+  public = list(
     #' @description Construct a `Specimen` class container from voucher records.
     #'
     #' @examples
@@ -61,14 +75,23 @@ Specimen <- R6::R6Class(
     #' class(specimens$records)
     #'
     #' dim(specimens$records)
-    initialize = function(records, identifier) {
+    initialize = function(records, identifier = NULL) {
       if (tibble::is_tibble(records)) {
         private$.records <- records |>
           dplyr::select(dplyr::any_of(dwc), dplyr::everything())
       } else {
         rlang::abort(c("`records` should inherit `tbl_df`:", class(records)))
       }
-      self$identifier <- identifier
+
+      if (is.null(identifier)) {
+        private$.identifier <- "scientificName"
+      } else {
+        if (!identifier %in% names(private$.records)) {
+          rlang::abort(c("`identifier` must match one of:", dwc))
+        } else {
+          private$.identifier <- identifier
+        }
+      }
     },
     #' @description Record census accounting of voucher specimens.
     #'
@@ -239,7 +262,7 @@ Specimen <- R6::R6Class(
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
-      if (is.null(.identifier)) .identifier <- self$identifier
+      .identifier <- .identifier %||% self$identifier
       filtered <- self$records %>%
         dplyr::filter(
           grepl(

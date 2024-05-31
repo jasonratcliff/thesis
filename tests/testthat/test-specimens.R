@@ -13,6 +13,35 @@ test_that("raise error if input does not inherit `tbl_df` class", {
   )
 })
 
+## ---- Specimen$identifier ----------------------------------------------------
+
+test_that("new object is set with default DWC term", {
+  x <- Specimen$new(records = vouchers)
+  expect_identical(x$identifier, "scientificName")
+})
+
+test_that("initialize with valid non-default $identifier active field", {
+  x <- Specimen$new(records = vouchers, identifier = "organismName")
+  expect_identical(x$identifier, "organismName")
+  expect_error(
+    Specimen$new(records = vouchers, identifier = "nonDarwinCore"),
+    regexp = "`identifier`"
+  )
+})
+
+test_that("update $identifier active field with valid term", {
+  x <- Specimen$new(records = vouchers)
+  x$identifier <- "organismName"
+  expect_identical(x$identifier, "organismName")
+})
+
+test_that("error for non-character scalars or vectors ≥ length 1", {
+  x <- Specimen$new(records = thesis::vouchers)
+  expect_error(x$identifier <- 1859)
+  expect_error(x$identifier <- as.symbol("scientificName"))
+  expect_error(x$identifier <- c("scientificName", "organismName"))
+  expect_error(x$identifier <- "missingTerm")
+})
 
 ## ---- Specimens$census() -----------------------------------------------------
 test_that(
