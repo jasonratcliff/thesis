@@ -1,16 +1,6 @@
-## ---- Specimens$new() --------------------------------------------------------
-
-test_that("initialize `Specimen` object from `tbl_df` records", {
-  x <- Specimen$new(records = vouchers)
-  expect_s3_class(x, c("Specimen", "R6"))
-  expect_s3_class(x$records, c("tbl_df", "tbl", "data.frame"))
-})
-
-test_that("raise error if input does not inherit `tbl_df` class", {
-  expect_error(
-    Specimen$new(records = as.data.frame(vouchers)),
-    regexp = "data.frame"
-  )
+test_that("subclass inherits `Extent` R6 superclass", {
+  specimens <- Specimen$new(records = vouchers)
+  expect_equal(inherits(specimens, "Extent"), TRUE)
 })
 
 ## ---- Specimen$identifier ----------------------------------------------------

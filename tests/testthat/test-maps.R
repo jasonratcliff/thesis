@@ -111,7 +111,7 @@ if (dir_exists(tmp_tigris)) dir_delete(tmp_tigris)
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
   expect_type(vouchers, type = "environment")
-  expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "R6"))
+  expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "Extent", "R6"))
   expect_s3_class(vouchers$records, c("tbl_df"))
   expect_identical(vouchers$identifier, expected = "scientificName")
 

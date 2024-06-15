@@ -22,22 +22,15 @@
 #'   field `Specimen$records` is updated silently to allow chaining subsequent
 #'   filtering operations. When `TRUE`, return the filtered records without
 #'   updating the public field.
+#' @include extent.R
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
+  inherit = Extent,
   private = list(
-    .records = NULL,
-    .filtered = NULL,
     .identifier = NULL
   ),
   active = list(
-    #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
-    #'   frame containing a set of specimen vouchers. The `filter_*` methods
-    #'   can be chained to update this field or set to return data without
-    #'   modifying the public `records` field.
-    records = function() {
-      private$.filtered %||% private$.records
-    },
     #' @field identifier Character scalar denoting a default variable in
     #'   the `Specimen$records` field. For records with a `.identifier`
     #'   argument, this field is referenced when the optional argument is
@@ -76,13 +69,7 @@ Specimen <- R6::R6Class(
     #'
     #' dim(specimens$records)
     initialize = function(records, identifier = NULL) {
-      if (tibble::is_tibble(records)) {
-        private$.records <- records |>
-          dplyr::select(dplyr::any_of(dwc), dplyr::everything())
-      } else {
-        rlang::abort(c("`records` should inherit `tbl_df`:", class(records)))
-      }
-
+      super$initialize(records)
       if (is.null(identifier)) {
         private$.identifier <- "scientificName"
       } else {
@@ -449,17 +436,3 @@ Specimen <- R6::R6Class(
     }
   )
 )
-
-# Terms indexing ---------------------------------------------------------------
-
-dwc <- {
-  c(
-    "collectionID", "datasetID", "institutionCode", "scientificName",
-    "organismName", "previousIdentifications", "recordedBy", "recordNumber",
-    "associatedTaxa", "occurrenceRemarks", "verbatimEventDate", "eventDate",
-    "year", "month", "day", "habitat", "stateProvince", "county",
-    "verbatimLocality", "decimalLatitude", "decimalLongitude",
-    "minimumElevationInMeters", "maximumElevationInMeters", "verbatimElevation",
-    "verbatimIdentification", "typeStatus"
-  )
-}
