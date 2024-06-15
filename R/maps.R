@@ -430,7 +430,7 @@ SpecimenMap <- R6::R6Class(
       maptype <-
         match.arg(
           arg = maptype,
-          choices = as.character(formals(ggmap::get_map)[["maptype"]])
+          choices = ggmap:::GOOGLE_VALID_MAP_TYPES
         )
       if (is.null(center)) {
         bound <- ggmap::make_bbox(
@@ -460,12 +460,13 @@ SpecimenMap <- R6::R6Class(
     base_elevatr = function(zoom) {
       # Define projection and get AWS Open Data terrain tiles.
       prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+      coords <-
+        as.data.frame(self$records[, c("decimalLongitude", "decimalLatitude")])
+      names(coords) <- c("x", "y")
       elev_raster <-
         elevatr::get_elev_raster(
-          locations = as.data.frame(
-            self$records[, c("decimalLongitude", "decimalLatitude")]
-          ),
-          z = zoom, prj = prj_dd, clip = "bbox", src = "aws", verbose = FALSE
+          locations = coords, z = zoom, prj = prj_dd,
+          clip = "bbox", src = "aws", verbose = FALSE
         )
       elev_df <-
         as.data.frame(
