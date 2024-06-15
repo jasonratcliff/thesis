@@ -295,14 +295,13 @@ SpecimenMap <- R6::R6Class(
         ggplot2::theme(
           panel.background = ggplot2::element_blank(),
           panel.border = ggplot2::element_rect(fill = NA, color = "black"),
-          legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical",
           legend.key = ggplot2::element_blank(),
           legend.background = ggplot2::element_rect(
             fill = "grey90",
             color = "black"
           ),
-          legend.text = ggtext::element_markdown()
+          legend.text = ggtext::element_markdown(hjust = 0, vjust = 0.5)
         ),
         ggplot2::labs(
           x = "decimalLongitude", y = "decimalLatitude",
