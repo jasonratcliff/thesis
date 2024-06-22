@@ -2,18 +2,28 @@ library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
+library(sf)
 
 set.seed(20210312)
 
 # Subset Specimens ----
 
-spp_lyrata <- thesis::herbarium_specimens %>%
-  subset_coords(
-    specimen_tbl = .,
-    Latitude = c(43, 47),
-    Longitude = c(-115.5, -110.5)
-  ) %>%
-  filter(!grepl("nelsonii", .data$Taxon_a_posteriori))
+spp_lyrata <- thesis::herbarium_specimens |>
+  filter(!grepl("nelsonii", .data$Taxon_a_posteriori)) |>
+  dplyr::rename(
+    decimalLongitude = Longitude,
+    decimalLatitude = Latitude
+  ) |>
+  Extent$new()
+
+spp_lyrata$bbox(xmin = -115.5, ymin = 43, xmax = -110.5, ymax = 47)
+
+spp_lyrata <-
+  dplyr::bind_cols(
+    tibble::as_tibble(spp_lyrata$sf),
+    sf::st_coordinates(spp_lyrata$sf)
+  ) |>
+  dplyr::rename(Longitude = X, Latitude = Y)
 
 specimen_labels <-
   spl_labels(
@@ -49,13 +59,15 @@ ggplot_specimens <- function() {
         filter(grepl("lyrata", Taxon_a_posteriori)),
       mapping = aes(x = Longitude, y = Latitude),
       geom = "polygon",
-      type = 't', level = 0.99,
+      type = "t", level = 0.99,
       fill = "black", alpha = 0.25
     ),
     geom_jitter(
       data = spp_lyrata, size = 3,
-      aes(x = Longitude, y = Latitude,
-          color = Taxon_a_posteriori, shape = Taxon_a_posteriori)
+      aes(
+        x = Longitude, y = Latitude,
+        color = Taxon_a_posteriori, shape = Taxon_a_posteriori
+      )
     ),
     ggplot2::scale_color_manual(
       name = "Annotations", labels = specimen_labels,
@@ -81,7 +93,7 @@ legends$elevation <- get_legend(ggplot_elevation)
 
 legends$specimens_pdf <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 2)) +
       theme(legend.title.align = 0.5)
@@ -89,7 +101,7 @@ legends$specimens_pdf <-
 
 legends$specimens_png <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 1)) +
       theme(legend.title.align = 0.5)
@@ -143,4 +155,5 @@ purrr::pwalk(
       nrow = row,
       ncol = col
     )
-  })
+  }
+)

@@ -356,9 +356,11 @@ layer_elevation <- function(specimen_tbl, raster_zoom = 7,
                             raster_factor = 2, ...) {
   # Define projection and get AWS Open Data terrain tiles.
   prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  locations <- specimen_tbl[, c("Longitude", "Latitude")]
+  names(locations) <- c("x", "y")
   elev_raster <-
     elevatr::get_elev_raster(
-      locations = as.data.frame(specimen_tbl[, c("Longitude", "Latitude")]),
+      locations = as.data.frame(locations),
       z = raster_zoom, prj = prj_dd, clip = "bbox", src = "aws"
     )
   elev_df <- as.data.frame(methods::as(elev_raster, "SpatialPixelsDataFrame"))

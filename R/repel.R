@@ -27,6 +27,7 @@
 #'   nudges onto [ggplot2::ggplot()] object.
 #'
 #' @examples
+#' \dontrun{
 #' extent <-
 #'   tibble::tribble(
 #'     ~"Longitude", ~"Latitude",
@@ -94,7 +95,7 @@
 #'     initial_ggplot = map
 #'   ) %>%
 #'   rlang::eval_tidy(expr = .)
-#'
+#' }
 #' @keywords internal
 repel_map_labels <- function(map_nudges, map_labels, initial_ggplot) {
   stopifnot(identical(class(initial_ggplot), c("gg", "ggplot")))
@@ -394,7 +395,6 @@ repel_node_labels <- function(node_nudges, node_labels,
 #'
 #' @keywords internal
 haplotype_labels <- function(haplotypes, id_column) {
-
   # Filter to nodes with multiple taxa, then count instances of reviewed IDs.
   labelled_haplotypes <- haplotypes %>%
     dplyr::select(

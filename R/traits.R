@@ -188,7 +188,6 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
                           violin.params = list(),
                           jitter.params = list(),
                           theme.params = list()) {
-
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-
@@ -263,6 +262,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #'
 #' @examples
 #' herbarium_specimens %>%
+#' \dontrun{
 #'   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42)) %>%
 #'   dplyr::bind_cols(
 #'     .,
@@ -274,7 +274,7 @@ jitter_violin <- function(specimen_tbl, trait, aesthetic_id,
 #'     aesthetic_id = "Taxon_a_posteriori",
 #'     legend_title = "Reviewed Annotations"
 #'   )
-#'
+#' }
 #' @keywords internal
 trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
                             aesthetic_labels = NULL, legend_title = NULL,
@@ -352,18 +352,18 @@ trait_phenology <- function(specimen_tbl, trait, aesthetic_id,
 #'
 #' @examples
 #' specimen_tbl <- herbarium_specimens %>%
+#' \dontrun{
 #'   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42))
 #' aesthetic_id <- "Taxon_a_posteriori"
 #' legend_title <- "Reviewed Annotations"
 #' aesthetic_labels <- NULL
 #' theme.params <- list()
 #' guide.params <- list()
-#'
+#' }
 #' @keywords internal
 annotation_legend <- function(specimen_tbl, aesthetic_id, ncol = 2,
                               legend_title, aesthetic_labels = NULL,
                               theme.params = list()) {
-
   # Text markdown label replacements to legend text from prior & reviewed IDs.
   if (is.null(aesthetic_labels)) {
     aesthetic_labels <-

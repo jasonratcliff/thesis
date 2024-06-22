@@ -6,22 +6,24 @@ library(cowplot)
 # Specimens ----
 
 # Results: Combined SEINet / herbarium specimen CO floribunda
+spp_colorado <- thesis::herbarium_specimens |>
+  dplyr::rename(
+    decimalLongitude = Longitude,
+    decimalLatitude = Latitude
+  ) |>
+  Extent$new()
+
+spp_colorado$bbox(xmin = -110.4, ymin = 36.8, xmax = -103.5, ymax = 42.2)
+
 spp_colorado <-
-  subset_coords(
-    specimen_tbl = thesis::herbarium_specimens,
-    Latitude = c(36.79328, 42.21372),
-    Longitude = c(-110.3819, -103.3507)
-  ) %>%
-  group_by(Taxon_a_posteriori) %>%
-  add_tally() %>%
-  filter(
-    n > 3,
-    !is.na(Taxon_a_posteriori),
-    !grepl(pattern = "\\?", x = Taxon_a_posteriori)
-  ) %>%
-  ungroup() %>%
-  select("Taxon_a_posteriori", "Longitude", "Latitude") %>%
-  dplyr::rename("scientificName" = "Taxon_a_posteriori")
+  dplyr::bind_cols(
+    tibble::as_tibble(spp_colorado$sf),
+    sf::st_coordinates(spp_colorado$sf)
+  ) |>
+  dplyr::rename(
+    Longitude = X, Latitude = Y,
+    scientificName = Taxon_a_posteriori
+  )
 
 # Filter SEINet data, bind herbarium vouchers, and sort by occurrence tally.
 spp_seinet <- seinet %>%
@@ -50,13 +52,15 @@ ggplot_specimens <- function() {
         select(Longitude, Latitude, scientificName) %>%
         filter(grepl("vitulifera|bellii|'medicinae'", scientificName)),
       mapping = aes(x = Longitude, y = Latitude, group = scientificName),
-      geom = "polygon", type = 'norm', level = 0.999,
+      geom = "polygon", type = "norm", level = 0.999,
       fill = "black", alpha = 0.25
     ),
     geom_jitter(
       data = spp_seinet, size = 3,
-      aes(x = Longitude, y = Latitude,
-          color = scientificName, shape = scientificName)
+      aes(
+        x = Longitude, y = Latitude,
+        color = scientificName, shape = scientificName
+      )
     ),
     ggplot2::scale_color_manual(
       name = "Annotations", labels = specimen_labels,
@@ -77,7 +81,7 @@ ggplot_specimens <- function() {
 # Elevation Profile ----
 
 # Build elevation and border base layer subset to extent.
-ggplot_extent <- 
+ggplot_extent <-
   tibble::tribble(
     ~"Longitude", ~"Latitude",
     -110.3819, 36.79328,
@@ -108,7 +112,7 @@ legends$elevation <- get_legend(ggplot_elevation)
 
 legends$specimens_pdf <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 2)) +
       theme(legend.title.align = 0.5)
@@ -116,7 +120,7 @@ legends$specimens_pdf <-
 
 legends$specimens_png <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 1)) +
       theme(legend.title.align = 0.5)
@@ -170,4 +174,5 @@ purrr::pwalk(
       nrow = row,
       ncol = col
     )
-  })
+  }
+)
