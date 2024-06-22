@@ -40,12 +40,10 @@ Extent <- R6::R6Class(
     #' @field sf Construct simple features geometry from specimen coordinates.
     sf = function() {
       filtered <- dplyr::filter(self$records, validCoordinates) |>
-        sf::st_as_sf(
-          coords = c("decimalLongitude", "decimalLatitude"),
-          crs = self$crs
-        )
+        # TODO Understand spherical geometry operations with geodetic CRS.
+        sf::st_as_sf(coords = c("decimalLongitude", "decimalLatitude"))
       if (!is.null(private$.bbox)) {
-        bounding <- sf::st_as_sfc(sf::st_bbox(private$.bbox, crs = self$crs))
+        bounding <- sf::st_as_sfc(sf::st_bbox(private$.bbox))
         intersection <- sf::st_intersects(bounding, filtered)
         filtered <- filtered[intersection[[1]], ]
       }
