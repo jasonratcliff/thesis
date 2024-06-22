@@ -45,7 +45,6 @@
 layer_borders <- function(spl_extent, sf_crs = NULL,
                           sf_state_color = "black",
                           sf_county_color = "white", ...) {
-
   # Build state simple features subset to the specimen layer extent.
   state_sfs <- tigris::states(progress_bar = FALSE) %>%
     rmapshaper::ms_simplify(input = .)
@@ -182,7 +181,6 @@ layer_specimens <- function(specimen_tbl, id_column, legend_status = TRUE,
 #'
 #' @keywords internal
 layer_themes <- function(specimen_tbl, id_column, legend_title) {
-
   # Assign HTML markdown label vector.
   markdown_labels <-
     thesis::spl_labels(
@@ -282,7 +280,6 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
                           "roadmap", "hybrid"
                         ),
                         gg_longitude = NULL, gg_latitude = NULL, ...) {
-
   # Check registration of Google API key.
   if (ggmap::has_google_key() == FALSE) {
     stop(paste(
@@ -357,7 +354,6 @@ layer_ggmap <- function(specimen_tbl, zoom_lvl = 7,
 #' @keywords internal
 layer_elevation <- function(specimen_tbl, raster_zoom = 7,
                             raster_factor = 2, ...) {
-
   # Define projection and get AWS Open Data terrain tiles.
   prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   elev_raster <-
@@ -402,7 +398,6 @@ layer_elevation <- function(specimen_tbl, raster_zoom = 7,
 #'
 #' @keywords internal
 spl_states <- function(spl_extent, sf_states) {
-
   # Build simple features polygon from bounding box extent.
   spl_bbox <- spl_extent %>%
     sf::st_as_sf(
@@ -448,7 +443,6 @@ spl_states <- function(spl_extent, sf_states) {
 #'
 #' @keywords internal
 spl_order <- function(specimen_tbl, id_column) {
-
   # Group specimens by count of identification column.
   ordered_specimens <- specimen_tbl %>%
     dplyr::group_by_at(dplyr::vars(dplyr::all_of(id_column))) %>%
@@ -509,7 +503,7 @@ spl_bbox <- function(...) {
   }
 
   # Specimen layer extent from specimen tibble
-  if (identical(class(spl_base), c("tbl_df", "tbl", "data.frame"))) {
+  if (inherits(spl_base, "tbl_df")) {
     bbox <- list(
       Longitude = range(spl_base$Longitude, na.rm = TRUE),
       Latitude = range(spl_base$Latitude, na.rm = TRUE)
@@ -596,7 +590,6 @@ spl_legend <- function(specimen_tbl, id_column, legend_title,
 spl_id <- function(specimen_tbl, id_column, collector, collection,
                    shape_aes = NULL, geom_size = 3, label_size = 3,
                    h_adjust = 0.25, v_adjust = -0.15) {
-
   # Call `find_spp()` function to get specimen annotation data.
   spp_id <- thesis::find_spp(
     specimen_tbl = specimen_tbl,
