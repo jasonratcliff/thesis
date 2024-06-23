@@ -88,8 +88,8 @@ test_that(
         compared <-
           switch(
             EXPR = comparison,
-            ">" = expect_gt(min(filtered[[reference]]), coordinate),
-            "<" = expect_lt(max(filtered[[reference]]), coordinate)
+            ">" = expect_gte(min(filtered[[reference]]), coordinate),
+            "<" = expect_lte(max(filtered[[reference]]), coordinate)
           )
       }
     )

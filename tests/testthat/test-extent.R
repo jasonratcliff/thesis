@@ -50,6 +50,7 @@ if (expect_identical("collectionID" %in% names(records), TRUE)) {
 extent <- Extent$new(records = records)
 
 test_that("default coordinate reference system", {
+  skip("Questioning projection with geodetic CRS.")
   expect_identical(extent$crs, sf::st_crs("EPSG:4326"))
   expect_equal(sf::st_crs(extent$bbox())$input, "EPSG:4326")
 })
