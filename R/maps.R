@@ -82,24 +82,17 @@
 #' <https://doi.org/10.32614/RJ-2016-043>
 #'
 #' @examples
-#' voucher_map <- SpecimenMap$new(
-#'   records = thesis::vouchers,
-#'   identifier = "scientificName"
-#' )
-#'
-#' voucher_map$filter_limit(
-#'   west = -108, east = -105,
-#'   north = 42, south = 39
-#' )
+#' specimens <- SpecimenMap$new(records = thesis::vouchers)
+#' specimens$bbox(xmin = -108, ymin = 39, xmax = -105, ymax = 42)
 #'
 #' # Base map type
-#' voucher_map$map(
+#' specimens$map(
 #'   .legend = "Reviewed Annotation",
 #'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
-#' voucher_map$map(
+#' specimens$map(
 #'   .legend = "Reviewed Annotation",
 #'   .borders = "grey",
 #'   baselayer = "elevatr"

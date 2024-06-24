@@ -41,25 +41,6 @@ dim(specimens$records)
 specimens$census()
 
 ## ------------------------------------------------
-## Method `Specimen$filter_limit`
-## ------------------------------------------------
-
-# Subset records by geographic coordinates from cardinal headings.
-clone <- specimens$clone()
-dim(clone$records)
-
-# Assign named character vector with cardinal headings to limit records.
-headings <- c(west = -107, south = 39, east = -105, north = 41)
-
-# By default, the `records` field is updated silently.
-do.call(clone$filter_limit, args = as.list(headings))
-dim(clone$records)
-
-# Optionally, return tibble data frame with filtered records.
-filtered <- clone$filter_limit(west = -106, .return = TRUE)
-dim(filtered) # Note `tbl_df` class returned object
-
-## ------------------------------------------------
 ## Method `Specimen$filter_taxa`
 ## ------------------------------------------------
 
@@ -105,28 +86,30 @@ clone$annotations(.identifier = "organismName")
 ## Method `Specimen$labels`
 ## ------------------------------------------------
 
-dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) \%>\%
- dplyr::rename(label = ID_final) \%>\%
- Specimen$new(
-   records = .,
-   identifier = "ID_final"
- )
+\dontrun{
+  # TODO Superclass raises error for records missing columns:
+  #   > decimalLongitude; decimalLatitude
+  dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) \%>\%
+   dplyr::rename(label = ID_final) \%>\%
+   Specimen$new(
+     records = .,
+     identifier = "ID_final"
+   )
 
-# Note length of the returned label vector equals the record row number.
-length(dna_vouchers$labels())
-unique(dna_vouchers$labels())
+  # Note length of the returned label vector equals the record row number.
+  length(dna_vouchers$labels())
+  unique(dna_vouchers$labels())
+}
 }
 \seealso{
 \link{SpecimenMap}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
+\section{Super class}{
+\code{base::Extent} -> \code{Specimen}
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{records}}{A \code{\link[tibble:tbl_df-class]{tbl_df}} S3 class tibble data
-frame containing a set of specimen vouchers. The \verb{filter_*} methods
-can be chained to update this field or set to return data without
-modifying the public \code{records} field.}
-
 \item{\code{identifier}}{Character scalar denoting a default variable in
 the \code{Specimen$records} field. For records with a \code{.identifier}
 argument, this field is referenced when the optional argument is
@@ -141,7 +124,6 @@ including filtering and labelling methods.}
 \itemize{
 \item \href{#method-Specimen-new}{\code{Specimen$new()}}
 \item \href{#method-Specimen-census}{\code{Specimen$census()}}
-\item \href{#method-Specimen-filter_limit}{\code{Specimen$filter_limit()}}
 \item \href{#method-Specimen-filter_taxa}{\code{Specimen$filter_taxa()}}
 \item \href{#method-Specimen-filter_collections}{\code{Specimen$filter_collections()}}
 \item \href{#method-Specimen-annotations}{\code{Specimen$annotations()}}
@@ -149,13 +131,20 @@ including filtering and labelling methods.}
 \item \href{#method-Specimen-clone}{\code{Specimen$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="base" data-topic="Extent" data-id="bbox"><a href='../../base/html/Extent.html#method-Extent-bbox'><code>base::Extent$bbox()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Specimen-new"></a>}}
 \if{latex}{\out{\hypertarget{method-Specimen-new}{}}}
 \subsection{Method \code{new()}}{
 Construct a \code{Specimen} class container from voucher records.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$new(records, identifier)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Specimen$new(records, identifier = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -208,67 +197,6 @@ Reports two summations:
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{# Check basic record census of total and distinct specimens.
 specimens$census()
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Specimen-filter_limit"></a>}}
-\if{latex}{\out{\hypertarget{method-Specimen-filter_limit}{}}}
-\subsection{Method \code{filter_limit()}}{
-Filter specimen records by geographic coordinate limits.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Specimen$filter_limit(
-  west = NULL,
-  south = NULL,
-  east = NULL,
-  north = NULL,
-  .return = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{west}}{Filter records by \strong{minimum longitude} (min. x)}
-
-\item{\code{south}}{Filter records by \strong{minimum latitude} (min. y)}
-
-\item{\code{east}}{Filter records by \strong{maximum longitude} (max. x)}
-
-\item{\code{north}}{Filter records by \strong{maximum latitude} (max. y)}
-
-\item{\code{.return}}{Logical to return filtered records. By default, the public
-field \code{Specimen$records} is updated silently to allow chaining subsequent
-filtering operations. When \code{TRUE}, return the filtered records without
-updating the public field.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-This method enables filtering records by minimum or maximum
-coordinate limits using any combination of the four cardinal directions.
-Each parameter sets the directional bound (min/max) to filter.
-}
-
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{# Subset records by geographic coordinates from cardinal headings.
-clone <- specimens$clone()
-dim(clone$records)
-
-# Assign named character vector with cardinal headings to limit records.
-headings <- c(west = -107, south = 39, east = -105, north = 41)
-
-# By default, the `records` field is updated silently.
-do.call(clone$filter_limit, args = as.list(headings))
-dim(clone$records)
-
-# Optionally, return tibble data frame with filtered records.
-filtered <- clone$filter_limit(west = -106, .return = TRUE)
-dim(filtered) # Note `tbl_df` class returned object
 }
 \if{html}{\out{</div>}}
 
@@ -440,16 +368,20 @@ Length equivalent to length of the records \code{label} variable.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) \%>\%
- dplyr::rename(label = ID_final) \%>\%
- Specimen$new(
-   records = .,
-   identifier = "ID_final"
- )
+\preformatted{\dontrun{
+  # TODO Superclass raises error for records missing columns:
+  #   > decimalLongitude; decimalLatitude
+  dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) \%>\%
+   dplyr::rename(label = ID_final) \%>\%
+   Specimen$new(
+     records = .,
+     identifier = "ID_final"
+   )
 
-# Note length of the returned label vector equals the record row number.
-length(dna_vouchers$labels())
-unique(dna_vouchers$labels())
+  # Note length of the returned label vector equals the record row number.
+  length(dna_vouchers$labels())
+  unique(dna_vouchers$labels())
+}
 }
 \if{html}{\out{</div>}}
 

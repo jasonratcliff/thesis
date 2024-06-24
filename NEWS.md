@@ -2,6 +2,10 @@
 
 ## Breaking changes
 
+* Utilize simple features via `sf` for spatial operations
+    + New superclass `Extent` 
+        - Public method `$bbox()` replaces `Specimen$filter_limit()`
+
 * Rename exported package data objects:
 
 | Old             | New       |

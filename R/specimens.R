@@ -133,64 +133,6 @@ Specimen <- R6::R6Class(
         )
       return(record_census)
     },
-    #' @description Filter specimen records by geographic coordinate limits.
-    #'
-    #' `r lifecycle::badge("deprecated")`
-    #'
-    #' This method enables filtering records by minimum or maximum
-    #' coordinate limits using any combination of the four cardinal directions.
-    #' Each parameter sets the directional bound (min/max) to filter.
-    #'
-    #' @param west Filter records by **minimum longitude** (min. x)
-    #' @param east Filter records by **maximum longitude** (max. x)
-    #' @param south Filter records by **minimum latitude** (min. y)
-    #' @param north Filter records by **maximum latitude** (max. y)
-    #'
-    #' @examples
-    #' # Subset records by geographic coordinates from cardinal headings.
-    #' clone <- specimens$clone()
-    #' dim(clone$records)
-    #'
-    #' # Assign named character vector with cardinal headings to limit records.
-    #' headings <- c(west = -107, south = 39, east = -105, north = 41)
-    #'
-    #' # By default, the `records` field is updated silently.
-    #' do.call(clone$filter_limit, args = as.list(headings))
-    #' dim(clone$records)
-    #'
-    #' # Optionally, return tibble data frame with filtered records.
-    #' filtered <- clone$filter_limit(west = -106, .return = TRUE)
-    #' dim(filtered) # Note `tbl_df` class returned object
-    filter_limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
-                            .return = FALSE) {
-      lifecycle::deprecate_soft(
-        when = "0.4.0",
-        what = "Specimen$filter_limit()",
-        with = "Extent$bbox()"
-      )
-      args <- list(xmin = west, ymin = south, xmax = east, ymax = north)
-      args <- args[!sapply(args, is.null)]
-      if (!length(args) > 0) {
-        if (.return) {
-          usethis::ui_info("Returning object unfiltered by coordinate limit.")
-          return(self$records)
-        }
-      } else {
-        self$bbox(!!!args)
-        private$.filtered <- tibble::as_tibble(self$sf) |>
-          dplyr::select(-geometry) |>
-          dplyr::bind_cols(sf::st_coordinates(self$sf)) |>
-          dplyr::rename(
-            decimalLongitude = X,
-            decimalLatitude = Y
-          )
-        if (.return) {
-          self$records
-        } else {
-          invisible(self)
-        }
-      }
-    },
     #' @description Filter specimen records by taxonomic annotations.
     #'
     #' @details

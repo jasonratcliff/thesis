@@ -45,57 +45,6 @@ test_that(
   }
 )
 
-## ---- Specimens$filter_limit() -----------------------------------------------
-test_that(
-  desc = "Filter specimen records by coordinate limits from cardinal headings.",
-  code = {
-    specimens <- build_specimens()$clone()
-
-    # Expect default NULL values to return unchanged `self$records` tibble.
-    expect_identical(specimens$records, specimens$filter_limit(.return = TRUE))
-
-    # Check silent update for default `.return` = FALSE.
-    filtered <- specimens$clone()
-    purrr::iwalk(
-      .x = list(west = -106.75, south = 41.75, east = -105.25, north = 43.25),
-      .f = function(heading, name) {
-        row <- nrow(filtered$records)
-        args <- rlang::list2({{ name }} := heading, .return = FALSE)
-        rlang::eval_tidy(
-          expr = {
-            rlang::call2(.fn = filtered$filter_limit, !!!args)
-          }
-        )
-        expect_lt(nrow(filtered$records), row)
-      }
-    )
-
-    # Check expected return tibble row counts for filtered limits.
-    purrr::pwalk(
-      .l = list(
-        heading = c("west", "south", "east", "north"),
-        coordinate = c(-106.75, 42, -105.5, 43.5),
-        reference = rep(c("decimalLongitude", "decimalLatitude"), times = 2),
-        comparison = c(rep(">", 2), rep("<", 2))
-      ),
-      .f = function(heading, coordinate, reference, comparison) {
-        args <- rlang::list2({{ heading }} := coordinate, .return = TRUE)
-        filtered <- rlang::eval_tidy(
-          expr = {
-            rlang::call2(.fn = specimens$filter_limit, !!!args)
-          }
-        )
-        compared <-
-          switch(
-            EXPR = comparison,
-            ">" = expect_gte(min(filtered[[reference]]), coordinate),
-            "<" = expect_lte(max(filtered[[reference]]), coordinate)
-          )
-      }
-    )
-  }
-)
-
 ## ---- Specimens$filter_taxa() ------------------------------------------------
 test_that(
   desc = "Filter specimen records by taxonomic annotation from identifications",

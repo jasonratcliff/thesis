@@ -40,24 +40,17 @@ Map terrain tiles pulled from:
 }
 }
 \examples{
-voucher_map <- SpecimenMap$new(
-  records = thesis::vouchers,
-  identifier = "scientificName"
-)
-
-voucher_map$filter_limit(
-  west = -108, east = -105,
-  north = 42, south = 39
-)
+specimens <- SpecimenMap$new(records = thesis::vouchers)
+specimens$bbox(xmin = -108, ymin = 39, xmax = -105, ymax = 42)
 
 # Base map type
-voucher_map$map(
+specimens$map(
   .legend = "Reviewed Annotation",
   .borders = "black"
 )
 
 # Example `elevatr` wrapper
-voucher_map$map(
+specimens$map(
   .legend = "Reviewed Annotation",
   .borders = "grey",
   baselayer = "elevatr"
@@ -108,8 +101,8 @@ geographic data from the US census bureau.
 The R Journal. 8(2):231-242.
 \url{https://doi.org/10.32614/RJ-2016-043}
 }
-\section{Super class}{
-\code{\link[thesis:Specimen]{thesis::Specimen}} -> \code{SpecimenMap}
+\section{Super classes}{
+\code{base::Extent} -> \code{\link[thesis:Specimen]{thesis::Specimen}} -> \code{SpecimenMap}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -138,10 +131,10 @@ The R Journal. 8(2):231-242.
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="base" data-topic="Extent" data-id="bbox"><a href='../../base/html/Extent.html#method-Extent-bbox'><code>base::Extent$bbox()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="annotations"><a href='../../thesis/html/Specimen.html#method-Specimen-annotations'><code>thesis::Specimen$annotations()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="census"><a href='../../thesis/html/Specimen.html#method-Specimen-census'><code>thesis::Specimen$census()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_collections"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_collections'><code>thesis::Specimen$filter_collections()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_limit"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_limit'><code>thesis::Specimen$filter_limit()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="filter_taxa"><a href='../../thesis/html/Specimen.html#method-Specimen-filter_taxa'><code>thesis::Specimen$filter_taxa()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="thesis" data-topic="Specimen" data-id="labels"><a href='../../thesis/html/Specimen.html#method-Specimen-labels'><code>thesis::Specimen$labels()</code></a></span></li>
 </ul>
@@ -154,7 +147,7 @@ The R Journal. 8(2):231-242.
 Construct record container \code{\link[R6:R6Class]{R6::R6Class()}}
 subclass instance for geographic mapping.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$new(records, identifier)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SpecimenMap$new(records, identifier = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

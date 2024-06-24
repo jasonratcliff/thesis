@@ -10,6 +10,7 @@
 #'
 #' * [Geometry types](https://r-spatial.github.io/sf/articles/sf1.html#simple-feature-geometry-types)
 #'
+#' @param records Specimen vouchers [tibble::tbl_df] data frame.
 #' @export
 Extent <- R6::R6Class(
   classname = "Extent",
