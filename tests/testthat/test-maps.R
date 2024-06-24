@@ -111,7 +111,7 @@ if (dir_exists(tmp_tigris)) dir_delete(tmp_tigris)
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
   expect_type(vouchers, type = "environment")
-  expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "R6"))
+  expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "Extent", "R6"))
   expect_s3_class(vouchers$records, c("tbl_df"))
   expect_identical(vouchers$identifier, expected = "scientificName")
 
@@ -196,7 +196,7 @@ test_that("SpecimenMap R6 Subclass", {
   expect_type(vouchers$theme, type = "closure")
   voucher_theme <- vouchers$theme(.legend = vouchers$identifier)
   expect_identical(class(voucher_theme[[1]]), expected = c("theme", "gg"))
-  expect_identical(voucher_theme[[1]]$legend.text, ggtext::element_markdown())
+  expect_s3_class(voucher_theme[[1]]$legend.text, class = "element_markdown")
   expect_snapshot(voucher_theme[[2]])
 
   # Collector Tags -------------------------------------------------------------
@@ -256,6 +256,7 @@ test_that("SpecimenMap R6 Subclass", {
     ),
     regexp = "Register an API key with Google."
   )
+
   expect_error(
     vouchers$map(baselayer = "ggmap", center = c(1, 2, 3)),
     regexp = "Map centroid requires numeric vector of length 2."

@@ -82,24 +82,17 @@
 #' <https://doi.org/10.32614/RJ-2016-043>
 #'
 #' @examples
-#' voucher_map <- SpecimenMap$new(
-#'   records = thesis::vouchers,
-#'   identifier = "scientificName"
-#' )
-#'
-#' voucher_map$filter_limit(
-#'   west = -108, east = -105,
-#'   north = 42, south = 39
-#' )
+#' specimens <- SpecimenMap$new(records = thesis::vouchers)
+#' specimens$bbox(xmin = -108, ymin = 39, xmax = -105, ymax = 42)
 #'
 #' # Base map type
-#' voucher_map$map(
+#' specimens$map(
 #'   .legend = "Reviewed Annotation",
 #'   .borders = "black"
 #' )
 #'
 #' # Example `elevatr` wrapper
-#' voucher_map$map(
+#' specimens$map(
 #'   .legend = "Reviewed Annotation",
 #'   .borders = "grey",
 #'   baselayer = "elevatr"
@@ -119,7 +112,7 @@ SpecimenMap <- R6::R6Class(
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
     #'
-    initialize = function(records, identifier) {
+    initialize = function(records, identifier = NULL) {
       super$initialize(records, identifier)
     },
 
@@ -295,14 +288,13 @@ SpecimenMap <- R6::R6Class(
         ggplot2::theme(
           panel.background = ggplot2::element_blank(),
           panel.border = ggplot2::element_rect(fill = NA, color = "black"),
-          legend.text.align = 0, legend.title.align = 0.5,
           legend.direction = "vertical",
           legend.key = ggplot2::element_blank(),
           legend.background = ggplot2::element_rect(
             fill = "grey90",
             color = "black"
           ),
-          legend.text = ggtext::element_markdown()
+          legend.text = ggtext::element_markdown(hjust = 0, vjust = 0.5)
         ),
         ggplot2::labs(
           x = "decimalLongitude", y = "decimalLatitude",
@@ -430,7 +422,7 @@ SpecimenMap <- R6::R6Class(
       maptype <-
         match.arg(
           arg = maptype,
-          choices = as.character(formals(ggmap::get_map)[["maptype"]])
+          choices = ggmap:::GOOGLE_VALID_MAP_TYPES
         )
       if (is.null(center)) {
         bound <- ggmap::make_bbox(
@@ -460,12 +452,13 @@ SpecimenMap <- R6::R6Class(
     base_elevatr = function(zoom) {
       # Define projection and get AWS Open Data terrain tiles.
       prj_dd <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+      coords <-
+        as.data.frame(self$records[, c("decimalLongitude", "decimalLatitude")])
+      names(coords) <- c("x", "y")
       elev_raster <-
         elevatr::get_elev_raster(
-          locations = as.data.frame(
-            self$records[, c("decimalLongitude", "decimalLatitude")]
-          ),
-          z = zoom, prj = prj_dd, clip = "bbox", src = "aws", verbose = FALSE
+          locations = coords, z = zoom, prj = prj_dd,
+          clip = "bbox", src = "aws", verbose = FALSE
         )
       elev_df <-
         as.data.frame(

@@ -2,17 +2,27 @@ library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
+library(sf)
 
 set.seed(20210312)
 
 # Subset Specimens ----
 
-spp_integrifolia <- thesis::herbarium_specimens %>%
-  subset_coords(
-    specimen_tbl = .,
-    Latitude = c(41, 44),
-    Longitude = c(-112, -108)
-  )
+spp_integrifolia <- thesis::herbarium_specimens |>
+  dplyr::rename(
+    decimalLongitude = Longitude,
+    decimalLatitude = Latitude
+  ) |>
+  Extent$new()
+
+spp_integrifolia$bbox(xmin = -112, ymin = 41, xmax = -108, ymax = 44)
+
+spp_integrifolia <-
+  dplyr::bind_cols(
+    tibble::as_tibble(spp_integrifolia$sf),
+    sf::st_coordinates(spp_integrifolia$sf)
+  ) |>
+  dplyr::rename(Longitude = X, Latitude = Y)
 
 specimen_labels <-
   spl_labels(
@@ -61,8 +71,10 @@ ggplot_specimens <- function() {
     geom_jitter(
       data = spp_integrifolia, size = 3,
       height = 0.05, width = 0.05,
-      aes(x = Longitude, y = Latitude,
-          color = Taxon_a_posteriori, shape = Taxon_a_posteriori)
+      aes(
+        x = Longitude, y = Latitude,
+        color = Taxon_a_posteriori, shape = Taxon_a_posteriori
+      )
     ),
     ggplot2::scale_color_manual(
       name = "Annotations", labels = specimen_labels,
@@ -91,7 +103,7 @@ legends$elevation <- get_legend(ggplot_elevation)
 
 legends$specimens_pdf <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 2)) +
       theme(legend.title.align = 0.5)
@@ -99,7 +111,7 @@ legends$specimens_pdf <-
 
 legends$specimens_png <-
   get_legend(
-    ggplot() + 
+    ggplot() +
       ggplot_specimens() +
       guides(col = guide_legend(ncol = 1)) +
       theme(legend.title.align = 0.5)
@@ -153,4 +165,5 @@ purrr::pwalk(
       nrow = row,
       ncol = col
     )
-  })
+  }
+)

@@ -22,25 +22,37 @@
 #'   field `Specimen$records` is updated silently to allow chaining subsequent
 #'   filtering operations. When `TRUE`, return the filtered records without
 #'   updating the public field.
+#' @include extent.R
 #' @export
 Specimen <- R6::R6Class(
   classname = "Specimen",
-  public = list(
-
-    #' @field records A [`tbl_df`][tibble::tbl_df-class] S3 class tibble data
-    #'   frame containing a set of specimen vouchers. The `filter_*` methods
-    #'   can be chained to update this field or set to return data without
-    #'   modifying the public `records` field.
-    records = "tbl_df",
-
+  inherit = Extent,
+  private = list(
+    .identifier = NULL
+  ),
+  active = list(
     #' @field identifier Character scalar denoting a default variable in
     #'   the `Specimen$records` field. For records with a `.identifier`
     #'   argument, this field is referenced when the optional argument is
     #'   omitted. The `identifier` field is used for operations involving a
     #'   specific set of taxonomic identifications (e.g., prior annotations),
     #'   including filtering and labelling methods.
-    identifier = NULL,
-
+    identifier = function(value) {
+      if (missing(value)) {
+        private$.identifier
+      } else {
+        stopifnot(
+          all(
+            is.character(value), length(value) == 1,
+            value %in% names(private$.records)
+          )
+        )
+        private$.identifier <- value
+        invisible(self)
+      }
+    }
+  ),
+  public = list(
     #' @description Construct a `Specimen` class container from voucher records.
     #'
     #' @examples
@@ -56,11 +68,18 @@ Specimen <- R6::R6Class(
     #' class(specimens$records)
     #'
     #' dim(specimens$records)
-    initialize = function(records, identifier) {
-      self$records <- records
-      self$identifier <- identifier
+    initialize = function(records, identifier = NULL) {
+      super$initialize(records)
+      if (is.null(identifier)) {
+        private$.identifier <- "scientificName"
+      } else {
+        if (!identifier %in% names(private$.records)) {
+          rlang::abort(c("`identifier` must match one of:", dwc))
+        } else {
+          private$.identifier <- identifier
+        }
+      }
     },
-
     #' @description Record census accounting of voucher specimens.
     #'
     #' @details
@@ -78,7 +97,6 @@ Specimen <- R6::R6Class(
           "eventDate", "institutionCode"
         )
       record_census <-
-        # tibble::tibble(
         list(
           total = dplyr::mutate(
             .data = vouchers,
@@ -92,7 +110,7 @@ Specimen <- R6::R6Class(
             nrow(),
           distinct = dplyr::mutate(
             .data = vouchers,
-            row_id = 1:nrow(vouchers),
+            row_id = seq_len(nrow(vouchers)),
             institutionCode = stringr::str_remove_all(
               string = .data$institutionCode,
               pattern = "\\[|\\]"
@@ -115,90 +133,6 @@ Specimen <- R6::R6Class(
         )
       return(record_census)
     },
-
-    #' @description Filter specimen records by geographic coordinate limits.
-    #'
-    #' @details
-    #' This method enables filtering records by minimum or maximum
-    #' coordinate limits using any combination of the four cardinal directions.
-    #' Each parameter sets the directional bound (min/max) to filter.
-    #'
-    #' @param west Filter records by **minimum longitude** (min. x)
-    #' @param east Filter records by **maximum longitude** (max. x)
-    #' @param south Filter records by **minimum latitude** (min. y)
-    #' @param north Filter records by **maximum latitude** (max. y)
-    #'
-    #' @examples
-    #' # Subset records by geographic coordinates from cardinal headings.
-    #' clone <- specimens$clone()
-    #' dim(clone$records)
-    #'
-    #' # Assign named character vector with cardinal headings to limit records.
-    #' headings <- c(west = -107, south = 39, east = -105, north = 41)
-    #'
-    #' # By default, the `records` field is updated silently.
-    #' do.call(clone$filter_limit, args = as.list(headings))
-    #' dim(clone$records)
-    #'
-    #' # Optionally, return tibble data frame with filtered records.
-    #' filtered <- clone$filter_limit(west = -106, .return = TRUE)
-    #' dim(filtered) # Note `tbl_df` class returned object
-    filter_limit = function(west = NULL, south = NULL, east = NULL, north = NULL,
-                            .return = FALSE) {
-      headings <- tibble::tibble(
-        heading = c("west", "south", "east", "north"),
-        reference = rep(c("decimalLongitude", "decimalLatitude"), times = 2),
-        comparison = c(rep(">", 2), rep("<", 2)),
-        coordinate = purrr::map_dbl(
-          .x = list(west, south, east, north),
-          .f = function(heading) {
-            ifelse(
-              test = !is.null(heading),
-              yes = heading,
-              no = NA_real_
-            )
-          }
-        )
-      ) %>%
-        dplyr::filter(!is.na(coordinate))
-
-      if (!nrow(headings) > 0) {
-        usethis::ui_oops("At least one meridian or parallel recommended:")
-        purrr::walk(
-          .x = c("west", "south", "east", "north"),
-          .f = ~ print(glue::glue("#> {usethis::ui_field(.x)}"))
-        )
-        usethis::ui_info("Returning object unfiltered by coordinate limit.")
-        return(self$records)
-      } else {
-        cardinals <- purrr::pmap(
-          .l = headings,
-          .f = function(heading, reference, comparison, coordinate) {
-            limit <-
-              glue::glue(
-                "dplyr::filter(.data[['{reference}']] {comparison} {coordinate})"
-              )
-            str2lang(limit)
-          }
-        )
-      }
-      filtered <- rlang::eval_tidy(
-        expr = {
-          purrr::reduce(
-            .x = unlist(cardinals),
-            .f = ~ rlang::expr(!!.x %>% !!.y),
-            .init = rlang::expr(self$records)
-          )
-        }
-      )
-      if (.return) {
-        return(filtered)
-      } else {
-        self$records <- filtered
-        invisible(self)
-      }
-    },
-
     #' @description Filter specimen records by taxonomic annotations.
     #'
     #' @details
@@ -230,7 +164,7 @@ Specimen <- R6::R6Class(
       species <- rlang::list2(...) %>%
         purrr::flatten() %>%
         purrr::flatten_chr()
-      if (is.null(.identifier)) .identifier <- self$identifier
+      .identifier <- .identifier %||% self$identifier
       filtered <- self$records %>%
         dplyr::filter(
           grepl(
@@ -241,11 +175,10 @@ Specimen <- R6::R6Class(
       if (.return) {
         return(filtered)
       } else {
-        self$records <- filtered
+        private$.filtered <- filtered
         invisible(self)
       }
     },
-
     #' @description Filter specimen records by collector or collection number.
     #'
     #' @details
@@ -300,11 +233,10 @@ Specimen <- R6::R6Class(
       if (.return) {
         return(filtered)
       } else {
-        self$records <- filtered
+        private$.filtered <- filtered
         invisible(self)
       }
     },
-
     #' @description Create markdown-formatted specimen annotations.
     #'
     #' @details
@@ -353,23 +285,26 @@ Specimen <- R6::R6Class(
         )
       return(annotations)
     },
-
     #' @description Create base expression specimen labels.
     #'
     #' @return Character vector of expressions for parsed font labels.
     #'  Length equivalent to length of the records `label` variable.
     #'
     #' @examples
-    #' dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) %>%
-    #'  dplyr::rename(label = ID_final) %>%
-    #'  Specimen$new(
-    #'    records = .,
-    #'    identifier = "ID_final"
-    #'  )
+    #' \dontrun{
+    #'   # TODO Superclass raises error for records missing columns:
+    #'   #   > decimalLongitude; decimalLatitude
+    #'   dna_vouchers <- dplyr::select(thesis::dna_specimens, ID_final) %>%
+    #'    dplyr::rename(label = ID_final) %>%
+    #'    Specimen$new(
+    #'      records = .,
+    #'      identifier = "ID_final"
+    #'    )
     #'
-    #' # Note length of the returned label vector equals the record row number.
-    #' length(dna_vouchers$labels())
-    #' unique(dna_vouchers$labels())
+    #'   # Note length of the returned label vector equals the record row number.
+    #'   length(dna_vouchers$labels())
+    #'   unique(dna_vouchers$labels())
+    #' }
     labels = function(.identifier = "label") {
       if (is.null(.identifier)) .identifier <- self$identifier
       labels <- self$records[[.identifier]] %>%

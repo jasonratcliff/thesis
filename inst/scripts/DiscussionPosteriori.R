@@ -2,29 +2,40 @@ library(thesis)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
+library(sf)
 
 set.seed(20210311)
 
 # Discussion: Build ggplot distribution map with reviewed annotations.
 reviewed <- list()
-reviewed$specimens <- thesis::herbarium_specimens %>%
+reviewed$taxa <- thesis::herbarium_specimens %>%
   select("Taxon_a_posteriori", "Latitude", "Longitude") %>%
   filter(Taxon_a_posteriori %in%
-    paste("Physaria",
-      c("acutifolia", "brassicoides", "condensata", "dornii",
+    paste(
+      "Physaria",
+      c(
+        "acutifolia", "brassicoides", "condensata", "dornii",
         "eburniflora", "integrifolia", "vitulifera",
         "'medicinae'", "chambersii", "rollinsii",
         paste("didymocarpa subsp.", c("didymocarpa", "lanata", "lyrata")),
         paste("saximontana subsp.", c("saximontana", "dentata")),
         paste("floribunda subsp.", c("floribunda", "osterhoutii"))
       )
-    ) | grepl("^Physaria$", .data$Taxon_a_posteriori)
-  ) %>%
-  subset_coords(
-    specimen_tbl = .,
-    Latitude = c(37, 49.1),
-    Longitude = c(-114.5, -102)
-  )
+    ) | grepl("^Physaria$", .data$Taxon_a_posteriori)) |>
+  dplyr::rename(
+    decimalLongitude = Longitude,
+    decimalLatitude = Latitude
+  ) |>
+  Extent$new()
+
+reviewed$taxa$bbox(xmin = -114.5, ymin = 37, xmax = -102, ymax = 49.1)
+
+reviewed$specimens <-
+  dplyr::bind_cols(
+    tibble::as_tibble(reviewed$taxa$sf),
+    sf::st_coordinates(reviewed$taxa$sf)
+  ) |>
+  dplyr::rename(Longitude = X, Latitude = Y)
 
 reviewed$ggplot <- ggplot() +
   layer_borders(
@@ -119,4 +130,5 @@ purrr::pwalk(
       nrow = row,
       ncol = col
     )
-  })
+  }
+)

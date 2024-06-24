@@ -1,23 +1,37 @@
-## ---- Specimens$initialize() -------------------------------------------------
-test_that(
-  desc = "Specimen R6 superclass specification for public fields and methods.",
-  code = {
-    specimens <- build_specimens()$clone()
-    expect_identical(class(specimens), c("Specimen", "R6"))
-    expect_identical(class(specimens$records), c("tbl_df", "tbl", "data.frame"))
+test_that("subclass inherits `Extent` R6 superclass", {
+  specimens <- Specimen$new(records = vouchers)
+  expect_equal(inherits(specimens, "Extent"), TRUE)
+})
 
-    # TODO Check public functions class - metaprogramming with R6 `$` closure?
-    purrr::walk(
-      .x = list(
-        specimens$census,
-        specimens$filter_limit,
-        specimens$filter_taxa,
-        specimens$filter_collections
-      ),
-      .f = ~ expect_type(.x, "closure")
-    )
-  }
-)
+## ---- Specimen$identifier ----------------------------------------------------
+
+test_that("new object is set with default DWC term", {
+  x <- Specimen$new(records = vouchers)
+  expect_identical(x$identifier, "scientificName")
+})
+
+test_that("initialize with valid non-default $identifier active field", {
+  x <- Specimen$new(records = vouchers, identifier = "organismName")
+  expect_identical(x$identifier, "organismName")
+  expect_error(
+    Specimen$new(records = vouchers, identifier = "nonDarwinCore"),
+    regexp = "`identifier`"
+  )
+})
+
+test_that("update $identifier active field with valid term", {
+  x <- Specimen$new(records = vouchers)
+  x$identifier <- "organismName"
+  expect_identical(x$identifier, "organismName")
+})
+
+test_that("error for non-character scalars or vectors ≥ length 1", {
+  x <- Specimen$new(records = thesis::vouchers)
+  expect_error(x$identifier <- 1859)
+  expect_error(x$identifier <- as.symbol("scientificName"))
+  expect_error(x$identifier <- c("scientificName", "organismName"))
+  expect_error(x$identifier <- "missingTerm")
+})
 
 ## ---- Specimens$census() -----------------------------------------------------
 test_that(
@@ -27,57 +41,6 @@ test_that(
     expect_equal(
       object = specimens$census(),
       expected = list(total = 8, distinct = 7)
-    )
-  }
-)
-
-## ---- Specimens$filter_limit() -----------------------------------------------
-test_that(
-  desc = "Filter specimen records by coordinate limits from cardinal headings.",
-  code = {
-    specimens <- build_specimens()$clone()
-
-    # Expect default NULL values to return unchanged `self$records` tibble.
-    expect_identical(specimens$records, specimens$filter_limit())
-
-    # Check silent update for default `.return` = FALSE.
-    filtered <- specimens$clone()
-    purrr::iwalk(
-      .x = list(west = -106.75, south = 41.75, east = -105.25, north = 43.25),
-      .f = function(heading, name) {
-        row <- nrow(filtered$records)
-        args <- rlang::list2({{ name }} := heading, .return = FALSE)
-        rlang::eval_tidy(
-          expr = {
-            rlang::call2(.fn = filtered$filter_limit, !!!args)
-          }
-        )
-        expect_lt(nrow(filtered$records), row)
-      }
-    )
-
-    # Check expected return tibble row counts for filtered limits.
-    purrr::pwalk(
-      .l = list(
-        heading = c("west", "south", "east", "north"),
-        coordinate = c(-106.75, 42, -105.5, 43.5),
-        reference = rep(c("decimalLongitude", "decimalLatitude"), times = 2),
-        comparison = c(rep(">", 2), rep("<", 2))
-      ),
-      .f = function(heading, coordinate, reference, comparison) {
-        args <- rlang::list2({{ heading }} := coordinate, .return = TRUE)
-        filtered <- rlang::eval_tidy(
-          expr = {
-            rlang::call2(.fn = specimens$filter_limit, !!!args)
-          }
-        )
-        compared <-
-          switch(
-            EXPR = comparison,
-            ">" = expect_gt(min(filtered[[reference]]), coordinate),
-            "<" = expect_lt(max(filtered[[reference]]), coordinate)
-          )
-      }
     )
   }
 )
