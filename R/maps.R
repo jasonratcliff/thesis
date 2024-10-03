@@ -100,14 +100,11 @@
 SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
   inherit = Specimen,
+  private = list(
+    states = NULL,
+    counties = NULL
+  ),
   public = list(
-
-    #' @field sf_states State Borders `sf` data frame
-    sf_states = NULL,
-
-    #' @field sf_counties County Borders `sf` data frame
-    sf_counties = NULL,
-
     #' @description
     #' Construct record container [R6::R6Class()]
     #' subclass instance for geographic mapping.
@@ -115,77 +112,20 @@ SpecimenMap <- R6::R6Class(
     initialize = function(records, identifier = NULL) {
       super$initialize(records, identifier)
     },
-
-    #' @description
-    #' State border simple features via `tigris`
-    #' @return `sf` data frame of U.S. states.
-    tigris_states = function() {
-      state_rda <- path(
-        getOption(x = "thesis.data", default = NULL), "tigris/states",
-        ext = "rda"
-      )
-      if (!file_exists(state_rda)) {
-        self$sf_states <- tigris::states(year = 2021) %>%
-          rmapshaper::ms_simplify(input = .)
-        base::saveRDS(object = self$sf_states, file = state_rda)
-        ui_done(x = "State border data written to:\n{ui_path(state_rda)}")
+    bbox = function(...) {
+      if (missing(...)) {
+        return(private$.bbox)
       } else {
-        if (file_exists(state_rda)) {
-          self$sf_states <- base::readRDS(file = state_rda)
-        }
+        super$bbox(...)
+        bbox_sf <- sf::st_as_sfc(super$bbox(), crs = self$crs) |>
+          sf::st_as_sf()
+        private$states <- tigris::states(filter_by = bbox_sf) |>
+          sf::st_transform(crs = self$crs)
+        private$counties <- tigris::counties(filter_by = bbox_sf) |>
+          sf::st_transform(crs = self$crs)
+        invisible()
       }
-      invisible()
     },
-
-    #' @description
-    #' County border simple features via `tigris`
-    #' @return `sf` data frame with county borders from matched states.
-    tigris_counties = function(.states) {
-      if (is.null(.states)) {
-        .states <- unique(self$records[["stateProvince"]])
-      } else {
-        if (!is.character(.states)) {
-          rlang::abort(
-            message = glue::glue(
-              "{ui_code('.states')} must be a character vector."
-            )
-          )
-        }
-        .states <- c(.states, unique(self$records[["stateProvince"]]))
-      }
-
-      tigris_counties <-
-        purrr::keep(
-          .x = .states,
-          .p = ~ !is.na(.x) & (.x %in% datasets::state.name)
-        ) %>%
-        purrr::map(
-          .x = .,
-          .f = function(state) {
-            county_rda <- path(
-              getOption(x = "thesis.data"), "tigris/counties", state,
-              ext = "rda"
-            )
-            county_dir <- fs::path_dir(county_rda)
-            if (!dir_exists(county_dir)) {
-              dir_create(county_dir)
-            }
-            if (!file_exists(county_rda)) {
-              county_sf <- tigris::counties(state = state, progress_bar = FALSE)
-              base::saveRDS(object = county_sf, file = county_rda)
-              ui_done(x = "County borders written to:\n{ui_path(county_rda)}")
-            } else {
-              county_sf <- base::readRDS(file = county_rda)
-            }
-            return(county_sf)
-          }
-        ) %>%
-        tigris::rbind_tigris() %>%
-        rmapshaper::ms_simplify(input = .)
-      self$sf_counties <- tigris_counties
-      invisible()
-    },
-
     #' @description
     #' Layer census border shapefiles built from
     #' [tigris::states()] and [tigris::counties()] simple features.
@@ -195,25 +135,24 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List of state / county [ggplot2::geom_sf()] and
     #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(.borders = "black", .states = NULL, .expand = FALSE) {
-      if (is.null(self$sf_states)) self$tigris_states()
-      if (is.null(self$sf_counties)) self$tigris_counties(.states = .states)
+    features = function(.borders = "black", .expand = FALSE) {
+      bbox <- super$bbox()
       list(
         ggplot2::geom_sf(
-          data = self$sf_counties,
+          data = private$counties,
           inherit.aes = FALSE, size = 0.5, alpha = 0.75,
           color = .borders, fill = NA
         ),
         ggplot2::geom_sf(
-          data = self$sf_states,
+          data = private$states,
           color = .borders,
           inherit.aes = FALSE,
           size = 1.2,
           fill = NA
         ),
         ggplot2::coord_sf(
-          xlim = base::range(self$records[["decimalLongitude"]], na.rm = TRUE),
-          ylim = base::range(self$records[["decimalLatitude"]], na.rm = TRUE),
+          xlim = bbox[c(1, 3)],
+          ylim = bbox[c(2, 4)],
           expand = .expand
         )
       )
@@ -310,28 +249,25 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(.legend = self$identifier, .expand = FALSE,
-                   .borders = "black", .states = NULL,
+    map = function(.legend = self$identifier,
                    baselayer = c("base", "ggmap", "elevatr"),
-                   zoom = 7,
-                   center = NULL,
-                   maptype = "satellite") {
+                   .borders = "black", .expand = FALSE,
+                   zoom = 7, center = NULL, maptype = "satellite") {
       baselayer <- match.arg(baselayer, choices = c("base", "ggmap", "elevatr"))
       baselayer <-
         switch(baselayer,
           base = ggplot2::ggplot(),
-          ggmap = private$base_ggmap(
+          ggmap = self$base_ggmap(
             zoom = zoom,
             center = center,
             maptype = maptype
           ),
-          elevatr = private$base_elevatr(zoom = zoom)
+          elevatr = self$base_elevatr(zoom = zoom)
         )
 
       species_map <- baselayer +
         self$features(
           .borders = .borders,
-          .states = .states,
           .expand = .expand
         ) +
         self$specimens() +
@@ -407,9 +343,7 @@ SpecimenMap <- R6::R6Class(
         val = repel.params
       ))
       return(id)
-    }
-  ),
-  private = list(
+    },
 
     # Base Layer `ggmap` -------------------------------------------------------
     base_ggmap = function(zoom, center, maptype) {
