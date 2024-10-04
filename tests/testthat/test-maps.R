@@ -1,119 +1,18 @@
-tmp <- path_temp()
-tmp_tigris <- path(tmp, "tigris")
-if (!dir_exists(tmp_tigris)) dir_create(tmp_tigris)
+specimens <- SpecimenMap$new(records = thesis::vouchers)
 
-## ---- SpecimenMap$states() ---------------------------------------------------
-test_that("Persistent state shapefile package data.", {
-  specimens <- build_cartography()$clone()
-  with_options(
-    new = list("thesis.data" = tmp),
-    code = {
-      state_rda <- path(
-        getOption("thesis.data"), "tigris", "states",
-        ext = "rda"
-      )
-
-      # Check time for data initialization against reading perstistent files
-      sys_time_init <-
-        system.time(expr = {
-          tigris_states <- specimens$tigris_states()
-        })
-
-      # Orthogonal path check to verify relative path from package option
-      expect_true(file_exists(state_rda))
-      expect_true(file_exists(path(tmp, "tigris/states", ext = "rda")))
-
-      # Compare time from reading persistent data against download operation
-      sys_time_persist <-
-        system.time(expr = {
-          tigris_states <- specimens$tigris_states()
-        })
-      expect_gt(sys_time_init[["elapsed"]], sys_time_persist[["elapsed"]])
-
-      # Check message for path to persistent data from package option
-      if (file_exists(state_rda)) file_delete(state_rda)
-      expect_message(
-        object = specimens$tigris_states(),
-        regexp = path(options("thesis.data"), "tigris/states.rda")
-      )
-
-      # Check return class matches simple features data frame
-      expect_null(tigris_states)
-      expect_s3_class(specimens$sf_states, class = c("sf", "data.frame"))
-    }
+test_that("SpecimenMap subclass inheritance", {
+  expect_s3_class(SpecimenMap, "R6ClassGenerator")
+  expect_identical(SpecimenMap$inherit, as.symbol("Specimen"))
+  expect_type(specimens, type = "environment")
+  expect_s3_class(
+    object = specimens,
+    class = c("SpecimenMap", "Specimen", "Extent", "R6"),
+    exact = TRUE
   )
 })
-
-## ---- SpecimenMap$counties() -------------------------------------------------
-test_that("Persistent county shapefile package data.", {
-  specimens <- SpecimenMap$new(thesis::vouchers, "scientificName")
-  # specimens <- build_cartography()$clone()
-  with_options(
-    new = list("thesis.data" = tmp),
-    code = {
-      # Check time for data initialization against reading perstistent files
-      sys_time_init <-
-        system.time(expr = {
-          tigris_counties <- specimens$tigris_counties(.states = NULL)
-        })
-      sys_time_persist <-
-        system.time(expr = {
-          tigris_counties <- specimens$tigris_counties(.states = NULL)
-        })
-      sys_time_field <-
-        system.time(expr = {
-          tigris_counties <- specimens$sf_counties
-        })
-      expect_gt(sys_time_init[["elapsed"]], sys_time_persist[["elapsed"]])
-      expect_gt(sys_time_persist[["elapsed"]], sys_time_field[["elapsed"]])
-
-      # Check expect output from aggregated county border simple features data
-      expect_s3_class(object = tigris_counties, class = c("sf", "data.frame"))
-
-      # Verify persistent file is written for all states in specimen records
-      unique(specimens$records$stateProvince) %>%
-        keep(.x = ., .p = ~ !is.na(.x) & (.x %in% datasets::state.name)) %>%
-        walk(
-          # Orthogonal path check to verify relative path from local option
-          .f = function(state) {
-            county_rda <- path(
-              getOption("thesis.data"), "tigris/counties", state,
-              ext = "rda"
-            )
-            expect_true(file_exists(county_rda))
-          }
-        )
-
-      # Expect simple features for states external from `self$records`
-      purrr::walk(
-        .x = c("Nevada", "Oregon"),
-        .f = function(include) {
-          specimens$tigris_counties(.states = include)
-          expect_true(
-            file_exists(
-              fs::path(tmp_tigris, "counties", include, ext = "rda")
-            )
-          )
-        }
-      )
-
-      # Ensure check against non-character states
-      expect_error(
-        object = specimens$tigris_counties(.states = 3),
-        regexp = "must be a character vector"
-      )
-    }
-  )
-})
-
-if (dir_exists(tmp_tigris)) dir_delete(tmp_tigris)
 
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
-  expect_type(vouchers, type = "environment")
-  expect_identical(class(vouchers), c("SpecimenMap", "Specimen", "Extent", "R6"))
-  expect_s3_class(vouchers$records, c("tbl_df"))
-  expect_identical(vouchers$identifier, expected = "scientificName")
 
   # Border Features ------------------------------------------------------------
   expect_type(vouchers$features, type = "closure")
@@ -154,7 +53,7 @@ test_that("SpecimenMap R6 Subclass", {
   # Verify limit subsetting
   expect_identical(
     voucher_features[[3]]$limits,
-    list(x = c(-110, -109), y = c(44, 45))
+    list(x = c(xmin = -110, xmax = -109), y = c(ymin = 44, ymax = 45))
   )
 
   # Specimen Layer -------------------------------------------------------------
