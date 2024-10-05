@@ -82,6 +82,26 @@ test_that("Private method $coords() sets coordinates from $bbox() limit", {
   TestCoords$new(records = thesis::vouchers)$test_coords()
 })
 
+test_that("Private method $scales() returns list of aesthetic scales", {
+  TestScales <- R6::R6Class(
+    inherit = SpecimenMap,
+    public = list(
+      test_scales = function() {
+        expect_type(private$scales, type = "closure")
+        purrr::walk2(
+          .x = private$scales(),
+          .y = c("colour", "shape"),
+          .f = \(x, y) {
+            expect_identical(x$aesthetics, expected = y)
+            expect_identical(names(x$labels), unique(self$sf[[self$identifier]]))
+          }
+        )
+      }
+    )
+  )
+  TestScales$new(records = thesis::vouchers)$test_scales()
+})
+
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
   # Verify limit subsetting
@@ -90,22 +110,6 @@ test_that("SpecimenMap R6 Subclass", {
     list(x = c(xmin = -110, xmax = -109), y = c(ymin = 44, ymax = 45))
   )
 
-
-  # Manual Scales --------------------------------------------------------------
-  expect_type(vouchers$scales, type = "closure")
-  voucher_scales <- vouchers$scales()
-  expect_identical(voucher_scales[[1]]$aesthetics, expected = "colour")
-  expect_identical(voucher_scales[[2]]$aesthetics, expected = "shape")
-  purrr::walk(
-    .x = voucher_scales,
-    .f = function(scale) {
-      expect_equal(
-        names(scale$labels),
-        expected = unique(vouchers$records[["scientificName"]]),
-        ignore_attr = TRUE
-      )
-    }
-  )
 
   # Plot Theme -----------------------------------------------------------------
   expect_type(vouchers$theme, type = "closure")

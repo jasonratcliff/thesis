@@ -141,6 +141,24 @@ SpecimenMap <- R6::R6Class(
           expand = private$.expand
         )
       )
+    },
+    scales = function() {
+      annotations <- thesis::aesthetics %>%
+        dplyr::filter(species %in% names(self$annotations()))
+      list(
+        ggplot2::scale_color_manual(
+          labels = self$annotations(),
+          limits = annotations[["species"]],
+          values = annotations[["color"]],
+          na.value = "black"
+        ),
+        ggplot2::scale_shape_manual(
+          labels = self$annotations(),
+          limits = annotations[["species"]],
+          values = annotations[["shape"]],
+          na.value = 17
+        )
+      )
     }
   ),
   public = list(
@@ -165,34 +183,6 @@ SpecimenMap <- R6::R6Class(
         invisible()
       }
     },
-    #' @description
-    #' Layer manual scale values for color and shape aesthetics.
-    #' Legend limits are subset to name values in
-    #' [`Specimen$annotations()`][Specimen] for
-    #' the set of species values indicated by [`Specimen$identifier`][Specimen].
-    #' See [thesis::aesthetics] for scale value specifications.
-    #'
-    #' @return List with [ggplot2::scale_color_manual()] and
-    #'  [ggplot2::scale_shape_manual()] ggproto objects.
-    scales = function() {
-      manual_scales <- thesis::aesthetics %>%
-        dplyr::filter(species %in% names(self$annotations()))
-      list(
-        ggplot2::scale_color_manual(
-          labels = self$annotations(),
-          limits = manual_scales[["species"]],
-          values = manual_scales[["color"]],
-          na.value = "black"
-        ),
-        ggplot2::scale_shape_manual(
-          labels = self$annotations(),
-          limits = manual_scales[["species"]],
-          values = manual_scales[["shape"]],
-          na.value = 17
-        )
-      )
-    },
-
     #' @description
     #' Layer [ggplot2::theme()] specification and default scale labels.
     #' Depends on [ggtext::element_markdown()] to set legend text for
@@ -244,7 +234,7 @@ SpecimenMap <- R6::R6Class(
 
       species_map <- baselayer +
         private$geoms() +
-        self$scales() +
+        private$scales() +
         self$theme(.legend = .legend)
       return(species_map)
     },
