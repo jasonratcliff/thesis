@@ -131,6 +131,16 @@ SpecimenMap <- R6::R6Class(
           size = 3
         )
       )
+    },
+    coords = function() {
+      bbox <- super$bbox()
+      list(
+        ggplot2::coord_sf(
+          xlim = bbox[c(1, 3)],
+          ylim = bbox[c(2, 4)],
+          expand = private$.expand
+        )
+      )
     }
   ),
   public = list(

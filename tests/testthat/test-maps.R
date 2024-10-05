@@ -56,6 +56,32 @@ test_that("Private method $geoms() returns list of simple features layers", {
   TestGeoms$new(records = thesis::vouchers)$test_geoms()
 })
 
+test_that("Private method $coords() sets coordinates from $bbox() limit", {
+  TestCoords <- R6::R6Class(
+    inherit = SpecimenMap,
+    public = list(
+      test_coords = function() {
+        expect_type(private$coords, type = "closure")
+        expect_type(private$coords(), type = "list")
+        expect_s3_class(
+          object = private$coords()[[1]],
+          class = c("CoordSf", "CoordCartesian", "Coord", "ggproto", "gg"),
+          exact = TRUE
+        )
+        bbox <- self$bbox()
+        expect_equal(
+          private$coords()[[1]]$limits,
+          list(
+            x = c(bbox[1], bbox[3]),
+            y = c(bbox[2], bbox[4])
+          )
+        )
+      }
+    )
+  )
+  TestCoords$new(records = thesis::vouchers)$test_coords()
+})
+
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
   # Verify limit subsetting
