@@ -1,15 +1,13 @@
-# SpecimenMap R6 Subclass
+# Private method $geoms() returns list of simple features layers
 
     Code
-      voucher_specimens[[1]]$mapping
+      private$geoms()[[3]][[1]]$mapping
     Output
       Aesthetic mapping: 
-      * `x`      -> `decimalLongitude`
-      * `y`      -> `decimalLatitude`
       * `colour` -> `.data[["scientificName"]]`
       * `shape`  -> `.data[["scientificName"]]`
 
----
+# SpecimenMap R6 Subclass
 
     Code
       voucher_theme[[2]]

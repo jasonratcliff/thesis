@@ -101,6 +101,8 @@ SpecimenMap <- R6::R6Class(
   classname = "SpecimenMap",
   inherit = Specimen,
   private = list(
+    .borders = "black",
+    .expand = 0.05,
     states = NULL,
     counties = NULL,
     arranged = function() {
@@ -108,6 +110,27 @@ SpecimenMap <- R6::R6Class(
       self$sf |>
         dplyr::add_count(.data[[self$identifier]]) |>
         dplyr::arrange(dplyr::desc(.data$n))
+    },
+    geoms = function() {
+      list(
+        ggplot2::geom_sf(
+          data = private$states, color = private$.borders,
+          size = 1.2, fill = NA
+        ),
+        ggplot2::geom_sf(
+          data = private$counties, color = private$.borders,
+          size = 0.5, fill = NA, alpha = 0.75
+        ),
+        # TODO Handle jitter position statistic?
+        ggplot2::geom_sf(
+          data = private$arranged(),
+          mapping = ggplot2::aes(
+            color = .data[[self$identifier]],
+            shape = .data[[self$identifier]]
+          ),
+          size = 3
+        )
+      )
     }
   ),
   public = list(
@@ -132,59 +155,6 @@ SpecimenMap <- R6::R6Class(
         invisible()
       }
     },
-    #' @description
-    #' Layer census border shapefiles built from
-    #' [tigris::states()] and [tigris::counties()] simple features.
-    #' Data layers for simple feature (sf) objects are enabled by
-    #' [ggplot2::geom_sf()]. Coordinate limits are set by the range of
-    #' lon/lat values in the [`Specimen$records`][Specimen] tibble.
-    #'
-    #' @return List of state / county [ggplot2::geom_sf()] and
-    #'  [ggplot2::coord_sf()] ggproto objects.
-    features = function(.borders = "black", .expand = FALSE) {
-      bbox <- super$bbox()
-      list(
-        ggplot2::geom_sf(
-          data = private$counties,
-          inherit.aes = FALSE, size = 0.5, alpha = 0.75,
-          color = .borders, fill = NA
-        ),
-        ggplot2::geom_sf(
-          data = private$states,
-          color = .borders,
-          inherit.aes = FALSE,
-          size = 1.2,
-          fill = NA
-        ),
-        ggplot2::coord_sf(
-          xlim = bbox[c(1, 3)],
-          ylim = bbox[c(2, 4)],
-          expand = .expand
-        )
-      )
-    },
-
-    #' @description
-    #' Layer jitter geom of specimens from records tibble.
-    #' Color and shape aesthetics are set by the
-    #' [`Specimen$identifier`][Specimen] public field.
-    #'
-    #' @return List with [ggplot2::geom_jitter()] ggproto object.
-    specimens = function() {
-      list(
-        ggplot2::geom_jitter(
-          data = private$arranged(),
-          mapping = ggplot2::aes(
-            x = decimalLongitude,
-            y = decimalLatitude,
-            color = .data[[self$identifier]],
-            shape = .data[[self$identifier]]
-          ),
-          size = 3
-        )
-      )
-    },
-
     #' @description
     #' Layer manual scale values for color and shape aesthetics.
     #' Legend limits are subset to name values in
@@ -263,11 +233,7 @@ SpecimenMap <- R6::R6Class(
         )
 
       species_map <- baselayer +
-        self$features(
-          .borders = .borders,
-          .expand = .expand
-        ) +
-        self$specimens() +
+        private$geoms() +
         self$scales() +
         self$theme(.legend = .legend)
       return(species_map)

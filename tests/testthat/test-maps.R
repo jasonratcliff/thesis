@@ -24,69 +24,46 @@ test_that("Private method $arranged() sorts $sf by decreasing counts", {
   TestArranged$new(records = thesis::vouchers)$test_arranged()
 })
 
+test_that("Private method $geoms() returns list of simple features layers", {
+  TestGeoms <- R6::R6Class(
+    inherit = SpecimenMap,
+    public = list(
+      test_geoms = function() {
+        expect_type(private$geoms, type = "closure")
+        expect_type(private$geoms(), type = "list")
+        purrr::walk(
+          .x = seq_along(private$geoms()),
+          .f = \(i) {
+            geom <- private$geoms()[[i]]
+            expect_type(geom[[1]], type = "environment")
+            expect_type(geom[[2]], type = "environment")
+            expect_s3_class(
+              object = geom[[1]],
+              class = c('LayerInstance', 'LayerSf', 'Layer', 'ggproto', 'gg'),
+              exact = TRUE
+            )
+            expect_s3_class(
+              object = geom[[2]],
+              class = c("CoordSf", "CoordCartesian", "Coord", "ggproto", "gg"),
+              exact = TRUE
+            )
+          }
+        )
+        expect_snapshot(private$geoms()[[3]][[1]]$mapping)
+      }
+    )
+  )
+  TestGeoms$new(records = thesis::vouchers)$test_geoms()
+})
+
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
-
-  # Border Features ------------------------------------------------------------
-  expect_type(vouchers$features, type = "closure")
-  expect_error(vouchers$features(.borders = "black", .states = list()))
-
-  # County / State layer simple features
-  voucher_features <- vouchers$features(.borders = "black")
-  purrr::walk(
-    .x = list(
-      voucher_features[[1]][[1]],
-      voucher_features[[2]][[1]]
-    ),
-    .f = function(layer) {
-      expect_type(layer, type = "environment")
-      expect_identical(
-        class(layer),
-        c("LayerInstance", "LayerSf", "Layer", "ggproto", "gg")
-      )
-    }
-  )
-
-  # Simple feature coordinate systems
-  purrr::walk(
-    .x = list(
-      voucher_features[[1]][[2]],
-      voucher_features[[2]][[2]],
-      voucher_features[[3]]
-    ),
-    .f = function(layer) {
-      expect_type(layer, type = "environment")
-      expect_identical(
-        class(layer),
-        c("CoordSf", "CoordCartesian", "Coord", "ggproto", "gg")
-      )
-    }
-  )
-
   # Verify limit subsetting
   expect_identical(
     voucher_features[[3]]$limits,
     list(x = c(xmin = -110, xmax = -109), y = c(ymin = 44, ymax = 45))
   )
 
-  # Specimen Layer -------------------------------------------------------------
-  expect_type(vouchers$specimens, type = "closure")
-  voucher_specimens <- vouchers$specimens()
-
-  # Verify record sorting
-  expect_identical(
-    voucher_specimens[[1]]$data %>%
-      dplyr::slice_tail(n = 1) %>%
-      dplyr::pull(scientificName),
-    expected = "Medicari iugerum"
-  )
-
-  # Check layer geom aesthetics
-  expect_identical(
-    class(voucher_specimens[[1]]),
-    expected = c("LayerInstance", "Layer", "ggproto", "gg")
-  )
-  expect_snapshot(voucher_specimens[[1]]$mapping)
 
   # Manual Scales --------------------------------------------------------------
   expect_type(vouchers$scales, type = "closure")
