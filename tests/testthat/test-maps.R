@@ -11,6 +11,19 @@ test_that("SpecimenMap subclass inheritance", {
   )
 })
 
+test_that("Private method $arranged() sorts $sf by decreasing counts", {
+  TestArranged <- R6::R6Class(
+    inherit = SpecimenMap,
+    public = list(
+      test_arranged = function() {
+        arranged <- private$arranged()
+        expect_false(is.unsorted(rev(arranged$n)))
+      }
+    )
+  )
+  TestArranged$new(records = thesis::vouchers)$test_arranged()
+})
+
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
 

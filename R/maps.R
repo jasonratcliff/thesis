@@ -102,7 +102,13 @@ SpecimenMap <- R6::R6Class(
   inherit = Specimen,
   private = list(
     states = NULL,
-    counties = NULL
+    counties = NULL,
+    arranged = function() {
+      # Row order spatial records to account for plot density.
+      self$sf |>
+        dplyr::add_count(.data[[self$identifier]]) |>
+        dplyr::arrange(dplyr::desc(.data$n))
+    }
   ),
   public = list(
     #' @description
@@ -165,18 +171,9 @@ SpecimenMap <- R6::R6Class(
     #'
     #' @return List with [ggplot2::geom_jitter()] ggproto object.
     specimens = function() {
-      # Order specimens to account for plot density
-      specimens <- self$records %>%
-        dplyr::add_count(.data[[self$identifier]]) %>%
-        dplyr::arrange(dplyr::desc(.data$n)) %>%
-        dplyr::filter(
-          !is.na(.data$decimalLongitude) &
-            !is.na(.data$decimalLatitude)
-        )
-
       list(
         ggplot2::geom_jitter(
-          data = specimens,
+          data = private$arranged(),
           mapping = ggplot2::aes(
             x = decimalLongitude,
             y = decimalLatitude,
