@@ -102,6 +102,29 @@ test_that("Private method $scales() returns list of aesthetic scales", {
   TestScales$new(records = thesis::vouchers)$test_scales()
 })
 
+test_that("Private method $theme() returns theme options", {
+  TestTheme <- R6::R6Class(
+    inherit = SpecimenMap,
+    public = list(
+      test_theme = function() {
+        expect_type(private$theme, type = "closure")
+        expect_s3_class(
+          object = private$theme()[[1]],
+          class = c("theme", "gg"),
+          exact = TRUE
+        )
+        expect_s3_class(
+          object = private$theme()[[1]]$legend.text,
+          class = c("element_markdown", "element_text", "element"),
+          exact = TRUE
+        )
+        expect_snapshot(private$theme()[[2]])
+      }
+    )
+  )
+  TestTheme$new(records = thesis::vouchers)$test_theme()
+})
+
 test_that("SpecimenMap R6 Subclass", {
   vouchers <- build_cartography()$clone()
   # Verify limit subsetting
@@ -110,13 +133,6 @@ test_that("SpecimenMap R6 Subclass", {
     list(x = c(xmin = -110, xmax = -109), y = c(ymin = 44, ymax = 45))
   )
 
-
-  # Plot Theme -----------------------------------------------------------------
-  expect_type(vouchers$theme, type = "closure")
-  voucher_theme <- vouchers$theme(.legend = vouchers$identifier)
-  expect_identical(class(voucher_theme[[1]]), expected = c("theme", "gg"))
-  expect_s3_class(voucher_theme[[1]]$legend.text, class = "element_markdown")
-  expect_snapshot(voucher_theme[[2]])
 
   # Collector Tags -------------------------------------------------------------
   expect_type(vouchers$repel, type = "closure")

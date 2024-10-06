@@ -159,6 +159,25 @@ SpecimenMap <- R6::R6Class(
           na.value = 17
         )
       )
+    },
+    theme = function() {
+      list(
+        ggplot2::theme(
+          panel.background = ggplot2::element_blank(),
+          panel.border = ggplot2::element_rect(fill = NA, color = "black"),
+          legend.direction = "vertical",
+          legend.key = ggplot2::element_blank(),
+          legend.background = ggplot2::element_rect(
+            fill = "grey90",
+            color = "black"
+          ),
+          legend.text = ggtext::element_markdown(hjust = 0, vjust = 0.5)
+        ),
+        ggplot2::labs(
+          x = "decimalLongitude", y = "decimalLatitude",
+          color = private$.identifier, shape = private$.identifier
+        )
+      )
     }
   ),
   public = list(
@@ -183,31 +202,6 @@ SpecimenMap <- R6::R6Class(
         invisible()
       }
     },
-    #' @description
-    #' Layer [ggplot2::theme()] specification and default scale labels.
-    #' Depends on [ggtext::element_markdown()] to set legend text for
-    #' italicized species annotations using HTML formatting.
-    #'
-    #' @return List of [ggplot2::theme()] and [ggplot2::labs()] objects.
-    theme = function(.legend = NULL) {
-      list(
-        ggplot2::theme(
-          panel.background = ggplot2::element_blank(),
-          panel.border = ggplot2::element_rect(fill = NA, color = "black"),
-          legend.direction = "vertical",
-          legend.key = ggplot2::element_blank(),
-          legend.background = ggplot2::element_rect(
-            fill = "grey90",
-            color = "black"
-          ),
-          legend.text = ggtext::element_markdown(hjust = 0, vjust = 0.5)
-        ),
-        ggplot2::labs(
-          x = "decimalLongitude", y = "decimalLatitude",
-          color = .legend, shape = .legend, size = .legend
-        )
-      )
-    },
 
     #' @description
     #' Build [ggplot2::ggplot()] distribution map from the
@@ -216,9 +210,7 @@ SpecimenMap <- R6::R6Class(
     #' Combines the public methods exposed by [thesis::SpecimenMap].
     #'
     #' @return Grid graphics / ggplot object to print specimen distribution.
-    map = function(.legend = self$identifier,
-                   baselayer = c("base", "ggmap", "elevatr"),
-                   .borders = "black", .expand = FALSE,
+    map = function(baselayer = c("base", "ggmap", "elevatr"),
                    zoom = 7, center = NULL, maptype = "satellite") {
       baselayer <- match.arg(baselayer, choices = c("base", "ggmap", "elevatr"))
       baselayer <-
@@ -235,7 +227,7 @@ SpecimenMap <- R6::R6Class(
       species_map <- baselayer +
         private$geoms() +
         private$scales() +
-        self$theme(.legend = .legend)
+        private$theme()
       return(species_map)
     },
 

@@ -7,10 +7,10 @@
       * `colour` -> `.data[["scientificName"]]`
       * `shape`  -> `.data[["scientificName"]]`
 
-# SpecimenMap R6 Subclass
+# Private method $theme() returns theme options
 
     Code
-      voucher_theme[[2]]
+      private$theme()[[2]]
     Output
       $x
       [1] "decimalLongitude"
@@ -22,9 +22,6 @@
       [1] "scientificName"
       
       $shape
-      [1] "scientificName"
-      
-      $size
       [1] "scientificName"
       
       attr(,"class")
