@@ -17,7 +17,7 @@ SystemRequirements:
     Quarto command line tools (https://github.com/quarto-dev/quarto-cli).
 License: CC BY 4.0 + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 Depends:
@@ -48,7 +48,6 @@ Imports:
     R6,
     raster,
     readr (>= 2.0.0),
-    rgdal,
     rlang,
     rmapshaper,
     scales,
