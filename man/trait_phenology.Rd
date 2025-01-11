@@ -48,6 +48,7 @@ takes a list
 }
 \examples{
 herbarium_specimens \%>\%
+\dontrun{
   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42)) \%>\%
   dplyr::bind_cols(
     .,
@@ -59,6 +60,6 @@ herbarium_specimens \%>\%
     aesthetic_id = "Taxon_a_posteriori",
     legend_title = "Reviewed Annotations"
   )
-
+}
 }
 \keyword{internal}

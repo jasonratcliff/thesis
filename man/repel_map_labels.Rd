@@ -34,6 +34,7 @@ For each call layered onto a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}, la
 specimen sampling identifying individual records of interest.
 }
 \examples{
+\dontrun{
 extent <-
   tibble::tribble(
     ~"Longitude", ~"Latitude",
@@ -101,7 +102,7 @@ tibble::tribble(
     initial_ggplot = map
   ) \%>\%
   rlang::eval_tidy(expr = .)
-
+}
 }
 \seealso{
 Other labels: 

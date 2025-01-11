@@ -35,12 +35,13 @@ Extract Legend of \link{ggplot} Aesthetics from Specimen Annotations
 }
 \examples{
 specimen_tbl <- herbarium_specimens \%>\%
+\dontrun{
   subset_coords(Longitude = c(-108, -105), Latitude = c(39, 42))
 aesthetic_id <- "Taxon_a_posteriori"
 legend_title <- "Reviewed Annotations"
 aesthetic_labels <- NULL
 theme.params <- list()
 guide.params <- list()
-
+}
 }
 \keyword{internal}
