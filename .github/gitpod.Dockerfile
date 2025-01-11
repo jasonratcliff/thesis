@@ -26,7 +26,6 @@ WORKDIR /workspace
 COPY renv.lock renv.lock
 
 RUN R -e "renv::restore(library = Sys.getenv('R_LIBS_SITE'))"
-RUN R -e "renv::install()"
 
 # Create the gitpod user. UID must be 33333.
 RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod
